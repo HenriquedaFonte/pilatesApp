@@ -30,11 +30,6 @@ function App() {
 function AppRoutes() {
   const { user, profile, loading, isProfileComplete } = useAuth()
 
-  console.log("AppRoutes - User:", user)
-  console.log("AppRoutes - Profile:", profile)
-  console.log("AppRoutes - Loading:", loading)
-  console.log("AppRoutes - Profile Complete:", isProfileComplete)
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -48,14 +43,12 @@ function AppRoutes() {
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/complete-profile" element={<ProfileCompletion />} />
-      <Route path="/auth/callback" element={<AuthCallback />} /> {/* AuthCallback for Google OAuth */}
-      
-      {/* Redirect authenticated users based on role and profile completion */}
+      <Route path="/auth/callback" element={<AuthCallback />} /> 
       <Route
         path="/"
         element={
           user ? (
-            // If user is authenticated but profile is incomplete, redirect to profile completion
+
             !isProfileComplete ? (
               <Navigate to="/complete-profile" replace />
             ) : profile?.role === 'teacher' ? (
@@ -71,7 +64,6 @@ function AppRoutes() {
         }
       />
 
-      {/* Teacher Routes - Protected and require complete profile */}
       <Route 
         path="/teacher/dashboard" 
         element={
@@ -136,8 +128,6 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
-      
-      {/* Student Routes - Protected and require complete profile */}
       <Route 
         path="/student/dashboard" 
         element={
@@ -154,8 +144,6 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
-
-      {/* Catch all - Redirect to login if path not found and not authenticated */}
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   )

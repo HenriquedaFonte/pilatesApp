@@ -33,9 +33,7 @@ import {
   Activity,
   LogOut,
   Plus,
-  Edit,
   Trash2,
-  Clock,
   Calendar,
   ArrowLeft
 } from 'lucide-react'
@@ -54,7 +52,7 @@ const TeacherClasses = () => {
   const [newClass, setNewClass] = useState({
     name: '',
     description: '',
-    type: 'individual' // Default to 'individual'
+    type: 'individual' 
   })
 
   const [newSchedule, setNewSchedule] = useState({
@@ -223,7 +221,6 @@ const TeacherClasses = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -250,7 +247,6 @@ const TeacherClasses = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Alerts */}
         {error && (
           <Alert variant="destructive" className="mb-6">
             <AlertDescription>{error}</AlertDescription>
@@ -262,7 +258,6 @@ const TeacherClasses = () => {
           </Alert>
         )}
 
-        {/* Header Section */}
         <div className="flex justify-between items-center mb-8">
           <div>
             <h2 className="text-3xl font-bold text-gray-900">
@@ -346,7 +341,6 @@ const TeacherClasses = () => {
           </Dialog>
         </div>
 
-        {/* Classes List */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {classes.map(classItem => (
             <Card key={classItem.id}>
@@ -432,7 +426,6 @@ const TeacherClasses = () => {
           </Card>
         )}
 
-        {/* Schedule Dialog */}
         <Dialog
           open={isScheduleDialogOpen}
           onOpenChange={setIsScheduleDialogOpen}

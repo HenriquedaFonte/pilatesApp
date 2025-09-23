@@ -15,7 +15,7 @@ const ProfileCompletion = () => {
     phone: '',
     preferredLanguage: 'pt'
   })
-  const [displayPhone, setDisplayPhone] = useState('') // State to hold the formatted phone for display
+  const [displayPhone, setDisplayPhone] = useState('') 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -38,7 +38,6 @@ const ProfileCompletion = () => {
         return
       }
 
-      // If profile is already complete, redirect to appropriate dashboard
       if (profile.profile_complete) {
         if (profile.role === 'teacher') {
           navigate('/teacher')
@@ -48,50 +47,43 @@ const ProfileCompletion = () => {
         return
       }
 
-      // Pre-fill form with existing data
       setFormData({
         phone: profile.phone || '',
         preferredLanguage: profile.preferred_language || 'pt'
       })
-      setDisplayPhone(formatPhoneNumber(profile.phone || '')) // Format for display
+      setDisplayPhone(formatPhoneNumber(profile.phone || ''))
     } catch (error) {
       console.error('Error checking profile status:', error)
     }
   }, [user, supabase, navigate, setFormData, setDisplayPhone])
 
   useEffect(() => {
-    // If user is not authenticated, redirect to login
     if (!user) {
       navigate('/login')
       return
     }
 
-    // Check if profile is already complete
     checkProfileStatus()
   }, [user, navigate, checkProfileStatus])
 
   const formatPhoneNumber = (value) => {
-    // Remove all non-numeric characters except the leading '+'
     let cleaned = value.startsWith('+') ? '+' + value.slice(1).replace(/\D/g, '') : value.replace(/\D/g, '');
     
-    // Apply formatting for display
     if (cleaned.length === 0) return '';
     if (cleaned.length === 1 && cleaned === '+') return '+';
-    if (cleaned.length <= 2) return cleaned; // e.g., +1
-    if (cleaned.length <= 5) return `${cleaned.slice(0, 2)} ${cleaned.slice(2)}`; // e.g., +1 514
-    if (cleaned.length <= 8) return `${cleaned.slice(0, 2)} ${cleaned.slice(2, 5)} ${cleaned.slice(5)}`; // e.g., +1 514 712
-    return `${cleaned.slice(0, 2)} ${cleaned.slice(2, 5)} ${cleaned.slice(5, 8)} ${cleaned.slice(8, 12)}`; // e.g., +1 514 712 2368
+    if (cleaned.length <= 2) return cleaned;
+    if (cleaned.length <= 5) return `${cleaned.slice(0, 2)} ${cleaned.slice(2)}`;
+    if (cleaned.length <= 8) return `${cleaned.slice(0, 2)} ${cleaned.slice(2, 5)} ${cleaned.slice(5)}`;
+    return `${cleaned.slice(0, 2)} ${cleaned.slice(2, 5)} ${cleaned.slice(5, 8)} ${cleaned.slice(8, 12)}`;
   };
 
   const handlePhoneChange = (e) => {
     const rawValue = e.target.value;
-    // Store the raw, unformatted number in formData
     const cleanedValue = rawValue.startsWith('+') ? '+' + rawValue.slice(1).replace(/\D/g, '') : rawValue.replace(/\D/g, '');
     setFormData(prev => ({
       ...prev,
       phone: cleanedValue
     }));
-    // Update displayPhone with the formatted version
     setDisplayPhone(formatPhoneNumber(cleanedValue));
   };
 
@@ -113,7 +105,6 @@ const ProfileCompletion = () => {
       return
     }
 
-    // Validate phone number (optional but if provided, must be valid format)
     if (formData.phone && !formData.phone.match(/^\+[1-9]\d{1,14}$/)) {
       setError('Please enter a valid phone number in international format')
       setLoading(false)
@@ -121,7 +112,6 @@ const ProfileCompletion = () => {
     }
 
     try {
-      // Call the create-user Edge Function to update the profile
       const { data, error } = await supabase.functions.invoke('create-user', {
         body: {
           oauth_user_id: user.id,
@@ -143,7 +133,6 @@ const ProfileCompletion = () => {
 
       setSuccess(true)
       
-      // Redirect to appropriate dashboard after a short delay
       setTimeout(() => {
         if (data.profile?.role === 'teacher') {
           navigate('/teacher')
@@ -206,7 +195,7 @@ const ProfileCompletion = () => {
                   id="phone"
                   name="phone"
                   type="tel"
-                  value={displayPhone} // Use displayPhone for the input value
+                  value={displayPhone} 
                   onChange={handlePhoneChange}
                   placeholder="+1 555 555 5555"
                   className="pl-10"

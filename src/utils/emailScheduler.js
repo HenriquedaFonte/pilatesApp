@@ -5,10 +5,10 @@ class EmailScheduler {
   constructor() {
     this.isRunning = false;
     this.timeoutId = null;
-    this.defaultThreshold = 2; // Changed to 2 credits as requested
+    this.defaultThreshold = 2;
   }
 
-  // Start the automatic email scheduler - runs every Monday at 10 AM
+
   start(threshold = this.defaultThreshold) {
     if (this.isRunning) {
       console.log('Email scheduler is already running');
@@ -20,11 +20,11 @@ class EmailScheduler {
 
     console.log(`Starting email scheduler - will check every Monday at 10 AM for students with <= ${threshold} credits`);
 
-    // Schedule the first run
+
     this.scheduleNextRun();
   }
 
-  // Stop the automatic email scheduler
+
   stop() {
     if (this.timeoutId) {
       clearTimeout(this.timeoutId);
@@ -34,25 +34,24 @@ class EmailScheduler {
     console.log('Email scheduler stopped');
   }
 
-  // Schedule the next run for Monday at 10 AM
+
   scheduleNextRun() {
     const now = new Date();
     const nextMonday = new Date(now);
 
-    // Find next Monday
-    const daysUntilMonday = (1 - now.getDay() + 7) % 7; // 1 = Monday
+    const daysUntilMonday = (1 - now.getDay() + 7) % 7;
     if (daysUntilMonday === 0 && now.getHours() >= 10) {
-      // If it's Monday and past 10 AM, schedule for next Monday
+
       nextMonday.setDate(now.getDate() + 7);
     } else if (daysUntilMonday === 0) {
-      // It's Monday but before 10 AM, schedule for today
+
       nextMonday.setDate(now.getDate());
     } else {
-      // Schedule for upcoming Monday
+
       nextMonday.setDate(now.getDate() + daysUntilMonday);
     }
 
-    // Set time to 10:00 AM
+
     nextMonday.setHours(10, 0, 0, 0);
 
     const timeUntilNextRun = nextMonday.getTime() - now.getTime();
@@ -61,17 +60,17 @@ class EmailScheduler {
 
     this.timeoutId = setTimeout(() => {
       this.checkAndSendNotifications(this.threshold);
-      // Schedule the next run after completion
+
       this.scheduleNextRun();
     }, timeUntilNextRun);
   }
 
-  // Check for students with low credits and send notifications
+
   async checkAndSendNotifications(threshold = this.defaultThreshold) {
     try {
       console.log(`Checking for students with <= ${threshold} credits...`);
       
-      // Get students with low credits
+
       const { data: students, error } = await supabase
         .from('profiles')
         .select(`
@@ -90,7 +89,7 @@ class EmailScheduler {
         return;
       }
 
-      // Calculate total credits and filter low credit students
+
       const lowCreditsStudents = students
         .map(student => ({
           ...student,
@@ -103,13 +102,13 @@ class EmailScheduler {
         return;
       }
 
-      // Filter students who haven't received notification recently (within last 7 days)
+
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
       const studentsToNotify = lowCreditsStudents.filter(student => {
         if (!student.last_low_credit_notification) {
-          return true; // Never received notification
+          return true; 
         }
         
         const lastNotification = new Date(student.last_low_credit_notification);
@@ -123,10 +122,10 @@ class EmailScheduler {
 
       console.log(`Sending notifications to ${studentsToNotify.length} students...`);
 
-      // Send notifications
+
       const results = await this.sendNotificationsToStudents(studentsToNotify);
       
-      // Update last notification timestamp for successful sends
+
       await this.updateNotificationTimestamps(results.filter(r => r.success));
 
       console.log(`Notification results: ${results.filter(r => r.success).length} sent, ${results.filter(r => !r.success).length} failed`);
@@ -137,7 +136,7 @@ class EmailScheduler {
     }
   }
 
-  // Send notifications to a list of students
+
   async sendNotificationsToStudents(students) {
     const results = [];
 
@@ -153,7 +152,7 @@ class EmailScheduler {
           timestamp: new Date().toISOString()
         });
 
-        // Add delay to avoid rate limiting
+
         await new Promise(resolve => setTimeout(resolve, 300));
       } catch (error) {
         console.error(`Failed to send notification to ${student.full_name}:`, error);
@@ -172,7 +171,7 @@ class EmailScheduler {
     return results;
   }
 
-  // Update last notification timestamp for students
+
   async updateNotificationTimestamps(successfulResults) {
     for (const result of successfulResults) {
       try {
@@ -186,13 +185,13 @@ class EmailScheduler {
     }
   }
 
-  // Manual trigger for immediate check
+
   async triggerImmediateCheck(threshold = this.defaultThreshold) {
     console.log('Triggering immediate notification check...');
     return await this.checkAndSendNotifications(threshold);
   }
 
-  // Get scheduler status
+
   getStatus() {
     if (!this.isRunning) {
       return {
@@ -202,7 +201,7 @@ class EmailScheduler {
       };
     }
 
-    // Calculate next Monday at 10 AM
+
     const now = new Date();
     const nextMonday = new Date(now);
     const daysUntilMonday = (1 - now.getDay() + 7) % 7; // 1 = Monday
@@ -224,7 +223,7 @@ class EmailScheduler {
     };
   }
 
-  // Send test notification
+
   async sendTestNotification(studentEmail, studentName = 'Teste') {
     try {
       const testStudent = {
@@ -243,12 +242,12 @@ class EmailScheduler {
   }
 }
 
-// Create singleton instance
+
 const emailScheduler = new EmailScheduler();
 
 export default emailScheduler;
 
-// Export utility functions
+
 export const startEmailScheduler = (threshold, intervalHours) => {
   return emailScheduler.start(threshold, intervalHours);
 };

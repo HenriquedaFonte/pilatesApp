@@ -31,7 +31,7 @@ const Signup = () => {
     phone: '',
     preferredLanguage: 'pt'
   })
-  const [displayPhone, setDisplayPhone] = useState('') // State to hold the formatted phone for display
+  const [displayPhone, setDisplayPhone] = useState('') 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -47,27 +47,23 @@ const Signup = () => {
   }
 
   const formatPhoneNumber = (value) => {
-    // Remove all non-numeric characters except the leading '+'
     let cleaned = value.startsWith('+') ? '+' + value.slice(1).replace(/\D/g, '') : value.replace(/\D/g, '');
     
-    // Apply formatting for display
     if (cleaned.length === 0) return '';
     if (cleaned.length === 1 && cleaned === '+') return '+';
-    if (cleaned.length <= 2) return cleaned; // e.g., +1
-    if (cleaned.length <= 5) return `${cleaned.slice(0, 2)} ${cleaned.slice(2)}`; // e.g., +1 514
-    if (cleaned.length <= 8) return `${cleaned.slice(0, 2)} ${cleaned.slice(2, 5)} ${cleaned.slice(5)}`; // e.g., +1 514 712
-    return `${cleaned.slice(0, 2)} ${cleaned.slice(2, 5)} ${cleaned.slice(5, 8)} ${cleaned.slice(8, 12)}`; // e.g., +1 514 712 2368
+    if (cleaned.length <= 2) return cleaned; 
+    if (cleaned.length <= 5) return `${cleaned.slice(0, 2)} ${cleaned.slice(2)}`;
+    if (cleaned.length <= 8) return `${cleaned.slice(0, 2)} ${cleaned.slice(2, 5)} ${cleaned.slice(5)}`;
+    return `${cleaned.slice(0, 2)} ${cleaned.slice(2, 5)} ${cleaned.slice(5, 8)} ${cleaned.slice(8, 12)}`;
   };
 
   const handlePhoneChange = (e) => {
     const rawValue = e.target.value;
-    // Store the raw, unformatted number in formData
     const cleanedValue = rawValue.startsWith('+') ? '+' + rawValue.slice(1).replace(/\D/g, '') : rawValue.replace(/\D/g, '');
     setFormData(prev => ({
       ...prev,
       phone: cleanedValue
     }));
-    // Update displayPhone with the formatted version
     setDisplayPhone(formatPhoneNumber(cleanedValue));
   };
 
@@ -83,7 +79,6 @@ const Signup = () => {
     setLoading(true)
     setError('')
 
-    // Validation
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match')
       setLoading(false)
@@ -96,7 +91,6 @@ const Signup = () => {
       return
     }
 
-    // Validate phone number (optional but if provided, must be valid format)
     if (formData.phone && !formData.phone.match(/^\+[1-9]\d{1,14}$/)) {
       setError('Please enter a valid phone number in international format')
       setLoading(false)
@@ -121,7 +115,6 @@ const Signup = () => {
     setSuccess(true)
     setLoading(false)
     
-    // Redirect to login after successful signup
     setTimeout(() => {
       navigate('/login')
     }, 2000)

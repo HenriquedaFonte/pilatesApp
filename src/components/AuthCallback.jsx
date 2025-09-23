@@ -9,11 +9,9 @@ const AuthCallback = () => {
   useEffect(() => {
     if (!loading) {
       if (user) {
-        // If user is authenticated, navigate to the root path.
-        // The App.jsx routing will then handle redirection based on profile completeness and role.
+
         navigate('/', { replace: true })
       } else {
-        // If no user, redirect to login
         navigate('/login', { replace: true })
       }
     }

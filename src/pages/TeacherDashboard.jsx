@@ -16,9 +16,7 @@ import {
   CheckCircle,
   AlertTriangle,
   LogOut,
-  Settings,
   BookOpen,
-  Clock,
   FileText,
   CreditCard,
   Mail
@@ -41,7 +39,6 @@ const TeacherDashboard = () => {
 
   const fetchDashboardStats = async () => {
     try {
-      // Get all students with their credits
       const { data: students, error: studentsError } = await supabase
         .from('profiles')
         .select('individual_credits, duo_credits, group_credits')
@@ -49,14 +46,12 @@ const TeacherDashboard = () => {
 
       if (studentsError) throw studentsError
 
-      // Get total classes
       const { data: classes, error: classesError } = await supabase
         .from('classes')
         .select('id')
 
       if (classesError) throw classesError
 
-      // Get today's scheduled classes
       const today = new Date()
       const dayOfWeek = today.getDay()
 
@@ -67,7 +62,6 @@ const TeacherDashboard = () => {
 
       if (schedulesError) throw schedulesError
 
-      // Count students with less than 4 total credits
       const studentsWithLowBalance = students.filter(
         s =>
           (s.individual_credits || 0) +
@@ -103,7 +97,6 @@ const TeacherDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -127,7 +120,6 @@ const TeacherDashboard = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Welcome Section */}
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
             Teacher Dashboard
@@ -137,7 +129,6 @@ const TeacherDashboard = () => {
           </p>
         </div>
 
-        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -181,21 +172,8 @@ const TeacherDashboard = () => {
             </CardContent>
           </Card>
 
-          {/* <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Total Classes
-              </CardTitle>
-              <BookOpen className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.totalClasses}</div>
-              <p className="text-xs text-muted-foreground">Available classes</p>
-            </CardContent>
-          </Card> */}
         </div>
 
-        {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <Card className="hover:shadow-lg transition-shadow cursor-pointer">
             <Link to="/teacher/students">

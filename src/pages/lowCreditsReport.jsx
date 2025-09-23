@@ -32,7 +32,6 @@ import {
   Search,
   Users,
   CreditCard,
-  Calendar,
   TrendingDown,
   AlertCircle
 } from 'lucide-react'
@@ -45,10 +44,10 @@ const LowCreditsReport = () => {
   const [error, setError] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
   const [thresholds, setThresholds] = useState({
-    individual: 5,
+    individual: 3,
     duo: 3,
     group: 3,
-    total: 10
+    total: 3
   })
 
   const generateReport = useCallback(async () => {
@@ -56,7 +55,6 @@ const LowCreditsReport = () => {
     setError('')
 
     try {
-      // Get low credits report
       const { data: lowCredits, error: lowCreditsError } = await supabase.rpc(
         'get_low_credits_report',
         {
@@ -69,7 +67,6 @@ const LowCreditsReport = () => {
 
       if (lowCreditsError) throw lowCreditsError
 
-      // Get zero credits students
       const { data: zeroCredits, error: zeroCreditsError } = await supabase.rpc(
         'get_zero_credits_students'
       )
@@ -132,15 +129,6 @@ const LowCreditsReport = () => {
     window.URL.revokeObjectURL(url)
   }
 
-  // const getPriorityColor = (priority) => {
-  //   switch (priority) {
-  //     case 'Critical': return 'text-red-600'
-  //     case 'High': return 'text-orange-600'
-  //     case 'Medium': return 'text-yellow-600'
-  //     case 'Low': return 'text-blue-600'
-  //     default: return 'text-gray-600'
-  //   }
-  // }
 
   const getPriorityBadge = priority => {
     switch (priority) {
@@ -196,7 +184,6 @@ const LowCreditsReport = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -223,14 +210,12 @@ const LowCreditsReport = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Error Alert */}
         {error && (
           <Alert variant="destructive" className="mb-6">
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
 
-        {/* Report Filters */}
         <Card className="mb-6">
           <CardHeader>
             <CardTitle>Credit Thresholds</CardTitle>
@@ -310,7 +295,6 @@ const LowCreditsReport = () => {
           </CardContent>
         </Card>
 
-        {/* Summary Statistics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <Card>
             <CardContent className="p-6">
@@ -374,7 +358,6 @@ const LowCreditsReport = () => {
           </Card>
         </div>
 
-        {/* Search Bar */}
         <div className="flex justify-between items-center mb-6">
           <div className="relative">
             <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -388,7 +371,6 @@ const LowCreditsReport = () => {
           </div>
         </div>
 
-        {/* Report Tabs */}
         <Tabs defaultValue="low-credits" className="space-y-4">
           <TabsList>
             <TabsTrigger value="low-credits">
@@ -399,7 +381,6 @@ const LowCreditsReport = () => {
             </TabsTrigger>
           </TabsList>
 
-          {/* Low Credits Tab */}
           <TabsContent value="low-credits">
             <Card>
               <CardHeader>
@@ -520,7 +501,6 @@ const LowCreditsReport = () => {
             </Card>
           </TabsContent>
 
-          {/* Zero Credits Tab */}
           <TabsContent value="zero-credits">
             <Card>
               <CardHeader>

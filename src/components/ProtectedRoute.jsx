@@ -16,13 +16,11 @@ const ProtectedRoute = ({ children, requireRole = null, requireCompleteProfile =
     return <Navigate to="/login" replace />
   }
 
-  // Check if profile completion is required and profile is incomplete
   if (requireCompleteProfile && !isProfileComplete) {
     return <Navigate to="/complete-profile" replace />
   }
 
   if (requireRole && profile?.role !== requireRole) {
-    // Redirect to appropriate dashboard based on user role
     if (profile?.role === 'teacher') {
       return <Navigate to="/teacher/dashboard" replace />
     } else if (profile?.role === 'student') {

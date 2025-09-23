@@ -3,203 +3,182 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { FileText, Calendar, AlertTriangle, Heart, Gift, CheckCircle } from 'lucide-react';
+import { getTemplate } from '../lib/emailTemplates';
 
-const EmailTemplates = ({ onSelectTemplate, selectedTemplateId }) => {
-  const templates = [
-    {
-      id: 'welcome',
-      title: 'Boas-vindas',
-      description: 'Mensagem de boas-vindas para novos alunos',
+const EmailTemplates = ({ onSelectTemplate, selectedTemplateId, language = 'pt' }) => {
+  // Template metadata for UI display
+  const templateMetadata = {
+    welcome: {
+      title: { pt: 'Boas-vindas', en: 'Welcome', fr: 'Bienvenue' },
+      description: {
+        pt: 'Mensagem de boas-vindas para novos alunos',
+        en: 'Welcome message for new students',
+        fr: 'Message de bienvenue pour les nouveaux élèves'
+      },
+      preview: {
+        pt: 'Olá, [Nome]! É com grande alegria que damos as boas-vindas ao Josi Pilates! 🎉',
+        en: 'Hello, [Name]! We are delighted to welcome you to Josi Pilates! 🎉',
+        fr: 'Bonjour, [Nom]! C\'est avec une grande joie que nous vous accueillons chez Josi Pilates! 🎉'
+      },
       icon: Heart,
       color: 'text-pink-600',
-      subject: 'Bem-vindo(a) ao Josi Pilates! 🧘‍♀️',
-      message: `Olá!
-
-É com grande alegria que damos as boas-vindas ao Josi Pilates! 🎉
-
-Estamos muito felizes em tê-lo(a) conosco nesta jornada de bem-estar e saúde. Nossa equipe está preparada para oferecer o melhor atendimento e acompanhamento personalizado.
-
-Próximos passos:
-• Agende sua primeira aula experimental
-• Conheça nossa equipe de instrutores qualificados
-• Tire todas suas dúvidas conosco
-
-Estamos ansiosos para conhecê-lo(a) pessoalmente!
-
-Namastê! 🙏`,
       category: 'welcome'
     },
-    {
-      id: 'class_reminder',
-      title: 'Lembrete de Aula',
-      description: 'Lembrete para aulas agendadas',
+    classReminder: {
+      title: { pt: 'Lembrete de Aula', en: 'Class Reminder', fr: 'Rappel de Cours' },
+      description: {
+        pt: 'Lembrete para aulas agendadas',
+        en: 'Reminder for scheduled classes',
+        fr: 'Rappel pour les cours programmés'
+      },
+      preview: {
+        pt: 'Olá, [Nome]! Este é um lembrete sobre sua aula de Pilates agendada para amanhã.',
+        en: 'Hello, [Name]! This is a reminder about your Pilates class scheduled for tomorrow.',
+        fr: 'Bonjour, [Nom]! Ceci est un rappel concernant votre cours de Pilates prévu pour demain.'
+      },
       icon: Calendar,
       color: 'text-blue-600',
-      subject: 'Lembrete: Sua aula de Pilates é amanhã! 📅',
-      message: `Olá!
-
-Este é um lembrete amigável sobre sua aula de Pilates agendada para amanhã.
-
-Detalhes da aula:
-• Data: [DATA]
-• Horário: [HORÁRIO]
-• Tipo: [TIPO_AULA]
-• Instrutor(a): [INSTRUTOR]
-
-Lembre-se de:
-✓ Chegar 10 minutos antes
-✓ Trazer uma toalha
-✓ Usar roupas confortáveis
-✓ Hidratar-se bem
-
-Mal podemos esperar para vê-lo(a) na aula!`,
       category: 'reminder'
     },
-    {
-      id: 'low_credits_gentle',
-      title: 'Saldo Baixo (Gentil)',
-      description: 'Aviso gentil sobre saldo baixo de créditos',
+    lowCreditsGentle: {
+      title: { pt: 'Saldo Baixo (Gentil)', en: 'Low Credits (Gentle)', fr: 'Crédits Faibles (Doux)' },
+      description: {
+        pt: 'Aviso gentil sobre saldo baixo de créditos',
+        en: 'Gentle notice about low credit balance',
+        fr: 'Avis doux sur le solde de crédits faible'
+      },
+      preview: {
+        pt: 'Olá, [Nome]! Esperamos que esteja aproveitando suas aulas. Seus créditos estão acabando.',
+        en: 'Hello, [Name]! We hope you\'re enjoying your classes. Your credits are running low.',
+        fr: 'Bonjour, [Nom]! Nous espérons que vous profitez de vos cours. Vos crédits s\'épuisent.'
+      },
       icon: AlertTriangle,
       color: 'text-orange-600',
-      subject: 'Seus créditos estão acabando - Vamos renovar? 💪',
-      message: `Olá!
-
-Esperamos que você esteja aproveitando suas aulas de Pilates! 
-
-Notamos que seus créditos estão chegando ao fim. Para continuar sua jornada de bem-estar sem interrupções, que tal renovar seu pacote?
-
-Créditos restantes: [CREDITOS]
-
-Benefícios de renovar agora:
-• Continuidade no seu progresso
-• Manutenção da sua rotina saudável
-• Preços especiais para renovação
-
-Entre em contato conosco para renovar ou tire suas dúvidas!
-
-Estamos aqui para apoiar você! 💚`,
       category: 'credits'
     },
-    {
-      id: 'promotion',
-      title: 'Promoção Especial',
-      description: 'Anúncio de promoções e ofertas especiais',
+    promotion: {
+      title: { pt: 'Promoção Especial', en: 'Special Promotion', fr: 'Promotion Spéciale' },
+      description: {
+        pt: 'Anúncio de promoções e ofertas especiais',
+        en: 'Announcement of promotions and special offers',
+        fr: 'Annonce de promotions et offres spéciales'
+      },
+      preview: {
+        pt: 'Olá, [Nome]! Temos uma oferta especial só para você! 🎁 Pacote com desconto.',
+        en: 'Hello, [Name]! We have a special offer just for you! 🎁 Discounted package.',
+        fr: 'Bonjour, [Nom]! Nous avons une offre spéciale rien que pour vous! 🎁 Forfait réduit.'
+      },
       icon: Gift,
       color: 'text-purple-600',
-      subject: 'Oferta Especial: Pacote de Créditos com Desconto! 🎁',
-      message: `Olá!
-
-Temos uma oferta especial só para você! 🎉
-
-🎁 PROMOÇÃO LIMITADA:
-• [DETALHES_PROMOCAO]
-• Válida até: [DATA_LIMITE]
-• Desconto de: [PERCENTUAL]%
-
-Esta é uma oportunidade única para:
-✓ Economizar em seus créditos
-✓ Garantir mais aulas por um preço especial
-✓ Manter sua rotina de exercícios
-
-Não perca esta chance! Entre em contato conosco hoje mesmo.
-
-Aproveite e cuide da sua saúde com economia! 💰`,
       category: 'promotion'
     },
-    {
-      id: 'schedule_change',
-      title: 'Mudança de Horário',
-      description: 'Comunicado sobre alterações de horários',
+    scheduleChange: {
+      title: { pt: 'Mudança de Horário', en: 'Schedule Change', fr: 'Changement d\'Horaire' },
+      description: {
+        pt: 'Comunicado sobre alterações de horários',
+        en: 'Notice about schedule changes',
+        fr: 'Avis concernant les changements d\'horaire'
+      },
+      preview: {
+        pt: 'Olá, [Nome]! Precisamos informar sobre uma alteração no horário da sua aula.',
+        en: 'Hello, [Name]! We need to inform you about a change in your class schedule.',
+        fr: 'Bonjour, [Nom]! Nous devons vous informer d\'un changement dans l\'horaire de votre cours.'
+      },
       icon: Calendar,
       color: 'text-red-600',
-      subject: 'Importante: Alteração no horário da sua aula 📅',
-      message: `Olá!
-
-Precisamos informar sobre uma alteração no horário da sua aula.
-
-ALTERAÇÃO:
-• Aula original: [HORARIO_ORIGINAL]
-• Novo horário: [NOVO_HORARIO]
-• Data: [DATA]
-• Motivo: [MOTIVO]
-
-O que fazer:
-✓ Confirme se o novo horário funciona para você
-✓ Entre em contato se precisar reagendar
-✓ Chegue 10 minutos antes no novo horário
-
-Pedimos desculpas por qualquer inconveniente e agradecemos sua compreensão.
-
-Nos vemos na aula! 🧘‍♀️`,
       category: 'schedule'
     },
-    {
-      id: 'birthday',
-      title: 'Parabéns - Aniversário',
-      description: 'Mensagem de parabéns para aniversariantes',
+    birthday: {
+      title: { pt: 'Parabéns - Aniversário', en: 'Happy Birthday', fr: 'Joyeux Anniversaire' },
+      description: {
+        pt: 'Mensagem de parabéns para aniversariantes',
+        en: 'Birthday congratulations message',
+        fr: 'Message d\'anniversaire'
+      },
+      preview: {
+        pt: 'Parabéns, [Nome]! 🎂 Hoje é um dia muito especial - seu aniversário!',
+        en: 'Happy Birthday, [Name]! 🎂 Today is a very special day - your birthday!',
+        fr: 'Joyeux Anniversaire, [Nom]! 🎂 Aujourd\'hui est un jour très spécial - votre anniversaire!'
+      },
       icon: Gift,
       color: 'text-pink-600',
-      subject: 'Parabéns pelo seu aniversário! 🎂🎉',
-      message: `Parabéns! 🎉
-
-Hoje é um dia muito especial - seu aniversário! 🎂
-
-Toda a equipe do Josi Pilates deseja:
-• Muita saúde e felicidade
-• Conquistas e realizações
-• Momentos de paz e bem-estar
-• Muito amor e alegria
-
-Como presente, preparamos uma surpresa especial para você! Entre em contato conosco para descobrir.
-
-Que este novo ano de vida seja repleto de movimento, equilíbrio e muita energia positiva!
-
-Feliz aniversário! 🎈✨`,
       category: 'special'
     },
-    {
-      id: 'feedback_request',
-      title: 'Solicitação de Feedback',
-      description: 'Pedido de avaliação e sugestões',
+    feedbackRequest: {
+      title: { pt: 'Solicitação de Feedback', en: 'Feedback Request', fr: 'Demande de Retour' },
+      description: {
+        pt: 'Pedido de avaliação e sugestões',
+        en: 'Request for evaluation and suggestions',
+        fr: 'Demande d\'évaluation et de suggestions'
+      },
+      preview: {
+        pt: 'Olá, [Nome]! Sua opinião é muito importante para nós. Como tem sido sua experiência?',
+        en: 'Hello, [Name]! Your opinion is very important to us. How has your experience been?',
+        fr: 'Bonjour, [Nom]! Votre avis est très important pour nous. Comment s\'est passée votre expérience?'
+      },
       icon: FileText,
       color: 'text-green-600',
-      subject: 'Sua opinião é muito importante para nós! 💭',
-      message: `Olá!
-
-Esperamos que você esteja amando suas aulas de Pilates conosco! 
-
-Sua opinião é fundamental para continuarmos melhorando nossos serviços. Gostaríamos muito de saber:
-
-📝 Como tem sido sua experiência?
-📝 O que você mais gosta nas aulas?
-📝 Há algo que podemos melhorar?
-📝 Recomendaria nosso studio para amigos?
-
-Suas sugestões nos ajudam a:
-• Aprimorar nossos serviços
-• Criar novas modalidades
-• Melhorar o atendimento
-• Proporcionar a melhor experiência
-
-Responda este e-mail ou fale conosco pessoalmente. Sua opinião faz toda a diferença!
-
-Obrigado por fazer parte da família Josi Pilates! 💚`,
       category: 'feedback'
     }
-  ];
+  };
+
+  // Generate templates array from metadata and emailTemplates data
+  const templates = Object.keys(templateMetadata).map(templateKey => {
+    const metadata = templateMetadata[templateKey];
+    const templateData = getTemplate(templateKey, language);
+
+    return {
+      id: templateKey,
+      title: metadata.title[language] || metadata.title.pt,
+      description: metadata.description[language] || metadata.description.pt,
+      icon: metadata.icon,
+      color: metadata.color,
+      subject: templateData.subject,
+      message: metadata.preview[language] || metadata.preview.pt,
+      category: metadata.category
+    };
+  });
 
   const getCategoryBadge = (category) => {
     const categoryMap = {
-      welcome: { label: 'Boas-vindas', variant: 'default' },
-      reminder: { label: 'Lembrete', variant: 'secondary' },
-      credits: { label: 'Créditos', variant: 'destructive' },
-      promotion: { label: 'Promoção', variant: 'default' },
-      schedule: { label: 'Horário', variant: 'outline' },
-      special: { label: 'Especial', variant: 'default' },
-      feedback: { label: 'Feedback', variant: 'secondary' }
+      welcome: {
+        pt: { label: 'Boas-vindas', variant: 'default' },
+        en: { label: 'Welcome', variant: 'default' },
+        fr: { label: 'Bienvenue', variant: 'default' }
+      },
+      reminder: {
+        pt: { label: 'Lembrete', variant: 'secondary' },
+        en: { label: 'Reminder', variant: 'secondary' },
+        fr: { label: 'Rappel', variant: 'secondary' }
+      },
+      credits: {
+        pt: { label: 'Créditos', variant: 'destructive' },
+        en: { label: 'Credits', variant: 'destructive' },
+        fr: { label: 'Crédits', variant: 'destructive' }
+      },
+      promotion: {
+        pt: { label: 'Promoção', variant: 'default' },
+        en: { label: 'Promotion', variant: 'default' },
+        fr: { label: 'Promotion', variant: 'default' }
+      },
+      schedule: {
+        pt: { label: 'Horário', variant: 'outline' },
+        en: { label: 'Schedule', variant: 'outline' },
+        fr: { label: 'Horaire', variant: 'outline' }
+      },
+      special: {
+        pt: { label: 'Especial', variant: 'default' },
+        en: { label: 'Special', variant: 'default' },
+        fr: { label: 'Spécial', variant: 'default' }
+      },
+      feedback: {
+        pt: { label: 'Feedback', variant: 'secondary' },
+        en: { label: 'Feedback', variant: 'secondary' },
+        fr: { label: 'Retour', variant: 'secondary' }
+      }
     };
-    
-    const config = categoryMap[category] || { label: category, variant: 'outline' };
+
+    const config = categoryMap[category]?.[language] || categoryMap[category]?.pt || { label: category, variant: 'outline' };
     return <Badge variant={config.variant}>{config.label}</Badge>;
   };
 
@@ -258,12 +237,34 @@ Obrigado por fazer parte da família Josi Pilates! 💚`,
       </div>
       
       <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-        <h4 className="font-medium text-blue-900 mb-2">💡 Dicas para usar os templates:</h4>
+        <h4 className="font-medium text-blue-900 mb-2">
+          {language === 'en' ? '💡 Tips for using templates:' :
+           language === 'fr' ? '💡 Conseils pour utiliser les modèles:' :
+           '💡 Dicas para usar os templates:'}
+        </h4>
         <ul className="text-sm text-blue-800 space-y-1">
-          <li>• Personalize as mensagens com informações específicas dos alunos</li>
-          <li>• Substitua os campos entre [COLCHETES] pelas informações reais</li>
-          <li>• Adapte o tom da mensagem conforme necessário</li>
-          <li>• Sempre revise antes de enviar</li>
+          {language === 'en' ? (
+            <>
+              <li>• Personalize messages with specific student information</li>
+              <li>• Replace fields in [BRACKETS] with real information</li>
+              <li>• Adapt the message tone as needed</li>
+              <li>• Always review before sending</li>
+            </>
+          ) : language === 'fr' ? (
+            <>
+              <li>• Personnalisez les messages avec des informations spécifiques sur les élèves</li>
+              <li>• Remplacez les champs entre [CROCHETS] par les informations réelles</li>
+              <li>• Adoptez le ton du message selon les besoins</li>
+              <li>• Toujours vérifier avant d'envoyer</li>
+            </>
+          ) : (
+            <>
+              <li>• Personalize as mensagens com informações específicas dos alunos</li>
+              <li>• Substitua os campos entre [COLCHETES] pelas informações reais</li>
+              <li>• Adapte o tom da mensagem conforme necessário</li>
+              <li>• Sempre revise antes de enviar</li>
+            </>
+          )}
         </ul>
       </div>
     </div>

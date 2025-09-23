@@ -37,7 +37,6 @@ import {
   FileText,
   Download,
   Search,
-  Filter,
   Users,
   TrendingUp,
   TrendingDown
@@ -47,7 +46,7 @@ const AttendanceReport = () => {
   const { profile, signOut } = useAuth()
   const [startDate, setStartDate] = useState(
     new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-  ) // 30 days ago
+  ) 
   const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0])
   const [reportData, setReportData] = useState([])
   const [loading, setLoading] = useState(false)
@@ -189,7 +188,6 @@ const AttendanceReport = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -216,14 +214,12 @@ const AttendanceReport = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Error Alert */}
         {error && (
           <Alert variant="destructive" className="mb-6">
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
 
-        {/* Report Filters */}
         <Card className="mb-6">
           <CardHeader>
             <CardTitle>Report Filters</CardTitle>
@@ -286,7 +282,6 @@ const AttendanceReport = () => {
           </CardContent>
         </Card>
 
-        {/* Summary Statistics */}
         {reportData.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             <Card>
@@ -352,7 +347,6 @@ const AttendanceReport = () => {
           </div>
         )}
 
-        {/* Report Actions */}
         {reportData.length > 0 && (
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center space-x-4">
@@ -374,7 +368,6 @@ const AttendanceReport = () => {
           </div>
         )}
 
-        {/* Report Table */}
         {reportData.length > 0 ? (
           <Card>
             <CardHeader>

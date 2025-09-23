@@ -15,8 +15,6 @@ import {
   LogOut,
   ArrowLeft,
   History,
-  CheckCircle,
-  XCircle,
   Calendar
 } from 'lucide-react'
 import Logo from '../components/Logo'
@@ -36,7 +34,6 @@ const StudentHistory = () => {
 
   const fetchHistory = async studentId => {
     try {
-      // Fetch attendance history
       const { data: attendanceData, error: attendanceError } = await supabase
         .from('attendance')
         .select(
@@ -47,7 +44,6 @@ const StudentHistory = () => {
 
       if (attendanceError) throw attendanceError
 
-      // Fetch balance history
       const { data: balanceData, error: balanceError } = await supabase
         .from('balance_history')
         .select('*')
@@ -103,7 +99,6 @@ const StudentHistory = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -130,14 +125,12 @@ const StudentHistory = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Alerts */}
         {error && (
           <Alert variant="destructive" className="mb-6">
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
 
-        {/* Attendance History */}
         <Card className="mb-8">
           <CardHeader>
             <CardTitle>Attendance History</CardTitle>
@@ -187,7 +180,6 @@ const StudentHistory = () => {
           </CardContent>
         </Card>
 
-        {/* Balance History */}
         <Card>
           <CardHeader>
             <CardTitle>Balance History</CardTitle>

@@ -19,7 +19,6 @@ const Login = () => {
   const { signIn, signInWithGoogle, user, profile, isProfileComplete } = useAuth()
   const navigate = useNavigate()
 
-  // Redirect authenticated users
   useEffect(() => {
     if (user && profile && !loading && !googleLoading) {
       if (!isProfileComplete) {
@@ -45,7 +44,6 @@ const Login = () => {
       return
     }
 
-    // Navigation will be handled by the auth state change
     setLoading(false)
   }
 
@@ -61,7 +59,6 @@ const Login = () => {
       return
     }
 
-    // OAuth redirect will handle the rest
     setGoogleLoading(false)
   }
 

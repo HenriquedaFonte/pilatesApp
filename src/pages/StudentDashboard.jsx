@@ -28,7 +28,6 @@ const StudentDashboard = () => {
 
   const fetchStudentData = useCallback(async () => {
     try {
-      // Get student's enrolled classes
       const { data: enrolledClasses, error: classesError } = await supabase
         .from('student_class_link')
         .select(
@@ -51,7 +50,6 @@ const StudentDashboard = () => {
 
       if (classesError) throw classesError
 
-      // Get recent balance history
       const { data: history, error: historyError } = await supabase
         .from('balance_history')
         .select('*')
@@ -99,11 +97,6 @@ const StudentDashboard = () => {
     })
   }
 
-  // const getBalanceColor = (balance) => {
-  //   if (balance <= 2) return 'text-red-600'
-  //   if (balance <= 5) return 'text-orange-600'
-  //   return 'text-green-600'
-  // }
 
   const getBalanceIcon = balance => {
     if (balance <= 2) return <AlertTriangle className="h-5 w-5 text-red-600" />
@@ -120,7 +113,6 @@ const StudentDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -144,7 +136,6 @@ const StudentDashboard = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Welcome Section */}
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
             Student Dashboard
@@ -152,7 +143,6 @@ const StudentDashboard = () => {
           <p className="text-gray-600">Track your pilates journey</p>
         </div>
 
-        {/* Class Balance Card */}
         <div className="mb-8">
           <Card className="bg-primary text-primary-foreground">
             <CardHeader>
@@ -175,7 +165,6 @@ const StudentDashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* My Classes */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
@@ -216,7 +205,6 @@ const StudentDashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Recent Activity */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
@@ -270,7 +258,6 @@ const StudentDashboard = () => {
           </Card>
         </div>
 
-        {/* Quick Actions */}
         <div className="mt-8">
           <Card>
             <CardHeader>

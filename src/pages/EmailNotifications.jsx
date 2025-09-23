@@ -14,8 +14,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Switch } from '@/components/ui/switch';
-import { MessageCircle } from 'lucide-react'; 
 import { 
   Loader2, 
   Send, 
@@ -25,7 +23,6 @@ import {
   Activity,
   LogOut,
   Mail,
-  Calendar,
   Filter,
   CheckCircle,
   XCircle,
@@ -40,8 +37,7 @@ const EmailNotifications = () => {
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
   const [message, setMessage] = useState('');
-  const [messageType, setMessageType] = useState('info'); // 'info', 'success', 'error'
-  // Form state
+  const [messageType, setMessageType] = useState('info'); 
   const [emailSubject, setEmailSubject] = useState('');
   const [emailMessage, setEmailMessage] = useState('');
   const [filterType, setFilterType] = useState('all');
@@ -51,12 +47,10 @@ const EmailNotifications = () => {
   const [lowCreditsThreshold, setLowCreditsThreshold] = useState(3);
   const [senderName, setSenderName] = useState(profile?.full_name || 'Professora');
   const [selectedTemplateId, setSelectedTemplateId] = useState(null);
+  const [previewLanguage, setPreviewLanguage] = useState('pt');
 
-  // Email history
   const [emailHistory, setEmailHistory] = useState([]);
-  //const [showHistory, setShowHistory] = useState(false);
 
-  // Load data on component mount
   useEffect(() => {
     loadData();
     loadEmailHistory();
@@ -65,7 +59,6 @@ const EmailNotifications = () => {
   const loadData = async () => {
     setLoading(true);
     try {
-      // Load students with their credits
       const { data: studentsData, error: studentsError } = await supabase
         .from('profiles')
         .select(`
@@ -83,13 +76,11 @@ const EmailNotifications = () => {
 
       if (studentsError) throw studentsError;
 
-      // Calculate total credits for each student
       const studentsWithTotalCredits = (studentsData || []).map(student => ({
         ...student,
         totalCredits: (student.individual_credits || 0) + (student.duo_credits || 0) + (student.group_credits || 0)
       }));
 
-      // Load classes
       const { data: classesData, error: classesError } = await supabase
         .from('classes')
         .select('id, name, type')
@@ -117,7 +108,6 @@ const EmailNotifications = () => {
 
       if (error) throw error;
 
-      // Group notifications by batch (same timestamp and subject)
       const groupedHistory = {};
       notifications.forEach(notification => {
         const key = `${notification.subject}_${new Date(notification.created_at).getTime()}`;
@@ -156,7 +146,6 @@ const EmailNotifications = () => {
     }
   };
 
-  // Filter students based on selected criteria
   const getFilteredStudents = () => {
     let filtered = [...students];
 
@@ -169,9 +158,7 @@ const EmailNotifications = () => {
         break;
       case 'class':
         if (selectedClass) {
-          // For now, return all students since we'd need enrollment data
-          // In a real implementation, you'd join with enrollments table
-          filtered = students; // This would be filtered by actual class enrollment
+          filtered = students; 
         }
         break;
       case 'registration_day':
@@ -186,14 +173,12 @@ const EmailNotifications = () => {
         filtered = students.filter(student => selectedStudents.includes(student.id));
         break;
       default:
-        // 'all' - return all students
         break;
     }
 
     return filtered;
   };
 
-  // Send low credits notifications
   const sendLowCreditsNotifications = async () => {
     setSending(true);
     setMessage('');
@@ -215,7 +200,6 @@ const EmailNotifications = () => {
         try {
           await emailService.sendLowCreditsNotification(student, student.totalCredits);
 
-          // Log successful email to database
           await supabase.rpc('log_email_notification', {
             p_student_id: student.id,
             p_email_type: 'low_credits',
@@ -235,7 +219,6 @@ const EmailNotifications = () => {
         } catch (error) {
           console.error(`Error sending email to ${student.full_name}:`, error);
 
-          // Log failed email to database
           await supabase.rpc('log_email_notification', {
             p_student_id: student.id,
             p_email_type: 'low_credits',
@@ -255,7 +238,6 @@ const EmailNotifications = () => {
           failCount++;
         }
 
-        // Add small delay between emails
         await new Promise(resolve => setTimeout(resolve, 200));
       }
 
@@ -263,7 +245,6 @@ const EmailNotifications = () => {
       setMessage(`Notificações enviadas: ${successCount} sucessos, ${failCount} falhas.`);
       setMessageType(failCount === 0 ? 'success' : 'error');
 
-      // Reload email history to show the new entries
       await loadEmailHistory();
     } catch (error) {
       console.error('Error sending notifications:', error);
@@ -274,7 +255,6 @@ const EmailNotifications = () => {
     }
   };
 
-  // Send custom email
   const sendCustomEmail = async () => {
     if (!emailSubject.trim() || !emailMessage.trim()) {
       setMessage('Por favor, preencha o assunto e a mensagem do e-mail.');
@@ -301,7 +281,6 @@ const EmailNotifications = () => {
         senderName
       );
 
-      // Log each email result to database
       for (let i = 0; i < results.length; i++) {
         const result = results[i];
         const student = targetStudents[i];
@@ -329,10 +308,8 @@ const EmailNotifications = () => {
       setMessage(`E-mail enviado: ${successCount} sucessos, ${failCount} falhas.`);
       setMessageType(failCount === 0 ? 'success' : 'error');
 
-      // Reload email history to show the new entries
       await loadEmailHistory();
 
-      // Clear form on success
       if (failCount === 0) {
         setEmailSubject('');
         setEmailMessage('');
@@ -346,7 +323,6 @@ const EmailNotifications = () => {
     }
   };
 
-  // Handle template selection
   const handleTemplateSelection = (template) => {
     setSelectedTemplateId(template.id);
     setEmailSubject(template.subject);
@@ -362,16 +338,13 @@ const EmailNotifications = () => {
     );
   };
 
-  // Select all filtered students
   const selectAllFiltered = () => {
     const filteredStudents = getFilteredStudents();
     const allSelected = filteredStudents.every(student => selectedStudents.includes(student.id));
     
     if (allSelected) {
-      // Deselect all filtered students
       setSelectedStudents(prev => prev.filter(id => !filteredStudents.some(s => s.id === id)));
     } else {
-      // Select all filtered students
       const newSelections = filteredStudents.map(s => s.id);
       setSelectedStudents(prev => [...new Set([...prev, ...newSelections])]);
     }
@@ -390,7 +363,6 @@ const EmailNotifications = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -413,7 +385,6 @@ const EmailNotifications = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Alert Messages */}
         {message && (
           <Alert variant={messageType === 'error' ? 'destructive' : 'default'} className="mb-6">
             {messageType === 'success' && <CheckCircle className="h-4 w-4" />}
@@ -423,7 +394,6 @@ const EmailNotifications = () => {
           </Alert>
         )}
 
-        {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <Card>
             <CardContent className="p-6">
@@ -478,7 +448,6 @@ const EmailNotifications = () => {
           </Card>
         </div>
 
-        {/* Main Content Tabs */}
         <Tabs defaultValue="notifications" className="space-y-4">
           <TabsList>
             <TabsTrigger value="notifications">
@@ -499,7 +468,6 @@ const EmailNotifications = () => {
             </TabsTrigger>
           </TabsList>
 
-          {/* Low Credits Notifications Tab */}
           <TabsContent value="notifications">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card>
@@ -549,7 +517,6 @@ const EmailNotifications = () => {
                 </CardContent>
               </Card>
 
-              {/* Preview of students with low credits */}
               <Card>
                 <CardHeader>
                   <CardTitle>Alunos com Saldo Baixo</CardTitle>
@@ -582,7 +549,6 @@ const EmailNotifications = () => {
             </div>
           </TabsContent>
 
-          {/* Custom Email Tab */}
           <TabsContent value="custom">
             <Card>
               <CardHeader>
@@ -595,7 +561,6 @@ const EmailNotifications = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* Sender Name */}
                 <div>
                   <Label htmlFor="sender-name">Nome do remetente:</Label>
                   <Input
@@ -606,7 +571,6 @@ const EmailNotifications = () => {
                   />
                 </div>
 
-                {/* Filter Options */}
                 <div className="space-y-4">
                   <div>
                     <Label htmlFor="filter-type">Filtrar alunos por:</Label>
@@ -694,7 +658,6 @@ const EmailNotifications = () => {
                   )}
                 </div>
 
-                {/* Preview filtered students */}
                 <div className="bg-gray-50 p-3 rounded border">
                   <div className="flex items-center gap-2 mb-2">
                     <Filter className="h-4 w-4" />
@@ -710,7 +673,6 @@ const EmailNotifications = () => {
                   )}
                 </div>
 
-                {/* Email content */}
                 <div className="space-y-4">
                   <div>
                     <Label htmlFor="email-subject">Assunto do e-mail:</Label>
@@ -755,7 +717,6 @@ const EmailNotifications = () => {
             </Card>
           </TabsContent>
 
-          {/* Templates Tab */}
           <TabsContent value="templates">
             <Card>
               <CardHeader>
@@ -768,15 +729,28 @@ const EmailNotifications = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
+                <div className="mb-4">
+                  <Label htmlFor="preview-language">Idioma dos templates:</Label>
+                  <Select value={previewLanguage} onValueChange={setPreviewLanguage}>
+                    <SelectTrigger className="w-48">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pt">🇧🇷 Português</SelectItem>
+                      <SelectItem value="en">🇺🇸 English</SelectItem>
+                      <SelectItem value="fr">🇫🇷 Français</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 <EmailTemplates
                   onSelectTemplate={handleTemplateSelection}
                   selectedTemplateId={selectedTemplateId}
+                  language={previewLanguage}
                 />
               </CardContent>
             </Card>
           </TabsContent>
 
-          {/* Email History Tab */}
           <TabsContent value="history">
             <Card>
               <CardHeader>

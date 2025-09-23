@@ -75,7 +75,6 @@ const TeacherCheckIn = () => {
     const dayOfWeek = new Date(year, month - 1, day).getDay()
 
     try {
-      // Get schedules for the day
       const { data: schedules, error: schedulesError } = await supabase
         .from('class_schedules')
         .select('id, start_time, end_time, classes(name)')
@@ -90,7 +89,6 @@ const TeacherCheckIn = () => {
 
       const scheduleIds = schedules.map(s => s.id)
 
-      // Get students enrolled in these schedules
       const { data: studentLinks, error: studentLinksError } = await supabase
         .from('student_class_link')
         .select(
@@ -100,7 +98,6 @@ const TeacherCheckIn = () => {
 
       if (studentLinksError) throw studentLinksError
 
-      // Get students with fixed class days for this day
       const { data: fixedDayStudents, error: fixedDayError } = await supabase
         .from('profiles')
         .select(
@@ -111,7 +108,6 @@ const TeacherCheckIn = () => {
 
       if (fixedDayError) throw fixedDayError
 
-      // Get attendance records for the date
 const { data: attendanceRecords, error: attendanceError } = await supabase
   .from('check_ins')
   .select('student_id, schedule_id, status, credit_type')
@@ -119,10 +115,8 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
 
       if (attendanceError) throw attendanceError
 
-      // Combine enrolled students and fixed day students
       const allStudentsForDay = new Map()
 
-      // Add enrolled students
       studentLinks.forEach(link => {
         const schedule = schedules.find(s => s.id === link.class_schedule_id)
         const attendance = attendanceRecords.find(
@@ -147,15 +141,12 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
         })
       })
 
-      // Add fixed day students (if not already enrolled)
       fixedDayStudents.forEach(student => {
-        // Check if student is already in enrolled list
         const existingEnrollment = Array.from(allStudentsForDay.values()).find(
           s => s.student_id === student.id
         )
 
         if (!existingEnrollment && schedules.length > 0) {
-          // Add to first available schedule for the day
           const firstSchedule = schedules[0]
           const attendance = attendanceRecords.find(
             att => att.student_id === student.id
@@ -211,7 +202,6 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
     setSuccess('')
 
     try {
-      // Get the class ID from the schedule
       const { data: schedule, error: scheduleError } = await supabase
         .from('class_schedules')
         .select('class_id')
@@ -231,7 +221,6 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
 
       if (error) throw error
 
-      // Deduz créditos apenas para present e absent_unnotified
       setScheduledStudents(prevStudents =>
         prevStudents.map(student =>
           student.student_id === studentId && student.schedule_id === scheduleId
@@ -254,13 +243,11 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
                   creditType === 'group'
                     ? Math.max(0, student.group_credits - 1)
                     : student.group_credits
-                // Não deduz créditos se status for 'absent_notified'
               }
             : student
         )
       )
 
-      // Remove o aluno da lista após marcar a presença/falta
       setScheduledStudents(prevStudents =>
         prevStudents.filter(
           student =>
@@ -272,7 +259,6 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
       )
 
       setSuccess('Attendance marked successfully!')
-      // fetchScheduledStudents(selectedDate) // opcional
     } catch (error) {
       setError('Error marking attendance: ' + error.message)
     }
@@ -283,7 +269,6 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
     setSuccess('')
 
     try {
-      // Get the class ID from the schedule
       const { data: schedule, error: scheduleError } = await supabase
         .from('class_schedules')
         .select('class_id, classes(name), start_time, end_time')
@@ -292,14 +277,12 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
 
       if (scheduleError) throw scheduleError
 
-      // Find the student
       const student = allStudents.find(s => s.id === studentId)
       if (!student) {
         setError('Student not found')
         return
       }
 
-      // Add student to scheduled list
       const newStudent = {
         student_id: studentId,
         full_name: student.full_name,
@@ -378,7 +361,6 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 py-4 sm:py-0">
@@ -405,7 +387,6 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Alerts */}
         {error && (
           <Alert variant="destructive" className="mb-6">
             <AlertDescription>{error}</AlertDescription>
@@ -417,7 +398,6 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
           </Alert>
         )}
 
-        {/* Date Selector */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div className="w-full sm:w-auto">
             <Label
@@ -443,7 +423,6 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
           </Button>
         </div>
 
-        {/* Scheduled Students List */}
         <Card>
           <CardHeader>
             <CardTitle>
@@ -507,7 +486,6 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
                         {formatTime(student.end_time)})
                       </p>
 
-                      {/* Credit Balances */}
                       <div className="flex flex-wrap gap-2 mt-2">
                         <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
                           Individual: {student.individual_credits}
@@ -530,7 +508,6 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
                       )}
                     </div>
 
-                    {/* Status and Actions */}
                     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-2">
                       <span
                         className={`font-medium text-sm lg:text-base ${getStatusColor(
@@ -638,7 +615,6 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
         </Card>
       </div>
 
-      {/* Add Student Dialog */}
       <Dialog
         open={isAddStudentDialogOpen}
         onOpenChange={setIsAddStudentDialogOpen}

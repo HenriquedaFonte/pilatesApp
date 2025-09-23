@@ -7,7 +7,6 @@ export const useEmailNotifications = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Load students with their credit information
   const loadStudents = async () => {
     setLoading(true);
     setError(null);
@@ -30,7 +29,6 @@ export const useEmailNotifications = () => {
 
       if (fetchError) throw fetchError;
 
-      // Calculate total credits for each student
       const studentsWithTotalCredits = (data || []).map(student => ({
         ...student,
         totalCredits: (student.individual_credits || 0) + (student.duo_credits || 0) + (student.group_credits || 0)
@@ -47,22 +45,18 @@ export const useEmailNotifications = () => {
     }
   };
 
-  // Get students with low credits
   const getStudentsWithLowCredits = (threshold = 5) => {
     return students.filter(student => student.totalCredits <= threshold);
   };
 
-  // Get students with zero credits
   const getStudentsWithZeroCredits = () => {
     return students.filter(student => student.totalCredits === 0);
   };
 
-  // Send low credits notification to a single student
   const sendLowCreditsNotification = async (student) => {
     try {
       const result = await emailService.sendLowCreditsNotification(student, student.totalCredits);
       
-      // Log the email in the database (optional)
       await logEmailSent({
         student_id: student.id,
         email_type: 'low_credits',
@@ -74,7 +68,6 @@ export const useEmailNotifications = () => {
     } catch (error) {
       console.error(`Error sending low credits notification to ${student.full_name}:`, error);
       
-      // Log the failed email (optional)
       await logEmailSent({
         student_id: student.id,
         email_type: 'low_credits',
@@ -87,7 +80,6 @@ export const useEmailNotifications = () => {
     }
   };
 
-  // Send low credits notifications to multiple students
   const sendBulkLowCreditsNotifications = async (studentsToNotify) => {
     const results = [];
     
@@ -99,19 +91,16 @@ export const useEmailNotifications = () => {
         ...result
       });
       
-      // Add delay to avoid rate limiting
       await new Promise(resolve => setTimeout(resolve, 200));
     }
     
     return results;
   };
 
-  // Send custom email to selected students
   const sendCustomEmail = async (students, subject, message, senderName = 'Professora') => {
     try {
       const results = await emailService.sendCustomNotification(students, subject, message, senderName);
       
-      // Log emails in the database (optional)
       for (const student of students) {
         await logEmailSent({
           student_id: student.id,
@@ -128,7 +117,6 @@ export const useEmailNotifications = () => {
     }
   };
 
-  // Log email sent to database (optional feature)
   const logEmailSent = async (emailData) => {
     try {
       const { error } = await supabase
@@ -146,7 +134,6 @@ export const useEmailNotifications = () => {
     }
   };
 
-  // Check if automatic notifications should be sent
   const checkAndSendAutomaticNotifications = async (threshold = 5) => {
     try {
       const lowCreditsStudents = getStudentsWithLowCredits(threshold);
@@ -155,8 +142,6 @@ export const useEmailNotifications = () => {
         return { message: 'No students with low credits found', count: 0 };
       }
 
-      // Check if we've already sent notifications recently (optional)
-      // This would require a more sophisticated tracking system
       
       const results = await sendBulkLowCreditsNotifications(lowCreditsStudents);
       const successCount = results.filter(r => r.success).length;
@@ -172,7 +157,6 @@ export const useEmailNotifications = () => {
     }
   };
 
-  // Filter students by registration day
   const filterStudentsByRegistrationDay = (dayOfWeek) => {
     return students.filter(student => {
       const registrationDay = new Date(student.created_at).getDay();
@@ -180,11 +164,8 @@ export const useEmailNotifications = () => {
     });
   };
 
-  // Filter students by class (would need enrollment data)
   const filterStudentsByClass = async (classId) => {
     try {
-      // This would require joining with an enrollments table
-      // For now, return all students as a placeholder
       const { data, error } = await supabase
         .from('enrollments')
         .select('student_id')
@@ -192,7 +173,7 @@ export const useEmailNotifications = () => {
 
       if (error) {
         console.error('Error filtering by class:', error);
-        return students; // Return all students if error
+        return students; 
       }
 
       const enrolledStudentIds = data.map(enrollment => enrollment.student_id);
@@ -203,7 +184,6 @@ export const useEmailNotifications = () => {
     }
   };
 
-  // Initialize hook
   useEffect(() => {
     loadStudents();
   }, []);

@@ -38,8 +38,6 @@ import {
   Search,
   ArrowLeft,
   Users,
-  AlertTriangle,
-  CheckCircle,
   Calendar,
   Clock
 } from 'lucide-react'
@@ -63,7 +61,7 @@ const TeacherStudents = () => {
     email: '',
     password: '',
     fullName: '',
-    role: 'student' // Default to student
+    role: 'student' 
   })
 
   const [balanceChange, setBalanceChange] = useState({
@@ -107,13 +105,6 @@ const TeacherStudents = () => {
 
       if (studentsError) throw studentsError
 
-      // Get classes and schedules
-      // const { data: classesData, error: classesError } = await supabase
-      //   .from('classes')
-      //   .select('*')
-      //   .order('name')
-
-      // if (classesError) throw classesError
 
       const { data: schedulesData, error: schedulesError } = await supabase
         .from('class_schedules')
@@ -123,7 +114,6 @@ const TeacherStudents = () => {
       if (schedulesError) throw schedulesError
 
       setStudents(studentsData || [])
-      // setClasses(classesData || [])
       setSchedules(schedulesData || [])
     } catch (error) {
       setError('Error fetching data: ' + error.message)
@@ -154,7 +144,6 @@ const TeacherStudents = () => {
 
       if (error) throw error
 
-      // Reset form and close dialog
       setBalanceChange({
         amount: '',
         description: '',
@@ -165,7 +154,6 @@ const TeacherStudents = () => {
       setSelectedStudent(null)
       setSuccess('Balance updated successfully!')
 
-      // Refresh data from database to ensure persistence
       await fetchData()
     } catch (error) {
       setError('Error updating balance: ' + error.message)
@@ -204,12 +192,9 @@ const TeacherStudents = () => {
     setSuccess('')
 
     try {
-      // Call a secure backend function (e.g., Supabase Edge Function) to create the user
-      // This function will use the service_role key to set user_metadata
       const response = await fetch(
         'https://kezfpyhsejhjcvlbmejq.supabase.co/functions/v1/create-user',
         {
-          // This endpoint needs to be created as a Supabase Edge Function
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -239,7 +224,7 @@ const TeacherStudents = () => {
     setSuccess('')
 
     try {
-      // Supondo que você tenha um estado selectedFixedDays (array de inteiros)
+
       const { error } = await supabase
         .from('profiles')
         .update({ fixed_class_days: selectedFixedDays.map(Number) })
@@ -270,10 +255,7 @@ const TeacherStudents = () => {
     return 'text-green-600'
   }
 
-  // const getBalanceIcon = (balance) => {
-  //   if (balance <= 2) return <AlertTriangle className="h-4 w-4 text-red-600" />
-  //   return <CheckCircle className="h-4 w-4 text-green-600" />
-  // }
+
 
   const getBalanceBadge = balance => {
     if (balance < 3) return <Badge variant="destructive">Low</Badge>
@@ -318,7 +300,7 @@ const TeacherStudents = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
+
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -345,7 +327,7 @@ const TeacherStudents = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Alerts */}
+
         {error && (
           <Alert variant="destructive" className="mb-6">
             <AlertDescription>{error}</AlertDescription>
@@ -357,7 +339,7 @@ const TeacherStudents = () => {
           </Alert>
         )}
 
-        {/* Header Section */}
+
         <div className="flex justify-between items-center mb-8">
           <div>
             <h2 className="text-3xl font-bold text-gray-900">Students</h2>
@@ -454,7 +436,7 @@ const TeacherStudents = () => {
           </Dialog>
         </div>
 
-        {/* Search */}
+
         <div className="mb-6">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -467,7 +449,7 @@ const TeacherStudents = () => {
           </div>
         </div>
 
-        {/* Students Grid */}
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredStudents.map(student => {
             const totalBalance = getTotalBalance(student)
@@ -574,7 +556,7 @@ const TeacherStudents = () => {
           </Card>
         )}
 
-        {/* Balance Change Dialog */}
+
         <Dialog
           open={isBalanceDialogOpen}
           onOpenChange={setIsBalanceDialogOpen}
@@ -681,7 +663,7 @@ const TeacherStudents = () => {
           </DialogContent>
         </Dialog>
 
-        {/* Enroll Student Dialog */}
+
         <Dialog open={isEnrollDialogOpen} onOpenChange={setIsEnrollDialogOpen}>
           <DialogContent>
             <DialogHeader>
@@ -737,7 +719,7 @@ const TeacherStudents = () => {
           </DialogContent>
         </Dialog>
 
-        {/* Fixed Class Days Dialog - Removed functionality as column does not exist */}
+
         <Dialog
           open={isFixedDaysDialogOpen}
           onOpenChange={setIsFixedDaysDialogOpen}

@@ -180,7 +180,6 @@ const CreditHistoryReport = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -207,7 +206,6 @@ const CreditHistoryReport = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Error Alert */}
         {error && (
           <Alert variant="destructive" className="mb-6">
             <AlertDescription>{error}</AlertDescription>
@@ -235,7 +233,6 @@ const CreditHistoryReport = () => {
             </div>
           </CardHeader>
           <CardContent>
-            {/* Date Range Filter */}
             <div className="flex flex-col md:flex-row gap-4 mb-6 items-end">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -276,7 +273,6 @@ const CreditHistoryReport = () => {
                 />
               </div>
             </div>
-            {/* Table */}
             {!hasSearched ? (
               <div className="py-8 text-center text-gray-500">
                 Select a date range and click "Search" to view results.
