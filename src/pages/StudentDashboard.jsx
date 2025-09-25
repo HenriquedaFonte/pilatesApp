@@ -234,8 +234,8 @@ const StudentDashboard = () => {
       })
     })
 
-    // Sort by date (most recent first)
-    return activities.sort((a, b) => new Date(b.date) - new Date(a.date))
+    // Sort by date (most recent first) and limit to last 4 records
+    return activities.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 4)
   }
 
 
@@ -446,8 +446,13 @@ const StudentDashboard = () => {
                           </>
                         )}
                         {activity.type === 'attendance' && activity.credit_type && (
-                          <p className="text-xs text-red-600 font-medium">
-                            {t('attendance.used')}: -1 {activity.credit_type}
+                          <p className={`text-xs font-medium ${
+                            activity.status === 'absent_notified' ? 'text-green-600' : 'text-red-600'
+                          }`}>
+                            {activity.status === 'absent_notified'
+                              ? t('attendance.notUsed')
+                              : `${t('attendance.used')}: -1 ${activity.credit_type}`
+                            }
                           </p>
                         )}
                       </div>

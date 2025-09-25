@@ -69,6 +69,7 @@
   },
   "attendance": {
     "used": "Usado",
+    "notUsed": "Crédito não usado",
     "balance": "Saldo"
   }
 }

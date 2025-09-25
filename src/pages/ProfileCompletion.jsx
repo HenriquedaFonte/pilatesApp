@@ -112,32 +112,29 @@ const ProfileCompletion = () => {
     }
 
     try {
-      const { data, error } = await supabase.functions.invoke('create-user', {
-        body: {
-          oauth_user_id: user.id,
-          email: user.email,
-          fullName: undefined, // Don't update name, keep existing
+      // Update profile directly using Supabase table update
+      const { data: updateData, error: updateError } = await supabase
+        .from('profiles')
+        .update({
           phone: formData.phone || null,
-          preferredLanguage: formData.preferredLanguage,
-          update_existing: true
-        }
-      })
+          preferred_language: formData.preferredLanguage,
+          profile_complete: true
+        })
+        .eq('id', user.id)
+        .select()
+        .single()
 
-      if (error) {
-        throw error
-      }
-
-      if (data.error) {
-        throw new Error(data.error)
+      if (updateError) {
+        throw updateError
       }
 
       // Update local profile state
-      updateProfile(data.profile)
+      updateProfile(updateData)
 
       setSuccess(true)
-      
+
       setTimeout(() => {
-        if (data.profile?.role === 'teacher') {
+        if (updateData?.role === 'teacher') {
           navigate('/teacher')
         } else {
           navigate('/student')
