@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
+import emailService from '../lib/emailService'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -143,6 +144,35 @@ const TeacherStudents = () => {
       })
 
       if (error) throw error
+
+      // Send credit addition email if credits were added (positive amount)
+      if (amount > 0) {
+        try {
+          // Get updated balance to include in email
+          const { data: updatedStudent } = await supabase
+            .from('profiles')
+            .select('individual_credits, duo_credits, group_credits')
+            .eq('id', selectedStudent.id)
+            .single()
+
+          if (updatedStudent) {
+            const currentBalance = (updatedStudent.individual_credits || 0) +
+                                 (updatedStudent.duo_credits || 0) +
+                                 (updatedStudent.group_credits || 0)
+
+            await emailService.sendCreditAdditionEmail(
+              selectedStudent,
+              amount,
+              balanceChange.creditType,
+              balanceChange.description,
+              currentBalance
+            )
+          }
+        } catch (emailError) {
+          console.error('Error sending credit addition email:', emailError)
+          // Don't fail the balance update if email fails
+        }
+      }
 
       setBalanceChange({
         amount: '',

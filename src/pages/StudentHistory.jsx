@@ -105,19 +105,19 @@ const StudentHistory = () => {
 
   const getDayName = dayOfWeek => {
     const days = [
-      'Sunday',
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday'
+      t('common.sunday', 'Sunday'),
+      t('common.monday', 'Monday'),
+      t('common.tuesday', 'Tuesday'),
+      t('common.wednesday', 'Wednesday'),
+      t('common.thursday', 'Thursday'),
+      t('common.friday', 'Friday'),
+      t('common.saturday', 'Saturday')
     ]
     return days[dayOfWeek]
   }
 
   const formatTime = time => {
-    return new Date(`2000-01-01T${time}`).toLocaleTimeString('en-US', {
+    return new Date(`2000-01-01T${time}`).toLocaleTimeString(i18n.language === 'pt' ? 'pt-BR' : i18n.language === 'fr' ? 'fr-CA' : 'en-US', {
       hour: 'numeric',
       minute: '2-digit',
       hour12: true
@@ -193,12 +193,12 @@ const StudentHistory = () => {
                       <p className="text-sm text-gray-600">
                         <Calendar className="inline-block h-4 w-4 mr-1" />
                         {new Date(record.class_date).toLocaleDateString(
-                          'en-US',
+                          i18n.language === 'pt' ? 'pt-BR' : i18n.language === 'fr' ? 'fr-CA' : 'en-US',
                           { year: 'numeric', month: 'long', day: 'numeric' }
                         )}
                       </p>
                       <p className="text-xs text-gray-500">
-                        {getDayName(record.class_schedules.day_of_week)} at{' '}
+                        {getDayName(record.class_schedules.day_of_week)} {t('history.atTime')}{' '}
                         {formatTime(record.class_schedules.start_time)} -{' '}
                         {formatTime(record.class_schedules.end_time)}
                       </p>
@@ -206,7 +206,7 @@ const StudentHistory = () => {
                     <span
                       className={`font-medium ${getStatusColor(record.status)}`}
                     >
-                      {record.status.replace(/_/g, ' ').toUpperCase()}
+                      {t(`status.${record.status}`, record.status.replace(/_/g, ' ').toUpperCase())}
                     </span>
                   </div>
                 ))}
@@ -236,14 +236,14 @@ const StudentHistory = () => {
                     <div>
                       <h3 className="font-semibold text-lg">
                         {record.change_amount > 0 ? '+' : ''}
-                        {record.change_amount} classes
+                        {record.change_amount} {t('history.classesText')}
                       </h3>
                       <p className="text-sm text-gray-600">
                         {record.description}
                       </p>
                       <p className="text-xs text-gray-500">
                         {new Date(record.created_at).toLocaleDateString(
-                          'en-US',
+                          i18n.language === 'pt' ? 'pt-BR' : i18n.language === 'fr' ? 'fr-CA' : 'en-US',
                           {
                             year: 'numeric',
                             month: 'long',
@@ -261,7 +261,7 @@ const StudentHistory = () => {
                           : 'text-red-600'
                       }`}
                     >
-                      Balance: {record.new_balance}
+                      {t('history.balanceText')}: {record.new_balance}
                     </span>
                   </div>
                 ))}

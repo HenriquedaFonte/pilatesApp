@@ -11,6 +11,7 @@ import TeacherStudents from './pages/TeacherStudents'
 import TeacherCheckIn from './pages/TeacherCheckIn'
 import StudentDashboard from './pages/StudentDashboard'
 import StudentHistory from './pages/StudentHistory'
+import StudioRules from './pages/StudioRules'
 import StudentProfile from './pages/StudentProfile'
 import AttendanceReport from './pages/AttendanceReport'
 import LowCreditsReport from './pages/lowCreditsReport'
@@ -144,6 +145,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute requireRole="student" requireCompleteProfile={true}>
             <StudentHistory />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/student/rules"
+        element={
+          <ProtectedRoute requireRole="student" requireCompleteProfile={true}>
+            <StudioRules />
           </ProtectedRoute>
         }
       />

@@ -570,6 +570,51 @@ export const emailTemplates = {
       subject: 'Aviso: No tienes créditos restantes - Josi Pilates',
       message: 'Notamos que no tienes créditos disponibles para clases.\n\nPara continuar disfrutando de nuestras clases de Pilates, necesitas adquirir nuevos créditos.\n\n¡Contáctanos para renovar tus créditos y mantener tu rutina de ejercicios!'
     }
+  },
+
+  creditAddition: {
+    pt: {
+      subject: 'Créditos Adicionados - Josi Pilates',
+      greeting: (name) => `Olá, ${name}!`,
+      creditAdded: 'Créditos adicionados à sua conta!',
+      creditDetails: (amount, type, description) => `Foram adicionados ${amount} crédito(s) do tipo ${type} à sua conta. Descrição: ${description}`,
+      currentBalance: (balance) => `Seu saldo atual é de ${balance} crédito(s).`,
+      studioRulesTitle: 'Regras do Studio Josi Pilates',
+      classDuration: 'As aulas têm duração de 55 minutos.',
+      arrivalRule: 'Pedimos gentilmente que chegue pelo menos 5 minutos antes do início da sua aula. Este tempo extra permite uma transição tranquila entre as aulas.',
+      cancellationRule: 'Além disso, gostaríamos de lembrá-lo da nossa política de cancelamento de 24 horas para todas as aulas. Se precisar cancelar ou reagendar sua sessão, certifique-se de nos informar pelo menos 24 horas antes. O não cumprimento desta política resultará na perda da aula.',
+      excitement: 'Mal podemos esperar para vê-lo no studio!',
+      signature: 'Atenciosamente,',
+      teamName: 'Equipe Josi Pilates'
+    },
+    en: {
+      subject: 'Credits Added - Josi Pilates',
+      greeting: (name) => `Hello, ${name}!`,
+      creditAdded: 'Credits have been added to your account!',
+      creditDetails: (amount, type, description) => `${amount} ${type} credit(s) have been added to your account. Description: ${description}`,
+      currentBalance: (balance) => `Your current balance is ${balance} credit(s).`,
+      studioRulesTitle: 'Josi Pilates Studio Rules',
+      classDuration: 'Classes have a duration of 55 minutes.',
+      arrivalRule: 'We kindly ask that you arrive at least 5 minutes before the start of your class. This extra time allows for a smooth setup in the studio.',
+      cancellationRule: 'Additionally, we\'d like to remind you of our 24-hour cancellation policy for all classes. If you need to cancel or reschedule your session, please make sure to inform us at least 24 hours in advance. Failure to comply with this policy will result in the loss of the class.',
+      excitement: 'We look forward to seeing you in the studio!',
+      signature: 'Best regards,',
+      teamName: 'Josi Pilates Team'
+    },
+    fr: {
+      subject: 'Crédits Ajoutés - Josi Pilates',
+      greeting: (name) => `Bonjour, ${name}!`,
+      creditAdded: 'Des crédits ont été ajoutés à votre compte!',
+      creditDetails: (amount, type, description) => `${amount} crédit(s) ${type} ont été ajoutés à votre compte. Description: ${description}`,
+      currentBalance: (balance) => `Votre solde actuel est de ${balance} crédit(s).`,
+      studioRulesTitle: 'Règles du Studio Josi Pilates',
+      classDuration: 'Les cours ont une durée de 55 minutes.',
+      arrivalRule: 'Nous vous demandons gentiment d\'arriver au moins 5 minutes avant le début de votre cours. Ce temps supplémentaire permet une configuration fluide dans le studio.',
+      cancellationRule: 'De plus, nous aimerions vous rappeler notre politique d\'annulation de 24 heures pour tous les cours. Si vous devez annuler ou reprogrammer votre séance, veuillez nous en informer au moins 24 heures à l\'avance. Le non-respect de cette politique entraînera la perte du cours.',
+      excitement: 'Nous avons hâte de vous voir au studio!',
+      signature: 'Cordialement,',
+      teamName: 'Équipe Josi Pilates'
+    }
   }
 };
 

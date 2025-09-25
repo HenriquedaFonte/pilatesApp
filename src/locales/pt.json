@@ -27,7 +27,11 @@
     "balanceHistory": "Histórico de Saldo",
     "balanceHistoryDesc": "Mudanças no seu saldo de aulas",
     "noAttendance": "Nenhum registro de presença ainda.",
-    "noBalance": "Nenhum registro de histórico de saldo ainda."
+    "noBalance": "Nenhum registro de histórico de saldo ainda.",
+    "classesText": "aulas",
+    "balanceText": "Saldo",
+    "atTime": "às",
+    "toTime": "às"
   },
   "profile": {
     "title": "Meu Perfil",
@@ -65,11 +69,50 @@
     "save": "Salvar",
     "loading": "Carregando...",
     "error": "Erro",
-    "success": "Sucesso"
+    "success": "Sucesso",
+    "sunday": "Domingo",
+    "monday": "Segunda-feira",
+    "tuesday": "Terça-feira",
+    "wednesday": "Quarta-feira",
+    "thursday": "Quinta-feira",
+    "friday": "Sexta-feira",
+    "saturday": "Sábado"
   },
   "attendance": {
     "used": "Usado",
     "notUsed": "Crédito não usado",
     "balance": "Saldo"
+  },
+  "rules": {
+    "title": "Regras do Studio Josi Pilates",
+    "subtitle": "Por favor, leia e siga estas diretrizes importantes",
+    "classDuration": "Duração da Aula",
+    "classDurationDesc": "Informações sobre a duração e estrutura da aula",
+    "classDurationText": "As aulas têm duração de 55 minutos",
+    "arrivalPolicy": "Política de Chegada",
+    "arrivalPolicyDesc": "Quando chegar para suas aulas",
+    "arrivalPolicyText": "Chegue pelo menos 5 minutos antes do início da aula",
+    "arrivalPolicyDetail": "Pedimos gentilmente que você chegue pelo menos 5 minutos antes do início da sua aula. Este tempo extra permite uma transição tranquila entre as classes e garante que você possa começar sua sessão confortavelmente.",
+    "cancellationPolicy": "Política de Cancelamento",
+    "cancellationPolicyDesc": "Informações importantes sobre cancelar ou reagendar aulas",
+    "cancellationPolicyText": "Política de cancelamento de 24 horas",
+    "cancellationPolicyDetail": "Se precisar cancelar ou reagendar sua sessão, certifique-se de nos informar pelo menos 24 horas antes.",
+    "cancellationWarning": "A não conformidade com esta política resultará na perda da aula.",
+    "additionalGuidelines": "Diretrizes Adicionais",
+    "additionalGuidelinesDesc": "Outras informações importantes para uma ótima experiência",
+    "wearComfortableClothing": "Vista roupas confortáveis",
+    "wearComfortableClothingDesc": "Por favor, use roupas esportivas apropriadas que permitam movimento.",
+    "stayHydrated": "Mantenha-se hidratado",
+    "stayHydratedDesc": "Lembre-se de beber água antes e depois da aula.",
+    "respectSpace": "Respeite o espaço",
+    "respectSpaceDesc": "Por favor, seja consciente dos outros alunos e mantenha um ambiente positivo.",
+    "contactInformation": "Informações de Contato",
+    "contactInformationDesc": "Precisa de ajuda ou tem dúvidas?",
+    "contactIntro": "Se você tiver alguma dúvida sobre estas regras ou precisar de assistência, não hesite em nos contatar:",
+    "whatsapp": "WhatsApp",
+    "email": "E-mail",
+    "studioLocation": "Localização do Studio",
+    "viewOnGoogleMaps": "Ver no Google Maps →",
+    "backToDashboard": "Voltar ao Painel"
   }
 }

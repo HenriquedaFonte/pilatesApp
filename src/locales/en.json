@@ -27,7 +27,11 @@
     "balanceHistory": "Balance History",
     "balanceHistoryDesc": "Changes to your class balance",
     "noAttendance": "No attendance records yet.",
-    "noBalance": "No balance history records yet."
+    "noBalance": "No balance history records yet.",
+    "classesText": "classes",
+    "balanceText": "Balance",
+    "atTime": "at",
+    "toTime": "to"
   },
   "profile": {
     "title": "My Profile",
@@ -65,11 +69,50 @@
     "save": "Save",
     "loading": "Loading...",
     "error": "Error",
-    "success": "Success"
+    "success": "Success",
+    "sunday": "Sunday",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday"
   },
   "attendance": {
     "used": "Used",
     "notUsed": "Credit not used",
     "balance": "Balance"
+  },
+  "rules": {
+    "title": "Josi Pilates Studio Rules",
+    "subtitle": "Please read and follow these important guidelines",
+    "classDuration": "Class Duration",
+    "classDurationDesc": "Information about class length and structure",
+    "classDurationText": "Classes have a duration of 55 minutes",
+    "arrivalPolicy": "Arrival Policy",
+    "arrivalPolicyDesc": "When to arrive for your classes",
+    "arrivalPolicyText": "Arrive at least 5 minutes before class starts",
+    "arrivalPolicyDetail": "We kindly ask that you arrive at least 5 minutes before the start of your class. This extra time allows for a smooth setup in the studio and ensures you can begin your session comfortably.",
+    "cancellationPolicy": "Cancellation Policy",
+    "cancellationPolicyDesc": "Important information about canceling or rescheduling classes",
+    "cancellationPolicyText": "24-hour cancellation policy",
+    "cancellationPolicyDetail": "If you need to cancel or reschedule your session, please make sure to inform us at least 24 hours in advance.",
+    "cancellationWarning": "Failure to comply with this policy will result in the loss of the class.",
+    "additionalGuidelines": "Additional Guidelines",
+    "additionalGuidelinesDesc": "Other important information for a great experience",
+    "wearComfortableClothing": "Wear comfortable clothing",
+    "wearComfortableClothingDesc": "Please wear appropriate athletic wear that allows for movement.",
+    "stayHydrated": "Stay hydrated",
+    "stayHydratedDesc": "Remember to drink water before and after your class.",
+    "respectSpace": "Respect the space",
+    "respectSpaceDesc": "Please be mindful of other students and maintain a positive environment.",
+    "contactInformation": "Contact Information",
+    "contactInformationDesc": "Need help or have questions?",
+    "contactIntro": "If you have any questions about these rules or need assistance, please don't hesitate to contact us:",
+    "whatsapp": "WhatsApp",
+    "email": "Email",
+    "studioLocation": "Studio Location",
+    "viewOnGoogleMaps": "View on Google Maps →",
+    "backToDashboard": "Back to Dashboard"
   }
 }

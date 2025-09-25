@@ -28,7 +28,8 @@ import {
   AlertTriangle,
   CheckCircle,
   XCircle,
-  User
+  User,
+  FileText
 } from 'lucide-react'
 import Logo from '../components/Logo'
 
@@ -470,7 +471,7 @@ const StudentDashboard = () => {
               <CardTitle>{t('dashboard.quickActions')}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Link to="/student/history">
                   <Button variant="outline" className="w-full justify-start">
                     <History className="h-4 w-4 mr-2" />
@@ -481,6 +482,12 @@ const StudentDashboard = () => {
                   <Button variant="outline" className="w-full justify-start">
                     <User className="h-4 w-4 mr-2" />
                     {t('nav.profile')}
+                  </Button>
+                </Link>
+                <Link to="/student/rules">
+                  <Button variant="outline" className="w-full justify-start">
+                    <FileText className="h-4 w-4 mr-2" />
+                    Studio Rules
                   </Button>
                 </Link>
                 {/* <Button

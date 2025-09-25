@@ -45,10 +45,7 @@ const LowCreditsReport = () => {
   const [error, setError] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
   const [thresholds, setThresholds] = useState({
-    individual: 3,
-    duo: 3,
-    group: 3,
-    total: 3
+    total: 2
   })
 
   const generateReport = useCallback(async () => {
@@ -59,9 +56,6 @@ const LowCreditsReport = () => {
       const { data: lowCredits, error: lowCreditsError } = await supabase.rpc(
         'get_low_credits_report',
         {
-          individual_threshold: thresholds.individual,
-          duo_threshold: thresholds.duo,
-          group_threshold: thresholds.group,
           total_threshold: thresholds.total
         }
       )
@@ -114,7 +108,7 @@ const LowCreditsReport = () => {
           row.group_credits || 0,
           row.total_credits || 0,
           `"${(row.total_credits < 0 ? 'Negative' : row.status) || 'No Credits'}"`,
-          `"${(row.total_credits < 0 ? 'Critical' : row.priority_level) || 'Critical'}"`,
+          `"${row.total_credits <= 0 ? 'Critical' : row.total_credits <= 2 ? 'High' : row.total_credits <= 5 ? 'Medium' : 'Low'}"`,
           row.last_attendance_date || 'Never',
           row.days_since_last_attendance || 'N/A'
         ].join(',')
@@ -131,18 +125,15 @@ const LowCreditsReport = () => {
   }
 
 
-  const getPriorityBadge = priority => {
-    switch (priority) {
-      case 'Critical':
-        return { variant: 'destructive', text: 'Critical' }
-      case 'High':
-        return { variant: 'destructive', text: 'High' }
-      case 'Medium':
-        return { variant: 'secondary', text: 'Medium' }
-      case 'Low':
-        return { variant: 'outline', text: 'Low' }
-      default:
-        return { variant: 'destructive', text: 'Critical' }
+  const getPriorityBadge = totalCredits => {
+    if (totalCredits <= 0) {
+      return { variant: 'destructive', text: 'Critical' }
+    } else if (totalCredits <= 2) {
+      return { variant: 'destructive', text: 'High' }
+    } else if (totalCredits <= 5) {
+      return { variant: 'secondary', text: 'Medium' }
+    } else {
+      return { variant: 'outline', text: 'Low' }
     }
   }
 
@@ -166,7 +157,10 @@ const LowCreditsReport = () => {
     return daysArray.map(day => dayNames[day]).join(', ')
   }
 
-  const filteredLowCredits = lowCreditsData.filter(
+  // Filter students with low credits based on total threshold, then apply search filter
+  const allLowCreditsStudents = lowCreditsData.filter(student => student.total_credits <= thresholds.total)
+
+  const filteredLowCredits = allLowCreditsStudents.filter(
     student =>
       student.student_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.student_email.toLowerCase().includes(searchTerm.toLowerCase())
@@ -182,13 +176,19 @@ const LowCreditsReport = () => {
       student.student_email.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const criticalCount =
-    lowCreditsData.filter(s => s.priority_level === 'Critical' || s.total_credits < 0).length +
-    zeroCreditsData.length
-  const highCount = lowCreditsData.filter(
-    s => s.priority_level === 'High'
-  ).length
-  const totalLowCredits = lowCreditsData.length + zeroCreditsData.length
+  // Count students with low credits based on current threshold
+  const lowCreditsStudents = lowCreditsData.filter(s => s.total_credits <= thresholds.total)
+
+  // Critical: students with 0 or negative credits
+  const criticalCount = lowCreditsStudents.filter(s => s.total_credits <= 0).length
+
+  // High priority: includes both high and critical cases (all low credit students)
+  const highCount = lowCreditsStudents.length
+
+  // Total low credits: all students with credits at or below threshold
+  const totalLowCredits = lowCreditsStudents.length
+
+  // Zero credits: students with exactly 0 credits or negative
   const totalZeroCredits = combinedZeroCredits.length
 
   return (
@@ -229,55 +229,13 @@ const LowCreditsReport = () => {
           <CardHeader>
             <CardTitle>Credit Thresholds</CardTitle>
             <CardDescription>
-              Adjust thresholds to define what constitutes "low credits"
+              Adjust the threshold to define what constitutes "low credits" (currently: ≤{thresholds.total} credits)
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <Label htmlFor="individualThreshold">Individual Credits</Label>
-                <Input
-                  id="individualThreshold"
-                  type="number"
-                  value={thresholds.individual}
-                  onChange={e =>
-                    setThresholds({
-                      ...thresholds,
-                      individual: parseInt(e.target.value) || 0
-                    })
-                  }
-                />
-              </div>
-              <div>
-                <Label htmlFor="duoThreshold">Duo Credits</Label>
-                <Input
-                  id="duoThreshold"
-                  type="number"
-                  value={thresholds.duo}
-                  onChange={e =>
-                    setThresholds({
-                      ...thresholds,
-                      duo: parseInt(e.target.value) || 0
-                    })
-                  }
-                />
-              </div>
-              <div>
-                <Label htmlFor="groupThreshold">Group Credits</Label>
-                <Input
-                  id="groupThreshold"
-                  type="number"
-                  value={thresholds.group}
-                  onChange={e =>
-                    setThresholds({
-                      ...thresholds,
-                      group: parseInt(e.target.value) || 0
-                    })
-                  }
-                />
-              </div>
-              <div>
-                <Label htmlFor="totalThreshold">Total Credits</Label>
+                <Label htmlFor="totalThreshold">Total Credits Threshold</Label>
                 <Input
                   id="totalThreshold"
                   type="number"
@@ -290,7 +248,7 @@ const LowCreditsReport = () => {
                   }
                 />
               </div>
-              <div className="flex items-end">
+              <div className="md:col-span-2 flex items-end">
                 <Button
                   onClick={generateReport}
                   disabled={loading}
@@ -383,7 +341,7 @@ const LowCreditsReport = () => {
         <Tabs defaultValue="low-credits" className="space-y-4">
           <TabsList>
             <TabsTrigger value="low-credits">
-              Low Credits ({filteredLowCredits.length})
+              Low Credits ({allLowCreditsStudents.length})
             </TabsTrigger>
             <TabsTrigger value="zero-credits">
               Zero Credits ({totalZeroCredits})
@@ -397,15 +355,15 @@ const LowCreditsReport = () => {
                   <div>
                     <CardTitle>Students with Low Credits</CardTitle>
                     <CardDescription>
-                      Students who have credits below the defined thresholds
+                      Students who have {thresholds.total} or fewer total credits
                     </CardDescription>
                   </div>
                   <Button
                     onClick={() =>
-                      exportToCSV(filteredLowCredits, 'low_credits_report.csv')
+                      exportToCSV(allLowCreditsStudents, 'low_credits_report.csv')
                     }
                     variant="outline"
-                    disabled={filteredLowCredits.length === 0}
+                    disabled={allLowCreditsStudents.length === 0}
                   >
                     <Download className="h-4 w-4 mr-2" />
                     Export CSV
@@ -428,11 +386,8 @@ const LowCreditsReport = () => {
                       </TableHeader>
                       <TableBody>
                         {filteredLowCredits.map(student => {
-                          const isNegative = student.total_credits < 0
                           const statusBadge = getStatusBadge(student.status, student.total_credits)
-                          const priorityBadge = getPriorityBadge(
-                            isNegative ? 'Critical' : student.priority_level
-                          )
+                          const priorityBadge = getPriorityBadge(student.total_credits)
                           return (
                             <TableRow key={student.student_id}>
                               <TableCell>

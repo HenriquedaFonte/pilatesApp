@@ -27,7 +27,11 @@
     "balanceHistory": "Historique de Solde",
     "balanceHistoryDesc": "Changements dans votre solde de cours",
     "noAttendance": "Aucun enregistrement de présence encore.",
-    "noBalance": "Aucun enregistrement d'historique de solde encore."
+    "noBalance": "Aucun enregistrement d'historique de solde encore.",
+    "classesText": "cours",
+    "balanceText": "Solde",
+    "atTime": "à",
+    "toTime": "à"
   },
   "profile": {
     "title": "Mon Profil",
@@ -65,11 +69,50 @@
     "save": "Sauvegarder",
     "loading": "Chargement...",
     "error": "Erreur",
-    "success": "Succès"
+    "success": "Succès",
+    "sunday": "Dimanche",
+    "monday": "Lundi",
+    "tuesday": "Mardi",
+    "wednesday": "Mercredi",
+    "thursday": "Jeudi",
+    "friday": "Vendredi",
+    "saturday": "Samedi"
   },
   "attendance": {
     "used": "Utilisé",
     "notUsed": "Crédit non utilisé",
     "balance": "Solde"
+  },
+  "rules": {
+    "title": "Règles du Studio Josi Pilates",
+    "subtitle": "Veuillez lire et suivre ces directives importantes",
+    "classDuration": "Durée du Cours",
+    "classDurationDesc": "Informations sur la durée et la structure du cours",
+    "classDurationText": "Les cours ont une durée de 55 minutes",
+    "arrivalPolicy": "Politique d'Arrivée",
+    "arrivalPolicyDesc": "Quand arriver pour vos cours",
+    "arrivalPolicyText": "Arrivez au moins 5 minutes avant le début du cours",
+    "arrivalPolicyDetail": "Nous vous demandons gentiment d'arriver au moins 5 minutes avant le début de votre cours. Ce temps supplémentaire permet une configuration fluide dans le studio et assure que vous pouvez commencer votre session confortablement.",
+    "cancellationPolicy": "Politique d'Annulation",
+    "cancellationPolicyDesc": "Informations importantes sur l'annulation ou la reprogrammation des cours",
+    "cancellationPolicyText": "Politique d'annulation de 24 heures",
+    "cancellationPolicyDetail": "Si vous devez annuler ou reprogrammer votre séance, veuillez nous en informer au moins 24 heures à l'avance.",
+    "cancellationWarning": "Le non-respect de cette politique entraînera la perte du cours.",
+    "additionalGuidelines": "Directives Supplémentaires",
+    "additionalGuidelinesDesc": "Autres informations importantes pour une excellente expérience",
+    "wearComfortableClothing": "Portez des vêtements confortables",
+    "wearComfortableClothingDesc": "Veuillez porter des vêtements de sport appropriés qui permettent le mouvement.",
+    "stayHydrated": "Restez hydraté",
+    "stayHydratedDesc": "N'oubliez pas de boire de l'eau avant et après le cours.",
+    "respectSpace": "Respectez l'espace",
+    "respectSpaceDesc": "Veuillez être conscient des autres étudiants et maintenir un environnement positif.",
+    "contactInformation": "Informations de Contact",
+    "contactInformationDesc": "Besoin d'aide ou avez des questions?",
+    "contactIntro": "Si vous avez des questions sur ces règles ou avez besoin d'assistance, n'hésitez pas à nous contacter:",
+    "whatsapp": "WhatsApp",
+    "email": "E-mail",
+    "studioLocation": "Emplacement du Studio",
+    "viewOnGoogleMaps": "Voir sur Google Maps →",
+    "backToDashboard": "Retour au Tableau de Bord"
   }
 }

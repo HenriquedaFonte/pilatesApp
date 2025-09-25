@@ -332,6 +332,108 @@ ${processedTemplate.tagline}
       textContent
     });
   }
+
+  async sendCreditAdditionEmail(student, creditAmount, creditType, description, currentBalance) {
+    const language = await this.getUserLanguage(student.id);
+    const template = getTemplate('creditAddition', language);
+
+    const variables = {
+      amount: creditAmount,
+      type: creditType,
+      description: description,
+      balance: currentBalance,
+      name: student.name || student.full_name
+    };
+
+    const processedTemplate = processTemplate(template, variables);
+
+    const subject = processedTemplate.subject;
+
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>${processedTemplate.creditAdded}</title>
+      </head>
+      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background: linear-gradient(135deg, #01b48d 0%, #017a6b 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+          <div style="display: inline-flex; align-items: center; justify-content: center; gap: 30px;">
+            <img src="https://github.com/HenriquedaFonte/pilatesApp/blob/main/public/logo.jpg" alt="Josi Pilates Logo" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;" />
+            <div style="text-align: left;">
+              <h1 style="color: white; margin: 0; font-size: 28px;">Josi Pilates</h1>
+              <p style="color: #f0f0f0; margin: 5px 0 0 0; font-size: 16px;">Studio de Pilates</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: white; padding: 30px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 10px 10px;">
+          <h2 style="color: #1e293b; margin-top: 0;">${processedTemplate.greeting(student.name || student.full_name)}</h2>
+
+          <div style="background-color: #dcfce7; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="color: #166534; margin-top: 0;">💰 ${processedTemplate.creditAdded}</h3>
+            <p style="margin: 10px 0; font-size: 16px;">${processedTemplate.creditDetails(creditAmount, creditType, description)}</p>
+            <p style="margin: 10px 0; font-weight: bold;">${processedTemplate.currentBalance(currentBalance)}</p>
+          </div>
+
+          <div style="background-color: #f1f5f9; padding: 25px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #3b82f6;">
+            <h4 style="color: #1e293b; margin-top: 0;">${processedTemplate.studioRulesTitle}</h4>
+
+            <div style="margin: 15px 0;">
+              <h5 style="color: #374151; margin: 10px 0;">⏱️ ${processedTemplate.classDuration}</h5>
+            </div>
+
+            <div style="margin: 15px 0;">
+              <h5 style="color: #374151; margin: 10px 0;">⏰ ${processedTemplate.arrivalRule}</h5>
+            </div>
+
+            <div style="margin: 15px 0;">
+              <h5 style="color: #374151; margin: 10px 0;">📅 ${processedTemplate.cancellationRule}</h5>
+            </div>
+          </div>
+
+          <p>${processedTemplate.excitement}</p>
+
+          <hr style="margin: 30px 0; border: none; border-top: 1px solid #e2e8f0;">
+
+          <p style="color: #64748b; font-size: 14px; text-align: center;">
+            <strong>${processedTemplate.signature}</strong><br>
+            ${processedTemplate.teamName}
+          </p>
+        </div>
+      </body>
+      </html>
+    `;
+
+    const textContent = `
+${processedTemplate.greeting(student.name || student.full_name)}
+
+${processedTemplate.creditAdded}
+${processedTemplate.creditDetails(creditAmount, creditType, description)}
+${processedTemplate.currentBalance(currentBalance)}
+
+${processedTemplate.studioRulesTitle}
+
+⏱️ ${processedTemplate.classDuration}
+
+⏰ ${processedTemplate.arrivalRule}
+
+📅 ${processedTemplate.cancellationRule}
+
+${processedTemplate.excitement}
+
+${processedTemplate.signature}
+${processedTemplate.teamName}
+    `;
+
+    return this.sendEmail({
+      to: { email: student.email, name: student.name || student.full_name },
+      subject,
+      htmlContent,
+      textContent
+    });
+  }
 }
 
 export default new EmailService();
