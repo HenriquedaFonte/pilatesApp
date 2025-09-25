@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import { Button } from '@/components/ui/button'
@@ -38,6 +38,7 @@ import {
 
 const LowCreditsReport = () => {
   const { profile, signOut } = useAuth()
+  const navigate = useNavigate()
   const [lowCreditsData, setLowCreditsData] = useState([])
   const [zeroCreditsData, setZeroCreditsData] = useState([])
   const [loading, setLoading] = useState(false)
@@ -112,8 +113,8 @@ const LowCreditsReport = () => {
           row.duo_credits || 0,
           row.group_credits || 0,
           row.total_credits || 0,
-          `"${row.status || 'No Credits'}"`,
-          `"${row.priority_level || 'Critical'}"`,
+          `"${(row.total_credits < 0 ? 'Negative' : row.status) || 'No Credits'}"`,
+          `"${(row.total_credits < 0 ? 'Critical' : row.priority_level) || 'Critical'}"`,
           row.last_attendance_date || 'Never',
           row.days_since_last_attendance || 'N/A'
         ].join(',')
@@ -145,7 +146,10 @@ const LowCreditsReport = () => {
     }
   }
 
-  const getStatusBadge = status => {
+  const getStatusBadge = (status, totalCredits) => {
+    if (totalCredits < 0) {
+      return { variant: 'destructive', text: 'Negative' }
+    }
     switch (status) {
       case 'No Credits':
         return { variant: 'destructive', text: 'No Credits' }
@@ -168,19 +172,24 @@ const LowCreditsReport = () => {
       student.student_email.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const filteredZeroCredits = zeroCreditsData.filter(
+  // Include students with negative balances in zero credits
+  const negativeBalanceStudents = lowCreditsData.filter(student => student.total_credits < 0)
+  const combinedZeroCredits = [...zeroCreditsData, ...negativeBalanceStudents]
+
+  const filteredZeroCredits = combinedZeroCredits.filter(
     student =>
       student.student_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.student_email.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   const criticalCount =
-    lowCreditsData.filter(s => s.priority_level === 'Critical').length +
+    lowCreditsData.filter(s => s.priority_level === 'Critical' || s.total_credits < 0).length +
     zeroCreditsData.length
   const highCount = lowCreditsData.filter(
     s => s.priority_level === 'High'
   ).length
   const totalLowCredits = lowCreditsData.length + zeroCreditsData.length
+  const totalZeroCredits = combinedZeroCredits.length
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -350,7 +359,7 @@ const LowCreditsReport = () => {
                     Zero Credits
                   </p>
                   <p className="text-2xl font-bold text-gray-900">
-                    {zeroCreditsData.length}
+                    {totalZeroCredits}
                   </p>
                 </div>
               </div>
@@ -377,7 +386,7 @@ const LowCreditsReport = () => {
               Low Credits ({filteredLowCredits.length})
             </TabsTrigger>
             <TabsTrigger value="zero-credits">
-              Zero Credits ({filteredZeroCredits.length})
+              Zero Credits ({totalZeroCredits})
             </TabsTrigger>
           </TabsList>
 
@@ -419,9 +428,10 @@ const LowCreditsReport = () => {
                       </TableHeader>
                       <TableBody>
                         {filteredLowCredits.map(student => {
-                          const statusBadge = getStatusBadge(student.status)
+                          const isNegative = student.total_credits < 0
+                          const statusBadge = getStatusBadge(student.status, student.total_credits)
                           const priorityBadge = getPriorityBadge(
-                            student.priority_level
+                            isNegative ? 'Critical' : student.priority_level
                           )
                           return (
                             <TableRow key={student.student_id}>
@@ -572,9 +582,13 @@ const LowCreditsReport = () => {
                               </div>
                             </TableCell>
                             <TableCell>
-                              <Badge variant="destructive">
-                                Contact for Credit Purchase
-                              </Badge>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => navigate(`/teacher/email-notifications?student=${student.student_id}&filter=selected&tab=custom&template=zero_credits`)}
+                              >
+                                Send Email
+                              </Button>
                             </TableCell>
                           </TableRow>
                         ))}

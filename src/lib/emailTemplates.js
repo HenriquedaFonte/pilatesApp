@@ -510,6 +510,66 @@ export const emailTemplates = {
       signature: (senderName) => `Cordialement, ${senderName} - Josi Pilates`,
       tagline: 'Prendre soin de votre bien-être avec soin et professionnalisme'
     }
+  },
+
+  passwordReset: {
+    pt: {
+      subject: 'Redefinição de Senha - Josi Pilates',
+      greeting: (name) => `Olá, ${name}!`,
+      message: 'Recebemos uma solicitação para redefinir sua senha.',
+      instructions: 'Para redefinir sua senha, clique no link abaixo:',
+      resetLink: 'Redefinir Senha',
+      validity: 'Este link é válido por 1 hora.',
+      ignore: 'Se você não solicitou esta redefinição, ignore este e-mail.',
+      support: 'Se precisar de ajuda, entre em contato conosco.',
+      signature: 'Atenciosamente,',
+      teamName: 'Equipe Josi Pilates'
+    },
+    en: {
+      subject: 'Password Reset - Josi Pilates',
+      greeting: (name) => `Hello, ${name}!`,
+      message: 'We received a request to reset your password.',
+      instructions: 'To reset your password, click the link below:',
+      resetLink: 'Reset Password',
+      validity: 'This link is valid for 1 hour.',
+      ignore: 'If you did not request this reset, please ignore this email.',
+      support: 'If you need help, contact us.',
+      signature: 'Best regards,',
+      teamName: 'Josi Pilates Team'
+    },
+    fr: {
+      subject: 'Réinitialisation du Mot de Passe - Josi Pilates',
+      greeting: (name) => `Bonjour, ${name}!`,
+      message: 'Nous avons reçu une demande de réinitialisation de votre mot de passe.',
+      instructions: 'Pour réinitialiser votre mot de passe, cliquez sur le lien ci-dessous:',
+      resetLink: 'Réinitialiser le Mot de Passe',
+      validity: 'Ce lien est valide pendant 1 heure.',
+      ignore: 'Si vous n\'avez pas demandé cette réinitialisation, ignorez cet e-mail.',
+      support: 'Si vous avez besoin d\'aide, contactez-nous.',
+      signature: 'Cordialement,',
+      teamName: 'Équipe Josi Pilates'
+    }
+  },
+
+  zeroCredits: {
+    pt: {
+      id: 'zero_credits',
+      title: 'Sem Créditos - Compra Necessária',
+      subject: 'Aviso: Você não possui créditos - Josi Pilates',
+      message: 'Notamos que você não possui créditos disponíveis para aulas.\n\nPara continuar aproveitando nossas aulas de Pilates, é necessário adquirir novos créditos.\n\nEntre em contato conosco para renovar seus créditos e manter sua rotina de exercícios!'
+    },
+    en: {
+      id: 'zero_credits',
+      title: 'Zero Credits - Purchase Required',
+      subject: 'Notice: You have no credits remaining - Josi Pilates',
+      message: 'We notice that you have no credits available for classes.\n\nTo continue enjoying our Pilates classes, you need to purchase new credits.\n\nContact us to renew your credits and maintain your exercise routine!'
+    },
+    es: {
+      id: 'zero_credits',
+      title: 'Sin Créditos - Compra Requerida',
+      subject: 'Aviso: No tienes créditos restantes - Josi Pilates',
+      message: 'Notamos que no tienes créditos disponibles para clases.\n\nPara continuar disfrutando de nuestras clases de Pilates, necesitas adquirir nuevos créditos.\n\n¡Contáctanos para renovar tus créditos y mantener tu rutina de ejercicios!'
+    }
   }
 };
 

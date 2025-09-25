@@ -1,11 +1,20 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
+import { supabase } from '../lib/supabase'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
 import { Loader2 } from 'lucide-react'
 import Logo from '../components/Logo'
 
@@ -15,6 +24,11 @@ const Login = () => {
   const [loading, setLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
   const [error, setError] = useState('')
+  const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false)
+  const [resetEmail, setResetEmail] = useState('')
+  const [resetLoading, setResetLoading] = useState(false)
+  const [resetError, setResetError] = useState('')
+  const [resetSuccess, setResetSuccess] = useState('')
 
   const { signIn, signInWithGoogle, user, profile, isProfileComplete } = useAuth()
   const navigate = useNavigate()
@@ -23,6 +37,8 @@ const Login = () => {
     if (user && profile && !loading && !googleLoading) {
       if (!isProfileComplete) {
         navigate('/complete-profile', { replace: true })
+      } else if (profile.role === 'student' && !profile.password_changed) {
+        navigate('/change-password', { replace: true })
       } else if (profile.role === 'teacher') {
         navigate('/teacher/dashboard', { replace: true })
       } else if (profile.role === 'student') {
@@ -52,7 +68,7 @@ const Login = () => {
     setError('')
 
     const { error } = await signInWithGoogle()
-    
+
     if (error) {
       setError(error.message)
       setGoogleLoading(false)
@@ -60,6 +76,40 @@ const Login = () => {
     }
 
     setGoogleLoading(false)
+  }
+
+  const handleForgotPassword = async (e) => {
+    e.preventDefault()
+    setResetLoading(true)
+    setResetError('')
+    setResetSuccess('')
+
+    try {
+      // Get user profile to get preferred language
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('preferred_language')
+        .eq('email', resetEmail)
+        .single()
+
+      if (profileError) {
+        throw new Error('User not found')
+      }
+
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      })
+
+      if (error) throw error
+
+      setResetSuccess('Password reset email sent!')
+      setResetEmail('')
+      setTimeout(() => setForgotPasswordOpen(false), 2000)
+    } catch (error) {
+      setResetError(error.message)
+    } finally {
+      setResetLoading(false)
+    }
   }
 
   return (
@@ -106,6 +156,69 @@ const Login = () => {
                 required
                 disabled={loading || googleLoading}
               />
+              <div className="text-right">
+                <Dialog open={forgotPasswordOpen} onOpenChange={setForgotPasswordOpen}>
+                  <DialogTrigger asChild>
+                    <button
+                      type="button"
+                      className="text-sm text-primary hover:underline"
+                    >
+                      Forgot Password?
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Reset Password</DialogTitle>
+                      <DialogDescription>
+                        Enter your email address and we'll send you a link to reset your password.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <form onSubmit={handleForgotPassword} className="space-y-4">
+                      {resetError && (
+                        <Alert variant="destructive">
+                          <AlertDescription>{resetError}</AlertDescription>
+                        </Alert>
+                      )}
+                      {resetSuccess && (
+                        <Alert>
+                          <AlertDescription>{resetSuccess}</AlertDescription>
+                        </Alert>
+                      )}
+                      <div className="space-y-2">
+                        <Label htmlFor="resetEmail">Email</Label>
+                        <Input
+                          id="resetEmail"
+                          type="email"
+                          placeholder="Enter your email"
+                          value={resetEmail}
+                          onChange={(e) => setResetEmail(e.target.value)}
+                          required
+                          disabled={resetLoading}
+                        />
+                      </div>
+                      <div className="flex justify-end space-x-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => setForgotPasswordOpen(false)}
+                        >
+                          Cancel
+                        </Button>
+                        <Button type="submit" disabled={resetLoading}>
+                          {resetLoading ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              Sending...
+                            </>
+                          ) : (
+                            'Send Reset Email'
+                          )}
+                        </Button>
+                      </div>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+              </div>
             </div>
             
             <Button type="submit" className="w-full" disabled={loading || googleLoading}>

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import { Button } from '@/components/ui/button'
@@ -10,20 +10,33 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import {
   Calendar,
   Clock,
   LogOut,
   History,
   AlertTriangle,
-  CheckCircle
+  CheckCircle,
+  XCircle,
+  User
 } from 'lucide-react'
 import Logo from '../components/Logo'
 
 const StudentDashboard = () => {
   const { profile, signOut } = useAuth()
+  const navigate = useNavigate()
   const [myClasses, setMyClasses] = useState([])
   const [recentHistory, setRecentHistory] = useState([])
+  const [recentAttendance, setRecentAttendance] = useState([])
   const [loading, setLoading] = useState(true)
 
   const fetchStudentData = useCallback(async () => {
@@ -59,8 +72,45 @@ const StudentDashboard = () => {
 
       if (historyError) throw historyError
 
+      const { data: attendance, error: attendanceError } = await supabase
+        .from('check_ins')
+        .select(`
+          id,
+          check_in_date,
+          status,
+          credit_type,
+          created_at,
+          schedule_id
+        `)
+        .eq('student_id', profile.id)
+        .order('created_at', { ascending: false })
+        .limit(5)
+
+      if (attendanceError) throw attendanceError
+
+      // Get class schedule info separately to avoid relationship conflicts
+      const scheduleIds = attendance?.map(att => att.schedule_id).filter(Boolean) || []
+      const { data: schedules, error: schedulesError } = await supabase
+        .from('class_schedules')
+        .select(`
+          id,
+          classes (
+            name
+          )
+        `)
+        .in('id', scheduleIds)
+
+      if (schedulesError) throw schedulesError
+
+      // Merge attendance with schedule info
+      const attendanceWithSchedules = attendance?.map(att => ({
+        ...att,
+        class_schedules: schedules?.find(s => s.id === att.schedule_id) || null
+      })) || []
+
       setMyClasses(enrolledClasses || [])
       setRecentHistory(history || [])
+      setRecentAttendance(attendanceWithSchedules)
     } catch (error) {
       console.error('Error fetching student data:', error)
     } finally {
@@ -72,9 +122,11 @@ const StudentDashboard = () => {
     fetchStudentData()
   }, [fetchStudentData])
 
+
   const handleSignOut = async () => {
     await signOut()
   }
+
 
   const getDayName = dayOfWeek => {
     const days = [
@@ -103,6 +155,119 @@ const StudentDashboard = () => {
     return <CheckCircle className="h-5 w-5 text-green-600" />
   }
 
+  const getTotalBalance = () => {
+    return (
+      (profile?.individual_credits || 0) +
+      (profile?.duo_credits || 0) +
+      (profile?.group_credits || 0)
+    )
+  }
+
+  const getCurrentWeekClasses = () => {
+    // For recurring weekly classes, we show all enrolled classes
+    // as they represent the student's weekly schedule
+    return myClasses
+  }
+
+  const getWeekSchedule = () => {
+    const weekClasses = getCurrentWeekClasses()
+    const schedule = {}
+
+    // Group classes by day of week
+    weekClasses.forEach(enrollment => {
+      const day = enrollment.class_schedules.day_of_week
+      if (!schedule[day]) {
+        schedule[day] = []
+      }
+      schedule[day].push(enrollment)
+    })
+
+    return schedule
+  }
+
+  const hasMultipleClassesOrDays = () => {
+    const weekClasses = getCurrentWeekClasses()
+    const uniqueDays = new Set(weekClasses.map(c => c.class_schedules.day_of_week))
+    return weekClasses.length > 1 || uniqueDays.size > 1
+  }
+
+  const getCombinedActivities = () => {
+    const activities = []
+
+    // Add credit changes (exclude attendance-related ones)
+    recentHistory.forEach(record => {
+      // Skip balance records that are automatically created by attendance
+      if (record.change_amount === -1) {
+        return // Skip attendance-related balance changes
+      }
+
+      activities.push({
+        id: `balance-${record.id}`,
+        type: 'balance',
+        date: record.created_at,
+        description: record.description,
+        change_amount: record.change_amount,
+        new_balance: record.new_balance
+      })
+    })
+
+    // Add attendance records with balance info
+    recentAttendance.forEach(record => {
+      activities.push({
+        id: `attendance-${record.id}`,
+        type: 'attendance',
+        date: record.created_at,
+        status: record.status,
+        class_name: record.class_schedules?.classes?.name || 'Unknown Class',
+        credit_type: record.credit_type,
+        check_in_date: record.check_in_date,
+        new_balance: record.new_balance
+      })
+    })
+
+    // Sort by date (most recent first)
+    return activities.sort((a, b) => new Date(b.date) - new Date(a.date))
+  }
+
+  const getAttendanceStatusText = (status) => {
+    switch (status) {
+      case 'present':
+        return 'Present'
+      case 'absent_unnotified':
+        return 'Absent'
+      case 'absent_notified':
+        return 'Justified Absence'
+      default:
+        return 'Unknown'
+    }
+  }
+
+  const getAttendanceStatusColor = (status) => {
+    switch (status) {
+      case 'present':
+        return 'text-green-600'
+      case 'absent_unnotified':
+        return 'text-red-600'
+      case 'absent_notified':
+        return 'text-orange-600'
+      default:
+        return 'text-gray-600'
+    }
+  }
+
+  const getAttendanceIcon = (status) => {
+    switch (status) {
+      case 'present':
+        return <CheckCircle className="h-4 w-4 text-green-600" />
+      case 'absent_unnotified':
+        return <XCircle className="h-4 w-4 text-red-600" />
+      case 'absent_notified':
+        return <XCircle className="h-4 w-4 text-orange-600" />
+      default:
+        return <Clock className="h-4 w-4 text-gray-600" />
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -123,7 +288,10 @@ const StudentDashboard = () => {
               </h1>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-700">
+              <span
+                className="text-sm text-gray-700 cursor-pointer hover:text-gray-900"
+                onClick={() => navigate('/student/profile')}
+              >
                 Welcome, {profile?.full_name}
               </span>
               <Button variant="outline" size="sm" onClick={handleSignOut}>
@@ -147,22 +315,23 @@ const StudentDashboard = () => {
           <Card className="bg-primary text-primary-foreground">
             <CardHeader>
               <CardTitle className="flex items-center text-primary-foreground">
-                {getBalanceIcon(profile?.class_balance)}
+                {getBalanceIcon(getTotalBalance())}
                 <span className="ml-2">Class Balance</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-4xl font-bold mb-2">
-                {profile?.class_balance || 0}
+                {getTotalBalance()}
               </div>
               <p className="text-primary-foreground opacity-90">
-                {profile?.class_balance <= 2
+                {getTotalBalance() <= 2
                   ? 'Low balance - Consider purchasing more classes'
                   : 'Classes remaining'}
               </p>
             </CardContent>
           </Card>
         </div>
+
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <Card>
@@ -172,7 +341,7 @@ const StudentDashboard = () => {
                 My Weekly Schedule
               </CardTitle>
               <CardDescription>
-                Your enrolled classes for the week
+                Your weekly class schedule
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -183,19 +352,22 @@ const StudentDashboard = () => {
                 </p>
               ) : (
                 <div className="space-y-3">
-                  {myClasses.map(enrollment => (
-                    <div
-                      key={enrollment.id}
-                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                    >
+                  {Object.entries(getWeekSchedule()).map(([dayOfWeek, classes]) => (
+                    <div key={dayOfWeek} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                       <div>
                         <h4 className="font-medium">
-                          {enrollment.class_schedules.classes.name}
+                          {getDayName(parseInt(dayOfWeek))}
                         </h4>
-                        <p className="text-sm text-gray-600">
-                          {getDayName(enrollment.class_schedules.day_of_week)}{' '}
-                          at {formatTime(enrollment.class_schedules.start_time)}
-                        </p>
+                        {classes.map(enrollment => (
+                          <div key={enrollment.id} className="text-sm text-gray-600">
+                            {enrollment.class_schedules.classes.name} at {formatTime(enrollment.class_schedules.start_time)}
+                            {hasMultipleClassesOrDays() && enrollment.class_schedules.classes.description && (
+                              <span className="block text-xs text-gray-500 mt-1">
+                                {enrollment.class_schedules.classes.description}
+                              </span>
+                            )}
+                          </div>
+                        ))}
                       </div>
                       <Clock className="h-4 w-4 text-gray-400" />
                     </div>
@@ -216,39 +388,72 @@ const StudentDashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {recentHistory.length === 0 ? (
+              {getCombinedActivities().length === 0 ? (
                 <p className="text-gray-500 text-center py-4">
                   No recent activity
                 </p>
               ) : (
                 <div className="space-y-3">
-                  {recentHistory.map(record => (
+                  {getCombinedActivities().map(activity => (
                     <div
-                      key={record.id}
+                      key={activity.id}
                       className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
                     >
-                      <div>
-                        <p className="text-sm font-medium">
-                          {record.description}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {new Date(record.created_at).toLocaleDateString()}
-                        </p>
+                      <div className="flex items-center space-x-3">
+                        {activity.type === 'attendance' && getAttendanceIcon(activity.status)}
+                        {activity.type === 'balance' && (
+                          <div className={`w-4 h-4 rounded-full ${
+                            activity.change_amount > 0 ? 'bg-green-500' : 'bg-red-500'
+                          }`} />
+                        )}
+                        <div>
+                          {activity.type === 'attendance' ? (
+                            <>
+                              <p className="text-sm font-medium">
+                                {activity.class_name}
+                              </p>
+                              <p className={`text-xs font-medium ${getAttendanceStatusColor(activity.status)}`}>
+                                {getAttendanceStatusText(activity.status)}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                {new Date(activity.check_in_date).toLocaleDateString()}
+                              </p>
+                            </>
+                          ) : (
+                            <>
+                              <p className="text-sm font-medium">
+                                {activity.description}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                {new Date(activity.date).toLocaleDateString()}
+                              </p>
+                            </>
+                          )}
+                        </div>
                       </div>
                       <div className="text-right">
-                        <span
-                          className={`font-medium ${
-                            record.change_amount > 0
-                              ? 'text-green-600'
-                              : 'text-red-600'
-                          }`}
-                        >
-                          {record.change_amount > 0 ? '+' : ''}
-                          {record.change_amount}
-                        </span>
-                        <p className="text-xs text-gray-500">
-                          Balance: {record.new_balance}
-                        </p>
+                        {activity.type === 'balance' && (
+                          <>
+                            <span
+                              className={`font-medium ${
+                                activity.change_amount > 0
+                                  ? 'text-green-600'
+                                  : 'text-red-600'
+                              }`}
+                            >
+                              {activity.change_amount > 0 ? '+' : ''}
+                              {activity.change_amount}
+                            </span>
+                            <p className="text-xs text-gray-500">
+                              Balance: {activity.new_balance}
+                            </p>
+                          </>
+                        )}
+                        {activity.type === 'attendance' && activity.credit_type && (
+                          <p className="text-xs text-red-600 font-medium">
+                            Used: -1 {activity.credit_type}
+                          </p>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -271,14 +476,20 @@ const StudentDashboard = () => {
                     View Full History
                   </Button>
                 </Link>
-                <Button
+                <Link to="/student/profile">
+                  <Button variant="outline" className="w-full justify-start">
+                    <User className="h-4 w-4 mr-2" />
+                    Profile
+                  </Button>
+                </Link>
+                {/* <Button
                   variant="outline"
                   className="w-full justify-start"
                   disabled
                 >
                   <Calendar className="h-4 w-4 mr-2" />
                   Book a Class (Coming Soon)
-                </Button>
+                </Button> */}
               </div>
             </CardContent>
           </Card>

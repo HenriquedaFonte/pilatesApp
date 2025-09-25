@@ -59,9 +59,9 @@ const TeacherStudents = () => {
   const [success, setSuccess] = useState('')
   const [newUser, setNewUser] = useState({
     email: '',
-    password: '',
     fullName: '',
-    role: 'student' 
+    role: 'student',
+    preferredLanguage: 'pt'
   })
 
   const [balanceChange, setBalanceChange] = useState({
@@ -192,14 +192,26 @@ const TeacherStudents = () => {
     setSuccess('')
 
     try {
+      const userData = {
+        ...newUser,
+        password: '000000'
+      }
+
+      // Get the current session token
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        throw new Error('No authentication session found')
+      }
+
       const response = await fetch(
         'https://kezfpyhsejhjcvlbmejq.supabase.co/functions/v1/create-user',
         {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session.access_token}`
           },
-          body: JSON.stringify(newUser)
+          body: JSON.stringify(userData)
         }
       )
 
@@ -210,7 +222,7 @@ const TeacherStudents = () => {
       }
 
       setSuccess('User created successfully!')
-      setNewUser({ email: '', password: '', fullName: '', role: 'student' })
+      setNewUser({ email: '', fullName: '', role: 'student', preferredLanguage: 'pt' })
       setIsCreateUserDialogOpen(false)
       fetchData() // Refresh student list
     } catch (error) {
@@ -379,19 +391,6 @@ const TeacherStudents = () => {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    value={newUser.password}
-                    onChange={e =>
-                      setNewUser({ ...newUser, password: e.target.value })
-                    }
-                    placeholder="********"
-                    required
-                  />
-                </div>
-                <div>
                   <Label htmlFor="fullName">Full Name</Label>
                   <Input
                     id="fullName"
@@ -418,6 +417,24 @@ const TeacherStudents = () => {
                     <SelectContent>
                       <SelectItem value="student">Student</SelectItem>
                       <SelectItem value="teacher">Teacher</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="preferredLanguage">Preferred Language</Label>
+                  <Select
+                    value={newUser.preferredLanguage}
+                    onValueChange={value =>
+                      setNewUser({ ...newUser, preferredLanguage: value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select language" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pt">Portuguese</SelectItem>
+                      <SelectItem value="en">English</SelectItem>
+                      <SelectItem value="fr">French</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

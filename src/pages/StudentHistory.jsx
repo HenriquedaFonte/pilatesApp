@@ -34,15 +34,41 @@ const StudentHistory = () => {
 
   const fetchHistory = async studentId => {
     try {
+      // Query attendance/check_ins with schedule_id only
       const { data: attendanceData, error: attendanceError } = await supabase
-        .from('attendance')
+        .from('check_ins')
         .select(
-          '*, classes(name), class_schedules(start_time, end_time, day_of_week)'
+          'id, student_id, check_in_date, status, credit_type, schedule_id'
         )
         .eq('student_id', studentId)
-        .order('class_date', { ascending: false })
+        .order('check_in_date', { ascending: false })
 
       if (attendanceError) throw attendanceError
+
+      // Get schedule and class info separately
+      const scheduleIds = attendanceData?.map(att => att.schedule_id).filter(Boolean) || []
+      const { data: schedulesData, error: schedulesError } = await supabase
+        .from('class_schedules')
+        .select(`
+          id,
+          day_of_week,
+          start_time,
+          end_time,
+          classes (
+            name
+          )
+        `)
+        .in('id', scheduleIds)
+
+      if (schedulesError) throw schedulesError
+
+      // Merge attendance with schedule/class info
+      const attendanceWithDetails = attendanceData?.map(att => ({
+        ...att,
+        class_date: att.check_in_date, // Map check_in_date to class_date for compatibility
+        class_schedules: schedulesData?.find(s => s.id === att.schedule_id) || null,
+        classes: schedulesData?.find(s => s.id === att.schedule_id)?.classes || null
+      })) || []
 
       const { data: balanceData, error: balanceError } = await supabase
         .from('balance_history')
@@ -52,7 +78,7 @@ const StudentHistory = () => {
 
       if (balanceError) throw balanceError
 
-      setAttendanceHistory(attendanceData || [])
+      setAttendanceHistory(attendanceWithDetails)
       setBalanceHistory(balanceData || [])
     } catch (error) {
       setError('Error fetching history: ' + error.message)

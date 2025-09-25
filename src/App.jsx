@@ -4,12 +4,14 @@ import ProtectedRoute from './components/ProtectedRoute'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import ProfileCompletion from './pages/ProfileCompletion'
+import ChangePassword from './pages/ChangePassword'
 import TeacherDashboard from './pages/TeacherDashboard'
 import TeacherClasses from './pages/TeacherClasses'
 import TeacherStudents from './pages/TeacherStudents'
 import TeacherCheckIn from './pages/TeacherCheckIn'
 import StudentDashboard from './pages/StudentDashboard'
 import StudentHistory from './pages/StudentHistory'
+import StudentProfile from './pages/StudentProfile'
 import AttendanceReport from './pages/AttendanceReport'
 import LowCreditsReport from './pages/lowCreditsReport'
 import CreditHistoryReport from './pages/CreditHistoryReport'
@@ -43,7 +45,8 @@ function AppRoutes() {
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/complete-profile" element={<ProfileCompletion />} />
-      <Route path="/auth/callback" element={<AuthCallback />} /> 
+      <Route path="/change-password" element={<ChangePassword />} />
+      <Route path="/auth/callback" element={<AuthCallback />} />
       <Route
         path="/"
         element={
@@ -136,11 +139,19 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
-      <Route 
-        path="/student/history" 
+      <Route
+        path="/student/history"
         element={
           <ProtectedRoute requireRole="student" requireCompleteProfile={true}>
             <StudentHistory />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/student/profile"
+        element={
+          <ProtectedRoute requireRole="student" requireCompleteProfile={true}>
+            <StudentProfile />
           </ProtectedRoute>
         }
       />

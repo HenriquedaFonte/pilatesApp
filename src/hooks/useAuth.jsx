@@ -58,7 +58,6 @@ export const AuthProvider = ({ children }) => {
         .single()
 
       if (existingProfile) {
-        console.log('Fetched existing profile:', existingProfile)
         setProfile(existingProfile)
 
         if (existingProfile.role === 'teacher') {
@@ -154,7 +153,8 @@ export const AuthProvider = ({ children }) => {
           fullName,
           role,
           phone,
-          preferredLanguage
+          preferredLanguage,
+          isSignup: true
         }
       })
 
@@ -164,6 +164,11 @@ export const AuthProvider = ({ children }) => {
 
       if (createResult.error) {
         throw new Error(createResult.error)
+      }
+
+      // Update profile state with the created profile
+      if (createResult.profile) {
+        updateProfile(createResult.profile)
       }
 
       const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({

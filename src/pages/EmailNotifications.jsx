@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
 import emailService from '../lib/emailService';
 import EmailTemplates from '../components/EmailTemplates';
+import { getTemplate } from '../lib/emailTemplates';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -32,12 +33,13 @@ import {
 
 const EmailNotifications = () => {
   const { profile, signOut } = useAuth();
+  const [searchParams] = useSearchParams();
   const [students, setStudents] = useState([]);
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
   const [message, setMessage] = useState('');
-  const [messageType, setMessageType] = useState('info'); 
+  const [messageType, setMessageType] = useState('info');
   const [emailSubject, setEmailSubject] = useState('');
   const [emailMessage, setEmailMessage] = useState('');
   const [filterType, setFilterType] = useState('all');
@@ -48,6 +50,7 @@ const EmailNotifications = () => {
   const [senderName, setSenderName] = useState(profile?.full_name || 'Professora');
   const [selectedTemplateId, setSelectedTemplateId] = useState(null);
   const [previewLanguage, setPreviewLanguage] = useState('pt');
+  const [activeTab, setActiveTab] = useState('notifications');
 
   const [emailHistory, setEmailHistory] = useState([]);
 
@@ -55,6 +58,36 @@ const EmailNotifications = () => {
     loadData();
     loadEmailHistory();
   }, []);
+
+  useEffect(() => {
+    const studentParam = searchParams.get('student');
+    const filterParam = searchParams.get('filter');
+    const tabParam = searchParams.get('tab');
+    const templateParam = searchParams.get('template');
+
+    if (filterParam) {
+      setFilterType(filterParam);
+    }
+
+    if (studentParam) {
+      setSelectedStudents([studentParam]);
+      setFilterType('selected');
+    }
+
+    if (tabParam) {
+      setActiveTab(tabParam);
+    }
+
+    if (templateParam) {
+      // Load the template
+      const template = getTemplate(templateParam, previewLanguage);
+      if (template) {
+        setSelectedTemplateId(templateParam);
+        setEmailSubject(template.subject || '');
+        setEmailMessage(template.message || '');
+      }
+    }
+  }, [searchParams, previewLanguage]);
 
   const loadData = async () => {
     setLoading(true);
@@ -92,7 +125,7 @@ const EmailNotifications = () => {
       setClasses(classesData || []);
     } catch (error) {
       console.error('Error loading data:', error);
-      setMessage('Erro ao carregar dados: ' + error.message);
+      setMessage('Error loading data: ' + error.message);
       setMessageType('error');
     } finally {
       setLoading(false);
@@ -187,7 +220,7 @@ const EmailNotifications = () => {
       const lowCreditsStudents = students.filter(student => student.totalCredits <= lowCreditsThreshold);
       
       if (lowCreditsStudents.length === 0) {
-        setMessage('Nenhum aluno com saldo baixo de créditos encontrado.');
+        setMessage('No students with low credits found.');
         setMessageType('info');
         return;
       }
@@ -242,13 +275,13 @@ const EmailNotifications = () => {
       }
 
       
-      setMessage(`Notificações enviadas: ${successCount} sucessos, ${failCount} falhas.`);
+      setMessage(`Notifications sent: ${successCount} successes, ${failCount} failures.`);
       setMessageType(failCount === 0 ? 'success' : 'error');
 
       await loadEmailHistory();
     } catch (error) {
       console.error('Error sending notifications:', error);
-      setMessage('Erro ao enviar notificações: ' + error.message);
+      setMessage('Error sending notifications: ' + error.message);
       setMessageType('error');
     } finally {
       setSending(false);
@@ -257,7 +290,7 @@ const EmailNotifications = () => {
 
   const sendCustomEmail = async () => {
     if (!emailSubject.trim() || !emailMessage.trim()) {
-      setMessage('Por favor, preencha o assunto e a mensagem do e-mail.');
+      setMessage('Please fill in the email subject and message.');
       setMessageType('error');
       return;
     }
@@ -265,7 +298,7 @@ const EmailNotifications = () => {
     const targetStudents = getFilteredStudents();
     
     if (targetStudents.length === 0) {
-      setMessage('Nenhum aluno selecionado para envio.');
+      setMessage('No students selected for sending.');
       setMessageType('error');
       return;
     }
@@ -305,7 +338,7 @@ const EmailNotifications = () => {
       const failCount = results.filter(r => !r.success).length;
 
 
-      setMessage(`E-mail enviado: ${successCount} sucessos, ${failCount} falhas.`);
+      setMessage(`Email sent: ${successCount} successes, ${failCount} failures.`);
       setMessageType(failCount === 0 ? 'success' : 'error');
 
       await loadEmailHistory();
@@ -316,7 +349,7 @@ const EmailNotifications = () => {
       }
     } catch (error) {
       console.error('Error sending custom email:', error);
-      setMessage('Erro ao enviar e-mail: ' + error.message);
+      setMessage('Error sending email: ' + error.message);
       setMessageType('error');
     } finally {
       setSending(false);
@@ -327,7 +360,7 @@ const EmailNotifications = () => {
     setSelectedTemplateId(template.id);
     setEmailSubject(template.subject);
     setEmailMessage(template.message);
-    setMessage(`Template "${template.title}" selecionado! Você pode personalizar a mensagem antes de enviar.`);
+    setMessage(`Template "${template.title}" selected! You can customize the message before sending.`);
     setMessageType('info');
   };
   const toggleStudentSelection = (studentId) => {
@@ -371,13 +404,13 @@ const EmailNotifications = () => {
                 <ArrowLeft className="h-6 w-6 text-gray-600 hover:text-gray-900" />
               </Link>
               <Activity className="h-8 w-8 text-primary mr-3" />
-              <h1 className="text-xl font-semibold text-gray-900">Notificações por E-mail</h1>
+              <h1 className="text-xl font-semibold text-gray-900">Email Notifications</h1>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-700">Olá, {profile?.full_name}</span>
+              <span className="text-sm text-gray-700">Welcome, {profile?.full_name}</span>
               <Button variant="outline" size="sm" onClick={signOut}>
                 <LogOut className="h-4 w-4 mr-2" />
-                Sair
+                Sign Out
               </Button>
             </div>            
           </div>
@@ -400,7 +433,7 @@ const EmailNotifications = () => {
               <div className="flex items-center">
                 <Users className="h-8 w-8 text-blue-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Total de Alunos</p>
+                  <p className="text-sm font-medium text-gray-600">Total Students</p>
                   <p className="text-2xl font-bold text-gray-900">{students.length}</p>
                 </div>
               </div>
@@ -412,7 +445,7 @@ const EmailNotifications = () => {
               <div className="flex items-center">
                 <AlertTriangle className="h-8 w-8 text-orange-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Saldo Baixo</p>
+                  <p className="text-sm font-medium text-gray-600">Low Balance</p>
                   <p className="text-2xl font-bold text-gray-900">{lowCreditsStudents.length}</p>
                 </div>
               </div>
@@ -424,7 +457,7 @@ const EmailNotifications = () => {
               <div className="flex items-center">
                 <XCircle className="h-8 w-8 text-red-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Sem Créditos</p>
+                  <p className="text-sm font-medium text-gray-600">No Credits</p>
                   <p className="text-2xl font-bold text-gray-900">
                     {students.filter(s => s.totalCredits === 0).length}
                   </p>
@@ -438,7 +471,7 @@ const EmailNotifications = () => {
               <div className="flex items-center">
                 <Mail className="h-8 w-8 text-green-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">E-mails Enviados</p>
+                  <p className="text-sm font-medium text-gray-600">Emails Sent</p>
                   <p className="text-2xl font-bold text-gray-900">
                     {emailHistory.reduce((total, entry) => total + entry.success, 0)}
                   </p>
@@ -448,15 +481,15 @@ const EmailNotifications = () => {
           </Card>
         </div>
 
-        <Tabs defaultValue="notifications" className="space-y-4">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
           <TabsList>
             <TabsTrigger value="notifications">
               <AlertTriangle className="h-4 w-4 mr-2" />
-              Saldo Baixo
+              Low Balance
             </TabsTrigger>
             <TabsTrigger value="custom">
               <Send className="h-4 w-4 mr-2" />
-              E-mail Personalizado
+              Custom Email
             </TabsTrigger>
             <TabsTrigger value="templates">
               <FileText className="h-4 w-4 mr-2" />
@@ -464,7 +497,7 @@ const EmailNotifications = () => {
             </TabsTrigger>
             <TabsTrigger value="history">
               <Clock className="h-4 w-4 mr-2" />
-              Histórico
+              History
             </TabsTrigger>
           </TabsList>
 
@@ -474,15 +507,15 @@ const EmailNotifications = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <AlertTriangle className="h-5 w-5" />
-                    Notificações de Saldo Baixo
+                    Low Balance Notifications
                   </CardTitle>
                   <CardDescription>
-                    Envie notificações automáticas para alunos com poucos créditos
+                    Send automatic notifications to students with low credits
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center gap-4">
-                    <Label htmlFor="threshold">Limite de créditos:</Label>
+                    <Label htmlFor="threshold">Credit threshold:</Label>
                     <Input
                       id="threshold"
                       type="number"
@@ -493,7 +526,7 @@ const EmailNotifications = () => {
                       max="50"
                     />
                     <span className="text-sm text-gray-600">
-                      {lowCreditsStudents.length} aluno(s) elegível(is)
+                      {lowCreditsStudents.length} student(s) eligible
                     </span>
                   </div>
                   
@@ -505,12 +538,12 @@ const EmailNotifications = () => {
                     {sending ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Enviando...
+                        Sending...
                       </>
                     ) : (
                       <>
                         <Send className="mr-2 h-4 w-4" />
-                        Enviar para {lowCreditsStudents.length} aluno(s)
+                        Send to {lowCreditsStudents.length} student(s)
                       </>
                     )}
                   </Button>
@@ -519,9 +552,9 @@ const EmailNotifications = () => {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Alunos com Saldo Baixo</CardTitle>
+                  <CardTitle>Students with Low Balance</CardTitle>
                   <CardDescription>
-                    Lista de alunos que receberão a notificação
+                    List of students who will receive the notification
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -534,14 +567,14 @@ const EmailNotifications = () => {
                             <div className="text-sm text-gray-500">{student.email}</div>
                           </div>
                           <Badge variant={student.totalCredits === 0 ? 'destructive' : 'secondary'}>
-                            {student.totalCredits} créditos
+                            {student.totalCredits} credits
                           </Badge>
                         </div>
                       ))}
                     </div>
                   ) : (
                     <p className="text-gray-500 text-center py-4">
-                      Nenhum aluno com saldo baixo encontrado
+                      No students with low balance found
                     </p>
                   )}
                 </CardContent>
@@ -554,52 +587,52 @@ const EmailNotifications = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Send className="h-5 w-5" />
-                  Enviar E-mail Personalizado
+                  Send Custom Email
                 </CardTitle>
                 <CardDescription>
-                  Envie mensagens personalizadas para grupos específicos de alunos
+                  Send personalized messages to specific groups of students
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div>
-                  <Label htmlFor="sender-name">Nome do remetente:</Label>
+                  <Label htmlFor="sender-name">Sender name:</Label>
                   <Input
                     id="sender-name"
                     value={senderName}
                     onChange={(e) => setSenderName(e.target.value)}
-                    placeholder="Ex: Professora Ana, Instrutora Maria"
+                    placeholder="Ex: Teacher Ana, Instructor Maria"
                   />
                 </div>
 
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="filter-type">Filtrar alunos por:</Label>
+                    <Label htmlFor="filter-type">Filter students by:</Label>
                     <Select value={filterType} onValueChange={setFilterType}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Selecione um filtro" />
+                        <SelectValue placeholder="Select a filter" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">Todos os alunos</SelectItem>
-                        <SelectItem value="low_credits">Saldo baixo de créditos</SelectItem>
-                        <SelectItem value="zero_credits">Sem créditos</SelectItem>
-                        <SelectItem value="class">Aula específica</SelectItem>
-                        <SelectItem value="registration_day">Dia de cadastro</SelectItem>
-                        <SelectItem value="selected">Seleção manual</SelectItem>
+                        <SelectItem value="all">All students</SelectItem>
+                        <SelectItem value="low_credits">Low credits</SelectItem>
+                        <SelectItem value="zero_credits">Zero credits</SelectItem>
+                        <SelectItem value="class">Specific class</SelectItem>
+                        <SelectItem value="registration_day">Registration day</SelectItem>
+                        <SelectItem value="selected">Manual selection</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   {filterType === 'class' && (
                     <div>
-                      <Label htmlFor="class-select">Selecionar aula:</Label>
+                      <Label htmlFor="class-select">Select class:</Label>
                       <Select value={selectedClass} onValueChange={setSelectedClass}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Selecione uma aula" />
+                          <SelectValue placeholder="Select a class" />
                         </SelectTrigger>
                         <SelectContent>
                           {classes.map(cls => (
                             <SelectItem key={cls.id} value={cls.id}>
-                              {cls.name} - {cls.day_of_week} às {cls.time}
+                              {cls.name} - {cls.day_of_week} at {cls.time}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -609,19 +642,19 @@ const EmailNotifications = () => {
 
                   {filterType === 'registration_day' && (
                     <div>
-                      <Label htmlFor="day-select">Dia da semana de cadastro:</Label>
+                      <Label htmlFor="day-select">Registration day of week:</Label>
                       <Select value={selectedDay} onValueChange={setSelectedDay}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Selecione um dia" />
+                          <SelectValue placeholder="Select a day" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="0">Domingo</SelectItem>
-                          <SelectItem value="1">Segunda-feira</SelectItem>
-                          <SelectItem value="2">Terça-feira</SelectItem>
-                          <SelectItem value="3">Quarta-feira</SelectItem>
-                          <SelectItem value="4">Quinta-feira</SelectItem>
-                          <SelectItem value="5">Sexta-feira</SelectItem>
-                          <SelectItem value="6">Sábado</SelectItem>
+                          <SelectItem value="0">Sunday</SelectItem>
+                          <SelectItem value="1">Monday</SelectItem>
+                          <SelectItem value="2">Tuesday</SelectItem>
+                          <SelectItem value="3">Wednesday</SelectItem>
+                          <SelectItem value="4">Thursday</SelectItem>
+                          <SelectItem value="5">Friday</SelectItem>
+                          <SelectItem value="6">Saturday</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -630,14 +663,14 @@ const EmailNotifications = () => {
                   {filterType === 'selected' && (
                     <div>
                       <div className="flex items-center justify-between mb-2">
-                        <Label>Selecionar alunos manualmente:</Label>
+                        <Label>Manually select students:</Label>
                         <Button
                           type="button"
                           variant="outline"
                           size="sm"
                           onClick={selectAllFiltered}
                         >
-                          {filteredStudents.every(s => selectedStudents.includes(s.id)) ? 'Desmarcar Todos' : 'Marcar Todos'}
+                          {filteredStudents.every(s => selectedStudents.includes(s.id)) ? 'Unselect All' : 'Select All'}
                         </Button>
                       </div>
                       <div className="max-h-40 overflow-y-auto border rounded p-2 space-y-2">
@@ -649,7 +682,7 @@ const EmailNotifications = () => {
                               onCheckedChange={() => toggleStudentSelection(student.id)}
                             />
                             <Label htmlFor={`student-${student.id}`} className="text-sm flex-1">
-                              {student.full_name} ({student.totalCredits} créditos)
+                              {student.full_name} ({student.totalCredits} credits)
                             </Label>
                           </div>
                         ))}
@@ -660,37 +693,37 @@ const EmailNotifications = () => {
 
                 <div className="bg-gray-50 p-3 rounded border">
                   <div className="flex items-center gap-2 mb-2">
-                    <Filter className="h-4 w-4" />
-                    <span className="font-medium">
-                      Alunos selecionados: {filteredStudents.length}
-                    </span>
-                  </div>
+                     <Filter className="h-4 w-4" />
+                     <span className="font-medium">
+                       Selected students: {filteredStudents.length}
+                     </span>
+                   </div>
                   {filteredStudents.length > 0 && (
                     <div className="text-sm text-gray-600">
                       {filteredStudents.slice(0, 5).map(s => s.full_name).join(', ')}
-                      {filteredStudents.length > 5 && ` e mais ${filteredStudents.length - 5}...`}
+                      {filteredStudents.length > 5 && ` and ${filteredStudents.length - 5} more...`}
                     </div>
                   )}
                 </div>
 
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="email-subject">Assunto do e-mail:</Label>
+                    <Label htmlFor="email-subject">Email subject:</Label>
                     <Input
                       id="email-subject"
                       value={emailSubject}
                       onChange={(e) => setEmailSubject(e.target.value)}
-                      placeholder="Digite o assunto do e-mail"
+                      placeholder="Enter email subject"
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="email-message">Mensagem:</Label>
+                    <Label htmlFor="email-message">Message:</Label>
                     <Textarea
                       id="email-message"
                       value={emailMessage}
                       onChange={(e) => setEmailMessage(e.target.value)}
-                      placeholder="Digite sua mensagem aqui..."
+                      placeholder="Enter your message here..."
                       rows={6}
                     />
                   </div>
@@ -704,12 +737,12 @@ const EmailNotifications = () => {
                   {sending ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Enviando...
+                      Sending...
                     </>
                   ) : (
                     <>
                       <Send className="mr-2 h-4 w-4" />
-                      Enviar E-mail para {filteredStudents.length} aluno(s)
+                      Send Email to {filteredStudents.length} student(s)
                     </>
                   )}
                 </Button>
@@ -722,23 +755,23 @@ const EmailNotifications = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <FileText className="h-5 w-5" />
-                  Templates de E-mail
+                  Email Templates
                 </CardTitle>
                 <CardDescription>
-                  Escolha um template pré-definido para agilizar o envio de e-mails
+                  Choose a pre-defined template to speed up email sending
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="mb-4">
-                  <Label htmlFor="preview-language">Idioma dos templates:</Label>
+                  <Label htmlFor="preview-language">Template language:</Label>
                   <Select value={previewLanguage} onValueChange={setPreviewLanguage}>
                     <SelectTrigger className="w-48">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="pt">🇧🇷 Português</SelectItem>
+                      <SelectItem value="pt">🇧🇷 Portuguese</SelectItem>
                       <SelectItem value="en">🇺🇸 English</SelectItem>
-                      <SelectItem value="fr">🇫🇷 Français</SelectItem>
+                      <SelectItem value="fr">🇫🇷 French</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -756,10 +789,10 @@ const EmailNotifications = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Clock className="h-5 w-5" />
-                  Histórico de E-mails
+                  Email History
                 </CardTitle>
                 <CardDescription>
-                  Registro de todos os e-mails enviados
+                  Record of all sent emails
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -771,31 +804,31 @@ const EmailNotifications = () => {
                           <div>
                             <h4 className="font-medium">{entry.subject}</h4>
                             <p className="text-sm text-gray-500">
-                              {new Date(entry.timestamp).toLocaleString('pt-BR')}
+                              {new Date(entry.timestamp).toLocaleString('en-US')}
                             </p>
                           </div>
                           <div className="flex gap-2">
                             <Badge variant="default">
-                              {entry.success} enviados
+                              {entry.success} sent
                             </Badge>
                             {entry.failed > 0 && (
                               <Badge variant="destructive">
-                                {entry.failed} falhas
+                                {entry.failed} failed
                               </Badge>
                             )}
                           </div>
                         </div>
                         <div className="text-sm text-gray-600">
-                          <p>Tipo: {entry.type === 'low_credits' ? 'Saldo Baixo' : 'Personalizado'}</p>
-                          <p>Destinatários: {entry.recipients}</p>
-                          {entry.filterType && <p>Filtro: {entry.filterType}</p>}
+                          <p>Type: {entry.type === 'low_credits' ? 'Low Balance' : 'Custom'}</p>
+                          <p>Recipients: {entry.recipients}</p>
+                          {entry.filterType && <p>Filter: {entry.filterType}</p>}
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
                   <p className="text-gray-500 text-center py-8">
-                    Nenhum e-mail enviado ainda
+                    No emails sent yet
                   </p>
                 )}
               </CardContent>

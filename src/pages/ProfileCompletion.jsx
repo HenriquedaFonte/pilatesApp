@@ -20,7 +20,7 @@ const ProfileCompletion = () => {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
   
-  const { user, supabase } = useAuth()
+  const { user, supabase, updateProfile } = useAuth()
   const navigate = useNavigate()
 
   const checkProfileStatus = useCallback(async () => {
@@ -116,7 +116,7 @@ const ProfileCompletion = () => {
         body: {
           oauth_user_id: user.id,
           email: user.email,
-          fullName: user.user_metadata?.full_name || user.email,
+          fullName: undefined, // Don't update name, keep existing
           phone: formData.phone || null,
           preferredLanguage: formData.preferredLanguage,
           update_existing: true
@@ -130,6 +130,9 @@ const ProfileCompletion = () => {
       if (data.error) {
         throw new Error(data.error)
       }
+
+      // Update local profile state
+      updateProfile(data.profile)
 
       setSuccess(true)
       
