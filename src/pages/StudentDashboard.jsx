@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -34,6 +35,14 @@ import Logo from '../components/Logo'
 const StudentDashboard = () => {
   const { profile, signOut } = useAuth()
   const navigate = useNavigate()
+  const { t, i18n } = useTranslation()
+
+  // Set language based on user preference
+  useEffect(() => {
+    if (profile?.preferred_language) {
+      i18n.changeLanguage(profile.preferred_language)
+    }
+  }, [profile?.preferred_language, i18n])
   const [myClasses, setMyClasses] = useState([])
   const [recentHistory, setRecentHistory] = useState([])
   const [recentAttendance, setRecentAttendance] = useState([])
@@ -229,18 +238,6 @@ const StudentDashboard = () => {
     return activities.sort((a, b) => new Date(b.date) - new Date(a.date))
   }
 
-  const getAttendanceStatusText = (status) => {
-    switch (status) {
-      case 'present':
-        return 'Present'
-      case 'absent_unnotified':
-        return 'Absent'
-      case 'absent_notified':
-        return 'Justified Absence'
-      default:
-        return 'Unknown'
-    }
-  }
 
   const getAttendanceStatusColor = (status) => {
     switch (status) {
@@ -292,11 +289,11 @@ const StudentDashboard = () => {
                 className="text-sm text-gray-700 cursor-pointer hover:text-gray-900"
                 onClick={() => navigate('/student/profile')}
               >
-                Welcome, {profile?.full_name}
+                {t('common.welcome')}, {profile?.full_name}
               </span>
               <Button variant="outline" size="sm" onClick={handleSignOut}>
                 <LogOut className="h-4 w-4 mr-2" />
-                Sign Out
+                {t('common.signOut')}
               </Button>
             </div>
           </div>
@@ -306,9 +303,9 @@ const StudentDashboard = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            Student Dashboard
+            {t('dashboard.title')}
           </h2>
-          <p className="text-gray-600">Track your pilates journey</p>
+          <p className="text-gray-600">{t('dashboard.subtitle')}</p>
         </div>
 
         <div className="mb-8">
@@ -316,7 +313,7 @@ const StudentDashboard = () => {
             <CardHeader>
               <CardTitle className="flex items-center text-primary-foreground">
                 {getBalanceIcon(getTotalBalance())}
-                <span className="ml-2">Class Balance</span>
+                <span className="ml-2">{t('dashboard.balanceTitle')}</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -325,8 +322,8 @@ const StudentDashboard = () => {
               </div>
               <p className="text-primary-foreground opacity-90">
                 {getTotalBalance() <= 2
-                  ? 'Low balance - Consider purchasing more classes'
-                  : 'Classes remaining'}
+                  ? t('dashboard.balanceLow')
+                  : t('dashboard.balanceOk')}
               </p>
             </CardContent>
           </Card>
@@ -338,17 +335,16 @@ const StudentDashboard = () => {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Calendar className="h-5 w-5 mr-2 text-primary" />
-                My Weekly Schedule
+                {t('dashboard.weeklySchedule')}
               </CardTitle>
               <CardDescription>
-                Your weekly class schedule
+                {t('dashboard.weeklyScheduleDesc')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               {myClasses.length === 0 ? (
                 <p className="text-gray-500 text-center py-4">
-                  No classes enrolled yet. Contact your instructor to enroll in
-                  classes.
+                  {t('dashboard.noClasses')}
                 </p>
               ) : (
                 <div className="space-y-3">
@@ -381,16 +377,16 @@ const StudentDashboard = () => {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <History className="h-5 w-5 mr-2 text-primary" />
-                Recent Activity
+                {t('dashboard.recentActivity')}
               </CardTitle>
               <CardDescription>
-                Your recent class balance changes
+                {t('dashboard.recentActivityDesc')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               {getCombinedActivities().length === 0 ? (
                 <p className="text-gray-500 text-center py-4">
-                  No recent activity
+                  {t('dashboard.noActivity')}
                 </p>
               ) : (
                 <div className="space-y-3">
@@ -413,7 +409,7 @@ const StudentDashboard = () => {
                                 {activity.class_name}
                               </p>
                               <p className={`text-xs font-medium ${getAttendanceStatusColor(activity.status)}`}>
-                                {getAttendanceStatusText(activity.status)}
+                                {t(`status.${activity.status}`)}
                               </p>
                               <p className="text-xs text-gray-500">
                                 {new Date(activity.check_in_date).toLocaleDateString()}
@@ -451,7 +447,7 @@ const StudentDashboard = () => {
                         )}
                         {activity.type === 'attendance' && activity.credit_type && (
                           <p className="text-xs text-red-600 font-medium">
-                            Used: -1 {activity.credit_type}
+                            {t('attendance.used')}: -1 {activity.credit_type}
                           </p>
                         )}
                       </div>
@@ -466,20 +462,20 @@ const StudentDashboard = () => {
         <div className="mt-8">
           <Card>
             <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
+              <CardTitle>{t('dashboard.quickActions')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Link to="/student/history">
                   <Button variant="outline" className="w-full justify-start">
                     <History className="h-4 w-4 mr-2" />
-                    View Full History
+                    {t('dashboard.viewFullHistory')}
                   </Button>
                 </Link>
                 <Link to="/student/profile">
                   <Button variant="outline" className="w-full justify-start">
                     <User className="h-4 w-4 mr-2" />
-                    Profile
+                    {t('nav.profile')}
                   </Button>
                 </Link>
                 {/* <Button

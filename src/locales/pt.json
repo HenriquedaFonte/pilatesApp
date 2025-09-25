@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "dashboard": "Painel do Aluno",
+    "history": "Meu Histórico",
+    "profile": "Perfil",
+    "changePassword": "Alterar Senha"
+  },
+  "dashboard": {
+    "title": "Painel do Aluno",
+    "subtitle": "Acompanhe sua jornada de pilates",
+    "balanceTitle": "Saldo de Aulas",
+    "balanceLow": "Saldo baixo - Considere comprar mais aulas",
+    "balanceOk": "Aulas restantes",
+    "weeklySchedule": "Meu Horário Semanal",
+    "weeklyScheduleDesc": "Seu horário semanal de aulas",
+    "recentActivity": "Atividade Recente",
+    "recentActivityDesc": "Suas mudanças recentes no saldo de aulas",
+    "quickActions": "Ações Rápidas",
+    "viewFullHistory": "Ver Histórico Completo",
+    "noClasses": "Nenhuma aula matriculada ainda. Entre em contato com seu instrutor para se matricular.",
+    "noActivity": "Nenhuma atividade recente"
+  },
+  "history": {
+    "title": "Meu Histórico",
+    "attendanceHistory": "Histórico de Presença",
+    "attendanceHistoryDesc": "Seu registro de aulas frequentadas ou perdidas",
+    "balanceHistory": "Histórico de Saldo",
+    "balanceHistoryDesc": "Mudanças no seu saldo de aulas",
+    "noAttendance": "Nenhum registro de presença ainda.",
+    "noBalance": "Nenhum registro de histórico de saldo ainda."
+  },
+  "profile": {
+    "title": "Meu Perfil",
+    "personalInfo": "Informações Pessoais",
+    "preferences": "Preferências",
+    "fullName": "Nome Completo",
+    "email": "E-mail",
+    "phone": "Telefone",
+    "language": "Idioma Preferido",
+    "save": "Salvar Alterações",
+    "saving": "Salvando...",
+    "success": "Perfil atualizado com sucesso!",
+    "error": "Erro ao atualizar perfil"
+  },
+  "changePassword": {
+    "title": "Alterar Sua Senha",
+    "subtitle": "Por favor, crie uma nova senha para proteger sua conta.",
+    "newPassword": "Nova Senha",
+    "confirmPassword": "Confirmar Nova Senha",
+    "update": "Atualizar Senha",
+    "updating": "Atualizando Senha...",
+    "passwordMismatch": "As senhas não coincidem",
+    "passwordTooShort": "A senha deve ter pelo menos 6 caracteres"
+  },
+  "status": {
+    "present": "Presente",
+    "absent_unnotified": "Ausente",
+    "absent_notified": "Ausência Justificada"
+  },
+  "common": {
+    "welcome": "Bem-vindo",
+    "signOut": "Sair",
+    "back": "Voltar",
+    "cancel": "Cancelar",
+    "save": "Salvar",
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso"
+  },
+  "attendance": {
+    "used": "Usado",
+    "balance": "Saldo"
+  }
+}

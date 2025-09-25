@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "dashboard": "Student Dashboard",
+    "history": "My History",
+    "profile": "Profile",
+    "changePassword": "Change Password"
+  },
+  "dashboard": {
+    "title": "Student Dashboard",
+    "subtitle": "Track your pilates journey",
+    "balanceTitle": "Class Balance",
+    "balanceLow": "Low balance - Consider purchasing more classes",
+    "balanceOk": "Classes remaining",
+    "weeklySchedule": "My Weekly Schedule",
+    "weeklyScheduleDesc": "Your weekly class schedule",
+    "recentActivity": "Recent Activity",
+    "recentActivityDesc": "Your recent class balance changes",
+    "quickActions": "Quick Actions",
+    "viewFullHistory": "View Full History",
+    "noClasses": "No classes enrolled yet. Contact your instructor to enroll in classes.",
+    "noActivity": "No recent activity"
+  },
+  "history": {
+    "title": "My History",
+    "attendanceHistory": "Attendance History",
+    "attendanceHistoryDesc": "Your record of classes attended or missed",
+    "balanceHistory": "Balance History",
+    "balanceHistoryDesc": "Changes to your class balance",
+    "noAttendance": "No attendance records yet.",
+    "noBalance": "No balance history records yet."
+  },
+  "profile": {
+    "title": "My Profile",
+    "personalInfo": "Personal Information",
+    "preferences": "Preferences",
+    "fullName": "Full Name",
+    "email": "Email",
+    "phone": "Phone",
+    "language": "Preferred Language",
+    "save": "Save Changes",
+    "saving": "Saving...",
+    "success": "Profile updated successfully!",
+    "error": "Error updating profile"
+  },
+  "changePassword": {
+    "title": "Change Your Password",
+    "subtitle": "Please create a new password to secure your account.",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm New Password",
+    "update": "Update Password",
+    "updating": "Updating Password...",
+    "passwordMismatch": "Passwords do not match",
+    "passwordTooShort": "Password must be at least 6 characters long"
+  },
+  "status": {
+    "present": "Present",
+    "absent_unnotified": "Absent",
+    "absent_notified": "Justified Absence"
+  },
+  "common": {
+    "welcome": "Welcome",
+    "signOut": "Sign Out",
+    "back": "Back",
+    "cancel": "Cancel",
+    "save": "Save",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  },
+  "attendance": {
+    "used": "Used",
+    "balance": "Balance"
+  }
+}

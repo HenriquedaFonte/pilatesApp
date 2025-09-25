@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "dashboard": "Tableau de Bord Étudiant",
+    "history": "Mon Historique",
+    "profile": "Profil",
+    "changePassword": "Changer le Mot de Passe"
+  },
+  "dashboard": {
+    "title": "Tableau de Bord Étudiant",
+    "subtitle": "Suivez votre parcours de pilates",
+    "balanceTitle": "Solde de Cours",
+    "balanceLow": "Solde faible - Envisagez d'acheter plus de cours",
+    "balanceOk": "Cours restants",
+    "weeklySchedule": "Mon Horaire Hebdomadaire",
+    "weeklyScheduleDesc": "Votre horaire hebdomadaire de cours",
+    "recentActivity": "Activité Récente",
+    "recentActivityDesc": "Vos changements récents de solde de cours",
+    "quickActions": "Actions Rapides",
+    "viewFullHistory": "Voir l'Historique Complet",
+    "noClasses": "Aucun cours inscrit encore. Contactez votre instructeur pour vous inscrire.",
+    "noActivity": "Aucune activité récente"
+  },
+  "history": {
+    "title": "Mon Historique",
+    "attendanceHistory": "Historique de Présence",
+    "attendanceHistoryDesc": "Votre dossier des cours suivis ou manqués",
+    "balanceHistory": "Historique de Solde",
+    "balanceHistoryDesc": "Changements dans votre solde de cours",
+    "noAttendance": "Aucun enregistrement de présence encore.",
+    "noBalance": "Aucun enregistrement d'historique de solde encore."
+  },
+  "profile": {
+    "title": "Mon Profil",
+    "personalInfo": "Informations Personnelles",
+    "preferences": "Préférences",
+    "fullName": "Nom Complet",
+    "email": "E-mail",
+    "phone": "Téléphone",
+    "language": "Langue Préférée",
+    "save": "Sauvegarder les Modifications",
+    "saving": "Sauvegarde...",
+    "success": "Profil mis à jour avec succès!",
+    "error": "Erreur lors de la mise à jour du profil"
+  },
+  "changePassword": {
+    "title": "Changer Votre Mot de Passe",
+    "subtitle": "Veuillez créer un nouveau mot de passe pour sécuriser votre compte.",
+    "newPassword": "Nouveau Mot de Passe",
+    "confirmPassword": "Confirmer le Nouveau Mot de Passe",
+    "update": "Mettre à Jour le Mot de Passe",
+    "updating": "Mise à Jour du Mot de Passe...",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "passwordTooShort": "Le mot de passe doit contenir au moins 6 caractères"
+  },
+  "status": {
+    "present": "Présent",
+    "absent_unnotified": "Absent",
+    "absent_notified": "Absence Justifiée"
+  },
+  "common": {
+    "welcome": "Bienvenue",
+    "signOut": "Se Déconnecter",
+    "back": "Retour",
+    "cancel": "Annuler",
+    "save": "Sauvegarder",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès"
+  },
+  "attendance": {
+    "used": "Utilisé",
+    "balance": "Solde"
+  }
+}

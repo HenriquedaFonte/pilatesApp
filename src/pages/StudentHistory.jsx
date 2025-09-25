@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -21,10 +22,18 @@ import Logo from '../components/Logo'
 
 const StudentHistory = () => {
   const { profile, signOut } = useAuth()
+  const { t, i18n } = useTranslation()
   const [attendanceHistory, setAttendanceHistory] = useState([])
   const [balanceHistory, setBalanceHistory] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+
+  // Set language based on user preference
+  useEffect(() => {
+    if (profile?.preferred_language) {
+      i18n.changeLanguage(profile.preferred_language)
+    }
+  }, [profile?.preferred_language, i18n])
 
   useEffect(() => {
     if (profile?.id) {
@@ -134,16 +143,16 @@ const StudentHistory = () => {
               </Link>
               <Logo className="h-8 w-8 mr-3" />
               <h1 className="text-xl font-semibold text-gray-900">
-                My History
+                {t('history.title')}
               </h1>
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-700">
-                Welcome, {profile?.full_name}
+                {t('common.welcome')}, {profile?.full_name}
               </span>
               <Button variant="outline" size="sm" onClick={signOut}>
                 <LogOut className="h-4 w-4 mr-2" />
-                Sign Out
+                {t('common.signOut')}
               </Button>
             </div>
           </div>
@@ -159,16 +168,16 @@ const StudentHistory = () => {
 
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle>Attendance History</CardTitle>
+            <CardTitle>{t('history.attendanceHistory')}</CardTitle>
             <CardDescription>
-              Your record of classes attended or missed
+              {t('history.attendanceHistoryDesc')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             {attendanceHistory.length === 0 ? (
               <div className="text-center py-8">
                 <History className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-500">No attendance records yet.</p>
+                <p className="text-gray-500">{t('history.noAttendance')}</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -208,14 +217,14 @@ const StudentHistory = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Balance History</CardTitle>
-            <CardDescription>Changes to your class balance</CardDescription>
+            <CardTitle>{t('history.balanceHistory')}</CardTitle>
+            <CardDescription>{t('history.balanceHistoryDesc')}</CardDescription>
           </CardHeader>
           <CardContent>
             {balanceHistory.length === 0 ? (
               <div className="text-center py-8">
                 <History className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-500">No balance history records yet.</p>
+                <p className="text-gray-500">{t('history.noBalance')}</p>
               </div>
             ) : (
               <div className="space-y-4">
