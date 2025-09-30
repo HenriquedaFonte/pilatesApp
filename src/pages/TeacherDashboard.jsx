@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import { Button } from '@/components/ui/button'
@@ -19,12 +19,14 @@ import {
   BookOpen,
   FileText,
   CreditCard,
-  Mail
+  Mail,
+  User
 } from 'lucide-react'
 import Logo from '../components/Logo'
 
 const TeacherDashboard = () => {
   const { profile, signOut } = useAuth()
+  const navigate = useNavigate()
   const [stats, setStats] = useState({
     totalStudents: 0,
     studentsWithLowBalance: 0,
@@ -107,7 +109,10 @@ const TeacherDashboard = () => {
               </h1>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-700">
+              <span
+                className="text-sm text-gray-700 cursor-pointer hover:text-gray-900"
+                onClick={() => navigate('/teacher/profile')}
+              >
                 Welcome, {profile?.full_name}
               </span>
               <Button variant="outline" size="sm" onClick={handleSignOut}>
@@ -152,7 +157,7 @@ const TeacherDashboard = () => {
                 {stats.studentsWithLowBalance}
               </div>
               <p className="text-xs text-muted-foreground">
-                Students with {'<'}4 credits
+                Students with {'<='}2 credits
               </p>
             </CardContent>
           </Card>
@@ -268,6 +273,22 @@ const TeacherDashboard = () => {
             </Link>
           </Card>
           <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+            <Link
+              to="/teacher/financial-report"
+              className="flex flex-col h-full"
+            >
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <FileText className="h-5 w-5 mr-2 text-primary" />
+                  Financial Report
+                </CardTitle>
+                <CardDescription>
+                  View financial transactions for credit purchases
+                </CardDescription>
+              </CardHeader>
+            </Link>
+          </Card>
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
             <Link to="/teacher/email-notifications" className="flex flex-col h-full">
               <CardHeader>
                 <CardTitle className="flex items-center">
@@ -279,7 +300,20 @@ const TeacherDashboard = () => {
                 </CardDescription>
               </CardHeader>
             </Link>
-          </Card>                    
+          </Card>
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+            <Link to="/teacher/profile" className="flex flex-col h-full">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <User className="h-5 w-5 mr-2 text-primary" />
+                  My Profile
+                </CardTitle>
+                <CardDescription>
+                  Update your personal information and password
+                </CardDescription>
+              </CardHeader>
+            </Link>
+          </Card>
         </div>
       </div>
     </div>

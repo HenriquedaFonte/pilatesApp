@@ -13,11 +13,14 @@ import StudentDashboard from './pages/StudentDashboard'
 import StudentHistory from './pages/StudentHistory'
 import StudioRules from './pages/StudioRules'
 import StudentProfile from './pages/StudentProfile'
+import TeacherProfile from './pages/TeacherProfile'
 import AttendanceReport from './pages/AttendanceReport'
 import LowCreditsReport from './pages/lowCreditsReport'
 import CreditHistoryReport from './pages/CreditHistoryReport'
+import FinancialReport from './pages/FinancialReport'
 import EmailNotifications from './pages/EmailNotifications'
 import AuthCallback from './components/AuthCallback'
+import Home from './pages/Home'
 import './App.css'
 
 function App() {
@@ -116,19 +119,35 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
-      <Route 
-        path="/teacher/credit-history-report" 
+      <Route
+        path="/teacher/credit-history-report"
         element={
           <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
             <CreditHistoryReport />
           </ProtectedRoute>
         }
       />
-      <Route 
-        path="/teacher/email-notifications" 
+      <Route
+        path="/teacher/financial-report"
+        element={
+          <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
+            <FinancialReport />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/teacher/email-notifications"
         element={
           <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
             <EmailNotifications />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/teacher/profile"
+        element={
+          <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
+            <TeacherProfile />
           </ProtectedRoute>
         }
       />

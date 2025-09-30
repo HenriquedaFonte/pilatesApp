@@ -1,12 +1,12 @@
 {
   "nav": {
-    "dashboard": "Painel do Aluno",
+    "dashboard": "Painel do Cliente",
     "history": "Meu Histórico",
     "profile": "Perfil",
     "changePassword": "Alterar Senha"
   },
   "dashboard": {
-    "title": "Painel do Aluno",
+    "title": "Painel do Cliente",
     "subtitle": "Acompanhe sua jornada de pilates",
     "balanceTitle": "Saldo de Aulas",
     "balanceLow": "Saldo baixo - Considere comprar mais aulas",
@@ -105,7 +105,7 @@
     "stayHydrated": "Mantenha-se hidratado",
     "stayHydratedDesc": "Lembre-se de beber água antes e depois da aula.",
     "respectSpace": "Respeite o espaço",
-    "respectSpaceDesc": "Por favor, seja consciente dos outros alunos e mantenha um ambiente positivo.",
+    "respectSpaceDesc": "Por favor, seja consciente dos outros clientes e mantenha um ambiente positivo.",
     "contactInformation": "Informações de Contato",
     "contactInformationDesc": "Precisa de ajuda ou tem dúvidas?",
     "contactIntro": "Se você tiver alguma dúvida sobre estas regras ou precisar de assistência, não hesite em nos contatar:",
@@ -114,5 +114,99 @@
     "studioLocation": "Localização do Studio",
     "viewOnGoogleMaps": "Ver no Google Maps →",
     "backToDashboard": "Voltar ao Painel"
+  },
+  "teacher": {
+    "students": {
+      "title": "Gerenciamento de Alunos",
+      "welcome": "Bem-vindo",
+      "signOut": "Sair",
+      "students": "Alunos",
+      "subtitle": "Gerencie perfis de alunos, saldos e matrículas",
+      "addUser": "Adicionar Usuário",
+      "createUser": {
+        "title": "Criar Novo Usuário",
+        "description": "Adicione um novo aluno ou professor ao sistema.",
+        "email": "E-mail",
+        "emailPlaceholder": "usuario@exemplo.com",
+        "fullName": "Nome Completo",
+        "fullNamePlaceholder": "Nome Completo",
+        "role": "Função",
+        "selectRole": "Selecionar função",
+        "student": "Aluno",
+        "teacher": "Professor",
+        "preferredLanguage": "Idioma Preferido",
+        "selectLanguage": "Selecionar idioma",
+        "portuguese": "Português",
+        "english": "Inglês",
+        "french": "Francês",
+        "cancel": "Cancelar",
+        "create": "Criar Usuário"
+      },
+      "search": "Buscar alunos por nome ou e-mail...",
+      "noStudentsFound": "Nenhum aluno encontrado",
+      "tryAdjustingSearch": "Tente ajustar os termos de busca",
+      "noStudentsYet": "Nenhum aluno ainda",
+      "studentsWillAppear": "Os alunos aparecerão aqui quando se inscreverem",
+      "balance": {
+        "updateTitle": "Atualizar Saldo para",
+        "currentBalances": "Saldos atuais: Individual:",
+        "duo": "Duo:",
+        "group": "Grupo:",
+        "creditType": "Tipo de Crédito",
+        "selectCreditType": "Selecionar tipo de crédito",
+        "individual": "Individual",
+        "duo": "Duo",
+        "group": "Grupo",
+        "amount": "Quantidade (use números negativos para subtrair)",
+        "amountPlaceholder": "ex.: 10 ou -1",
+        "description": "Descrição",
+        "descriptionPlaceholder": "ex.: Comprou pacote de 10 aulas",
+        "amountPaid": "Valor Pago ($)",
+        "amountPaidPlaceholder": "ex.: 200.00",
+        "paymentMethod": "Método de Pagamento",
+        "cash": "dinheiro",
+        "interac": "interac",
+        "creditCard": "cartão de crédito",
+        "other": "outro",
+        "cancel": "Cancelar",
+        "update": "Atualizar Saldo"
+      },
+      "enroll": {
+        "title": "Matricular em Aulas",
+        "description": "Selecione as aulas para matricular o aluno.",
+        "cancel": "Cancelar",
+        "enroll": "Matricular Aluno"
+      },
+      "fixedDays": {
+        "title": "Definir Dias Fixos de Aula para",
+        "description": "Selecione os dias da semana em que o aluno frequenta aula.",
+        "cancel": "Cancelar",
+        "save": "Salvar"
+      },
+      "errors": {
+        "fetchData": "Erro ao buscar dados:",
+        "updateBalance": "Erro ao atualizar saldo:",
+        "enrollStudent": "Erro ao matricular aluno:",
+        "createUser": "Erro ao criar usuário:",
+        "updateFixedDays": "Erro ao atualizar dias fixos de aula:",
+        "invalidAmount": "Por favor, insira um número válido"
+      },
+      "success": {
+        "balanceUpdated": "Saldo atualizado com sucesso!",
+        "studentEnrolled": "Aluno matriculado com sucesso!",
+        "userCreated": "Usuário criado com sucesso!",
+        "fixedDaysUpdated": "Dias fixos de aula atualizados com sucesso!"
+      },
+      "balanceLevels": {
+        "low": "Baixo",
+        "medium": "Médio",
+        "high": "Alto",
+        "individual": "Individual",
+        "duo": "Duo",
+        "group": "Grupo",
+        "total": "Total"
+      },
+      "lastCheckIn": "Último check-in:"
+    }
   }
 }

@@ -13,6 +13,10 @@ CREATE TABLE IF NOT EXISTS email_notifications (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Drop and recreate the foreign key with ON DELETE CASCADE to allow profile deletion
+ALTER TABLE email_notifications DROP CONSTRAINT IF EXISTS email_notifications_student_id_fkey;
+ALTER TABLE email_notifications ADD CONSTRAINT email_notifications_student_id_fkey FOREIGN KEY (student_id) REFERENCES profiles(id) ON DELETE CASCADE;
+
 -- Enable RLS
 ALTER TABLE email_notifications ENABLE ROW LEVEL SECURITY;
 

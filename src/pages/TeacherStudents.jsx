@@ -48,6 +48,7 @@ const TeacherStudents = () => {
   const [students, setStudents] = useState([])
   // const [classes, setClasses] = useState([])
   const [schedules, setSchedules] = useState([])
+  const [lastCheckIns, setLastCheckIns] = useState({})
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedStudent, setSelectedStudent] = useState(null)
@@ -69,7 +70,8 @@ const TeacherStudents = () => {
     amount: '',
     description: '',
     creditType: 'individual',
-    paymentMethod: ''
+    paymentMethod: '',
+    amountPaid: ''
   })
 
   useEffect(() => {
@@ -116,6 +118,27 @@ const TeacherStudents = () => {
 
       setStudents(studentsData || [])
       setSchedules(schedulesData || [])
+
+      // Fetch last check-ins for each student
+      if (studentsData && studentsData.length > 0) {
+        const studentIds = studentsData.map(s => s.id)
+        const { data: checkInsData, error: checkInsError } = await supabase
+          .from('check_ins')
+          .select('*, class_schedules(classes(name))')
+          .in('student_id', studentIds)
+          .order('created_at', { ascending: false })
+
+        if (checkInsError) throw checkInsError
+
+        // Group by student_id, take the latest
+        const lastCheckInMap = {}
+        checkInsData?.forEach(checkIn => {
+          if (!lastCheckInMap[checkIn.student_id]) {
+            lastCheckInMap[checkIn.student_id] = checkIn
+          }
+        })
+        setLastCheckIns(lastCheckInMap)
+      }
     } catch (error) {
       setError('Error fetching data: ' + error.message)
     } finally {
@@ -135,12 +158,16 @@ const TeacherStudents = () => {
         return
       }
 
+      const amountPaidValue = balanceChange.amountPaid.trim();
+      const parsedAmountPaid = amountPaidValue !== '' ? parseFloat(amountPaidValue) : null;
+
       const { error } = await supabase.rpc('update_class_balance', {
         student_uuid: selectedStudent.id,
         change_amount: amount,
         description_text: balanceChange.description,
         credit_type_param: balanceChange.creditType,
-        payment_method_param: balanceChange.paymentMethod
+        payment_method_param: balanceChange.paymentMethod,
+        amount_paid_param: parsedAmountPaid
       })
 
       if (error) throw error
@@ -178,7 +205,8 @@ const TeacherStudents = () => {
         amount: '',
         description: '',
         creditType: 'individual',
-        paymentMethod: ''
+        paymentMethod: '',
+        amountPaid: ''
       })
       setIsBalanceDialogOpen(false)
       setSelectedStudent(null)
@@ -316,6 +344,19 @@ const TeacherStudents = () => {
       'Saturday'
     ]
     return days[dayOfWeek]
+  }
+
+  const formatCheckInStatus = status => {
+    switch (status) {
+      case 'present':
+        return 'Present'
+      case 'absent_unnotified':
+        return 'Absent (Unnotified)'
+      case 'absent_notified':
+        return 'Absent (Notified)'
+      default:
+        return status
+    }
   }
 
   const formatTime = time => {
@@ -547,6 +588,16 @@ const TeacherStudents = () => {
                       </div>
                     </div>
 
+                    {/* Last Check-in Note */}
+                    {lastCheckIns[student.id] && (
+                      <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded-lg">
+                        Last check-in: {lastCheckIns[student.id].class_schedules?.classes?.name} -{' '}
+                        {getDayName(lastCheckIns[student.id].class_schedules?.day_of_week)}{' '}
+                        {new Date(lastCheckIns[student.id].check_in_date).toLocaleDateString()} -{' '}
+                        {formatCheckInStatus(lastCheckIns[student.id].status)}
+                      </div>
+                    )}
+
                     <div className="flex flex-wrap gap-2 justify-center">
                       <Button
                         size="sm"
@@ -669,6 +720,22 @@ const TeacherStudents = () => {
                     })
                   }
                   placeholder="e.g., Purchased 10-class package"
+                />
+              </div>
+              <div>
+                <Label htmlFor="amountPaid">Amount Paid ($)</Label>
+                <Input
+                  id="amountPaid"
+                  type="number"
+                  step="0.01"
+                  value={balanceChange.amountPaid}
+                  onChange={e =>
+                    setBalanceChange({
+                      ...balanceChange,
+                      amountPaid: e.target.value
+                    })
+                  }
+                  placeholder="e.g., 200.00"
                 />
               </div>
               <div>

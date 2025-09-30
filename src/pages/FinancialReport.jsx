@@ -6,9 +6,10 @@ import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription
+  CardDescription as CardDesc
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -30,8 +31,9 @@ import {
   User2,
   FileText
 } from 'lucide-react'
+import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, LabelList } from 'recharts'
 
-const CreditHistoryReport = () => {
+const FinancialReport = () => {
   const { profile, signOut } = useAuth()
   const [history, setHistory] = useState([])
   const [loading, setLoading] = useState(false)
@@ -75,8 +77,9 @@ const CreditHistoryReport = () => {
     let query = supabase
       .from('balance_history')
       .select(
-        'id,student_id, type, change_amount, created_at, description, payment_method, new_balance'
+        'id,student_id, type, change_amount, created_at, description, payment_method, new_balance, amount_paid'
       )
+      .gt('change_amount', 0) // Only positive changes (credits acquired)
       .order('created_at', { ascending: false })
       .limit(500)
 
@@ -91,7 +94,7 @@ const CreditHistoryReport = () => {
 
     const { data, error } = await query
 
-    if (error) setError('Error fetching credit history: ' + error.message)
+    if (error) setError('Error fetching financial report: ' + error.message)
     else {
       setHistory(data || [])
       // Compute summary by payment method
@@ -99,12 +102,13 @@ const CreditHistoryReport = () => {
       ;(data || []).forEach(row => {
         const method = row.payment_method || 'unknown'
         if (!summaryData[method]) {
-          summaryData[method] = { totalAmount: 0, transactionCount: 0 }
+          summaryData[method] = { totalAmount: 0, transactionCount: 0, totalCredits: 0 }
         }
         if (row.amount_paid) {
           summaryData[method].totalAmount += row.amount_paid
         }
         summaryData[method].transactionCount += 1
+        summaryData[method].totalCredits += row.change_amount
       })
       setSummary(summaryData)
     }
@@ -120,37 +124,75 @@ const CreditHistoryReport = () => {
       (row.payment_method || '').toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const exportToCSV = () => {
+  const exportToCSV = (detailed = false) => {
     if (filteredHistory.length === 0) return
-    const headers = [
-      'Student Name',
-      'Student ID',
-      'Type',
-      'Change',
-      'Date',
-      'Reason',
-      'Payment Method'
-    ]
-    const csvContent = [
-      headers.join(','),
-      ...filteredHistory.map(row =>
-        [
-          `"${students[row.student_id] || ''}"`,
-          `"${row.student_id}"`,
-          `"${row.type}"`,
-          row.change_amount,
-          `"${row.created_at}"`,
-          `"${row.description || ''}"`,
-          `"${row.payment_method || ''}"`
-        ].join(',')
-      )
-    ].join('\n')
+
+    let csvContent = ''
+    const filename = detailed ? 'financial_report_detailed.csv' : 'financial_report_simple.csv'
+
+    if (detailed) {
+      csvContent = 'Financial Report\n\n'
+
+      // Overall Summary
+      csvContent += 'SUMMARY\n'
+      csvContent += 'Payment Method,Transactions,Total Credits,Total Amount\n'
+      Object.entries(summary).forEach(([method, data]) => {
+        csvContent += `"${method === 'unknown' ? 'Unknown' : method.replace('_', ' ')}",${data.transactionCount},${data.totalCredits},${data.totalAmount.toFixed(2)}\n`
+      })
+      csvContent += '\n'
+
+      // Group transactions by payment method
+      const groupedByMethod = {}
+      filteredHistory.forEach(row => {
+        const method = row.payment_method || 'unknown'
+        if (!groupedByMethod[method]) {
+          groupedByMethod[method] = []
+        }
+        groupedByMethod[method].push(row)
+      })
+
+      // Transactions by payment method
+      Object.entries(groupedByMethod).forEach(([method, transactions]) => {
+        csvContent += `TRANSACTIONS - ${method === 'unknown' ? 'Unknown' : method.replace('_', ' ')}\n`
+        csvContent += 'Student Name,Type,Credits Added,Date,Description,Amount Paid\n'
+
+        transactions.forEach(row => {
+          csvContent += `"${students[row.student_id] || ''}","${row.type}",${row.change_amount},"${new Date(row.created_at).toLocaleDateString()}","${row.description || ''}",${row.amount_paid ? row.amount_paid.toFixed(2) : ''}\n`
+        })
+        csvContent += '\n'
+      })
+    } else {
+      // Simple CSV - original format
+      const headers = [
+        'Student Name',
+        'Type',
+        'Credits Added',
+        'Date',
+        'Description',
+        'Amount Paid',
+        'Payment Method'
+      ]
+      csvContent = [
+        headers.join(','),
+        ...filteredHistory.map(row =>
+          [
+            `"${students[row.student_id] || ''}"`,
+            `"${row.type}"`,
+            row.change_amount,
+            `"${new Date(row.created_at).toLocaleDateString()}"`,
+            `"${row.description || ''}"`,
+            row.amount_paid ? row.amount_paid.toFixed(2) : '',
+            `"${row.payment_method || ''}"`
+          ].join(',')
+        )
+      ].join('\n')
+    }
 
     const blob = new Blob([csvContent], { type: 'text/csv' })
     const url = window.URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = 'credit_history_report.csv'
+    a.download = filename
     a.click()
     window.URL.revokeObjectURL(url)
   }
@@ -183,16 +225,29 @@ const CreditHistoryReport = () => {
     }
   }
 
-  const getChangeBadge = change => {
-    if (change > 0)
-      return (
-        <Badge variant="outline" className="text-green-700 border-green-300">
-          +{change}
-        </Badge>
-      )
-    if (change < 0) return <Badge variant="destructive">{change}</Badge>
-    return <Badge variant="secondary">{change}</Badge>
-  }
+  // Prepare chart data
+  const pieData = Object.entries(summary).map(([method, data]) => ({
+    name: method === 'unknown' ? 'Unknown' : method.replace('_', ' '),
+    value: data.totalAmount,
+    fill: method === 'cash' ? '#10b981' : method === 'interac' ? '#3b82f6' : method === 'credit_card' ? '#8b5cf6' : '#6b7280'
+  }))
+
+  const typeSummary = {}
+  filteredHistory.forEach(row => {
+    const type = row.type
+    if (!typeSummary[type]) {
+      typeSummary[type] = { credits: 0, amount: 0 }
+    }
+    typeSummary[type].credits += row.change_amount
+    if (row.amount_paid) typeSummary[type].amount += row.amount_paid
+  })
+
+  const barData = Object.entries(typeSummary).map(([type, data]) => ({
+    type: type.charAt(0).toUpperCase() + type.slice(1),
+    credits: data.credits,
+    amount: data.amount
+  }))
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -205,7 +260,7 @@ const CreditHistoryReport = () => {
               </Link>
               <FileText className="h-8 w-8 text-primary mr-3" />
               <h1 className="text-xl font-semibold text-gray-900">
-                Credit History Report
+                Financial Report
               </h1>
             </div>
             <div className="flex items-center space-x-4">
@@ -232,20 +287,29 @@ const CreditHistoryReport = () => {
           <CardHeader>
             <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
               <div>
-                <CardTitle>Credit History</CardTitle>
+                <CardTitle>Financial Transactions</CardTitle>
                 <CardDescription>
-                  Select a date range and click "Search" to view credit
-                  transactions.
+                  View financial transactions for credit purchases. Select a date range and click "Search" to view results.
                 </CardDescription>
               </div>
-              <Button
-                onClick={exportToCSV}
-                variant="outline"
-                disabled={filteredHistory.length === 0}
-              >
-                <Download className="h-4 w-4 mr-2" />
-                Export CSV
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => exportToCSV(false)}
+                  variant="outline"
+                  disabled={filteredHistory.length === 0}
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  Export Simple CSV
+                </Button>
+                <Button
+                  onClick={() => exportToCSV(true)}
+                  variant="outline"
+                  disabled={filteredHistory.length === 0}
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  Export Detailed CSV
+                </Button>
+              </div>
             </div>
           </CardHeader>
           <CardContent>
@@ -291,7 +355,7 @@ const CreditHistoryReport = () => {
             </div>
             {!hasSearched ? (
               <div className="py-8 text-center text-gray-500">
-                Select a date range and click "Search" to view results.
+                Select a date range and click "Search" to view financial transactions.
               </div>
             ) : loading ? (
               <div className="py-8 text-center">Loading...</div>
@@ -305,12 +369,13 @@ const CreditHistoryReport = () => {
                         Student
                       </TableHead>
                       <TableHead>Type</TableHead>
-                      <TableHead>Change</TableHead>
+                      <TableHead>Credits Added</TableHead>
                       <TableHead>
                         <CalendarDays className="inline h-4 w-4 mr-1" />
                         Date
                       </TableHead>
-                      <TableHead>Observation</TableHead>
+                      <TableHead>Description</TableHead>
+                      <TableHead>Amount Paid</TableHead>
                       <TableHead>Payment Method</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -318,38 +383,38 @@ const CreditHistoryReport = () => {
                     {filteredHistory.length === 0 ? (
                       <TableRow>
                         <TableCell
-                          colSpan={5}
+                          colSpan={7}
                           className="text-center text-gray-500 py-8"
                         >
-                          No credit history found for this period.
+                          No financial transactions found for this period.
                         </TableCell>
                       </TableRow>
                     ) : (
                       filteredHistory.map(row => (
                         <TableRow key={row.id}>
                           <TableCell>
-                            <div>
-                              <div className="font-medium">
-                                {students[row.student_id] || row.student_id}
-                              </div>
-                              <div className="text-xs text-gray-500">
-                                {row.student_id}
-                              </div>
+                            <div className="font-medium">
+                              {students[row.student_id] || row.student_id}
                             </div>
                           </TableCell>
                           <TableCell>{getTypeBadge(row.type)}</TableCell>
                           <TableCell>
-                            {getChangeBadge(row.change_amount)}
+                            <Badge variant="outline" className="text-green-700 border-green-300">
+                              +{row.change_amount}
+                            </Badge>
                           </TableCell>
                           <TableCell>
                             {row.created_at
-                              ? new Date(row.created_at).toLocaleString()
+                              ? new Date(row.created_at).toLocaleDateString()
                               : ''}
                           </TableCell>
                           <TableCell>
                             <span className="text-xs">
                               {row.description || '-'}
                             </span>
+                          </TableCell>
+                          <TableCell>
+                            {row.amount_paid ? `$${row.amount_paid.toFixed(2)}` : '-'}
                           </TableCell>
                           <TableCell>
                             <span className="capitalize">
@@ -384,6 +449,7 @@ const CreditHistoryReport = () => {
                     <TableRow>
                       <TableHead>Payment Method</TableHead>
                       <TableHead>Transaction Count</TableHead>
+                      <TableHead>Total Credits</TableHead>
                       <TableHead>Total Amount</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -396,6 +462,7 @@ const CreditHistoryReport = () => {
                           </span>
                         </TableCell>
                         <TableCell>{data.transactionCount}</TableCell>
+                        <TableCell>{data.totalCredits}</TableCell>
                         <TableCell>${data.totalAmount.toFixed(2)}</TableCell>
                       </TableRow>
                     ))}
@@ -405,9 +472,68 @@ const CreditHistoryReport = () => {
             </CardContent>
           </Card>
         )}
+
+        {/* Charts */}
+        {hasSearched && (pieData.length > 0 || barData.length > 0) && (
+          <Card className="mt-6">
+            <CardHeader>
+              <CardTitle>Financial Charts</CardTitle>
+              <CardDescription>
+                Visual representation of financial data
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Pie Chart for Payment Methods */}
+                {pieData.length > 0 && (
+                  <div>
+                    <h4 className="text-sm font-medium mb-4">Revenue by Payment Method</h4>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <PieChart>
+                        <Tooltip />
+                        <Pie
+                          data={pieData}
+                          dataKey="value"
+                          nameKey="name"
+                          innerRadius={60}
+                          strokeWidth={5}
+                          label={({ name, value }) => `$${value}\n${name}`}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                )}
+
+                {/* Bar Chart for Credits by Type */}
+                {barData.length > 0 && (
+                  <div>
+                    <h4 className="text-sm font-medium mb-4">Credits and Revenue by Type</h4>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart data={barData}>
+                        <CartesianGrid vertical={false} />
+                        <XAxis
+                          dataKey="type"
+                          tickLine={false}
+                          tickMargin={10}
+                          axisLine={false}
+                        />
+                        <YAxis tickLine={false} axisLine={false} />
+                        <Tooltip />
+                        <Bar dataKey="credits" fill="#2563eb" radius={4} />
+                        <Bar dataKey="amount" fill="#dc2626" radius={4} />
+                        <LabelList dataKey="credits" position="top" />
+                        <LabelList dataKey="amount" position="top" formatter={(value) => `$${value}`} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   )
 }
 
-export default CreditHistoryReport
+export default FinancialReport
