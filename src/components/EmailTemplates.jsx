@@ -11,7 +11,7 @@ const EmailTemplates = ({ onSelectTemplate, selectedTemplateId, language = 'pt' 
     welcome: {
       title: { pt: 'Boas-vindas', en: 'Welcome', fr: 'Bienvenue' },
       description: {
-        pt: 'Mensagem de boas-vindas para novos clientes',
+        pt: 'Mensagem de boas-vindas para novos alunos',
         en: 'Welcome message for new students',
         fr: 'Message de bienvenue pour les nouveaux élèves'
       },
@@ -259,7 +259,7 @@ const EmailTemplates = ({ onSelectTemplate, selectedTemplateId, language = 'pt' 
             </>
           ) : (
             <>
-              <li>• Personalize as mensagens com informações específicas dos clientes</li>
+              <li>• Personalize as mensagens com informações específicas dos alunos</li>
               <li>• Substitua os campos entre [COLCHETES] pelas informações reais</li>
               <li>• Adapte o tom da mensagem conforme necessário</li>
               <li>• Sempre revise antes de enviar</li>

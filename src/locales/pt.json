@@ -1,12 +1,12 @@
 {
   "nav": {
-    "dashboard": "Painel do Cliente",
+    "dashboard": "Painel do Aluno",
     "history": "Meu Histórico",
     "profile": "Perfil",
     "changePassword": "Alterar Senha"
   },
   "dashboard": {
-    "title": "Painel do Cliente",
+    "title": "Painel do Aluno",
     "subtitle": "Acompanhe sua jornada de pilates",
     "balanceTitle": "Saldo de Aulas",
     "balanceLow": "Saldo baixo - Considere comprar mais aulas",
@@ -105,7 +105,7 @@
     "stayHydrated": "Mantenha-se hidratado",
     "stayHydratedDesc": "Lembre-se de beber água antes e depois da aula.",
     "respectSpace": "Respeite o espaço",
-    "respectSpaceDesc": "Por favor, seja consciente dos outros clientes e mantenha um ambiente positivo.",
+    "respectSpaceDesc": "Por favor, seja consciente dos outros alunos e mantenha um ambiente positivo.",
     "contactInformation": "Informações de Contato",
     "contactInformationDesc": "Precisa de ajuda ou tem dúvidas?",
     "contactIntro": "Se você tiver alguma dúvida sobre estas regras ou precisar de assistência, não hesite em nos contatar:",
