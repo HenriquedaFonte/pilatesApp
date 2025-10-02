@@ -615,9 +615,102 @@ export const emailTemplates = {
       signature: 'Cordialement,',
       teamName: 'Équipe Josi Pilates'
     }
-  }
-};
+  },
 
+  studentWelcome: {
+    pt: {
+      subject: 'Bem-vindo ao Josi Pilates! Sua conta foi criada 🎉',
+      greeting: (name) => `Olá, ${name}!`,
+      welcomeTitle: '🎉 Bem-vindo ao Josi Pilates!',
+      accountCreated: 'Sua conta foi criada com sucesso!',
+      defaultPassword: 'Sua senha temporária é: <strong>000000</strong>',
+      importantInstructions: '📋 Instruções importantes:',
+      instructions: [
+        '1. Visite nosso site: https://josipilates.com',
+        '2. Clique em "Portal do Aluno" para fazer login',
+        '3. Use seu e-mail e a senha temporária acima',
+        '4. Complete suas informações pessoais',
+        '5. Crie uma nova senha segura'
+      ],
+      nextStepsTitle: '🚀 Próximos passos:',
+      nextSteps: [
+        'Complete seu perfil com informações pessoais',
+        'Agende sua primeira aula experimental',
+        'Conheça nossa equipe e instalações',
+        'Tire todas suas dúvidas conosco'
+      ],
+      contactTitle: '📞 Precisa de ajuda?',
+      contactInfo: 'Entre em contato conosco:',
+      phone: 'WhatsApp: +1(438)274-8396',
+      email: 'E-mail: josi@josopilates.com',
+      excitement: 'Estamos muito felizes em recebê-lo em nossa comunidade!',
+      closing: 'Bem-vindo à família Josi Pilates!',
+      signature: 'Com carinho,',
+      teamName: 'Equipe Josi Pilates',
+    },
+    en: {
+      subject: 'Welcome to Josi Pilates! Your account has been created 🎉',
+      greeting: (name) => `Hello, ${name}!`,
+      welcomeTitle: '🎉 Welcome to Josi Pilates!',
+      accountCreated: 'Your account has been created successfully!',
+      defaultPassword: 'Your temporary password is: <strong>000000</strong>',
+      importantInstructions: '📋 Important instructions:',
+      instructions: [
+        '1. Visit our website: https://josipilates.com',
+        '2. Click "Student Portal" to log in',
+        '3. Use your email and the temporary password above',
+        '4. Complete your personal information',
+        '5. Create a new secure password'
+      ],
+      nextStepsTitle: '🚀 Next steps:',
+      nextSteps: [
+        'Complete your profile with personal information',
+        'Schedule your first trial class',
+        'Meet our team and facilities',
+        'Ask us any questions you have'
+      ],
+      contactTitle: '📞 Need help?',
+      contactInfo: 'Contact us:',
+      phone: 'WhatsApp: +1(438)274-8396',
+      email: 'Email: josi@josopilates.com',
+      excitement: 'We are very happy to welcome you to our community!',
+      closing: 'Welcome to the Josi Pilates family!',
+      signature: 'With care,',
+      teamName: 'Josi Pilates Team',
+    },
+    fr: {
+      subject: 'Bienvenue chez Josi Pilates! Votre compte a été créé 🎉',
+      greeting: (name) => `Bonjour, ${name}!`,
+      welcomeTitle: '🎉 Bienvenue chez Josi Pilates!',
+      accountCreated: 'Votre compte a été créé avec succès!',
+      defaultPassword: 'Votre mot de passe temporaire est: <strong>000000</strong>',
+      importantInstructions: '📋 Instructions importantes:',
+      instructions: [
+        '1. Visitez notre site web: https://josipilates.com',
+        '2. Cliquez sur "Student Portal" pour vous connecter',
+        '3. Utilisez votre e-mail et le mot de passe temporaire ci-dessus',
+        '4. Complétez vos informations personnelles',
+        '5. Créez un nouveau mot de passe sécurisé'
+      ],
+      nextStepsTitle: '🚀 Prochaines étapes:',
+      nextSteps: [
+        'Complétez votre profil avec des informations personnelles',
+        'Planifiez votre premier cours d\'essai',
+        'Rencontrez notre équipe et nos installations',
+        'Posez-nous toutes vos questions'
+      ],
+      contactTitle: '📞 Besoin d\'aide?',
+      contactInfo: 'Contactez-nous:',
+      phone: 'WhatsApp: +1(438)274-8396',
+      email: 'E-mail: josi@josopilates.com',
+      excitement: 'Nous sommes très heureux de vous accueillir dans notre communauté!',
+      closing: 'Bienvenue dans la famille Josi Pilates!',
+      signature: 'Avec soin,',
+      teamName: 'Équipe Josi Pilates',
+    }
+  }
+
+};
 export const getTemplate = (templateType, language = 'pt') => {
   const template = emailTemplates[templateType];
   if (!template) {

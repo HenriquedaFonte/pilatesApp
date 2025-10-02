@@ -279,6 +279,18 @@ const TeacherStudents = () => {
         throw new Error(data.error || 'Failed to create user')
       }
 
+      // Send welcome email to the new student
+      try {
+        await emailService.sendStudentWelcomeEmail({
+          email: userData.email,
+          fullName: userData.fullName,
+          preferredLanguage: userData.preferredLanguage
+        })
+      } catch (emailError) {
+        console.error('Error sending welcome email:', emailError)
+        // Don't fail user creation if email fails
+      }
+
       setSuccess('User created successfully!')
       setNewUser({ email: '', fullName: '', role: 'student', preferredLanguage: 'pt' })
       setIsCreateUserDialogOpen(false)

@@ -434,6 +434,116 @@ ${processedTemplate.teamName}
       textContent
     });
   }
+
+  async sendStudentWelcomeEmail(studentData) {
+    const { email, fullName, preferredLanguage } = studentData;
+    const template = getTemplate('studentWelcome', preferredLanguage);
+
+    const variables = {
+      phone: import.meta.env.VITE_STUDIO_PHONE || import.meta.env.STUDIO_PHONE || '+1(438)274-8396',
+      email: this.fromEmail,
+      name: fullName
+    };
+
+    const processedTemplate = processTemplate(template, variables);
+
+    const subject = processedTemplate.subject;
+
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>${processedTemplate.welcomeTitle}</title>
+      </head>
+      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background: linear-gradient(135deg, #01b48d 0%, #017a6b 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+          <div style="display: inline-flex; align-items: center; justify-content: center; gap: 30px;">
+            <img src="https://github.com/HenriquedaFonte/pilatesApp/blob/main/public/logo.jpg" alt="Josi Pilates Logo" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;" />
+            <div style="text-align: left;">
+              <h1 style="color: white; margin: 0; font-size: 28px;">${processedTemplate.welcomeTitle}</h1>
+              <p style="color: #f0f0f0; margin: 5px 0 0 0; font-size: 16px;">Josi Pilates</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: white; padding: 30px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 10px 10px;">
+          <h2 style="color: #1e293b; margin-top: 0;">${processedTemplate.greeting(fullName)}</h2>
+
+          <p>${processedTemplate.accountCreated}</p>
+
+          <div style="background-color: #fef3c7; border: 1px solid #f59e0b; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
+            <h3 style="color: #92400e; margin: 0 0 10px 0;">🔐 ${processedTemplate.defaultPassword}</h3>
+          </div>
+
+          <div style="background-color: #f1f5f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h4 style="color: #1e293b; margin-top: 0;">${processedTemplate.importantInstructions}</h4>
+            <ol style="margin: 10px 0; padding-left: 20px;">
+              ${processedTemplate.instructions.map(instruction => `<li>${instruction}</li>`).join('')}
+            </ol>
+          </div>
+
+          <h4 style="color: #1e293b;">${processedTemplate.nextStepsTitle}</h4>
+          <ul style="margin: 10px 0; padding-left: 20px;">
+            ${processedTemplate.nextSteps.map(step => `<li>${step}</li>`).join('')}
+          </ul>
+
+          <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h4 style="color: #1e293b; margin-top: 0;">${processedTemplate.contactTitle}</h4>
+            <p style="margin: 5px 0;">${processedTemplate.contactInfo}</p>
+            <p style="margin: 5px 0;"><strong>${processedTemplate.phone}</strong></p>
+            <p style="margin: 5px 0;"><strong>${processedTemplate.email}</strong></p>
+          </div>
+
+          <p>${processedTemplate.excitement}</p>
+          <p>${processedTemplate.closing}</p>
+
+          <hr style="margin: 30px 0; border: none; border-top: 1px solid #e2e8f0;">
+
+          <p style="color: #64748b; font-size: 14px; text-align: center;">
+            <strong>${processedTemplate.signature}</strong><br>
+            ${processedTemplate.teamName}<br>
+            <em>${processedTemplate.tagline}</em>
+          </p>
+        </div>
+      </body>
+      </html>
+    `;
+
+    const textContent = `
+${processedTemplate.greeting(fullName)}
+
+${processedTemplate.accountCreated}
+
+${processedTemplate.defaultPassword}
+
+${processedTemplate.importantInstructions}
+${processedTemplate.instructions.map((instruction, index) => `${index + 1}. ${instruction}`).join('\n')}
+
+${processedTemplate.nextStepsTitle}
+${processedTemplate.nextSteps.map(step => `- ${step}`).join('\n')}
+
+${processedTemplate.contactTitle}
+${processedTemplate.contactInfo}
+${processedTemplate.phone}
+${processedTemplate.email}
+
+${processedTemplate.excitement}
+${processedTemplate.closing}
+
+${processedTemplate.signature}
+${processedTemplate.teamName}
+${processedTemplate.tagline}
+    `;
+
+    return this.sendEmail({
+      to: { email: email, name: fullName },
+      subject,
+      htmlContent,
+      textContent
+    });
+  }
 }
 
 export default new EmailService();
