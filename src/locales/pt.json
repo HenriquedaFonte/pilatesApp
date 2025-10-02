@@ -208,5 +208,194 @@
       },
       "lastCheckIn": "Último check-in:"
     }
+  },
+  "privacyPolicy": {
+    "title": "Política de Privacidade",
+    "lastUpdated": "Última atualização",
+    "introduction": {
+      "title": "1. Introdução",
+      "content": "Bem-vindo ao Studio Josi Pilates. Esta Política de Privacidade explica como coletamos, usamos, divulgamos e protegemos suas informações quando você usa nosso aplicativo e serviços."
+    },
+    "dataCollection": {
+      "title": "2. Informações que Coletamos",
+      "providedInfo": {
+        "title": "2.1 Informações Fornecidas por Você",
+        "items": [
+          "Nome completo",
+          "Endereço de e-mail",
+          "Número de telefone",
+          "Informações de perfil (preferências de idioma, etc.)",
+          "Informações de aulas e agendamentos"
+        ]
+      },
+      "autoCollected": {
+        "title": "2.2 Informações Coletadas Automaticamente",
+        "items": [
+          "Dados de uso do aplicativo",
+          "Informações do dispositivo",
+          "Cookies e tecnologias similares"
+        ]
+      },
+      "thirdParty": {
+        "title": "2.3 Informações de Terceiros",
+        "items": [
+          "Dados do Google quando você faz login com sua conta Google"
+        ]
+      }
+    },
+    "dataUsage": {
+      "title": "3. Como Usamos Suas Informações",
+      "content": "Usamos suas informações para:",
+      "items": [
+        "Fornecer e gerenciar seus serviços de pilates",
+        "Processar inscrições e pagamentos",
+        "Enviar notificações importantes sobre aulas",
+        "Melhorar nossos serviços",
+        "Cumprir obrigações legais"
+      ]
+    },
+    "dataSharing": {
+      "title": "4. Compartilhamento de Informações",
+      "content": "Não vendemos, alugamos ou compartilhamos suas informações pessoais com terceiros, exceto nas seguintes circunstâncias:",
+      "items": [
+        "Com seu consentimento explícito",
+        "Para fornecer serviços (por exemplo, processamento de pagamentos)",
+        "Quando exigido por lei",
+        "Para proteger nossos direitos e segurança"
+      ]
+    },
+    "dataSecurity": {
+      "title": "5. Segurança dos Dados",
+      "content": "Implementamos medidas de segurança técnicas e organizacionais apropriadas para proteger suas informações pessoais contra acesso não autorizado, alteração, divulgação ou destruição."
+    },
+    "userRights": {
+      "title": "6. Seus Direitos",
+      "content": "Você tem o direito de:",
+      "items": [
+        "Acessar suas informações pessoais",
+        "Corrigir informações inexatas",
+        "Solicitar exclusão de seus dados",
+        "Optar por não receber comunicações de marketing"
+      ]
+    },
+    "cookies": {
+      "title": "7. Cookies",
+      "content": "Usamos cookies para melhorar sua experiência no aplicativo. Você pode controlar o uso de cookies através das configurações do seu navegador."
+    },
+    "policyChanges": {
+      "title": "8. Alterações a Esta Política",
+      "content": "Podemos atualizar esta Política de Privacidade periodicamente. Notificaremos você sobre mudanças significativas através do aplicativo ou por e-mail."
+    },
+    "contact": {
+      "title": "9. Contato",
+      "content": "Se você tiver dúvidas sobre esta Política de Privacidade, entre em contato conosco:",
+      "items": [
+        "E-mail: josipilatesmontreal@gmail.com",
+        "Telefone: +1(438)274-8396",
+        "Endereço: Studio Josi Pilates, Montreal"
+      ]
+    },
+    "backToHome": "Voltar ao Início"
+  },
+  "termsOfService": {
+    "title": "Termos de Serviço",
+    "lastUpdated": "Última atualização",
+    "acceptance": {
+      "title": "1. Aceitação dos Termos",
+      "content": "Ao acessar e usar o aplicativo Studio Josi Pilates, você concorda em cumprir e estar vinculado a estes Termos de Serviço. Se você não concordar com estes termos, não use o aplicativo."
+    },
+    "serviceDescription": {
+      "title": "2. Descrição do Serviço",
+      "content": "O Studio Josi Pilates oferece uma plataforma para agendamento, gerenciamento e acompanhamento de aulas de pilates. Nossos serviços incluem:",
+      "items": [
+        "Agendamento de aulas individuais e em grupo",
+        "Gerenciamento de créditos/aulas",
+        "Rastreamento de presença e histórico",
+        "Comunicação entre alunos e professores",
+        "Relatórios administrativos"
+      ]
+    },
+    "eligibility": {
+      "title": "3. Elegibilidade",
+      "content": "Para usar nossos serviços, você deve ter pelo menos 18 anos ou ter consentimento dos pais/responsáveis. Você concorda em fornecer informações precisas e atualizadas."
+    },
+    "userAccounts": {
+      "title": "4. Contas de Usuário",
+      "content": "Você é responsável por manter a confidencialidade de sua conta e senha. Você concorda em notificar imediatamente qualquer uso não autorizado de sua conta."
+    },
+    "paymentsCredits": {
+      "title": "5. Pagamentos e Créditos",
+      "purchases": {
+        "title": "5.1 Compras de Créditos",
+        "content": "Os créditos de aula podem ser adquiridos através do aplicativo. Todos os pagamentos são processados de forma segura e são finais, exceto conforme estabelecido em nossa política de reembolso."
+      },
+      "cancellation": {
+        "title": "5.2 Política de Cancelamento",
+        "content": "As aulas podem ser canceladas ou reagendadas com pelo menos 24 horas de antecedência. Cancelamentos tardios ou faltas não justificadas resultarão na perda da aula."
+      },
+      "refunds": {
+        "title": "5.3 Reembolsos",
+        "content": "Créditos não utilizados podem ser reembolsados mediante solicitação por escrito, sujeitos a taxas administrativas."
+      }
+    },
+    "studioRules": {
+      "title": "6. Regras do Studio",
+      "content": "Ao participar das aulas, você concorda em seguir todas as regras e diretrizes do studio, incluindo mas não limitado a:",
+      "items": [
+        "Chegar pelo menos 5 minutos antes do início da aula",
+        "Usar roupas apropriadas para exercícios",
+        "Respeitar outros alunos e instrutores",
+        "Manter higiene pessoal adequada"
+      ]
+    },
+    "userConduct": {
+      "title": "7. Conduta do Usuário",
+      "content": "Você concorda em não:",
+      "items": [
+        "Usar o aplicativo para qualquer propósito ilegal",
+        "Interferir com a operação do aplicativo",
+        "Transmitir conteúdo prejudicial ou ofensivo",
+        "Violar direitos de propriedade intelectual",
+        "Tentar acessar áreas não autorizadas do sistema"
+      ]
+    },
+    "intellectualProperty": {
+      "title": "8. Propriedade Intelectual",
+      "content": "Todo o conteúdo do aplicativo, incluindo textos, gráficos, logotipos e software, é propriedade do Studio Josi Pilates ou seus licenciadores e está protegido por leis de direitos autorais."
+    },
+    "liabilityLimitation": {
+      "title": "9. Limitação de Responsabilidade",
+      "content": "O Studio Josi Pilates não se responsabiliza por danos indiretos, incidentais ou consequenciais decorrentes do uso do aplicativo. Nossa responsabilidade total é limitada ao valor pago pelos serviços."
+    },
+    "warrantyDisclaimer": {
+      "title": "10. Isenção de Garantias",
+      "content": "O aplicativo é fornecido 'como está' sem garantias de qualquer tipo. Não garantimos que o aplicativo estará sempre disponível ou livre de erros."
+    },
+    "indemnification": {
+      "title": "11. Indenização",
+      "content": "Você concorda em indenizar e isentar o Studio Josi Pilates de qualquer reclamação, perda ou dano decorrente do uso indevido do aplicativo."
+    },
+    "termination": {
+      "title": "12. Rescisão",
+      "content": "Podemos rescindir ou suspender seu acesso ao aplicativo a qualquer momento, sem aviso prévio, por violação destes termos."
+    },
+    "governingLaw": {
+      "title": "13. Lei Aplicável",
+      "content": "Estes termos são regidos pelas leis de Quebec, Canadá. Qualquer disputa será resolvida nos tribunais competentes de Montreal."
+    },
+    "termsChanges": {
+      "title": "14. Alterações aos Termos",
+      "content": "Podemos modificar estes termos a qualquer momento. Continuar usando o aplicativo após alterações constitui aceitação dos novos termos."
+    },
+    "contact": {
+      "title": "15. Contato",
+      "content": "Para dúvidas sobre estes Termos de Serviço, entre em contato:",
+      "items": [
+        "E-mail: josipilatesmontreal@gmail.com",
+        "Telefone: +1(438)274-8396",
+        "Endereço: Studio Josi Pilates, Montreal"
+      ]
+    },
+    "backToHome": "Voltar ao Início"
   }
 }

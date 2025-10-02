@@ -22,6 +22,7 @@ import EmailNotifications from './pages/EmailNotifications'
 import AuthCallback from './components/AuthCallback'
 import Home from './pages/Home'
 import PrivacyPolicy from './pages/PrivacyPolicy'
+import TermsOfService from './pages/TermsOfService'
 import './App.css'
 
 function App() {
@@ -53,6 +54,7 @@ function AppRoutes() {
       <Route path="/change-password" element={<ChangePassword />} />
       <Route path="/auth/callback" element={<AuthCallback />} />
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+      <Route path="/terms-of-service" element={<TermsOfService />} />
       <Route
         path="/"
         element={

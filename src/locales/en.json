@@ -114,5 +114,194 @@
     "studioLocation": "Studio Location",
     "viewOnGoogleMaps": "View on Google Maps →",
     "backToDashboard": "Back to Dashboard"
+  },
+  "privacyPolicy": {
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated",
+    "introduction": {
+      "title": "1. Introduction",
+      "content": "Welcome to Josi Pilates Studio. This Privacy Policy explains how we collect, use, disclose and protect your information when you use our application and services."
+    },
+    "dataCollection": {
+      "title": "2. Information We Collect",
+      "providedInfo": {
+        "title": "2.1 Information You Provide",
+        "items": [
+          "Full name",
+          "Email address",
+          "Phone number",
+          "Profile information (language preferences, etc.)",
+          "Class and scheduling information"
+        ]
+      },
+      "autoCollected": {
+        "title": "2.2 Automatically Collected Information",
+        "items": [
+          "App usage data",
+          "Device information",
+          "Cookies and similar technologies"
+        ]
+      },
+      "thirdParty": {
+        "title": "2.3 Information from Third Parties",
+        "items": [
+          "Data from Google when you sign in with your Google account"
+        ]
+      }
+    },
+    "dataUsage": {
+      "title": "3. How We Use Your Information",
+      "content": "We use your information to:",
+      "items": [
+        "Provide and manage your pilates services",
+        "Process enrollments and payments",
+        "Send important notifications about classes",
+        "Improve our services",
+        "Comply with legal obligations"
+      ]
+    },
+    "dataSharing": {
+      "title": "4. Information Sharing",
+      "content": "We do not sell, rent or share your personal information with third parties, except in the following circumstances:",
+      "items": [
+        "With your explicit consent",
+        "To provide services (e.g., payment processing)",
+        "When required by law",
+        "To protect our rights and safety"
+      ]
+    },
+    "dataSecurity": {
+      "title": "5. Data Security",
+      "content": "We implement appropriate technical and organizational security measures to protect your personal information against unauthorized access, alteration, disclosure or destruction."
+    },
+    "userRights": {
+      "title": "6. Your Rights",
+      "content": "You have the right to:",
+      "items": [
+        "Access your personal information",
+        "Correct inaccurate information",
+        "Request deletion of your data",
+        "Opt out of marketing communications"
+      ]
+    },
+    "cookies": {
+      "title": "7. Cookies",
+      "content": "We use cookies to improve your app experience. You can control cookie usage through your browser settings."
+    },
+    "policyChanges": {
+      "title": "8. Changes to This Policy",
+      "content": "We may update this Privacy Policy periodically. We will notify you about significant changes through the app or by email."
+    },
+    "contact": {
+      "title": "9. Contact",
+      "content": "If you have questions about this Privacy Policy, please contact us:",
+      "items": [
+        "Email: josipilatesmontreal@gmail.com",
+        "Phone: +1(438)274-8396",
+        "Address: Josi Pilates Studio, Montreal"
+      ]
+    },
+    "backToHome": "Back to Home"
+  },
+  "termsOfService": {
+    "title": "Terms of Service",
+    "lastUpdated": "Last updated",
+    "acceptance": {
+      "title": "1. Acceptance of Terms",
+      "content": "By accessing and using the Josi Pilates Studio app, you agree to comply with and be bound by these Terms of Service. If you do not agree to these terms, do not use the app."
+    },
+    "serviceDescription": {
+      "title": "2. Service Description",
+      "content": "Josi Pilates Studio provides a platform for scheduling, managing and tracking pilates classes. Our services include:",
+      "items": [
+        "Scheduling of individual and group classes",
+        "Credit/class management",
+        "Attendance tracking and history",
+        "Communication between students and teachers",
+        "Administrative reports"
+      ]
+    },
+    "eligibility": {
+      "title": "3. Eligibility",
+      "content": "To use our services, you must be at least 18 years old or have parental/guardian consent. You agree to provide accurate and up-to-date information."
+    },
+    "userAccounts": {
+      "title": "4. User Accounts",
+      "content": "You are responsible for maintaining the confidentiality of your account and password. You agree to notify us immediately of any unauthorized use of your account."
+    },
+    "paymentsCredits": {
+      "title": "5. Payments and Credits",
+      "purchases": {
+        "title": "5.1 Credit Purchases",
+        "content": "Class credits can be purchased through the app. All payments are processed securely and are final, except as stated in our refund policy."
+      },
+      "cancellation": {
+        "title": "5.2 Cancellation Policy",
+        "content": "Classes can be canceled or rescheduled with at least 24 hours notice. Late cancellations or unjustified absences will result in loss of the class credit."
+      },
+      "refunds": {
+        "title": "5.3 Refunds",
+        "content": "Unused credits can be refunded upon written request, subject to administrative fees."
+      }
+    },
+    "studioRules": {
+      "title": "6. Studio Rules",
+      "content": "By participating in classes, you agree to follow all studio rules and guidelines, including but not limited to:",
+      "items": [
+        "Arrive at least 5 minutes before class starts",
+        "Wear appropriate exercise clothing",
+        "Respect other students and instructors",
+        "Maintain proper personal hygiene"
+      ]
+    },
+    "userConduct": {
+      "title": "7. User Conduct",
+      "content": "You agree not to:",
+      "items": [
+        "Use the app for any illegal purpose",
+        "Interfere with app operation",
+        "Transmit harmful or offensive content",
+        "Violate intellectual property rights",
+        "Attempt to access unauthorized system areas"
+      ]
+    },
+    "intellectualProperty": {
+      "title": "8. Intellectual Property",
+      "content": "All app content, including text, graphics, logos and software, is owned by Josi Pilates Studio or its licensors and is protected by copyright laws."
+    },
+    "liabilityLimitation": {
+      "title": "9. Limitation of Liability",
+      "content": "Josi Pilates Studio is not liable for indirect, incidental or consequential damages arising from app use. Our total liability is limited to the amount paid for services."
+    },
+    "warrantyDisclaimer": {
+      "title": "10. Warranty Disclaimer",
+      "content": "The app is provided 'as is' without warranties of any kind. We do not warrant that the app will always be available or error-free."
+    },
+    "indemnification": {
+      "title": "11. Indemnification",
+      "content": "You agree to indemnify and hold Josi Pilates Studio harmless from any claim, loss or damage arising from misuse of the app."
+    },
+    "termination": {
+      "title": "12. Termination",
+      "content": "We may terminate or suspend your access to the app at any time, without notice, for violation of these terms."
+    },
+    "governingLaw": {
+      "title": "13. Governing Law",
+      "content": "These terms are governed by the laws of Quebec, Canada. Any dispute will be resolved in the competent courts of Montreal."
+    },
+    "termsChanges": {
+      "title": "14. Changes to Terms",
+      "content": "We may modify these terms at any time. Continuing to use the app after changes constitutes acceptance of the new terms."
+    },
+    "contact": {
+      "title": "15. Contact",
+      "content": "For questions about these Terms of Service, please contact:",
+      "items": [
+        "Email: josipilatesmontreal@gmail.com",
+        "Phone: +1(438)274-8396",
+        "Address: Josi Pilates Studio, Montreal"
+      ]
+    },
+    "backToHome": "Back to Home"
   }
 }
