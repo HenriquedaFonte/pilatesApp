@@ -220,11 +220,10 @@ export const AuthProvider = ({ children }) => {
     try {
       emailScheduler.stop()
 
-      // Check if there's a valid (non-expired) session before attempting to sign out
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session && session.expires_at && session.expires_at > Math.floor(Date.now() / 1000)) {
-        // Only attempt server logout if there's a valid, non-expired session
-        await supabase.auth.signOut()
+      // Always attempt to sign out from Supabase, ignore any errors
+      const { error } = await supabase.auth.signOut()
+      if (error) {
+        console.warn('Supabase signOut warning (ignored):', error.message)
       }
 
       // Always clear local state
