@@ -275,20 +275,20 @@ const Login = () => {
               </Link>
             </p>
           </div>
+
+          <div className="mt-4 text-center text-xs text-muted-foreground">
+            <div className="space-x-4">
+              <Link to="/privacy-policy" className="hover:underline">
+                Privacy Policy
+              </Link>
+              <span>•</span>
+              <Link to="/terms-of-service" className="hover:underline">
+                Terms of Service
+              </Link>
+            </div>
+          </div>
         </CardContent>
       </Card>
-
-      <div className="mt-8 text-center text-xs text-muted-foreground">
-        <div className="space-x-4">
-          <Link to="/privacy-policy" className="hover:underline">
-            Privacy Policy
-          </Link>
-          <span>•</span>
-          <Link to="/terms-of-service" className="hover:underline">
-            Terms of Service
-          </Link>
-        </div>
-      </div>
     </div>
   )
 }
