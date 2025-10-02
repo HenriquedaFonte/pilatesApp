@@ -105,7 +105,7 @@ class EmailService {
       <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="background: linear-gradient(135deg, #01b48d 0%, #017a6b 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
           <div style="display: inline-flex; align-items: center; justify-content: center; gap: 30px;">
-            <img src="https://pilates-app-git-main-josi-pilates-projects.vercel.app/logo.jpg" alt="Josi Pilates Logo" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;" />
+            <img src="https://pilates-mopk8vnvm-josi-pilates-projects.vercel.app/logo.jpg" alt="Josi Pilates Logo" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;" />
             <div style="text-align: left;">
               <h1 style="color: white; margin: 0; font-size: 28px;">Josi Pilates</h1>
               <p style="color: #f0f0f0; margin: 5px 0 0 0; font-size: 16px;">Studio de Pilates</p>
@@ -198,7 +198,7 @@ ${processedTemplate.tagline}
           <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="background: linear-gradient(135deg, #01b48d 0%, #017a6b 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
               <div style="display: inline-flex; align-items: center; justify-content: center; gap: 30px;">
-                <img src="https://pilates-app-git-main-josi-pilates-projects.vercel.app/logo.jpg" alt="Josi Pilates Logo" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;" />
+                <img src="https://pilates-mopk8vnvm-josi-pilates-projects.vercel.app/logo.jpg" alt="Josi Pilates Logo" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;" />
                 <div style="text-align: left;">
                   <h1 style="color: white; margin: 0; font-size: 28px;">Josi Pilates</h1>
                   <p style="color: #f0f0f0; margin: 5px 0 0 0; font-size: 16px;">Studio de Pilates</p>
@@ -262,7 +262,7 @@ ${processedTemplate.tagline}
       <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="background: linear-gradient(135deg, #01b48d 0%, #017a6b 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
           <div style="display: inline-flex; align-items: center; justify-content: center; gap: 30px;">
-            <img src="https://pilates-app-git-main-josi-pilates-projects.vercel.app/logo.jpg" alt="Josi Pilates Logo" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;" />
+            <img src="https://pilates-mopk8vnvm-josi-pilates-projects.vercel.app/logo.jpg" alt="Josi Pilates Logo" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;" />
             <div style="text-align: left;">
               <h1 style="color: white; margin: 0; font-size: 28px;">${processedTemplate.welcomeTitle}</h1>
               <p style="color: #f0f0f0; margin: 5px 0 0 0; font-size: 16px;">Josi Pilates</p>
@@ -360,7 +360,7 @@ ${processedTemplate.tagline}
       <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="background: linear-gradient(135deg, #01b48d 0%, #017a6b 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
           <div style="display: inline-flex; align-items: center; justify-content: center; gap: 30px;">
-            <img src="https://pilates-app-git-main-josi-pilates-projects.vercel.app/logo.jpg" alt="Josi Pilates Logo" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;" />
+            <img src="https://pilates-mopk8vnvm-josi-pilates-projects.vercel.app/logo.jpg" alt="Josi Pilates Logo" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;" />
             <div style="text-align: left;">
               <h1 style="color: white; margin: 0; font-size: 28px;">Josi Pilates</h1>
               <p style="color: #f0f0f0; margin: 5px 0 0 0; font-size: 16px;">Studio de Pilates</p>
@@ -460,7 +460,7 @@ ${processedTemplate.teamName}
       <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="background: linear-gradient(135deg, #01b48d 0%, #017a6b 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
           <div style="display: inline-flex; align-items: center; justify-content: center; gap: 30px;">
-            <img src="https://pilates-app-git-main-josi-pilates-projects.vercel.app/logo.jpg" alt="Josi Pilates Logo" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;" />
+            <img src="https://pilates-mopk8vnvm-josi-pilates-projects.vercel.app/logo.jpg" alt="Josi Pilates Logo" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;" />
             <div style="text-align: left;">
               <h1 style="color: white; margin: 0; font-size: 28px;">${processedTemplate.welcomeTitle}</h1>
               <p style="color: #f0f0f0; margin: 5px 0 0 0; font-size: 16px;">Josi Pilates</p>
