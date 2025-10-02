@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Menu, X } from 'lucide-react';
 import Logo from '../components/Logo';
 import studentPilatesImage from '../assets/1584341045.jpg.avif';
 import duosImage from '../assets/screen-shot-2014-07-27-at-10-07-46-pm.png.avif';
@@ -18,6 +19,7 @@ const StudioHome = () => {
   const { t, i18n } = useTranslation();
   const { user, profile, isProfileComplete } = useAuth();
   const navigate = useNavigate();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     // Set default language to French for homepage if not set
@@ -50,16 +52,18 @@ const StudioHome = () => {
   }, [user, profile, isProfileComplete, navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 pt-20 md:pt-0">
       {/* Header */}
-      <header className="bg-white shadow-sm">
+      <header className="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
               <Logo className="h-8 w-8 mr-2" />
               <span className="text-xl font-bold text-gray-900">Josi Pilates</span>
             </div>
-            <div className="flex items-center space-x-6">
+
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-4">
               <Select onValueChange={changeLanguage} defaultValue="fr">
                 <SelectTrigger className="w-32">
                   <SelectValue />
@@ -70,16 +74,55 @@ const StudioHome = () => {
                   <SelectItem value="pt">Português</SelectItem>
                 </SelectContent>
               </Select>
-              <nav className="space-x-6">
+              <nav className="flex space-x-6">
                 <a href="#about" className="text-gray-600 hover:text-gray-900">{t('studioHome.nav.about')}</a>
                 <a href="#services" className="text-gray-600 hover:text-gray-900">{t('studioHome.nav.services')}</a>
                 <a href="#contact" className="text-gray-600 hover:text-gray-900">{t('studioHome.nav.contact')}</a>
-                <Button asChild>
-                  <Link to="/login">{t('studioHome.nav.studentPortal')}</Link>
-                </Button>
               </nav>
+              <Button asChild>
+                <Link to="/login">{t('studioHome.nav.studentPortal')}</Link>
+              </Button>
+            </div>
+
+            {/* Mobile Navigation */}
+            <div className="md:hidden flex items-center space-x-2">
+              <Button asChild size="sm">
+                <Link to="/login">{t('studioHome.nav.studentPortal')}</Link>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              >
+                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              </Button>
             </div>
           </div>
+
+          {/* Mobile Menu */}
+          {mobileMenuOpen && (
+            <div className="md:hidden border-t border-gray-200 py-4">
+              <div className="flex flex-col space-y-4">
+                <div className="px-4">
+                  <Select onValueChange={changeLanguage} defaultValue="fr">
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="fr">Français</SelectItem>
+                      <SelectItem value="en">English</SelectItem>
+                      <SelectItem value="pt">Português</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <nav className="flex flex-col space-y-2 px-4">
+                  <a href="#about" className="text-gray-600 hover:text-gray-900 py-2" onClick={() => setMobileMenuOpen(false)}>{t('studioHome.nav.about')}</a>
+                  <a href="#services" className="text-gray-600 hover:text-gray-900 py-2" onClick={() => setMobileMenuOpen(false)}>{t('studioHome.nav.services')}</a>
+                  <a href="#contact" className="text-gray-600 hover:text-gray-900 py-2" onClick={() => setMobileMenuOpen(false)}>{t('studioHome.nav.contact')}</a>
+                </nav>
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
