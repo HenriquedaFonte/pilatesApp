@@ -1,8 +1,10 @@
+import logo from '../assets/logo.jpg'
+
 const Logo = ({ className = "h-8 w-8" }) => {
   return (
-    <img 
-      src="/src/assets/logo.jpg" 
-      alt="Pilates Studio Logo" 
+    <img
+      src={logo}
+      alt="Pilates Studio Logo"
       className={className}
       style={{ objectFit: 'contain' }}
     />
