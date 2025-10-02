@@ -21,6 +21,7 @@ import FinancialReport from './pages/FinancialReport'
 import EmailNotifications from './pages/EmailNotifications'
 import AuthCallback from './components/AuthCallback'
 import Home from './pages/Home'
+import PrivacyPolicy from './pages/PrivacyPolicy'
 import './App.css'
 
 function App() {
@@ -51,6 +52,7 @@ function AppRoutes() {
       <Route path="/complete-profile" element={<ProfileCompletion />} />
       <Route path="/change-password" element={<ChangePassword />} />
       <Route path="/auth/callback" element={<AuthCallback />} />
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route
         path="/"
         element={
