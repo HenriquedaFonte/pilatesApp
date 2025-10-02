@@ -220,12 +220,21 @@ export const AuthProvider = ({ children }) => {
     try {
       emailScheduler.stop()
 
+      // Attempt to sign out from Supabase, but don't fail if session is missing
       const { error } = await supabase.auth.signOut()
-      if (error) throw error
+      if (error && error.message !== 'Auth session missing!') {
+        console.warn('Supabase signOut warning:', error.message)
+      }
+
+      // Always clear local state regardless of server response
       setUser(null)
       setProfile(null)
     } catch (error) {
       console.error('Error signing out:', error)
+
+      // Even if there's an error, clear local state
+      setUser(null)
+      setProfile(null)
     }
   }
 
