@@ -220,10 +220,14 @@ export const AuthProvider = ({ children }) => {
     try {
       emailScheduler.stop()
 
-      // Attempt to sign out from Supabase, ignore all errors since logout should always succeed locally
-      await supabase.auth.signOut()
+      // Check if there's a session before attempting to sign out
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
+        // Only attempt server logout if there's an active session
+        await supabase.auth.signOut()
+      }
 
-      // Always clear local state regardless of server response
+      // Always clear local state
       setUser(null)
       setProfile(null)
     } catch (error) {
