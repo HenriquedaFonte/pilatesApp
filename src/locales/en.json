@@ -303,5 +303,79 @@
       ]
     },
     "backToHome": "Back to Home"
+  },
+  "studioHome": {
+    "nav": {
+      "about": "About",
+      "services": "Services",
+      "contact": "Contact",
+      "studentPortal": "Student Portal"
+    },
+    "hero": {
+      "greeting": "Bonjour!",
+      "intro": "Nice to meet you, I'm Josi!",
+      "description": "Physiotherapist and Pilates Method instructor since 2005. Passionate about human movement and the development of body awareness.",
+      "aboutButton": "About Me"
+    },
+    "about": {
+      "title": "About Me",
+      "greeting": "Hi!!",
+      "description": "Physiotherapist and Pilates Method instructor since 2005. Passionate about human movement and the development of body awareness.",
+      "extendedTitle": "A little more about me",
+      "extended": "Josiane received her first Pilates Method certification (PhysicalMind Institute–NYC) in 2005, initially drawn to the method as a complement to her career as a physiotherapist in Brazil.\n\nIn 2010, she moved to Montreal to deepen her knowledge in Somatic Education at UQÀM and was invited to give lectures and workshops on postural assessment, injury prevention techniques, and somatic practices (including Pilates) to undergraduate music and dance students at the university.\n\nThanks to her experience, Josiane is able to offer safe, balanced, and varied training. She is accustomed to working with a wide range of people, including athletes, circus artists, dancers, musicians, pregnant women, and seniors.\n\nWorking with Josiane, you'll be invited to move consciously and joyfully, while strengthening your body and improving your alignment and mobility."
+    },
+    "services": {
+      "title": "Services",
+      "subtitle": "Professional Pilates instruction tailored to your needs.",
+      "private": {
+        "title": "Private Classes",
+        "intro": "Introductory class: $80",
+        "single": "1 class: $80",
+        "four": "4 classes: $260",
+        "eight": "8 classes: $472",
+        "note": "Packages are valid for 4 months. Any cancellation must be made at least 24 hours in advance. Packages are non-refundable and non-transferable."
+      },
+      "duos": {
+        "title": "Duos Classes",
+        "intro": "Introductory class: $125",
+        "single": "1 class: $115",
+        "six": "6 classes: $545",
+        "twelve": "12 classes: $1008",
+        "note": "Packages are valid for 4 months. Any cancellation must be made at least 24 hours in advance. Packages are non-refundable and non-transferable."
+      },
+      "group": {
+        "title": "Group Classes",
+        "intro": "Introductory class: $80",
+        "single": "1 class: $40",
+        "six": "6 classes: $198",
+        "twelve": "12 classes: $355",
+        "note": "Packages are valid for 4 months. Any cancellation must be made at least 24 hours in advance. Packages are non-refundable and non-transferable."
+      }
+    },
+    "testimonials": [
+      {
+        "text": "Josi est sans aucun doute la meilleure professeure de Pilates à Montreal ! Elle a des connaissances incroyables et explique tous les mouvements très clairement, tout en étant attentive à ce que fait chaque élève. Je l'adore et la recommande à 100%!",
+        "author": "Thaissa Duarte, Montréal, QC"
+      },
+      {
+        "text": "Un excellent professionnel. Elle est attentive aux particularités de ses élèves.",
+        "author": "Lia Crippa, Montréal, QC"
+      },
+      {
+        "text": "Josi's classes are the best! She's super kind, knows her stuff, and makes Pilates fun. I feel stronger, more relaxed, and actually look forward to every session.",
+        "author": "Henrique, Montreal, QC"
+      }
+    ],
+    "contact": {
+      "title": "Talk to us",
+      "subtitle": "Pilates with Josi",
+      "address": "Montreal, QC, H2C2X1",
+      "phone": "Tel: +1 438 274 8396",
+      "email": "Email: josi@josipilates.com",
+      "portalButton": "Student Portal"
+    },
+    "footer": {
+      "copyright": "© 2025 Josi Pilates. All rights reserved."
+    }
   }
 }

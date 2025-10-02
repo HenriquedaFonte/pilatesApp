@@ -303,5 +303,79 @@
       ]
     },
     "backToHome": "Retour à l'Accueil"
+  },
+  "studioHome": {
+    "nav": {
+      "about": "À propos",
+      "services": "Services",
+      "contact": "Contact",
+      "studentPortal": "Portail Étudiant"
+    },
+    "hero": {
+      "greeting": "Bonjour!",
+      "intro": "Au plaisir, je suis Josi!",
+      "description": "Physiothérapeute et instructrice de la méthode Pilates depuis 2005. Passionnée par le mouvement humain et le développement de la conscience corporelle.",
+      "aboutButton": "À propos de moi"
+    },
+    "about": {
+      "title": "À propos de moi",
+      "greeting": "Salut!!",
+      "description": "Physiothérapeute et instructrice de la méthode Pilates depuis 2005. Passionnée par le mouvement humain et le développement de la conscience corporelle.",
+      "extendedTitle": "Un peu plus sur moi",
+      "extended": "Josiane a reçu sa première certification en méthode Pilates (PhysicalMind Institute–NYC) en 2005, initialement attirée par la méthode comme complément à sa carrière de physiothérapeute au Brésil.\n\nEn 2010, elle s'installe à Montréal pour approfondir ses connaissances en Éducation Somatique à l'UQÀM et est invitée à donner des conférences et ateliers sur l'évaluation posturale, les techniques de prévention des blessures et les pratiques somatiques (incluant le Pilates) aux étudiants de premier cycle en musique et danse de l'université.\n\nGrâce à son expérience, Josiane est en mesure d'offrir un entraînement sûr, équilibré et varié. Elle est habituée à travailler avec une grande variété de personnes, incluant les athlètes, artistes de cirque, danseurs, musiciens, femmes enceintes et personnes âgées.\n\nTravailler avec Josiane, vous invite à bouger consciemment et joyeusement, tout en renforçant votre corps et en améliorant votre alignement et mobilité."
+    },
+    "services": {
+      "title": "Services",
+      "subtitle": "Instruction professionnelle de Pilates adaptée à vos besoins.",
+      "private": {
+        "title": "Cours Privés",
+        "intro": "Classe d'introduction: $80",
+        "single": "1 classe: $80",
+        "four": "4 classes: $260",
+        "eight": "8 classes: $472",
+        "note": "Les forfaits sont valides pour 4 mois. Toute annulation doit être faite au moins 24 heures à l'avance. Les forfaits ne sont ni remboursables ni transférables."
+      },
+      "duos": {
+        "title": "Cours Duos",
+        "intro": "Classe d'introduction: $125",
+        "single": "1 classe: $115",
+        "six": "6 classes: $545",
+        "twelve": "12 classes: $1008",
+        "note": "Les forfaits sont valides pour 4 mois. Toute annulation doit être faite au moins 24 heures à l'avance. Les forfaits ne sont ni remboursables ni transférables."
+      },
+      "group": {
+        "title": "Cours de Groupe",
+        "intro": "Classe d'introduction: $80",
+        "single": "1 classe: $40",
+        "six": "6 classes: $198",
+        "twelve": "12 classes: $355",
+        "note": "Les forfaits sont valides pour 4 mois. Toute annulation doit être faite au moins 24 heures à l'avance. Les forfaits ne sont ni remboursables ni transférables."
+      }
+    },
+    "testimonials": [
+      {
+        "text": "Josi est sans aucun doute la meilleure professeure de Pilates à Montreal ! Elle a des connaissances incroyables et explique tous les mouvements très clairement, tout en étant attentive à ce que fait chaque élève. Je l'adore et la recommande à 100%!",
+        "author": "Thaissa Duarte, Montréal, QC"
+      },
+      {
+        "text": "Un excellent professionnel. Elle est attentive aux particularités de ses élèves.",
+        "author": "Lia Crippa, Montréal, QC"
+      },
+      {
+        "text": "Josi's classes are the best! She's super kind, knows her stuff, and makes Pilates fun. I feel stronger, more relaxed, and actually look forward to every session.",
+        "author": "Henrique, Montreal, QC"
+      }
+    ],
+    "contact": {
+      "title": "Parlez-nous",
+      "subtitle": "Pilates avec Josi",
+      "address": "Montréal, QC, H2C2X1",
+      "phone": "Tél: +1 438 274 8396",
+      "email": "E-mail: josi@josipilates.com",
+      "portalButton": "Portail Étudiant"
+    },
+    "footer": {
+      "copyright": "© 2025 Josi Pilates. Tous droits réservés."
+    }
   }
 }

@@ -20,9 +20,9 @@ import CreditHistoryReport from './pages/CreditHistoryReport'
 import FinancialReport from './pages/FinancialReport'
 import EmailNotifications from './pages/EmailNotifications'
 import AuthCallback from './components/AuthCallback'
-import Home from './pages/Home'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import TermsOfService from './pages/TermsOfService'
+import StudioHome from './pages/StudioHome'
 import './App.css'
 
 function App() {
@@ -36,7 +36,7 @@ function App() {
 }
 
 function AppRoutes() {
-  const { user, profile, loading, isProfileComplete } = useAuth()
+  const { loading } = useAuth()
 
   if (loading) {
     return (
@@ -55,25 +55,7 @@ function AppRoutes() {
       <Route path="/auth/callback" element={<AuthCallback />} />
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="/terms-of-service" element={<TermsOfService />} />
-      <Route
-        path="/"
-        element={
-          user ? (
-
-            !isProfileComplete ? (
-              <Navigate to="/complete-profile" replace />
-            ) : profile?.role === 'teacher' ? (
-              <Navigate to="/teacher/dashboard" replace />
-            ) : profile?.role === 'student' ? (
-              <Navigate to="/student/dashboard" replace />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          ) : (
-            <Navigate to="/login" replace />
-          )
-        }
-      />
+      <Route path="/" element={<StudioHome />} />
 
       <Route 
         path="/teacher/dashboard" 

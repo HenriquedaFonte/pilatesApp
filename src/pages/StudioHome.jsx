@@ -1,0 +1,392 @@
+import React, { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from '../hooks/useAuth';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import Logo from '../components/Logo';
+import studentPilatesImage from '../assets/1584341045.jpg.avif';
+import duosImage from '../assets/screen-shot-2014-07-27-at-10-07-46-pm.png.avif';
+import groupImage from '../assets/download.jpeg.avif';
+import heroImage from '../assets/student-pilates.jpg.avif';
+import instructorImage from '../assets/instructor-photo.jpg.avif';
+import aboutPhoto from '../assets/aboutPhoto.avif';
+import contactPhoto from '../assets/contactPhoto.avif';
+
+const StudioHome = () => {
+  const { t, i18n } = useTranslation();
+  const { user, profile, isProfileComplete } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Set default language to French for homepage if not set
+    if (!i18n.language || i18n.language === 'dev') {
+      i18n.changeLanguage('fr');
+    }
+  }, [i18n]);
+
+  const changeLanguage = (language) => {
+    i18n.changeLanguage(language);
+  };
+
+  useEffect(() => {
+    if (user) {
+      if (!profile) {
+        // User exists but no profile, redirect to complete profile
+        navigate('/complete-profile', { replace: true });
+      } else if (!isProfileComplete) {
+        // Profile exists but not complete
+        navigate('/complete-profile', { replace: true });
+      } else {
+        // Profile complete, redirect to appropriate dashboard
+        if (profile.role === 'teacher') {
+          navigate('/teacher/dashboard', { replace: true });
+        } else if (profile.role === 'student') {
+          navigate('/student/dashboard', { replace: true });
+        }
+      }
+    }
+  }, [user, profile, isProfileComplete, navigate]);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Header */}
+      <header className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <div className="flex items-center">
+              <Logo className="h-8 w-8 mr-2" />
+              <span className="text-xl font-bold text-gray-900">Josi Pilates</span>
+            </div>
+            <div className="flex items-center space-x-6">
+              <Select onValueChange={changeLanguage} defaultValue="fr">
+                <SelectTrigger className="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="fr">Français</SelectItem>
+                  <SelectItem value="en">English</SelectItem>
+                  <SelectItem value="pt">Português</SelectItem>
+                </SelectContent>
+              </Select>
+              <nav className="space-x-6">
+                <a href="#about" className="text-gray-600 hover:text-gray-900">{t('studioHome.nav.about')}</a>
+                <a href="#services" className="text-gray-600 hover:text-gray-900">{t('studioHome.nav.services')}</a>
+                <a href="#contact" className="text-gray-600 hover:text-gray-900">{t('studioHome.nav.contact')}</a>
+                <Button asChild>
+                  <Link to="/login">{t('studioHome.nav.studentPortal')}</Link>
+                </Button>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="w-full mb-12">
+            <img
+              src={heroImage}
+              alt="Student doing Pilates exercise"
+              className="w-full h-[500px] object-cover shadow-lg"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            {/* Text Content */}
+            <div className="lg:col-span-2">
+              <div className="bg-white p-10 rounded-lg shadow-sm">
+                <h1 className="text-4xl font-bold text-gray-900 mb-6">
+                  {t('studioHome.hero.greeting')}<br />
+                  {t('studioHome.hero.intro')}
+                </h1>
+                <p className="text-gray-600 mb-8 text-lg leading-relaxed">
+                  {t('studioHome.hero.description')}
+                </p>
+                <Button size="lg" asChild>
+                  <a href="#about">{t('studioHome.hero.aboutButton')}</a>
+                </Button>
+              </div>
+            </div>
+
+            {/* Instructor Photo */}
+            <div className="lg:col-span-1">
+              <img
+                src={aboutPhoto}
+                alt="Josi Pilates Instructor"
+                className="w-full h-80 object-cover rounded-lg shadow-lg"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section id="about" className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-8">
+              <h1 className="text-4xl font-bold text-gray-900 mb-4">{t('studioHome.about.greeting')}</h1>
+              <img
+                src={instructorImage}
+                alt="Josi Pilates Instructor"
+                className="w-48 h-48 object-cover rounded-full mx-auto mb-6"
+              />
+            </div>
+
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">{t('studioHome.about.title')}</h2>
+              <p className="text-gray-600 mb-6">
+                {t('studioHome.about.description')}
+              </p>
+            </div>
+
+            <div className="bg-white p-8 rounded-lg shadow-sm">
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">{t('studioHome.about.extendedTitle')}</h3>
+              <div className="text-gray-600 whitespace-pre-line">
+                {t('studioHome.about.extended')}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Services Section */}
+      <section id="services" className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('studioHome.services.title')}</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              {t('studioHome.services.subtitle')}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <Card>
+              <img
+                src={studentPilatesImage}
+                alt="Private Classes"
+                className="w-full aspect-video object-cover rounded-t-lg"
+              />
+              <CardHeader>
+                <CardTitle>{t('studioHome.services.private.title')}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2 text-sm">
+                  <p><strong>{t('studioHome.services.private.intro')}</strong></p>
+                  <p><strong>{t('studioHome.services.private.single')}</strong></p>
+                  <p><strong>{t('studioHome.services.private.four')}</strong></p>
+                  <p><strong>{t('studioHome.services.private.eight')}</strong></p>
+                  <p className="text-xs text-gray-600 mt-4">
+                    {t('studioHome.services.private.note')}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <img
+                src={duosImage}
+                alt="Duos Classes"
+                className="w-full aspect-video object-cover rounded-t-lg"
+              />
+              <CardHeader>
+                <CardTitle>{t('studioHome.services.duos.title')}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2 text-sm">
+                  <p><strong>{t('studioHome.services.duos.intro')}</strong></p>
+                  <p><strong>{t('studioHome.services.duos.single')}</strong></p>
+                  <p><strong>{t('studioHome.services.duos.six')}</strong></p>
+                  <p><strong>{t('studioHome.services.duos.twelve')}</strong></p>
+                  <p className="text-xs text-gray-600 mt-4">
+                    {t('studioHome.services.duos.note')}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <img
+                src={groupImage}
+                alt="Group Classes"
+                className="w-full aspect-video object-cover rounded-t-lg"
+              />
+              <CardHeader>
+                <CardTitle>{t('studioHome.services.group.title')}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2 text-sm">
+                  <p><strong>{t('studioHome.services.group.intro')}</strong></p>
+                  <p><strong>{t('studioHome.services.group.single')}</strong></p>
+                  <p><strong>{t('studioHome.services.group.six')}</strong></p>
+                  <p><strong>{t('studioHome.services.group.twelve')}</strong></p>
+                  <p className="text-xs text-gray-600 mt-4">
+                    {t('studioHome.services.group.note')}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {t('studioHome.testimonials', { returnObjects: true }).map((testimonial, index) => (
+              <Card key={index}>
+                <CardContent className="pt-6">
+                  <p className="text-gray-600 italic mb-4">
+                    "{testimonial.text}"
+                  </p>
+                  <p className="text-sm text-gray-500">- {testimonial.author}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Contactez nous</h2>
+            <p className="text-gray-600">Get in touch with us</p>
+          </div>
+
+          {/* Top Section: Photo and Form */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
+            {/* Instructor Photo */}
+            <div className="flex justify-center">
+              <img
+                src={contactPhoto}
+                alt="Josi Pilates Instructor"
+                className="w-full h-auto object-cover rounded-lg shadow-lg"
+              />
+            </div>
+
+            {/* Contact Form */}
+            <div className="bg-white p-8 rounded-lg shadow-sm flex justify-center">
+              <form className="space-y-6 w-full max-w-md">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                    <input
+                      type="text"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="First Name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                    <input
+                      type="text"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Last Name"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                  <input
+                    type="email"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Email"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                  <textarea
+                    rows="4"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Your message"
+                  ></textarea>
+                </div>
+                <Button type="submit" className="w-full">
+                  Send
+                </Button>
+              </form>
+            </div>
+          </div>
+
+          {/* Bottom Section: Contact Info and Map */}
+          <div className="space-y-8">
+            {/* Contact Info - Horizontal */}
+            <div className="flex flex-wrap justify-center items-center gap-8">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center">
+                  <span className="text-white">@</span>
+                </div>
+                <span className="text-gray-700">josi@josipilates.com</span>
+              </div>
+
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center">
+                  <span className="text-white">💬</span>
+                </div>
+                <span className="text-gray-700">+1 438 274 8396</span>
+              </div>
+
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center">
+                  <span className="text-white">📍</span>
+                </div>
+                <div className="text-gray-700">
+                  <div>10145 Av. Hamel</div>
+                  <div>Montreal, QC, H2C2X1</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Google Maps */}
+            <div className="bg-white p-4 rounded-lg shadow-sm max-w-4xl mx-auto">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2796.1234567890123!2d-73.567890!3d45.501234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cc91a1b2c3d4e5f%3A0x1234567890abcdef!2s10145%20Av.%20Hamel%2C%20Montreal%2C%20QC%20H2C2X1!5e0!3m2!1sen!2sca!4v1234567890123!5m2!1sen!2sca"
+                width="100%"
+                height="300"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Studio Location"
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center mb-4 md:mb-0">
+              <Logo className="h-6 w-6 mr-2" />
+              <span className="text-lg font-semibold">Josi Pilates</span>
+            </div>
+            <div className="flex space-x-6">
+              <Link to="/privacy-policy" className="hover:text-gray-300">
+                Privacy Policy
+              </Link>
+              <Link to="/terms-of-service" className="hover:text-gray-300">
+                Terms of Service
+              </Link>
+              <a href="tel:+14382748396" className="hover:text-gray-300">
+                Contact
+              </a>
+            </div>
+          </div>
+          <div className="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400">
+            <p>{t('studioHome.footer.copyright')}</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default StudioHome;

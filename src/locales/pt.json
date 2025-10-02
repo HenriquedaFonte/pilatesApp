@@ -397,5 +397,79 @@
       ]
     },
     "backToHome": "Voltar ao Início"
+  },
+  "studioHome": {
+    "nav": {
+      "about": "Sobre",
+      "services": "Serviços",
+      "contact": "Contato",
+      "studentPortal": "Portal do Aluno"
+    },
+    "hero": {
+      "greeting": "Bonjour!",
+      "intro": "Prazer em conhecê-lo, eu sou a Josi!",
+      "description": "Fisioterapeuta e instrutora do Método Pilates desde 2005. Apaixonada pelo movimento humano e pelo desenvolvimento da consciência corporal.",
+      "aboutButton": "Sobre Mim"
+    },
+    "about": {
+      "title": "Sobre Mim",
+      "greeting": "Salut!!",
+      "description": "Fisioterapeuta e instrutora do Método Pilates desde 2005. Apaixonada pelo movimento humano e pelo desenvolvimento da consciência corporal.",
+      "extendedTitle": "Um pouco mais sobre mim",
+      "extended": "Josiane recebeu sua primeira certificação em método Pilates (PhysicalMind Institute–NYC) em 2005, inicialmente atraída pelo método como complemento à sua carreira de fisioterapeuta no Brasil.\n\nEm 2010, ela se mudou para Montreal para aprofundar seus conhecimentos em Educação Somática na UQÀM e foi convidada a dar palestras e workshops sobre avaliação postural, técnicas de prevenção de lesões e práticas somáticas (incluindo Pilates) para estudantes de graduação em música e dança da universidade.\n\nGraças à sua experiência, Josiane é capaz de oferecer um treinamento seguro, equilibrado e variado. Ela está acostumada a trabalhar com uma ampla variedade de pessoas, incluindo atletas, artistas de circo, dançarinos, músicos, mulheres grávidas e idosos.\n\nTrabalhar com Josiane, convida você a se mover conscientemente e com alegria, fortalecendo seu corpo e melhorando seu alinhamento e mobilidade."
+    },
+    "services": {
+      "title": "Serviços",
+      "subtitle": "Instrução profissional de Pilates adaptada às suas necessidades.",
+      "private": {
+        "title": "Aulas Privadas",
+        "intro": "Aula introdutória: $80",
+        "single": "1 aula: $80",
+        "four": "4 aulas: $260",
+        "eight": "8 aulas: $472",
+        "note": "Os pacotes são válidos por 4 meses. Qualquer cancelamento deve ser feito com pelo menos 24 horas de antecedência. Os pacotes não são reembolsáveis nem transferíveis."
+      },
+      "duos": {
+        "title": "Aulas Duplas",
+        "intro": "Aula introdutória: $125",
+        "single": "1 aula: $115",
+        "six": "6 aulas: $545",
+        "twelve": "12 aulas: $1008",
+        "note": "Os pacotes são válidos por 4 meses. Qualquer cancelamento deve ser feito com pelo menos 24 horas de antecedência. Os pacotes não são reembolsáveis nem transferíveis."
+      },
+      "group": {
+        "title": "Aulas em Grupo",
+        "intro": "Aula introdutória: $80",
+        "single": "1 aula: $40",
+        "six": "6 aulas: $198",
+        "twelve": "12 aulas: $355",
+        "note": "Os pacotes são válidos por 4 meses. Qualquer cancelamento deve ser feito com pelo menos 24 horas de antecedência. Os pacotes não são reembolsáveis nem transferíveis."
+      }
+    },
+    "testimonials": [
+      {
+        "text": "Josi est sans aucun doute la meilleure professeure de Pilates à Montreal ! Elle a des connaissances incroyables et explique tous les mouvements très clairement, tout en étant attentive à ce que fait chaque élève. Je l'adore et la recommande à 100%!",
+        "author": "Thaissa Duarte, Montréal, QC"
+      },
+      {
+        "text": "Un excellent professionnel. Elle est attentive aux particularités de ses élèves.",
+        "author": "Lia Crippa, Montréal, QC"
+      },
+      {
+        "text": "Josi's classes are the best! She's super kind, knows her stuff, and makes Pilates fun. I feel stronger, more relaxed, and actually look forward to every session.",
+        "author": "Henrique, Montreal, QC"
+      }
+    ],
+    "contact": {
+      "title": "Fale conosco",
+      "subtitle": "Pilates com Josi",
+      "address": "Montreal, QC, H2C2X1",
+      "phone": "Tel: +1 438 274 8396",
+      "email": "E-mail: josi@josipilates.com",
+      "portalButton": "Portal do Aluno"
+    },
+    "footer": {
+      "copyright": "© 2025 Josi Pilates. Todos os direitos reservados."
+    }
   }
 }
