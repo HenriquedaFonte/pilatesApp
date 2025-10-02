@@ -220,10 +220,14 @@ export const AuthProvider = ({ children }) => {
     try {
       emailScheduler.stop()
 
-      // Always attempt to sign out from Supabase, ignore any errors
-      const { error } = await supabase.auth.signOut()
-      if (error) {
-        console.warn('Supabase signOut warning (ignored):', error.message)
+      // Check if there's a session before attempting to sign out
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
+        // Only attempt server logout if there's an active session
+        const { error } = await supabase.auth.signOut()
+        if (error) {
+          console.warn('Supabase signOut warning (ignored):', error.message)
+        }
       }
 
       // Always clear local state
