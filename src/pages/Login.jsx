@@ -85,10 +85,10 @@ const Login = () => {
     setResetSuccess('')
 
     try {
-      // Get user profile to get preferred language
-      const { data: profile, error: profileError } = await supabase
+      // Check if user exists
+      const { error: profileError } = await supabase
         .from('profiles')
-        .select('preferred_language')
+        .select('id')
         .eq('email', resetEmail)
         .single()
 
