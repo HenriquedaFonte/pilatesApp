@@ -21,10 +21,12 @@ A comprehensive web application for managing Pilates studio operations, built wi
 - **Student Management**: Add, view, and manage student profiles
 - **Credit Management**: Track and update individual, duo, and group class credits
 - **Class Scheduling**: Manage weekly class schedules and student enrollment
+- **Attendance Check-In**: Real-time attendance marking for classes
 - **Reports & Analytics**:
   - Low Credits Report (students with ≤2 credits)
   - Attendance Reports with detailed analytics
   - Credit History tracking
+  - Financial Reports for revenue and transaction tracking
 - **Email Notifications**: Send customized notifications to students
 
 ### 👨‍🎓 Student Dashboard
