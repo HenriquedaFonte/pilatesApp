@@ -81,6 +81,11 @@ const LowCreditsReport = () => {
     generateReport()
   }, [generateReport])
 
+  const handleSignOut = async () => {
+    await signOut()
+    navigate('/')
+  }
+
   const exportToCSV = (data, filename) => {
     if (data.length === 0) return
 
@@ -209,7 +214,7 @@ const LowCreditsReport = () => {
               <span className="text-sm text-gray-700">
                 Welcome, {profile?.full_name}
               </span>
-              <Button variant="outline" size="sm" onClick={signOut}>
+              <Button variant="outline" size="sm" onClick={handleSignOut}>
                 <LogOut className="h-4 w-4 mr-2" />
                 Sign Out
               </Button>

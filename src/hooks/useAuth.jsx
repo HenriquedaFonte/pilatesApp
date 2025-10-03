@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import emailScheduler from '../utils/emailScheduler'
 
@@ -16,6 +17,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
+  const navigate = useNavigate()
 
   useEffect(() => {
     const handleSession = async (session) => {
@@ -233,12 +235,18 @@ export const AuthProvider = ({ children }) => {
       // Always clear local state
       setUser(null)
       setProfile(null)
+
+      // Navigate to home page
+      navigate('/')
     } catch (error) {
       console.error('Error signing out:', error)
 
       // Even if there's an error, clear local state
       setUser(null)
       setProfile(null)
+
+      // Navigate to home page even on error
+      navigate('/')
     }
   }
 

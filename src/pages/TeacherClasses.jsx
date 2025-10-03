@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import { Button } from '@/components/ui/button'
@@ -40,6 +40,7 @@ import {
 
 const TeacherClasses = () => {
   const { profile, signOut } = useAuth()
+  const navigate = useNavigate()
   const [classes, setClasses] = useState([])
   const [schedules, setSchedules] = useState([])
   const [loading, setLoading] = useState(true)
@@ -64,6 +65,11 @@ const TeacherClasses = () => {
   useEffect(() => {
     fetchClasses()
   }, [])
+
+  const handleSignOut = async () => {
+    await signOut()
+    navigate('/')
+  }
 
   const fetchClasses = async () => {
     try {
@@ -237,7 +243,7 @@ const TeacherClasses = () => {
               <span className="text-sm text-gray-700">
                 Welcome, {profile?.full_name}
               </span>
-              <Button variant="outline" size="sm" onClick={signOut}>
+              <Button variant="outline" size="sm" onClick={handleSignOut}>
                 <LogOut className="h-4 w-4 mr-2" />
                 Sign Out
               </Button>

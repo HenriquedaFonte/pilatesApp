@@ -574,10 +574,14 @@ export const emailTemplates = {
 
   creditAddition: {
     pt: {
-      subject: 'Créditos Adicionados - Josi Pilates',
+      subject: (amount) => amount > 0 ? 'Créditos Adicionados - Josi Pilates' : 'Créditos Removidos - Josi Pilates',
       greeting: (name) => `Olá, ${name}!`,
-      creditAdded: 'Créditos adicionados à sua conta!',
-      creditDetails: (amount, type, description) => `Foram adicionados ${amount} crédito(s) do tipo ${type} à sua conta. Descrição: ${description}`,
+      creditAdded: (amount) => amount > 0 ? 'Créditos adicionados à sua conta!' : 'Créditos removidos da sua conta!',
+      creditDetails: (amount, type, description) => {
+        const action = amount > 0 ? 'adicionados' : 'removidos';
+        const absAmount = Math.abs(amount);
+        return `Foram ${action} ${absAmount} crédito(s) do tipo ${type} da sua conta. Descrição: ${description}`;
+      },
       currentBalance: (balance) => `Seu saldo atual é de ${balance} crédito(s).`,
       studioRulesTitle: 'Regras do Studio Josi Pilates',
       classDuration: 'As aulas têm duração de 55 minutos.',
@@ -588,10 +592,14 @@ export const emailTemplates = {
       teamName: 'Equipe Josi Pilates'
     },
     en: {
-      subject: 'Credits Added - Josi Pilates',
+      subject: (amount) => amount > 0 ? 'Credits Added - Josi Pilates' : 'Credits Removed - Josi Pilates',
       greeting: (name) => `Hello, ${name}!`,
-      creditAdded: 'Credits have been added to your account!',
-      creditDetails: (amount, type, description) => `${amount} ${type} credit(s) have been added to your account. Description: ${description}`,
+      creditAdded: (amount) => amount > 0 ? 'Credits have been added to your account!' : 'Credits have been removed from your account!',
+      creditDetails: (amount, type, description) => {
+        const action = amount > 0 ? 'added to' : 'removed from';
+        const absAmount = Math.abs(amount);
+        return `${absAmount} ${type} credit(s) have been ${action} your account. Description: ${description}`;
+      },
       currentBalance: (balance) => `Your current balance is ${balance} credit(s).`,
       studioRulesTitle: 'Josi Pilates Studio Rules',
       classDuration: 'Classes have a duration of 55 minutes.',
@@ -602,10 +610,14 @@ export const emailTemplates = {
       teamName: 'Josi Pilates Team'
     },
     fr: {
-      subject: 'Crédits Ajoutés - Josi Pilates',
+      subject: (amount) => amount > 0 ? 'Crédits Ajoutés - Josi Pilates' : 'Crédits Retirés - Josi Pilates',
       greeting: (name) => `Bonjour, ${name}!`,
-      creditAdded: 'Des crédits ont été ajoutés à votre compte!',
-      creditDetails: (amount, type, description) => `${amount} crédit(s) ${type} ont été ajoutés à votre compte. Description: ${description}`,
+      creditAdded: (amount) => amount > 0 ? 'Des crédits ont été ajoutés à votre compte!' : 'Des crédits ont été retirés de votre compte!',
+      creditDetails: (amount, type, description) => {
+        const action = amount > 0 ? 'ajoutés à' : 'retirés de';
+        const absAmount = Math.abs(amount);
+        return `${absAmount} crédit(s) ${type} ont été ${action} votre compte. Description: ${description}`;
+      },
       currentBalance: (balance) => `Votre solde actuel est de ${balance} crédit(s).`,
       studioRulesTitle: 'Règles du Studio Josi Pilates',
       classDuration: 'Les cours ont une durée de 55 minutes.',
@@ -642,7 +654,7 @@ export const emailTemplates = {
       contactTitle: '📞 Precisa de ajuda?',
       contactInfo: 'Entre em contato conosco:',
       phone: 'WhatsApp: +1(438)274-8396',
-      email: 'E-mail: josi@josipilates.com',
+      email: 'E-mail: josi@josopilates.com',
       excitement: 'Estamos muito felizes em recebê-lo em nossa comunidade!',
       closing: 'Bem-vindo à família Josi Pilates!',
       signature: 'Com carinho,',
@@ -672,7 +684,7 @@ export const emailTemplates = {
       contactTitle: '📞 Need help?',
       contactInfo: 'Contact us:',
       phone: 'WhatsApp: +1(438)274-8396',
-      email: 'Email: josi@josipilates.com',
+      email: 'Email: josi@josopilates.com',
       excitement: 'We are very happy to welcome you to our community!',
       closing: 'Welcome to the Josi Pilates family!',
       signature: 'With care,',
@@ -702,7 +714,7 @@ export const emailTemplates = {
       contactTitle: '📞 Besoin d\'aide?',
       contactInfo: 'Contactez-nous:',
       phone: 'WhatsApp: +1(438)274-8396',
-      email: 'E-mail: josi@josipilates.com',
+      email: 'E-mail: josi@josopilates.com',
       excitement: 'Nous sommes très heureux de vous accueillir dans notre communauté!',
       closing: 'Bienvenue dans la famille Josi Pilates!',
       signature: 'Avec soin,',

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import emailService from '../lib/emailService'
@@ -45,6 +45,7 @@ import {
 
 const TeacherStudents = () => {
   const { profile, signOut } = useAuth()
+  const navigate = useNavigate()
   const [students, setStudents] = useState([])
   // const [classes, setClasses] = useState([])
   const [schedules, setSchedules] = useState([])
@@ -77,6 +78,11 @@ const TeacherStudents = () => {
   useEffect(() => {
     fetchData()
   }, [])
+
+  const handleSignOut = async () => {
+    await signOut()
+    navigate('/')
+  }
 
   const [selectedSchedules, setSelectedSchedules] = useState([])
 
@@ -172,33 +178,31 @@ const TeacherStudents = () => {
 
       if (error) throw error
 
-      // Send credit addition email if credits were added (positive amount)
-      if (amount > 0) {
-        try {
-          // Get updated balance to include in email
-          const { data: updatedStudent } = await supabase
-            .from('profiles')
-            .select('individual_credits, duo_credits, group_credits')
-            .eq('id', selectedStudent.id)
-            .single()
+      // Send credit change email for both additions and reductions
+      try {
+        // Get updated balance to include in email
+        const { data: updatedStudent } = await supabase
+          .from('profiles')
+          .select('individual_credits, duo_credits, group_credits')
+          .eq('id', selectedStudent.id)
+          .single()
 
-          if (updatedStudent) {
-            const currentBalance = (updatedStudent.individual_credits || 0) +
-                                 (updatedStudent.duo_credits || 0) +
-                                 (updatedStudent.group_credits || 0)
+        if (updatedStudent) {
+          const currentBalance = (updatedStudent.individual_credits || 0) +
+                               (updatedStudent.duo_credits || 0) +
+                               (updatedStudent.group_credits || 0)
 
-            await emailService.sendCreditAdditionEmail(
-              selectedStudent,
-              amount,
-              balanceChange.creditType,
-              balanceChange.description,
-              currentBalance
-            )
-          }
-        } catch (emailError) {
-          console.error('Error sending credit addition email:', emailError)
-          // Don't fail the balance update if email fails
+          await emailService.sendCreditAdditionEmail(
+            selectedStudent,
+            amount,
+            balanceChange.creditType,
+            balanceChange.description,
+            currentBalance
+          )
         }
+      } catch (emailError) {
+        console.error('Error sending credit change email:', emailError)
+        // Don't fail the balance update if email fails
       }
 
       setBalanceChange({
@@ -412,7 +416,7 @@ const TeacherStudents = () => {
               <span className="text-sm text-gray-700">
                 Welcome, {profile?.full_name}
               </span>
-              <Button variant="outline" size="sm" onClick={signOut}>
+              <Button variant="outline" size="sm" onClick={handleSignOut}>
                 <LogOut className="h-4 w-4 mr-2" />
                 Sign Out
               </Button>

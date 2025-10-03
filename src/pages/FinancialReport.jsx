@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import { Button } from '@/components/ui/button'
@@ -35,6 +35,7 @@ import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveCo
 
 const FinancialReport = () => {
   const { profile, signOut } = useAuth()
+  const navigate = useNavigate()
   const [history, setHistory] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -61,6 +62,11 @@ const FinancialReport = () => {
   useEffect(() => {
     fetchStudents()
   }, [])
+
+  const handleSignOut = async () => {
+    await signOut()
+    navigate('/')
+  }
 
   function getUTCDateRangeForLocalDay(dateStr) {
     const [year, month, day] = dateStr.split('-').map(Number)
@@ -267,7 +273,7 @@ const FinancialReport = () => {
               <span className="text-sm text-gray-700">
                 Welcome, {profile?.full_name}
               </span>
-              <Button variant="outline" size="sm" onClick={signOut}>
+              <Button variant="outline" size="sm" onClick={handleSignOut}>
                 <CreditCard className="h-4 w-4 mr-2" />
                 Sign Out
               </Button>
@@ -483,48 +489,98 @@ const FinancialReport = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Pie Chart for Payment Methods */}
                 {pieData.length > 0 && (
-                  <div>
-                    <h4 className="text-sm font-medium mb-4">Revenue by Payment Method</h4>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <PieChart>
-                        <Tooltip />
-                        <Pie
-                          data={pieData}
-                          dataKey="value"
-                          nameKey="name"
-                          innerRadius={60}
-                          strokeWidth={5}
-                          label={({ name, value }) => `$${value}\n${name}`}
-                        />
-                      </PieChart>
-                    </ResponsiveContainer>
+                  <div className="flex flex-col">
+                    <h4 className="text-lg font-semibold mb-6 text-center">Revenue by Payment Method</h4>
+                    <div className="flex-1 min-h-[350px] sm:min-h-[400px] lg:min-h-[350px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Tooltip
+                            formatter={(value) => [`$${value.toFixed(2)}`, 'Revenue']}
+                            labelStyle={{ color: '#374151' }}
+                            contentStyle={{
+                              backgroundColor: '#f9fafb',
+                              border: '1px solid #e5e7eb',
+                              borderRadius: '8px',
+                              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                            }}
+                          />
+                          <Pie
+                            data={pieData}
+                            dataKey="value"
+                            nameKey="name"
+                            innerRadius={50}
+                            outerRadius={120}
+                            strokeWidth={2}
+                            stroke="#ffffff"
+                            label={({ name, percent }) => `${name}\n${(percent * 100).toFixed(0)}%`}
+                            labelLine={false}
+                            style={{ fontSize: '12px', fontWeight: '500' }}
+                          />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
                   </div>
                 )}
 
                 {/* Bar Chart for Credits by Type */}
                 {barData.length > 0 && (
-                  <div>
-                    <h4 className="text-sm font-medium mb-4">Credits and Revenue by Type</h4>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <BarChart data={barData}>
-                        <CartesianGrid vertical={false} />
-                        <XAxis
-                          dataKey="type"
-                          tickLine={false}
-                          tickMargin={10}
-                          axisLine={false}
-                        />
-                        <YAxis tickLine={false} axisLine={false} />
-                        <Tooltip />
-                        <Bar dataKey="credits" fill="#2563eb" radius={4} />
-                        <Bar dataKey="amount" fill="#dc2626" radius={4} />
-                        <LabelList dataKey="credits" position="top" />
-                        <LabelList dataKey="amount" position="top" formatter={(value) => `$${value}`} />
-                      </BarChart>
-                    </ResponsiveContainer>
+                  <div className="flex flex-col">
+                    <h4 className="text-lg font-semibold mb-6 text-center">Credits and Revenue by Type</h4>
+                    <div className="flex-1 min-h-[350px] sm:min-h-[400px] lg:min-h-[350px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                          data={barData}
+                          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                        >
+                          <CartesianGrid
+                            vertical={false}
+                            stroke="#e5e7eb"
+                            strokeDasharray="3 3"
+                          />
+                          <XAxis
+                            dataKey="type"
+                            tickLine={false}
+                            tickMargin={10}
+                            axisLine={false}
+                            tick={{ fontSize: 12, fill: '#6b7280' }}
+                          />
+                          <YAxis
+                            tickLine={false}
+                            axisLine={false}
+                            tick={{ fontSize: 12, fill: '#6b7280' }}
+                            tickFormatter={(value) => value >= 1000 ? `${(value / 1000).toFixed(1)}k` : value}
+                          />
+                          <Tooltip
+                            formatter={(value, name) => [
+                              name === 'Revenue' ? `$${value.toFixed(2)}` : value,
+                              name
+                            ]}
+                            labelStyle={{ color: '#374151', fontWeight: '600' }}
+                            contentStyle={{
+                              backgroundColor: '#f9fafb',
+                              border: '1px solid #e5e7eb',
+                              borderRadius: '8px',
+                              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                            }}
+                          />
+                          <Bar
+                            dataKey="credits"
+                            fill="#2563eb"
+                            radius={[4, 4, 0, 0]}
+                            name="Credits"
+                          />
+                          <Bar
+                            dataKey="amount"
+                            fill="#dc2626"
+                            radius={[4, 4, 0, 0]}
+                            name="Revenue"
+                          />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
                   </div>
                 )}
               </div>

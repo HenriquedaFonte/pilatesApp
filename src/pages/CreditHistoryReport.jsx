@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import { Button } from '@/components/ui/button'
@@ -33,6 +33,7 @@ import {
 
 const CreditHistoryReport = () => {
   const { profile, signOut } = useAuth()
+  const navigate = useNavigate()
   const [history, setHistory] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -59,6 +60,11 @@ const CreditHistoryReport = () => {
   useEffect(() => {
     fetchStudents()
   }, [])
+
+  const handleSignOut = async () => {
+    await signOut()
+    navigate('/')
+  }
 
   function getUTCDateRangeForLocalDay(dateStr) {
     const [year, month, day] = dateStr.split('-').map(Number)
@@ -212,7 +218,7 @@ const CreditHistoryReport = () => {
               <span className="text-sm text-gray-700">
                 Welcome, {profile?.full_name}
               </span>
-              <Button variant="outline" size="sm" onClick={signOut}>
+              <Button variant="outline" size="sm" onClick={handleSignOut}>
                 <CreditCard className="h-4 w-4 mr-2" />
                 Sign Out
               </Button>

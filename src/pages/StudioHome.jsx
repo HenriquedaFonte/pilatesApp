@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Menu, X } from 'lucide-react';
 import Logo from '../components/Logo';
+import emailService from '../lib/emailService';
 import studentPilatesImage from '../assets/1584341045.jpg.avif';
 import duosImage from '../assets/screen-shot-2014-07-27-at-10-07-46-pm.png.avif';
 import groupImage from '../assets/download.jpeg.avif';
@@ -20,33 +21,116 @@ const StudioHome = () => {
   const { user, profile, isProfileComplete } = useAuth();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [contactForm, setContactForm] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    message: ''
+  });
+  const [contactFormSubmitting, setContactFormSubmitting] = useState(false);
+  const [contactFormSuccess, setContactFormSuccess] = useState(false);
+  const [contactFormError, setContactFormError] = useState('');
 
   useEffect(() => {
-    // Set default language to French for homepage if not set
-    if (!i18n.language || i18n.language === 'dev') {
-      i18n.changeLanguage('fr');
-    }
+    // Always start in French for homepage
+    i18n.changeLanguage('fr');
   }, [i18n]);
 
   const changeLanguage = (language) => {
     i18n.changeLanguage(language);
   };
 
+  const handleContactSubmit = async (e) => {
+    e.preventDefault();
+    setContactFormSubmitting(true);
+    setContactFormError('');
+    setContactFormSuccess(false);
+
+    try {
+      const fullName = `${contactForm.firstName} ${contactForm.lastName}`.trim();
+      const subject = `Contact Form Message from ${fullName}`;
+      const message = `
+New contact form submission:
+
+Name: ${fullName}
+Email: ${contactForm.email}
+
+Message:
+${contactForm.message}
+
+Sent from Josi Pilates website contact form.
+      `;
+
+      await emailService.sendEmail({
+        to: { email: 'josi@josipilates.com', name: 'Josi Pilates' },
+        subject,
+        htmlContent: `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>${subject}</title>
+          </head>
+          <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="background: linear-gradient(135deg, #01b48d 0%, #017a6b 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+              <div style="display: inline-flex; align-items: center; justify-content: center; gap: 30px;">
+                <div style="width: 60px; height: 60px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: #01b48d;">JP</div>
+                <div style="text-align: left;">
+                  <h1 style="color: white; margin: 0; font-size: 28px;">Josi Pilates</h1>
+                  <p style="color: #f0f0f0; margin: 5px 0 0 0; font-size: 16px;">Contact Form Message</p>
+                </div>
+              </div>
+            </div>
+
+            <div style="background: white; padding: 30px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 10px 10px;">
+              <h2 style="color: #1e293b; margin-top: 0;">New Contact Form Submission</h2>
+
+              <div style="background-color: #f1f5f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h3 style="color: #374151; margin-top: 0;">Contact Details</h3>
+                <p style="margin: 5px 0;"><strong>Name:</strong> ${fullName}</p>
+                <p style="margin: 5px 0;"><strong>Email:</strong> ${contactForm.email}</p>
+              </div>
+
+              <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #3b82f6;">
+                <h3 style="color: #1e293b; margin-top: 0;">Message</h3>
+                <p style="margin: 10px 0; white-space: pre-line;">${contactForm.message.replace(/\n/g, '<br>')}</p>
+              </div>
+
+              <hr style="margin: 30px 0; border: none; border-top: 1px solid #e2e8f0;">
+
+              <p style="color: #64748b; font-size: 14px; text-align: center;">
+                This message was sent from the Josi Pilates website contact form.
+              </p>
+            </div>
+          </body>
+          </html>
+        `,
+        textContent: message
+      });
+
+      setContactFormSuccess(true);
+      setContactForm({
+        firstName: '',
+        lastName: '',
+        email: '',
+        message: ''
+      });
+    } catch (error) {
+      console.error('Error sending contact form:', error);
+      setContactFormError('Failed to send message. Please try again or contact us directly.');
+    } finally {
+      setContactFormSubmitting(false);
+    }
+  };
+
   useEffect(() => {
-    if (user) {
-      if (!profile) {
-        // User exists but no profile, redirect to complete profile
-        navigate('/complete-profile', { replace: true });
-      } else if (!isProfileComplete) {
-        // Profile exists but not complete
-        navigate('/complete-profile', { replace: true });
-      } else {
-        // Profile complete, redirect to appropriate dashboard
-        if (profile.role === 'teacher') {
-          navigate('/teacher/dashboard', { replace: true });
-        } else if (profile.role === 'student') {
-          navigate('/student/dashboard', { replace: true });
-        }
+    if (user && profile && isProfileComplete) {
+      // Only redirect authenticated users with complete profiles to their dashboards
+      if (profile.role === 'teacher') {
+        navigate('/teacher/dashboard', { replace: true });
+      } else if (profile.role === 'student') {
+        navigate('/student/dashboard', { replace: true });
       }
     }
   }, [user, profile, isProfileComplete, navigate]);
@@ -64,7 +148,7 @@ const StudioHome = () => {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-4">
-              <Select onValueChange={changeLanguage} defaultValue="fr">
+              <Select onValueChange={changeLanguage} value={i18n.language}>
                 <SelectTrigger className="w-32">
                   <SelectValue />
                 </SelectTrigger>
@@ -104,7 +188,7 @@ const StudioHome = () => {
             <div className="md:hidden border-t border-gray-200 py-4">
               <div className="flex flex-col space-y-4">
                 <div className="px-4">
-                  <Select onValueChange={changeLanguage} defaultValue="fr">
+                  <Select onValueChange={changeLanguage} value={i18n.language}>
                     <SelectTrigger className="w-full">
                       <SelectValue />
                     </SelectTrigger>
@@ -315,45 +399,74 @@ const StudioHome = () => {
 
             {/* Contact Form */}
             <div className="bg-white p-8 rounded-lg shadow-sm flex justify-center">
-              <form className="space-y-6 w-full max-w-md">
-                <div className="grid grid-cols-2 gap-4">
+              {contactFormSuccess ? (
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Message Sent!</h3>
+                  <p className="text-gray-600">Thank you for your message. We'll get back to you soon.</p>
+                </div>
+              ) : (
+                <form onSubmit={handleContactSubmit} className="space-y-6 w-full max-w-md">
+                  {contactFormError && (
+                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
+                      {contactFormError}
+                    </div>
+                  )}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                      <input
+                        type="text"
+                        value={contactForm.firstName}
+                        onChange={(e) => setContactForm({...contactForm, firstName: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="First Name"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                      <input
+                        type="text"
+                        value={contactForm.lastName}
+                        onChange={(e) => setContactForm({...contactForm, lastName: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Last Name"
+                        required
+                      />
+                    </div>
+                  </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
                     <input
-                      type="text"
+                      type="email"
+                      value={contactForm.email}
+                      onChange={(e) => setContactForm({...contactForm, email: e.target.value})}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="First Name"
+                      placeholder="Email"
+                      required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                    <input
-                      type="text"
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                    <textarea
+                      rows="4"
+                      value={contactForm.message}
+                      onChange={(e) => setContactForm({...contactForm, message: e.target.value})}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Last Name"
-                    />
+                      placeholder="Your message"
+                      required
+                    ></textarea>
                   </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                  <input
-                    type="email"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Email"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                  <textarea
-                    rows="4"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Your message"
-                  ></textarea>
-                </div>
-                <Button type="submit" className="w-full">
-                  Send
-                </Button>
-              </form>
+                  <Button type="submit" className="w-full" disabled={contactFormSubmitting}>
+                    {contactFormSubmitting ? 'Sending...' : 'Send'}
+                  </Button>
+                </form>
+              )}
             </div>
           </div>
 

@@ -72,6 +72,15 @@ const PrivacyPolicy = () => {
               ))}
             </ul>
 
+            <h2>{t('privacyPolicy.dataRetention.title')}</h2>
+            <p>{t('privacyPolicy.dataRetention.content')}</p>
+
+            <h2>{t('privacyPolicy.childrenPrivacy.title')}</h2>
+            <p>{t('privacyPolicy.childrenPrivacy.content')}</p>
+
+            <h2>{t('privacyPolicy.internationalTransfers.title')}</h2>
+            <p>{t('privacyPolicy.internationalTransfers.content')}</p>
+
             <h2>{t('privacyPolicy.cookies.title')}</h2>
             <p>{t('privacyPolicy.cookies.content')}</p>
 

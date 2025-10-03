@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import { Button } from '@/components/ui/button'
@@ -40,6 +40,7 @@ import {
 
 const TeacherCheckIn = () => {
   const { profile, signOut } = useAuth()
+  const navigate = useNavigate()
   const [selectedDate, setSelectedDate] = useState(() => {
     const today = new Date()
     const year = today.getFullYear()
@@ -65,6 +66,11 @@ const TeacherCheckIn = () => {
   useEffect(() => {
     fetchAllStudents()
   }, [])
+
+  const handleSignOut = async () => {
+    await signOut()
+    navigate('/')
+  }
 
   const fetchScheduledStudents = async date => {
     setLoading(true)
@@ -377,7 +383,7 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
               <span className="text-sm text-gray-700">
                 Welcome, {profile?.full_name}
               </span>
-              <Button variant="outline" size="sm" className="w-full sm:w-auto" onClick={signOut}>
+              <Button variant="outline" size="sm" className="w-full sm:w-auto" onClick={handleSignOut}>
                 <LogOut className="h-4 w-4 mr-2" />
                 Sign Out
               </Button>

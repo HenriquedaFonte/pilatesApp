@@ -225,21 +225,26 @@
           "Endereço de e-mail",
           "Número de telefone",
           "Informações de perfil (preferências de idioma, etc.)",
-          "Informações de aulas e agendamentos"
+          "Informações de aulas e agendamentos",
+          "Informações de pagamento para compras de aulas"
         ]
       },
       "autoCollected": {
         "title": "2.2 Informações Coletadas Automaticamente",
         "items": [
-          "Dados de uso do aplicativo",
-          "Informações do dispositivo",
-          "Cookies e tecnologias similares"
+          "Informações do dispositivo (tipo de dispositivo, sistema operacional, versão do aplicativo)",
+          "Dados de uso e análise do aplicativo",
+          "Endereço IP e informações de localização",
+          "Preferências de notificações push",
+          "Relatórios de falhas e dados de desempenho"
         ]
       },
       "thirdParty": {
         "title": "2.3 Informações de Terceiros",
         "items": [
-          "Dados do Google quando você faz login com sua conta Google"
+          "Dados do Google quando você faz login com sua conta Google",
+          "Dados do processador de pagamentos para compras de aulas",
+          "Serviços de análise (se aplicável)"
         ]
       }
     },
@@ -249,9 +254,13 @@
       "items": [
         "Fornecer e gerenciar seus serviços de pilates",
         "Processar inscrições e pagamentos",
-        "Enviar notificações importantes sobre aulas",
-        "Melhorar nossos serviços",
-        "Cumprir obrigações legais"
+        "Enviar notificações importantes sobre aulas e mudanças de horário",
+        "Enviar notificações push (com sua permissão)",
+        "Melhorar nosso aplicativo e serviços através de análises",
+        "Processar compras integradas e gerenciar créditos",
+        "Fornecer suporte ao cliente",
+        "Cumprir obrigações legais",
+        "Prevenir fraudes e garantir segurança"
       ]
     },
     "dataSharing": {
@@ -278,16 +287,28 @@
         "Optar por não receber comunicações de marketing"
       ]
     },
+    "dataRetention": {
+      "title": "7. Retenção de Dados",
+      "content": "Reteremos suas informações pessoais pelo tempo necessário para fornecer nossos serviços e cumprir obrigações legais. Os dados da conta são retidos enquanto sua conta estiver ativa e por um período razoável após. Você pode solicitar a exclusão de seus dados a qualquer momento."
+    },
+    "childrenPrivacy": {
+      "title": "8. Privacidade das Crianças",
+      "content": "Nosso aplicativo não é destinado a crianças menores de 13 anos. Não coletamos intencionalmente informações pessoais de crianças menores de 13 anos. Se você for um pai ou responsável e acreditar que seu filho nos forneceu informações pessoais, entre em contato conosco."
+    },
+    "internationalTransfers": {
+      "title": "9. Transferências Internacionais de Dados",
+      "content": "Suas informações podem ser transferidas e processadas em países diferentes do seu. Garantimos que salvaguardas apropriadas estejam em vigor para proteger seus dados durante tais transferências."
+    },
     "cookies": {
-      "title": "7. Cookies",
-      "content": "Usamos cookies para melhorar sua experiência no aplicativo. Você pode controlar o uso de cookies através das configurações do seu navegador."
+      "title": "10. Cookies e Tecnologias de Rastreamento",
+      "content": "Podemos usar cookies e tecnologias similares para melhorar sua experiência no aplicativo, lembrar suas preferências e analisar o uso do aplicativo. Você pode gerenciá-los através das configurações do seu dispositivo."
     },
     "policyChanges": {
-      "title": "8. Alterações a Esta Política",
+      "title": "11. Alterações a Esta Política",
       "content": "Podemos atualizar esta Política de Privacidade periodicamente. Notificaremos você sobre mudanças significativas através do aplicativo ou por e-mail."
     },
     "contact": {
-      "title": "9. Contato",
+      "title": "12. Contato",
       "content": "Se você tiver dúvidas sobre esta Política de Privacidade, entre em contato conosco:",
       "items": [
         "E-mail: josipilatesmontreal@gmail.com",

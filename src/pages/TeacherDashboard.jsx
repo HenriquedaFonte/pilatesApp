@@ -87,6 +87,7 @@ const TeacherDashboard = () => {
 
   const handleSignOut = async () => {
     await signOut()
+    navigate('/')
   }
 
   if (loading) {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
 import emailService from '../lib/emailService';
@@ -33,6 +33,7 @@ import {
 
 const EmailNotifications = () => {
   const { profile, signOut } = useAuth();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [students, setStudents] = useState([]);
   const [classes, setClasses] = useState([]);
@@ -58,6 +59,11 @@ const EmailNotifications = () => {
     loadData();
     loadEmailHistory();
   }, []);
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
 
   useEffect(() => {
     const studentParam = searchParams.get('student');
@@ -408,7 +414,7 @@ const EmailNotifications = () => {
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-700">Welcome, {profile?.full_name}</span>
-              <Button variant="outline" size="sm" onClick={signOut}>
+              <Button variant="outline" size="sm" onClick={handleSignOut}>
                 <LogOut className="h-4 w-4 mr-2" />
                 Sign Out
               </Button>
@@ -482,22 +488,22 @@ const EmailNotifications = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="notifications">
-              <AlertTriangle className="h-4 w-4 mr-2" />
-              Low Balance
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto">
+            <TabsTrigger value="notifications" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2 px-1 sm:px-3">
+              <AlertTriangle className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="text-center">Low Balance</span>
             </TabsTrigger>
-            <TabsTrigger value="custom">
-              <Send className="h-4 w-4 mr-2" />
-              Custom Email
+            <TabsTrigger value="custom" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2 px-1 sm:px-3">
+              <Send className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="text-center">Custom Email</span>
             </TabsTrigger>
-            <TabsTrigger value="templates">
-              <FileText className="h-4 w-4 mr-2" />
-              Templates
+            <TabsTrigger value="templates" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2 px-1 sm:px-3">
+              <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="text-center">Templates</span>
             </TabsTrigger>
-            <TabsTrigger value="history">
-              <Clock className="h-4 w-4 mr-2" />
-              History
+            <TabsTrigger value="history" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2 px-1 sm:px-3">
+              <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="text-center">History</span>
             </TabsTrigger>
           </TabsList>
 

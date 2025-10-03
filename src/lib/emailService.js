@@ -101,31 +101,42 @@ class EmailService {
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>${processedTemplate.warning}</title>
+        <style>
+          @media only screen and (max-width: 600px) {
+            .email-container { padding: 10px !important; }
+            .header { padding: 20px !important; }
+            .header h1 { font-size: 24px !important; }
+            .header p { font-size: 14px !important; }
+            .content { padding: 20px !important; }
+            .warning-box, .contact-box { padding: 15px !important; margin: 15px 0 !important; }
+            .warning-box h3 { font-size: 16px !important; }
+            .warning-box p { font-size: 16px !important; }
+            .contact-box ul { padding-left: 15px !important; }
+            h2 { font-size: 20px !important; }
+            h4 { font-size: 16px !important; }
+            p { font-size: 16px !important; line-height: 1.5 !important; }
+          }
+        </style>
       </head>
-      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="background: linear-gradient(135deg, #01b48d 0%, #017a6b 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-          <div style="display: inline-flex; align-items: center; justify-content: center; gap: 30px;">
-            <img src="../assets/logo.jpg" alt="Josi Pilates Logo" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;" />
-            <div style="text-align: left;">
-              <h1 style="color: white; margin: 0; font-size: 28px;">Josi Pilates</h1>
-              <p style="color: #f0f0f0; margin: 5px 0 0 0; font-size: 16px;">Studio de Pilates</p>
-            </div>
-          </div>
+      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;" class="email-container">
+        <div style="background: linear-gradient(135deg, #01b48d 0%, #017a6b 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;" class="header">
+          <h1 style="color: white; margin: 0; font-size: 28px;">Josi Pilates</h1>
+          <p style="color: #f0f0f0; margin: 5px 0 0 0; font-size: 16px;">Low Credits Alert</p>
         </div>
 
-        <div style="background: white; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 10px 10px;">
+        <div style="background: white; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 10px 10px;" class="content">
           <h2 style="color: #2c3e50; margin-top: 0;">${processedTemplate.greeting(student.name || student.full_name)}</h2>
 
           <p>${processedTemplate.message}</p>
 
-          <div style="background-color: #fef3c7; border: 1px solid #f59e0b; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
+          <div style="background-color: #fef3c7; border: 1px solid #f59e0b; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;" class="warning-box">
             <h3 style="color: #92400e; margin: 0 0 10px 0;">${processedTemplate.warning}</h3>
             <p style="margin: 0; font-size: 18px; font-weight: bold; color: #92400e;">
               ${processedTemplate.creditsText(creditsRemaining)}
             </p>
           </div>
 
-          <div style="background-color: #f1f5f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <div style="background-color: #f1f5f9; padding: 20px; border-radius: 8px; margin: 20px 0;" class="contact-box">
             <h4 style="color: #1e293b; margin-top: 0;">${processedTemplate.contactTitle}</h4>
             <ul style="margin: 10px 0; padding-left: 20px;">
               ${processedTemplate.contactItems.map(item => `<li>${item}</li>`).join('')}
@@ -194,22 +205,27 @@ ${processedTemplate.tagline}
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>${subject}</title>
+            <style>
+              @media only screen and (max-width: 600px) {
+                .email-container { padding: 10px !important; }
+                .header { padding: 20px !important; }
+                .header h1 { font-size: 24px !important; }
+                .content { padding: 20px !important; }
+                .message-box { padding: 20px !important; margin: 15px 0 !important; }
+                h2 { font-size: 20px !important; }
+                p { font-size: 16px !important; line-height: 1.5 !important; }
+              }
+            </style>
           </head>
-          <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-            <div style="background: linear-gradient(135deg, #01b48d 0%, #017a6b 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-              <div style="display: inline-flex; align-items: center; justify-content: center; gap: 30px;">
-                <div style="width: 60px; height: 60px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: #01b48d;">JP</div>
-                <div style="text-align: left;">
-                  <h1 style="color: white; margin: 0; font-size: 28px;">Josi Pilates</h1>
-                  <p style="color: #f0f0f0; margin: 5px 0 0 0; font-size: 16px;">Studio de Pilates</p>
-                </div>
-              </div>
+          <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;" class="email-container">
+            <div style="background: linear-gradient(135deg, #01b48d 0%, #017a6b 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;" class="header">
+              <h1 style="color: white; margin: 0; font-size: 28px;">Josi Pilates</h1>
             </div>
 
-            <div style="background: white; padding: 30px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 10px 10px;">
+            <div style="background: white; padding: 30px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 10px 10px;" class="content">
               <h2 style="color: #1e293b; margin-top: 0;">${processedTemplate.greeting(student.name || student.full_name)}</h2>
 
-              <div style="background-color: #f1f5f9; padding: 25px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #3b82f6;">
+              <div style="background-color: #f1f5f9; padding: 25px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #3b82f6;" class="message-box">
                 ${message.replace(/\n/g, '<br>')}
               </div>
 
@@ -258,24 +274,35 @@ ${processedTemplate.tagline}
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>${processedTemplate.welcomeTitle}</title>
+        <style>
+          @media only screen and (max-width: 600px) {
+            .email-container { padding: 10px !important; }
+            .header { padding: 20px !important; }
+            .header h1 { font-size: 24px !important; }
+            .header p { font-size: 14px !important; }
+            .content { padding: 20px !important; }
+            .journey-box, .contact-box { padding: 15px !important; margin: 15px 0 !important; }
+            .journey-box h3 { font-size: 16px !important; }
+            .contact-box h4 { font-size: 16px !important; }
+            h2 { font-size: 20px !important; }
+            h4 { font-size: 16px !important; }
+            p { font-size: 16px !important; line-height: 1.5 !important; }
+            ul { padding-left: 15px !important; }
+          }
+        </style>
       </head>
-      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;" class="email-container">
         <div style="background: linear-gradient(135deg, #01b48d 0%, #017a6b 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-          <div style="display: inline-flex; align-items: center; justify-content: center; gap: 30px;">
-            <div style="width: 60px; height: 60px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: #01b48d;">JP</div>
-            <div style="text-align: left;">
-              <h1 style="color: white; margin: 0; font-size: 28px;">${processedTemplate.welcomeTitle}</h1>
-              <p style="color: #f0f0f0; margin: 5px 0 0 0; font-size: 16px;">Josi Pilates</p>
-            </div>
-          </div>
+          <h1 style="color: white; margin: 0; font-size: 28px;">${processedTemplate.welcomeTitle}</h1>
+          <p style="color: #f0f0f0; margin: 5px 0 0 0; font-size: 16px;">Josi Pilates</p>
         </div>
 
-        <div style="background: white; padding: 30px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 10px 10px;">
+        <div style="background: white; padding: 30px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 10px 10px;" class="content">
           <h2 style="color: #1e293b; margin-top: 0;">${processedTemplate.greeting(student.name || student.full_name)}</h2>
 
           <p>${processedTemplate.mainMessage}</p>
 
-          <div style="background-color: #dcfce7; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <div style="background-color: #dcfce7; padding: 20px; border-radius: 8px; margin: 20px 0;" class="journey-box">
             <h3 style="color: #166534; margin-top: 0;">✨ ${processedTemplate.journeyMessage}</h3>
           </div>
 
@@ -284,7 +311,7 @@ ${processedTemplate.tagline}
             ${processedTemplate.nextSteps.map(step => `<li>${step}</li>`).join('')}
           </ul>
 
-          <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0;" class="contact-box">
             <h4 style="color: #1e293b; margin-top: 0;">${processedTemplate.contactTitle}</h4>
             <p style="margin: 5px 0;"><strong>${processedTemplate.contactPhone}</strong></p>
             <p style="margin: 5px 0;"><strong>${processedTemplate.contactEmail}</strong></p>
@@ -347,7 +374,9 @@ ${processedTemplate.tagline}
 
     const processedTemplate = processTemplate(template, variables);
 
-    const subject = processedTemplate.subject;
+    const subject = typeof processedTemplate.subject === 'function'
+      ? processedTemplate.subject(creditAmount)
+      : processedTemplate.subject;
 
     const htmlContent = `
       <!DOCTYPE html>
@@ -355,29 +384,40 @@ ${processedTemplate.tagline}
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>${processedTemplate.creditAdded}</title>
+        <title>${typeof processedTemplate.creditAdded === 'function' ? processedTemplate.creditAdded(creditAmount) : processedTemplate.creditAdded}</title>
+        <style>
+          @media only screen and (max-width: 600px) {
+            .email-container { padding: 10px !important; }
+            .header { padding: 20px !important; }
+            .header h1 { font-size: 24px !important; }
+            .header p { font-size: 14px !important; }
+            .content { padding: 20px !important; }
+            .credit-box, .rules-box { padding: 15px !important; margin: 15px 0 !important; }
+            .credit-box h3 { font-size: 16px !important; }
+            .credit-box p { font-size: 16px !important; }
+            .rules-box h4 { font-size: 16px !important; }
+            .rules-box h5 { font-size: 14px !important; }
+            h2 { font-size: 20px !important; }
+            p { font-size: 16px !important; line-height: 1.5 !important; }
+          }
+        </style>
       </head>
-      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="background: linear-gradient(135deg, #01b48d 0%, #017a6b 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-          <div style="display: inline-flex; align-items: center; justify-content: center; gap: 30px;">
-            <img src="https://pilates-mopk8vnvm-josi-pilates-projects.vercel.app/logo.jpg" alt="Josi Pilates Logo" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;" />
-            <div style="text-align: left;">
-              <h1 style="color: white; margin: 0; font-size: 28px;">Josi Pilates</h1>
-              <p style="color: #f0f0f0; margin: 5px 0 0 0; font-size: 16px;">Studio de Pilates</p>
-            </div>
-          </div>
+      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;" class="email-container">
+        <div style="background: linear-gradient(135deg, #01b48d 0%, #017a6b 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;" class="header">
+          <h1 style="color: white; margin: 0; font-size: 28px;">Josi Pilates</h1>
+          <p style="color: #f0f0f0; margin: 5px 0 0 0; font-size: 16px;">Credit Update</p>
         </div>
 
         <div style="background: white; padding: 30px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 10px 10px;">
           <h2 style="color: #1e293b; margin-top: 0;">${processedTemplate.greeting(student.name || student.full_name)}</h2>
 
           <div style="background-color: #dcfce7; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="color: #166534; margin-top: 0;">💰 ${processedTemplate.creditAdded}</h3>
-            <p style="margin: 10px 0; font-size: 16px;">${processedTemplate.creditDetails(creditAmount, creditType, description)}</p>
+            <h3 style="color: #166534; margin-top: 0;">💰 ${typeof processedTemplate.creditAdded === 'function' ? processedTemplate.creditAdded(creditAmount) : processedTemplate.creditAdded}</h3>
+            <p style="margin: 10px 0; font-size: 16px;">${typeof processedTemplate.creditDetails === 'function' ? processedTemplate.creditDetails(creditAmount, creditType, description) : processedTemplate.creditDetails(creditAmount, creditType, description)}</p>
             <p style="margin: 10px 0; font-weight: bold;">${processedTemplate.currentBalance(currentBalance)}</p>
           </div>
 
-          <div style="background-color: #f1f5f9; padding: 25px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #3b82f6;">
+          <div style="background-color: #f1f5f9; padding: 25px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #3b82f6;" class="rules-box">
             <h4 style="color: #1e293b; margin-top: 0;">${processedTemplate.studioRulesTitle}</h4>
 
             <div style="margin: 15px 0;">
@@ -409,8 +449,8 @@ ${processedTemplate.tagline}
     const textContent = `
 ${processedTemplate.greeting(student.name || student.full_name)}
 
-${processedTemplate.creditAdded}
-${processedTemplate.creditDetails(creditAmount, creditType, description)}
+${typeof processedTemplate.creditAdded === 'function' ? processedTemplate.creditAdded(creditAmount) : processedTemplate.creditAdded}
+${typeof processedTemplate.creditDetails === 'function' ? processedTemplate.creditDetails(creditAmount, creditType, description) : processedTemplate.creditDetails(creditAmount, creditType, description)}
 ${processedTemplate.currentBalance(currentBalance)}
 
 ${processedTemplate.studioRulesTitle}
@@ -456,16 +496,28 @@ ${processedTemplate.teamName}
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>${processedTemplate.welcomeTitle}</title>
+        <style>
+          @media only screen and (max-width: 600px) {
+            .email-container { padding: 10px !important; }
+            .header { padding: 20px !important; }
+            .header h1 { font-size: 24px !important; }
+            .header p { font-size: 14px !important; }
+            .content { padding: 20px !important; }
+            .password-box, .instructions-box, .contact-box { padding: 15px !important; margin: 15px 0 !important; }
+            .password-box h3 { font-size: 16px !important; }
+            .instructions-box h4 { font-size: 16px !important; }
+            .contact-box h4 { font-size: 16px !important; }
+            h2 { font-size: 20px !important; }
+            h4 { font-size: 16px !important; }
+            p { font-size: 16px !important; line-height: 1.5 !important; }
+            ol { padding-left: 15px !important; }
+          }
+        </style>
       </head>
-      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;" class="email-container">
         <div style="background: linear-gradient(135deg, #01b48d 0%, #017a6b 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-          <div style="display: inline-flex; align-items: center; justify-content: center; gap: 30px;">
-            <img src="https://pilates-mopk8vnvm-josi-pilates-projects.vercel.app/logo.jpg" alt="Josi Pilates Logo" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;" />
-            <div style="text-align: left;">
-              <h1 style="color: white; margin: 0; font-size: 28px;">${processedTemplate.welcomeTitle}</h1>
-              <p style="color: #f0f0f0; margin: 5px 0 0 0; font-size: 16px;">Josi Pilates</p>
-            </div>
-          </div>
+          <h1 style="color: white; margin: 0; font-size: 28px;">${processedTemplate.welcomeTitle}</h1>
+          <p style="color: #f0f0f0; margin: 5px 0 0 0; font-size: 16px;">Josi Pilates</p>
         </div>
 
         <div style="background: white; padding: 30px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 10px 10px;">
@@ -473,11 +525,11 @@ ${processedTemplate.teamName}
 
           <p>${processedTemplate.accountCreated}</p>
 
-          <div style="background-color: #fef3c7; border: 1px solid #f59e0b; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
+          <div style="background-color: #fef3c7; border: 1px solid #f59e0b; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;" class="password-box">
             <h3 style="color: #92400e; margin: 0 0 10px 0;">🔐 ${processedTemplate.defaultPassword}</h3>
           </div>
 
-          <div style="background-color: #f1f5f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <div style="background-color: #f1f5f9; padding: 20px; border-radius: 8px; margin: 20px 0;" class="instructions-box">
             <h4 style="color: #1e293b; margin-top: 0;">${processedTemplate.importantInstructions}</h4>
             <ol style="margin: 10px 0; padding-left: 20px;">
               ${processedTemplate.instructions.map(instruction => `<li>${instruction}</li>`).join('')}
@@ -489,7 +541,7 @@ ${processedTemplate.teamName}
             ${processedTemplate.nextSteps.map(step => `<li>${step}</li>`).join('')}
           </ul>
 
-          <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0;" class="contact-box">
             <h4 style="color: #1e293b; margin-top: 0;">${processedTemplate.contactTitle}</h4>
             <p style="margin: 5px 0;">${processedTemplate.contactInfo}</p>
             <p style="margin: 5px 0;"><strong>${processedTemplate.phone}</strong></p>

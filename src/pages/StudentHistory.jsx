@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import { useTranslation } from 'react-i18next'
@@ -22,6 +22,7 @@ import Logo from '../components/Logo'
 
 const StudentHistory = () => {
   const { profile, signOut } = useAuth()
+  const navigate = useNavigate()
   const { t, i18n } = useTranslation()
   const [attendanceHistory, setAttendanceHistory] = useState([])
   const [balanceHistory, setBalanceHistory] = useState([])
@@ -40,6 +41,11 @@ const StudentHistory = () => {
       fetchHistory(profile.id)
     }
   }, [profile])
+
+  const handleSignOut = async () => {
+    await signOut()
+    navigate('/')
+  }
 
   const fetchHistory = async studentId => {
     try {
@@ -150,7 +156,7 @@ const StudentHistory = () => {
               <span className="text-sm text-gray-700">
                 {t('common.welcome')}, {profile?.full_name}
               </span>
-              <Button variant="outline" size="sm" onClick={signOut}>
+              <Button variant="outline" size="sm" onClick={handleSignOut}>
                 <LogOut className="h-4 w-4 mr-2" />
                 {t('common.signOut')}
               </Button>

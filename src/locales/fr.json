@@ -131,21 +131,26 @@
           "Adresse e-mail",
           "Numéro de téléphone",
           "Informations de profil (préférences de langue, etc.)",
-          "Informations de cours et de planification"
+          "Informations de cours et de planification",
+          "Informations de paiement pour les achats de cours"
         ]
       },
       "autoCollected": {
         "title": "2.2 Informations Collectées Automatiquement",
         "items": [
-          "Données d'utilisation de l'application",
-          "Informations sur l'appareil",
-          "Cookies et technologies similaires"
+          "Informations sur l'appareil (type d'appareil, système d'exploitation, version de l'application)",
+          "Données d'utilisation et d'analyse de l'application",
+          "Adresse IP et informations de localisation",
+          "Préférences de notifications push",
+          "Rapports de crash et données de performance"
         ]
       },
       "thirdParty": {
         "title": "2.3 Informations de Tiers",
         "items": [
-          "Données de Google lorsque vous vous connectez avec votre compte Google"
+          "Données de Google lorsque vous vous connectez avec votre compte Google",
+          "Données du processeur de paiement pour les achats de cours",
+          "Services d'analyse (le cas échéant)"
         ]
       }
     },
@@ -155,9 +160,13 @@
       "items": [
         "Fournir et gérer vos services de pilates",
         "Traiter les inscriptions et paiements",
-        "Envoyer des notifications importantes sur les cours",
-        "Améliorer nos services",
-        "Se conformer aux obligations légales"
+        "Envoyer des notifications importantes sur les cours et changements d'horaire",
+        "Envoyer des notifications push (avec votre permission)",
+        "Améliorer notre application et nos services grâce aux analyses",
+        "Traiter les achats intégrés et gérer les crédits",
+        "Fournir un support client",
+        "Se conformer aux obligations légales",
+        "Prévenir la fraude et assurer la sécurité"
       ]
     },
     "dataSharing": {
@@ -184,16 +193,28 @@
         "Vous désabonner des communications marketing"
       ]
     },
+    "dataRetention": {
+      "title": "7. Conservation des Données",
+      "content": "Nous conservons vos informations personnelles aussi longtemps que nécessaire pour fournir nos services et nous conformer aux obligations légales. Les données de compte sont conservées tant que votre compte est actif et pendant une période raisonnable par la suite. Vous pouvez demander la suppression de vos données à tout moment."
+    },
+    "childrenPrivacy": {
+      "title": "8. Confidentialité des Enfants",
+      "content": "Notre application n'est pas destinée aux enfants de moins de 13 ans. Nous ne collectons pas sciemment d'informations personnelles auprès d'enfants de moins de 13 ans. Si vous êtes un parent ou tuteur et que vous croyez que votre enfant nous a fourni des informations personnelles, veuillez nous contacter."
+    },
+    "internationalTransfers": {
+      "title": "9. Transferts Internationaux de Données",
+      "content": "Vos informations peuvent être transférées et traitées dans des pays autres que le vôtre. Nous nous assurons que des garanties appropriées sont en place pour protéger vos données lors de tels transferts."
+    },
     "cookies": {
-      "title": "7. Cookies",
-      "content": "Nous utilisons des cookies pour améliorer votre expérience d'application. Vous pouvez contrôler l'utilisation des cookies via les paramètres de votre navigateur."
+      "title": "10. Cookies et Technologies de Suivi",
+      "content": "Nous pouvons utiliser des cookies et des technologies similaires pour améliorer votre expérience d'application, mémoriser vos préférences et analyser l'utilisation de l'application. Vous pouvez les gérer via les paramètres de votre appareil."
     },
     "policyChanges": {
-      "title": "8. Modifications de Cette Politique",
+      "title": "11. Modifications de Cette Politique",
       "content": "Nous pouvons mettre à jour cette Politique de Confidentialité périodiquement. Nous vous informerons des changements importants via l'application ou par e-mail."
     },
     "contact": {
-      "title": "9. Contact",
+      "title": "12. Contact",
       "content": "Si vous avez des questions sur cette Politique de Confidentialité, veuillez nous contacter:",
       "items": [
         "E-mail: josipilatesmontreal@gmail.com",

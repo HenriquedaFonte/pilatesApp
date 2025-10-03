@@ -131,21 +131,26 @@
           "Email address",
           "Phone number",
           "Profile information (language preferences, etc.)",
-          "Class and scheduling information"
+          "Class and scheduling information",
+          "Payment information for class purchases"
         ]
       },
       "autoCollected": {
         "title": "2.2 Automatically Collected Information",
         "items": [
-          "App usage data",
-          "Device information",
-          "Cookies and similar technologies"
+          "Device information (device type, operating system, app version)",
+          "App usage data and analytics",
+          "IP address and location information",
+          "Push notification preferences",
+          "Crash reports and performance data"
         ]
       },
       "thirdParty": {
         "title": "2.3 Information from Third Parties",
         "items": [
-          "Data from Google when you sign in with your Google account"
+          "Data from Google when you sign in with your Google account",
+          "Payment processor data for class purchases",
+          "Analytics services (if applicable)"
         ]
       }
     },
@@ -155,9 +160,13 @@
       "items": [
         "Provide and manage your pilates services",
         "Process enrollments and payments",
-        "Send important notifications about classes",
-        "Improve our services",
-        "Comply with legal obligations"
+        "Send important notifications about classes and schedule changes",
+        "Send push notifications (with your permission)",
+        "Improve our app and services through analytics",
+        "Process in-app purchases and manage credits",
+        "Provide customer support",
+        "Comply with legal obligations",
+        "Prevent fraud and ensure security"
       ]
     },
     "dataSharing": {
@@ -184,16 +193,28 @@
         "Opt out of marketing communications"
       ]
     },
+    "dataRetention": {
+      "title": "7. Data Retention",
+      "content": "We retain your personal information for as long as necessary to provide our services and comply with legal obligations. Account data is retained while your account is active and for a reasonable period thereafter. You can request deletion of your data at any time."
+    },
+    "childrenPrivacy": {
+      "title": "8. Children's Privacy",
+      "content": "Our app is not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13. If you are a parent or guardian and believe your child has provided us with personal information, please contact us."
+    },
+    "internationalTransfers": {
+      "title": "9. International Data Transfers",
+      "content": "Your information may be transferred to and processed in countries other than your own. We ensure appropriate safeguards are in place to protect your data during such transfers."
+    },
     "cookies": {
-      "title": "7. Cookies",
-      "content": "We use cookies to improve your app experience. You can control cookie usage through your browser settings."
+      "title": "10. Cookies and Tracking Technologies",
+      "content": "We may use cookies and similar technologies to enhance your app experience, remember your preferences, and analyze app usage. You can manage these through your device settings."
     },
     "policyChanges": {
-      "title": "8. Changes to This Policy",
+      "title": "11. Changes to This Policy",
       "content": "We may update this Privacy Policy periodically. We will notify you about significant changes through the app or by email."
     },
     "contact": {
-      "title": "9. Contact",
+      "title": "12. Contact",
       "content": "If you have questions about this Privacy Policy, please contact us:",
       "items": [
         "Email: josipilatesmontreal@gmail.com",
