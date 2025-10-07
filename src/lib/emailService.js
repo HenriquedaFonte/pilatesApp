@@ -39,15 +39,22 @@ class EmailService {
         text: textContent
       };
 
-      const { data, error } = await supabase.functions.invoke('send-custom-email', {
-        body: payload
+      const response = await fetch(`${this.baseUrl}/emails`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
       });
 
-      if (error || !data?.success) {
-        throw new Error(data?.error || error?.message || 'Erro desconhecido ao enviar e-mail');
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data?.message || `HTTP ${response.status}: ${response.statusText}`);
       }
 
-      return data.result;
+      return data;
     } catch (error) {
       console.error('Error sending email:', error);
       throw error;
