@@ -104,15 +104,6 @@ const TeacherCheckIn = () => {
 
       if (studentLinksError) throw studentLinksError
 
-      const { data: fixedDayStudents, error: fixedDayError } = await supabase
-        .from('profiles')
-        .select(
-          'id, full_name, individual_credits, duo_credits, group_credits, fixed_class_days'
-        )
-        .eq('role', 'student')
-        .contains('fixed_class_days', [dayOfWeek])
-
-      if (fixedDayError) throw fixedDayError
 
 const { data: attendanceRecords, error: attendanceError } = await supabase
   .from('check_ins')
@@ -147,33 +138,6 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
         })
       })
 
-      fixedDayStudents.forEach(student => {
-        const existingEnrollment = Array.from(allStudentsForDay.values()).find(
-          s => s.student_id === student.id
-        )
-
-        if (!existingEnrollment && schedules.length > 0) {
-          const firstSchedule = schedules[0]
-          const attendance = attendanceRecords.find(
-            att => att.student_id === student.id
-          )
-
-          allStudentsForDay.set(`${student.id}-${firstSchedule.id}`, {
-            student_id: student.id,
-            full_name: student.full_name,
-            individual_credits: student.individual_credits || 0,
-            duo_credits: student.duo_credits || 0,
-            group_credits: student.group_credits || 0,
-            schedule_id: firstSchedule.id,
-            class_name: firstSchedule.classes.name,
-            start_time: firstSchedule.start_time,
-            end_time: firstSchedule.end_time,
-            attendance_status: attendance ? attendance.status : 'pending',
-            credit_type_used: attendance ? attendance.credit_type : null,
-            source: 'fixed_day'
-          })
-        }
-      })
 
       setScheduledStudents(Array.from(allStudentsForDay.values()))
     } catch (error) {

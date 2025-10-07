@@ -53,7 +53,6 @@ RETURNS TABLE (
     group_credits INTEGER,
     total_credits INTEGER,
     preferred_language TEXT,
-    days_of_week INTEGER[],
     last_attendance_date DATE,
     days_since_last_attendance INTEGER,
     low_credits_threshold INTEGER
@@ -73,7 +72,6 @@ BEGIN
                 COALESCE(p.group_credits, 0) as group_credits,
                 (COALESCE(p.individual_credits, 0) + COALESCE(p.duo_credits, 0) + COALESCE(p.group_credits, 0)) as total_credits,
                 COALESCE(p.preferred_language, 'pt') as preferred_language,
-                p.days_of_week,
                 MAX(ci.check_in_date) as last_attendance_date,
                 CASE
                     WHEN MAX(ci.check_in_date) IS NOT NULL THEN
@@ -93,7 +91,7 @@ BEGIN
                         AND en.status = 'sent'
                         AND en.created_at > NOW() - INTERVAL '7 days'
                 )
-            GROUP BY p.id, p.full_name, p.email, p.individual_credits, p.duo_credits, p.group_credits, p.preferred_language, p.days_of_week
+            GROUP BY p.id, p.full_name, p.email, p.individual_credits, p.duo_credits, p.group_credits, p.preferred_language
             ORDER BY p.full_name;
 
         WHEN 'low_credits' THEN
@@ -108,7 +106,6 @@ BEGIN
                 COALESCE(p.group_credits, 0) as group_credits,
                 (COALESCE(p.individual_credits, 0) + COALESCE(p.duo_credits, 0) + COALESCE(p.group_credits, 0)) as total_credits,
                 COALESCE(p.preferred_language, 'pt') as preferred_language,
-                p.days_of_week,
                 MAX(ci.check_in_date) as last_attendance_date,
                 CASE
                     WHEN MAX(ci.check_in_date) IS NOT NULL THEN
@@ -128,7 +125,7 @@ BEGIN
                         AND en.status = 'sent'
                         AND en.created_at > NOW() - INTERVAL '7 days'
                 )
-            GROUP BY p.id, p.full_name, p.email, p.individual_credits, p.duo_credits, p.group_credits, p.preferred_language, p.days_of_week
+            GROUP BY p.id, p.full_name, p.email, p.individual_credits, p.duo_credits, p.group_credits, p.preferred_language
             ORDER BY
                 (COALESCE(p.individual_credits, 0) + COALESCE(p.duo_credits, 0) + COALESCE(p.group_credits, 0)) ASC,
                 p.full_name;
@@ -137,7 +134,7 @@ BEGIN
             -- Default: return empty result set
             RETURN QUERY SELECT
                 NULL::UUID, NULL::TEXT, NULL::TEXT, NULL::INTEGER, NULL::INTEGER, NULL::INTEGER, NULL::INTEGER,
-                NULL::TEXT, NULL::INTEGER[], NULL::DATE, NULL::INTEGER, NULL::INTEGER
+                NULL::TEXT, NULL::DATE, NULL::INTEGER, NULL::INTEGER
             WHERE FALSE;
     END CASE;
 END;
