@@ -55,7 +55,7 @@ const TeacherCheckIn = () => {
   const [success, setSuccess] = useState('')
   const [isAddStudentDialogOpen, setIsAddStudentDialogOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
-  const [selectedCreditType, setSelectedCreditType] = useState('individual')
+  const [selectedCreditType, setSelectedCreditType] = useState('group')
   
   
 

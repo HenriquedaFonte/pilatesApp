@@ -81,7 +81,7 @@ const CreditHistoryReport = () => {
     let query = supabase
       .from('balance_history')
       .select(
-        'id,student_id, type, change_amount, created_at, description, payment_method, new_balance'
+        'id,student_id, type, change_amount, created_at, description, payment_method, amount_paid, new_balance'
       )
       .order('created_at', { ascending: false })
       .limit(500)
@@ -135,7 +135,8 @@ const CreditHistoryReport = () => {
       'Change',
       'Date',
       'Reason',
-      'Payment Method'
+      'Payment Method',
+      'Amount Paid'
     ]
     const csvContent = [
       headers.join(','),
@@ -147,7 +148,8 @@ const CreditHistoryReport = () => {
           row.change_amount,
           `"${row.created_at}"`,
           `"${row.description || ''}"`,
-          `"${row.payment_method || ''}"`
+          `"${row.payment_method || ''}"`,
+          row.amount_paid || 0
         ].join(',')
       )
     ].join('\n')
