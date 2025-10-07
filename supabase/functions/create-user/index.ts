@@ -28,13 +28,20 @@ Deno.serve(async (req) => {
 
     const { email, fullName, role, password, preferredLanguage }: UserData = await req.json()
 
-    // Check if user already exists in auth
-    const { data: existingUsers, error: checkError } = await supabaseClient.auth.admin.listUsers()
+    console.log('Creating user:', { email, fullName, role, preferredLanguage })
 
-    if (checkError) {
-      console.error('Error checking existing users:', checkError)
+    // First check if a profile already exists for this email
+    const { data: existingProfile, error: profileCheckError } = await supabaseClient
+      .from('profiles')
+      .select('id, email')
+      .eq('email', email)
+      .single()
+
+    if (profileCheckError && profileCheckError.code !== 'PGRST116') {
+      // PGRST116 is "not found" error, which is expected if no profile exists
+      console.error('Error checking existing profile:', profileCheckError)
       return new Response(
-        JSON.stringify({ error: 'Failed to check existing users' }),
+        JSON.stringify({ error: 'Failed to check existing user' }),
         {
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -42,10 +49,8 @@ Deno.serve(async (req) => {
       )
     }
 
-    const userExists = existingUsers.users.some(user => user.email === email)
-
-    if (userExists) {
-      console.log('User already exists:', email)
+    if (existingProfile) {
+      console.log('Profile already exists for email:', email)
       return new Response(
         JSON.stringify({ error: 'User with this email already exists' }),
         {
@@ -55,7 +60,7 @@ Deno.serve(async (req) => {
       )
     }
 
-    // Create the user in auth
+    // Try to create the user in auth
     const { data: authData, error: authError } = await supabaseClient.auth.admin.createUser({
       email,
       password,
@@ -69,6 +74,31 @@ Deno.serve(async (req) => {
 
     if (authError) {
       console.error('Error creating auth user:', authError)
+
+      // Check if the error is because user already exists
+      if (authError.message?.includes('already registered') ||
+          authError.message?.includes('already exists') ||
+          authError.message?.includes('User already registered')) {
+        return new Response(
+          JSON.stringify({ error: 'User with this email already exists' }),
+          {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          }
+        )
+      }
+
+      return new Response(
+        JSON.stringify({ error: 'Failed to create user account' }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      )
+    }
+
+    if (!authData.user) {
+      console.error('No user data returned from auth creation')
       return new Response(
         JSON.stringify({ error: 'Failed to create user account' }),
         {
@@ -81,7 +111,8 @@ Deno.serve(async (req) => {
     console.log('Auth user created:', authData.user.id)
 
     // Create the profile
-    const { error: profileError } = await supabaseClient
+    console.log('Creating profile for user:', authData.user.id)
+    const { data: profileData, error: profileError } = await supabaseClient
       .from('profiles')
       .insert({
         id: authData.user.id,
@@ -93,11 +124,14 @@ Deno.serve(async (req) => {
         duo_credits: 0,
         group_credits: 0
       })
+      .select()
 
     if (profileError) {
       console.error('Error creating profile:', profileError)
+      console.error('Profile error details:', JSON.stringify(profileError, null, 2))
 
       // If profile creation fails, we should clean up the auth user
+      console.log('Cleaning up auth user due to profile creation failure')
       await supabaseClient.auth.admin.deleteUser(authData.user.id)
 
       return new Response(
@@ -109,7 +143,7 @@ Deno.serve(async (req) => {
       )
     }
 
-    console.log('Profile created successfully for user:', authData.user.id)
+    console.log('Profile created successfully:', profileData)
 
     return new Response(
       JSON.stringify({

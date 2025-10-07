@@ -41,7 +41,8 @@ import {
   ArrowLeft,
   Users,
   Calendar,
-  MessageSquare
+  MessageSquare,
+  Loader2
 } from 'lucide-react'
 
 const TeacherStudents = () => {
@@ -59,6 +60,7 @@ const TeacherStudents = () => {
   const [isEnrollDialogOpen, setIsEnrollDialogOpen] = useState(false)
   const [isCommentsDialogOpen, setIsCommentsDialogOpen] = useState(false)
   const [isCreateUserDialogOpen, setIsCreateUserDialogOpen] = useState(false)
+  const [balanceLoading, setBalanceLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [newUser, setNewUser] = useState({
@@ -157,6 +159,7 @@ const TeacherStudents = () => {
     e.preventDefault()
     setError('')
     setSuccess('')
+    setBalanceLoading(true)
 
     try {
       const amount = parseInt(balanceChange.amount)
@@ -220,6 +223,8 @@ const TeacherStudents = () => {
       await fetchData()
     } catch (error) {
       setError('Error updating balance: ' + error.message)
+    } finally {
+      setBalanceLoading(false)
     }
   }
 
@@ -293,7 +298,8 @@ const TeacherStudents = () => {
         })
       } catch (emailError) {
         console.error('Error sending welcome email:', emailError)
-        // Don't fail user creation if email fails
+        // Show warning but don't fail user creation
+        setSuccess('User created successfully, but welcome email could not be sent.')
       }
 
       setSuccess('User created successfully!')
@@ -788,7 +794,16 @@ const TeacherStudents = () => {
                 >
                   Cancel
                 </Button>
-                <Button type="submit">Update Balance</Button>
+                <Button type="submit" disabled={balanceLoading}>
+                  {balanceLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Updating...
+                    </>
+                  ) : (
+                    'Update Balance'
+                  )}
+                </Button>
               </div>
             </form>
           </DialogContent>

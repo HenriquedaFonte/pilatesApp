@@ -39,22 +39,15 @@ class EmailService {
         text: textContent
       };
 
-      const response = await fetch(`${this.baseUrl}/emails`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
+      const { data, error } = await supabase.functions.invoke('send-email', {
+        body: payload
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data?.message || `HTTP ${response.status}: ${response.statusText}`);
+      if (error || !data?.success) {
+        throw new Error(data?.error || error?.message || 'Failed to send email');
       }
 
-      return data;
+      return data.data;
     } catch (error) {
       console.error('Error sending email:', error);
       throw error;
