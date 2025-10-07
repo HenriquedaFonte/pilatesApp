@@ -48,6 +48,7 @@ function AppRoutes() {
 
   return (
     <Routes>
+      <Route path="/" element={<StudioHome />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/complete-profile" element={<ProfileCompletion />} />
@@ -55,7 +56,6 @@ function AppRoutes() {
       <Route path="/auth/callback" element={<AuthCallback />} />
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="/terms-of-service" element={<TermsOfService />} />
-      <Route path="/" element={<StudioHome />} />
 
       <Route 
         path="/teacher/dashboard" 

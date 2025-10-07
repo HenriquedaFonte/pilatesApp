@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import {
   Dialog,
@@ -40,7 +41,7 @@ import {
   ArrowLeft,
   Users,
   Calendar,
-  Clock
+  MessageSquare
 } from 'lucide-react'
 
 const TeacherStudents = () => {
@@ -53,10 +54,10 @@ const TeacherStudents = () => {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedStudent, setSelectedStudent] = useState(null)
-  const [selectedFixedDays, setSelectedFixedDays] = useState([])
+  const [selectedObservations, setSelectedObservations] = useState('')
   const [isBalanceDialogOpen, setIsBalanceDialogOpen] = useState(false)
   const [isEnrollDialogOpen, setIsEnrollDialogOpen] = useState(false)
-  const [isFixedDaysDialogOpen, setIsFixedDaysDialogOpen] = useState(false)
+  const [isCommentsDialogOpen, setIsCommentsDialogOpen] = useState(false)
   const [isCreateUserDialogOpen, setIsCreateUserDialogOpen] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
@@ -107,7 +108,7 @@ const TeacherStudents = () => {
       const { data: studentsData, error: studentsError } = await supabase
         .from('profiles')
         .select(
-          'id, email, full_name, role, individual_credits, duo_credits, group_credits, created_at, fixed_class_days'
+          'id, email, full_name, role, individual_credits, duo_credits, group_credits, created_at, observations'
         )
         .eq('role', 'student')
         .order('full_name')
@@ -304,7 +305,7 @@ const TeacherStudents = () => {
     }
   }
 
-  const handleFixedDaysUpdate = async e => {
+  const handleObservationsUpdate = async e => {
     e.preventDefault()
     setError('')
     setSuccess('')
@@ -313,17 +314,17 @@ const TeacherStudents = () => {
 
       const { error } = await supabase
         .from('profiles')
-        .update({ fixed_class_days: selectedFixedDays.map(Number) })
+        .update({ observations: selectedObservations })
         .eq('id', selectedStudent.id)
 
       if (error) throw error
 
-      setSuccess('Fixed class days updated successfully!')
-      setIsFixedDaysDialogOpen(false)
+      setSuccess('Observations updated successfully!')
+      setIsCommentsDialogOpen(false)
       setSelectedStudent(null)
       await fetchData()
     } catch (error) {
-      setError('Error updating fixed class days: ' + error.message)
+      setError('Error updating observations: ' + error.message)
     }
   }
 
@@ -630,11 +631,11 @@ const TeacherStudents = () => {
                         variant="outline"
                         onClick={() => {
                           setSelectedStudent(student)
-                          setSelectedFixedDays(student.fixed_class_days || [])
-                          setIsFixedDaysDialogOpen(true)
+                          setSelectedObservations(student.observations || '')
+                          setIsCommentsDialogOpen(true)
                         }}
                       >
-                        <Clock className="h-3 w-3" />
+                        <MessageSquare className="h-3 w-3" />
                       </Button>
                       <Button
                         size="sm"
@@ -851,52 +852,34 @@ const TeacherStudents = () => {
 
 
         <Dialog
-          open={isFixedDaysDialogOpen}
-          onOpenChange={setIsFixedDaysDialogOpen}
+          open={isCommentsDialogOpen}
+          onOpenChange={setIsCommentsDialogOpen}
         >
           <DialogContent>
             <DialogHeader>
               <DialogTitle>
-                Set Fixed Class Days for {selectedStudent?.full_name}
+                Add Comments for {selectedStudent?.full_name}
               </DialogTitle>
               <DialogDescription>
-                Select the days of the week this student attends class.
+                Add observations or comments related to this student.
               </DialogDescription>
             </DialogHeader>
-            <form onSubmit={handleFixedDaysUpdate} className="space-y-4">
-              <div className="flex flex-wrap gap-2">
-                {[
-                  'Sunday',
-                  'Monday',
-                  'Tuesday',
-                  'Wednesday',
-                  'Thursday',
-                  'Friday',
-                  'Saturday'
-                ].map((day, idx) => (
-                  <label key={day} className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      checked={selectedFixedDays.includes(idx)}
-                      onChange={e => {
-                        if (e.target.checked) {
-                          setSelectedFixedDays([...selectedFixedDays, idx])
-                        } else {
-                          setSelectedFixedDays(
-                            selectedFixedDays.filter(d => d !== idx)
-                          )
-                        }
-                      }}
-                    />
-                    <span>{day}</span>
-                  </label>
-                ))}
+            <form onSubmit={handleObservationsUpdate} className="space-y-4">
+              <div>
+                <Label htmlFor="observations">Observations</Label>
+                <Textarea
+                  id="observations"
+                  value={selectedObservations}
+                  onChange={e => setSelectedObservations(e.target.value)}
+                  placeholder="Enter your observations here..."
+                  rows={4}
+                />
               </div>
               <div className="flex justify-end space-x-2">
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => setIsFixedDaysDialogOpen(false)}
+                  onClick={() => setIsCommentsDialogOpen(false)}
                 >
                   Cancel
                 </Button>

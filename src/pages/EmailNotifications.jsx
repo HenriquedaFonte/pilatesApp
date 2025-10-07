@@ -15,12 +15,12 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Loader2, 
-  Send, 
-  Users, 
-  AlertTriangle, 
-  ArrowLeft, 
+import {
+  Loader2,
+  Send,
+  Users,
+  AlertTriangle,
+  ArrowLeft,
   Activity,
   LogOut,
   Mail,
@@ -28,7 +28,8 @@ import {
   CheckCircle,
   XCircle,
   Clock,
-  FileText
+  FileText,
+  Search
 } from 'lucide-react';
 
 const EmailNotifications = () => {
@@ -47,6 +48,7 @@ const EmailNotifications = () => {
   const [selectedClass, setSelectedClass] = useState('');
   const [selectedDay, setSelectedDay] = useState('');
   const [selectedStudents, setSelectedStudents] = useState([]);
+  const [studentSearchTerm, setStudentSearchTerm] = useState('');
   const [lowCreditsThreshold, setLowCreditsThreshold] = useState(3);
   const [senderName, setSenderName] = useState(profile?.full_name || 'Professora');
   const [selectedTemplateId, setSelectedTemplateId] = useState(null);
@@ -378,19 +380,37 @@ const EmailNotifications = () => {
   };
 
   const selectAllFiltered = () => {
-    const filteredStudents = getFilteredStudents();
-    const allSelected = filteredStudents.every(student => selectedStudents.includes(student.id));
-    
-    if (allSelected) {
-      setSelectedStudents(prev => prev.filter(id => !filteredStudents.some(s => s.id === id)));
+    if (filterType === 'selected') {
+      // For manual selection, use searched students
+      const allSelected = searchedStudents.every(student => selectedStudents.includes(student.id));
+
+      if (allSelected) {
+        setSelectedStudents(prev => prev.filter(id => !searchedStudents.some(s => s.id === id)));
+      } else {
+        const newSelections = searchedStudents.map(s => s.id);
+        setSelectedStudents(prev => [...new Set([...prev, ...newSelections])]);
+      }
     } else {
-      const newSelections = filteredStudents.map(s => s.id);
-      setSelectedStudents(prev => [...new Set([...prev, ...newSelections])]);
+      // For other filters, use filtered students
+      const filteredStudents = getFilteredStudents();
+      const allSelected = filteredStudents.every(student => selectedStudents.includes(student.id));
+
+      if (allSelected) {
+        setSelectedStudents(prev => prev.filter(id => !filteredStudents.some(s => s.id === id)));
+      } else {
+        const newSelections = filteredStudents.map(s => s.id);
+        setSelectedStudents(prev => [...new Set([...prev, ...newSelections])]);
+      }
     }
   };
 
   const filteredStudents = getFilteredStudents();
   const lowCreditsStudents = students.filter(s => s.totalCredits <= lowCreditsThreshold);
+
+  const searchedStudents = students.filter(student =>
+    student.full_name.toLowerCase().includes(studentSearchTerm.toLowerCase()) ||
+    student.email.toLowerCase().includes(studentSearchTerm.toLowerCase())
+  );
 
   if (loading) {
     return (
@@ -676,11 +696,22 @@ const EmailNotifications = () => {
                           size="sm"
                           onClick={selectAllFiltered}
                         >
-                          {filteredStudents.every(s => selectedStudents.includes(s.id)) ? 'Unselect All' : 'Select All'}
+                          {searchedStudents.every(s => selectedStudents.includes(s.id)) ? 'Unselect All' : 'Select All'}
                         </Button>
                       </div>
+                      <div className="mb-4">
+                        <div className="relative">
+                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                          <Input
+                            placeholder="Search students by name or email..."
+                            value={studentSearchTerm}
+                            onChange={(e) => setStudentSearchTerm(e.target.value)}
+                            className="pl-10"
+                          />
+                        </div>
+                      </div>
                       <div className="max-h-40 overflow-y-auto border rounded p-2 space-y-2">
-                        {students.map(student => (
+                        {searchedStudents.map(student => (
                           <div key={student.id} className="flex items-center space-x-2">
                             <Checkbox
                               id={`student-${student.id}`}
