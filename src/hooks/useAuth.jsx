@@ -235,9 +235,6 @@ export const AuthProvider = ({ children }) => {
       // Always clear local state
       setUser(null)
       setProfile(null)
-
-      // Navigate to home page
-      navigate('/')
     } catch (error) {
       console.error('Error signing out:', error)
 
@@ -273,27 +270,20 @@ export const AuthProvider = ({ children }) => {
         throw new Error('User not authenticated')
       }
 
-      const { data: updateResult, error: updateError } = await supabase.functions.invoke('create-user', {
-        body: {
-          oauth_user_id: user.id,
-          email: user.email,
-          fullName: user.user_metadata?.full_name || user.email,
-          phone,
-          preferredLanguage,
-          update_existing: true
-        }
-      })
+      const { data, error } = await supabase
+        .from('profiles')
+        .update({
+          phone: phone || null,
+          preferred_language: preferredLanguage
+        })
+        .eq('id', user.id)
+        .select()
+        .single()
 
-      if (updateError) {
-        throw updateError
-      }
+      if (error) throw error
 
-      if (updateResult.error) {
-        throw new Error(updateResult.error)
-      }
-
-      setProfile(updateResult.profile)
-      return { data: updateResult.profile, error: null }
+      setProfile(data)
+      return { data, error: null }
     } catch (error) {
       return { data: null, error }
     }
@@ -311,7 +301,7 @@ export const AuthProvider = ({ children }) => {
     completeProfile,
     isTeacher: profile?.role === 'teacher',
     isStudent: profile?.role === 'student',
-    isProfileComplete: profile?.profile_complete === true,
+    isProfileComplete: profile?.phone != null,
     supabase 
   }
 

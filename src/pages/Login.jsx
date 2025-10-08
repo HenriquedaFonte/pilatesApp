@@ -35,14 +35,14 @@ const Login = () => {
 
   useEffect(() => {
     if (user && profile && !loading && !googleLoading) {
-      if (!isProfileComplete) {
-        navigate('/complete-profile', { replace: true })
-      } else if (profile.role === 'student' && !profile.password_changed) {
-        navigate('/change-password', { replace: true })
+      if (profile.role === 'student') {
+        if (!isProfileComplete) {
+          navigate('/complete-profile', { replace: true })
+        } else {
+          navigate('/student/dashboard', { replace: true })
+        }
       } else if (profile.role === 'teacher') {
         navigate('/teacher/dashboard', { replace: true })
-      } else if (profile.role === 'student') {
-        navigate('/student/dashboard', { replace: true })
       }
     }
   }, [user, profile, isProfileComplete, loading, googleLoading, navigate])

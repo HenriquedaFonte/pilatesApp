@@ -135,7 +135,7 @@ const StudentDashboard = () => {
 
   const handleSignOut = async () => {
     await signOut()
-    navigate('/')
+    navigate('/login')
   }
 
 
@@ -488,7 +488,7 @@ const StudentDashboard = () => {
                 <Link to="/student/rules">
                   <Button variant="outline" className="w-full justify-start">
                     <FileText className="h-4 w-4 mr-2" />
-                    Studio Rules
+                    {t('rules.title')}
                   </Button>
                 </Link>
                 {/* <Button

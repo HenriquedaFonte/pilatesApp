@@ -18,7 +18,6 @@ const ProfileCompletion = () => {
   const [displayPhone, setDisplayPhone] = useState('') 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [success, setSuccess] = useState(false)
   
   const { user, supabase, updateProfile } = useAuth()
   const navigate = useNavigate()
@@ -38,7 +37,7 @@ const ProfileCompletion = () => {
         return
       }
 
-      if (profile.profile_complete) {
+      if (profile.phone) {
         if (profile.role === 'teacher') {
           navigate('/teacher')
         } else {
@@ -117,8 +116,7 @@ const ProfileCompletion = () => {
         .from('profiles')
         .update({
           phone: formData.phone || null,
-          preferred_language: formData.preferredLanguage,
-          profile_complete: true
+          preferred_language: formData.preferredLanguage
         })
         .eq('id', user.id)
         .select()
@@ -131,15 +129,12 @@ const ProfileCompletion = () => {
       // Update local profile state
       updateProfile(updateData)
 
-      setSuccess(true)
-
-      setTimeout(() => {
-        if (updateData?.role === 'teacher') {
-          navigate('/teacher')
-        } else {
-          navigate('/student')
-        }
-      }, 2000)
+      // Navigate to password change
+      if (updateData?.role === 'teacher') {
+        navigate('/teacher')
+      } else {
+        navigate('/change-password')
+      }
 
     } catch (error) {
       console.error('Error updating profile:', error)
@@ -149,23 +144,6 @@ const ProfileCompletion = () => {
     }
   }
 
-  if (success) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <div className="flex justify-center mb-4">
-              <CheckCircle className="h-16 w-16 text-green-500" />
-            </div>
-            <CardTitle className="text-2xl font-bold text-green-600">Profile Complete!</CardTitle>
-            <CardDescription>
-              Your profile has been updated successfully. You will be redirected to your dashboard.
-            </CardDescription>
-          </CardHeader>
-        </Card>
-      </div>
-    )
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
@@ -188,7 +166,7 @@ const ProfileCompletion = () => {
             )}
             
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number (Optional)</Label>
+              <Label htmlFor="phone">Phone Number</Label>
               <div className="relative">
                 <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                 <Input

@@ -44,7 +44,7 @@ const StudentHistory = () => {
 
   const handleSignOut = async () => {
     await signOut()
-    navigate('/')
+    navigate('/login')
   }
 
   const fetchHistory = async studentId => {
@@ -153,9 +153,6 @@ const StudentHistory = () => {
               </h1>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-700">
-                {t('common.welcome')}, {profile?.full_name}
-              </span>
               <Button variant="outline" size="sm" onClick={handleSignOut}>
                 <LogOut className="h-4 w-4 mr-2" />
                 {t('common.signOut')}

@@ -85,7 +85,6 @@ const FinancialReport = () => {
       .select(
         'id,student_id, type, change_amount, created_at, description, payment_method, new_balance, amount_paid'
       )
-      .gt('change_amount', 0) // Only positive changes (credits acquired)
       .order('created_at', { ascending: false })
       .limit(500)
 

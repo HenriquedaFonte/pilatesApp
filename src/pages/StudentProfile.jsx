@@ -51,21 +51,21 @@ const StudentProfile = () => {
     setSuccess('')
 
     try {
-      const { data, error } = await supabase.functions.invoke('create-user', {
-        body: {
-          oauth_user_id: user.id,
+      const { data, error } = await supabase
+        .from('profiles')
+        .update({
+          full_name: profileData.full_name,
           email: profileData.email,
-          fullName: profileData.full_name,
-          phone: profileData.phone,
-          preferredLanguage: profileData.preferred_language,
-          update_existing: true
-        }
-      })
+          phone: profileData.phone || null,
+          preferred_language: profileData.preferred_language
+        })
+        .eq('id', user.id)
+        .select()
+        .single()
 
       if (error) throw error
-      if (data.error) throw new Error(data.error)
 
-      updateProfile(data.profile)
+      updateProfile(data)
       setSuccess('Profile updated successfully!')
     } catch (error) {
       setError(error.message || 'Failed to update profile')

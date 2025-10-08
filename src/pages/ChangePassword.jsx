@@ -1,13 +1,12 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Loader2 } from 'lucide-react'
+import { Loader2, CheckCircle } from 'lucide-react'
 import Logo from '../components/Logo'
 
 const ChangePassword = () => {
@@ -15,8 +14,8 @@ const ChangePassword = () => {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState(false)
 
-  const { updateProfile } = useAuth()
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
@@ -44,20 +43,33 @@ const ChangePassword = () => {
 
       if (authError) throw authError
 
-      // Update profile to mark password as changed
-      const { error: profileError } = await updateProfile({
-        password_changed: true
-      })
-
-      if (profileError) throw profileError
-
-      // Navigate to dashboard
-      navigate('/student/dashboard')
+      setSuccess(true)
+      setTimeout(() => {
+        navigate('/student/dashboard')
+      }, 2000)
     } catch (error) {
       setError(error.message)
     } finally {
       setLoading(false)
     }
+  }
+
+  if (success) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <div className="flex justify-center mb-4">
+              <CheckCircle className="h-16 w-16 text-green-500" />
+            </div>
+            <CardTitle className="text-2xl font-bold text-green-600">Profile Complete!</CardTitle>
+            <CardDescription>
+              Your profile has been updated successfully. You will be redirected to your dashboard.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    )
   }
 
   return (
