@@ -135,7 +135,6 @@ const StudentDashboard = () => {
 
   const handleSignOut = async () => {
     await signOut()
-    navigate('/login')
   }
 
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import { useTranslation } from 'react-i18next'
@@ -22,7 +22,6 @@ import Logo from '../components/Logo'
 
 const StudentHistory = () => {
   const { profile, signOut } = useAuth()
-  const navigate = useNavigate()
   const { t, i18n } = useTranslation()
   const [attendanceHistory, setAttendanceHistory] = useState([])
   const [balanceHistory, setBalanceHistory] = useState([])
@@ -44,7 +43,6 @@ const StudentHistory = () => {
 
   const handleSignOut = async () => {
     await signOut()
-    navigate('/login')
   }
 
   const fetchHistory = async studentId => {

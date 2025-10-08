@@ -13,7 +13,7 @@ const ProtectedRoute = ({ children, requireRole = null, requireCompleteProfile =
   }
 
   if (!user) {
-    return <Navigate to="/login" replace />
+    return <Navigate to="/" replace />
   }
 
   if (requireCompleteProfile && !isProfileComplete) {
@@ -26,7 +26,7 @@ const ProtectedRoute = ({ children, requireRole = null, requireCompleteProfile =
     } else if (profile?.role === 'student') {
       return <Navigate to="/student/dashboard" replace />
     } else {
-      return <Navigate to="/login" replace />
+      return <Navigate to="/" replace />
     }
   }
 
