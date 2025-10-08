@@ -73,7 +73,7 @@ const TeacherStudents = () => {
   const [balanceChange, setBalanceChange] = useState({
     amount: '',
     description: '',
-    creditType: 'individual',
+    creditType: 'group',
     paymentMethod: '',
     amountPaid: ''
   })
@@ -212,7 +212,7 @@ const TeacherStudents = () => {
       setBalanceChange({
         amount: '',
         description: '',
-        creditType: 'individual',
+        creditType: 'group',
         paymentMethod: '',
         amountPaid: ''
       })
