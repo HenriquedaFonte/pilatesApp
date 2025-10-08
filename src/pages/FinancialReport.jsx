@@ -85,6 +85,7 @@ const FinancialReport = () => {
       .select(
         'id,student_id, type, change_amount, created_at, description, payment_method, new_balance, amount_paid'
       )
+      .not('amount_paid', 'is', null)
       .order('created_at', { ascending: false })
       .limit(500)
 
