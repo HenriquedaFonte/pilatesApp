@@ -55,7 +55,23 @@ class EmailService {
   }
 
   async sendPasswordResetEmail(userEmail, resetLink) {
-    const template = getTemplate('passwordReset', 'en'); // Default to English for password reset
+    // Get user's language preference from their profile
+    let userLanguage = 'pt'; // Default to Portuguese
+    try {
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('preferred_language')
+        .eq('email', userEmail)
+        .single();
+
+      if (!error && profile?.preferred_language) {
+        userLanguage = profile.preferred_language;
+      }
+    } catch (error) {
+      console.warn('Could not fetch user language for password reset email:', error);
+    }
+
+    const template = getTemplate('passwordReset', userLanguage);
 
     const variables = {
       resetLink: resetLink
@@ -86,7 +102,7 @@ class EmailService {
         </style>
       </head>
       <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;" class="email-container">
-        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;" class="header">
+        <div style="background: linear-gradient(135deg, #01b48d 0%, #017a6b 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;" class="header">
           <h1 style="color: white; margin: 0; font-size: 28px;">Josi Pilates</h1>
           <p style="color: #f0f0f0; margin: 5px 0 0 0; font-size: 16px;">${processedTemplate.title}</p>
         </div>
@@ -98,22 +114,16 @@ class EmailService {
 
           <div style="text-align: center; margin: 30px 0;">
             <a href="${resetLink}"
-               style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);" class="reset-button">
+               style="background: linear-gradient(135deg, #01b48d 0%, #017a6b 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(1, 180, 141, 0.4);" class="reset-button">
               ${processedTemplate.buttonText}
             </a>
           </div>
 
           <div style="background-color: #ecf0f1; padding: 20px; border-radius: 6px; margin: 20px 0;" class="security-box">
             <p style="margin: 0; font-size: 14px; line-height: 1.5;">
-              <strong>Security Notice:</strong> ${processedTemplate.validity}. ${processedTemplate.security}
+              <strong>${processedTemplate.validity}</strong> ${processedTemplate.security}
             </p>
           </div>
-
-          <p>${processedTemplate.instructions}</p>
-
-          <p style="word-break: break-all; background-color: #f8f9fa; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 14px; color: #2c3e50;">
-            ${resetLink}
-          </p>
 
           <p>${processedTemplate.ignore}</p>
 
@@ -135,11 +145,9 @@ ${processedTemplate.greeting('')}
 
 ${processedTemplate.message}
 
-${processedTemplate.instructions}
-${resetLink}
+${processedTemplate.buttonText}: ${resetLink}
 
-${processedTemplate.validity}
-${processedTemplate.security}
+${processedTemplate.validity} ${processedTemplate.security}
 
 ${processedTemplate.ignore}
 
