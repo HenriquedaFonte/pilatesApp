@@ -112,7 +112,6 @@ const Login = () => {
         setResetSuccess('Password reset email sent!')
       }
 
-      setResetSuccess('Password reset email sent!')
       setResetEmail('')
       setTimeout(() => setForgotPasswordOpen(false), 2000)
     } catch (error) {
