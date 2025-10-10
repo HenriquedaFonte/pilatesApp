@@ -734,7 +734,7 @@ export const emailTemplates = {
     }
   },
 
-  studioRules: {
+  rules: {
     pt: {
       title: '📋 Regras do Studio Josi Pilates',
       classDuration: '⏱️ Duração das Aulas',

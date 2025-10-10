@@ -604,7 +604,7 @@ ${processedTemplate.teamName}
     const subject = processedTemplate.subject;
 
     // Get studio rules in the user's language
-    const rulesTemplate = getTemplate('studioRules', preferredLanguage);
+    const rulesTemplate = getTemplate('rules', preferredLanguage);
 
     const htmlContent = `
       <!DOCTYPE html>
