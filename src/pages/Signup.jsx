@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
+import emailService from '../lib/emailService'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -105,16 +106,28 @@ const Signup = () => {
       formData.phone,
       formData.preferredLanguage
     )
-    
+
     if (error) {
       setError(error.message)
       setLoading(false)
       return
     }
 
+    // Send welcome email with studio rules
+    try {
+      await emailService.sendStudentWelcomeEmail({
+        email: formData.email,
+        fullName: formData.fullName,
+        preferredLanguage: formData.preferredLanguage
+      })
+    } catch (emailError) {
+      console.warn('Welcome email failed to send:', emailError)
+      // Don't fail signup if email fails
+    }
+
     setSuccess(true)
     setLoading(false)
-    
+
     setTimeout(() => {
       navigate('/login')
     }, 2000)

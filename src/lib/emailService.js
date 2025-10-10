@@ -593,6 +593,9 @@ ${processedTemplate.teamName}
 
     const subject = processedTemplate.subject;
 
+    // Get studio rules in the user's language
+    const rulesTemplate = getTemplate('rules', preferredLanguage);
+
     const htmlContent = `
       <!DOCTYPE html>
       <html>
@@ -607,14 +610,14 @@ ${processedTemplate.teamName}
             .header h1 { font-size: 24px !important; }
             .header p { font-size: 14px !important; }
             .content { padding: 20px !important; }
-            .password-box, .instructions-box, .contact-box { padding: 15px !important; margin: 15px 0 !important; }
+            .password-box, .instructions-box, .contact-box, .rules-box { padding: 15px !important; margin: 15px 0 !important; }
             .password-box h3 { font-size: 16px !important; }
-            .instructions-box h4 { font-size: 16px !important; }
+            .instructions-box h4, .rules-box h4 { font-size: 16px !important; }
             .contact-box h4 { font-size: 16px !important; }
-            h2 { font-size: 20px !important; }
+            h2, h3 { font-size: 20px !important; }
             h4 { font-size: 16px !important; }
             p { font-size: 16px !important; line-height: 1.5 !important; }
-            ol { padding-left: 15px !important; }
+            ol, ul { padding-left: 15px !important; }
           }
         </style>
       </head>
@@ -644,6 +647,45 @@ ${processedTemplate.teamName}
           <ul style="margin: 10px 0; padding-left: 20px;">
             ${processedTemplate.nextSteps.map(step => `<li>${step}</li>`).join('')}
           </ul>
+
+          <!-- Studio Rules Section -->
+          <div style="background-color: #f8f9fa; padding: 25px; border-radius: 8px; margin: 30px 0; border-left: 4px solid #3b82f6;" class="rules-box">
+            <h3 style="color: #1e293b; margin-top: 0;">📋 ${rulesTemplate.title}</h3>
+
+            <div style="margin: 20px 0;">
+              <h4 style="color: #374151; margin: 15px 0 10px 0;">⏱️ ${rulesTemplate.classDuration}</h4>
+              <div style="background-color: #e0f2fe; padding: 10px; border-radius: 6px;">
+                <p style="margin: 0; color: #0277bd; font-weight: bold;">${rulesTemplate.classDurationText}</p>
+              </div>
+            </div>
+
+            <div style="margin: 20px 0;">
+              <h4 style="color: #374151; margin: 15px 0 10px 0;">⏰ ${rulesTemplate.arrivalPolicy}</h4>
+              <div style="background-color: #fff3e0; padding: 10px; border-radius: 6px;">
+                <p style="margin: 0; color: #f57c00; font-weight: bold;">${rulesTemplate.arrivalPolicyText}</p>
+                <p style="margin: 5px 0 0 0; color: #e65100;">${rulesTemplate.arrivalPolicyDetail}</p>
+              </div>
+            </div>
+
+            <div style="margin: 20px 0;">
+              <h4 style="color: #374151; margin: 15px 0 10px 0;">📅 ${rulesTemplate.cancellationPolicy}</h4>
+              <div style="background-color: #ffebee; padding: 10px; border-radius: 6px;">
+                <p style="margin: 0; color: #d32f2f; font-weight: bold;">${rulesTemplate.cancellationPolicyText}</p>
+                <p style="margin: 5px 0 0 0; color: #b71c1c;">${rulesTemplate.cancellationPolicyDetail}</p>
+                <div style="background-color: #ffcdd2; padding: 8px; border-radius: 4px; margin: 10px 0;">
+                  <p style="margin: 0; color: #b71c1c; font-weight: bold;">⚠️ ${rulesTemplate.cancellationWarning}</p>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin: 20px 0;">
+              <h4 style="color: #374151; margin: 15px 0 10px 0;">💡 ${rulesTemplate.additionalGuidelines}</h4>
+              <ul style="margin: 10px 0; padding-left: 20px; color: #374151;">
+                <li><strong>${rulesTemplate.wearComfortableClothing}:</strong> ${rulesTemplate.wearComfortableClothingDesc}</li>
+                <li><strong>${rulesTemplate.stayHydrated}:</strong> ${rulesTemplate.stayHydratedDesc}</li>
+              </ul>
+            </div>
+          </div>
 
           <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0;" class="contact-box">
             <h4 style="color: #1e293b; margin-top: 0;">${processedTemplate.contactTitle}</h4>
@@ -679,6 +721,25 @@ ${processedTemplate.instructions.map((instruction, index) => `${index + 1}. ${in
 
 ${processedTemplate.nextStepsTitle}
 ${processedTemplate.nextSteps.map(step => `- ${step}`).join('\n')}
+
+--- STUDIO RULES ---
+${rulesTemplate.title}
+
+⏱️ ${rulesTemplate.classDuration}
+${rulesTemplate.classDurationText}
+
+⏰ ${rulesTemplate.arrivalPolicy}
+${rulesTemplate.arrivalPolicyText}
+${rulesTemplate.arrivalPolicyDetail}
+
+📅 ${rulesTemplate.cancellationPolicy}
+${rulesTemplate.cancellationPolicyText}
+${rulesTemplate.cancellationPolicyDetail}
+⚠️ ${rulesTemplate.cancellationWarning}
+
+💡 ${rulesTemplate.additionalGuidelines}
+- ${rulesTemplate.wearComfortableClothing}: ${rulesTemplate.wearComfortableClothingDesc}
+- ${rulesTemplate.stayHydrated}: ${rulesTemplate.stayHydratedDesc}
 
 ${processedTemplate.contactTitle}
 ${processedTemplate.contactInfo}
