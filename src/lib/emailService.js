@@ -54,6 +54,110 @@ class EmailService {
     }
   }
 
+  async sendPasswordResetEmail(userEmail, resetLink) {
+    const template = getTemplate('passwordReset', 'en'); // Default to English for password reset
+
+    const variables = {
+      resetLink: resetLink
+    };
+
+    const processedTemplate = processTemplate(template, variables);
+
+    const subject = processedTemplate.subject;
+
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>${processedTemplate.title}</title>
+        <style>
+          @media only screen and (max-width: 600px) {
+            .email-container { padding: 10px !important; }
+            .header { padding: 20px !important; }
+            .header h1 { font-size: 24px !important; }
+            .content { padding: 20px !important; }
+            .reset-button { padding: 12px 20px !important; font-size: 14px !important; }
+            .security-box { padding: 15px !important; margin: 15px 0 !important; }
+            h2 { font-size: 20px !important; }
+            p { font-size: 16px !important; line-height: 1.5 !important; }
+          }
+        </style>
+      </head>
+      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;" class="email-container">
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;" class="header">
+          <h1 style="color: white; margin: 0; font-size: 28px;">Josi Pilates</h1>
+          <p style="color: #f0f0f0; margin: 5px 0 0 0; font-size: 16px;">${processedTemplate.title}</p>
+        </div>
+
+        <div style="background: white; padding: 30px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 10px 10px;" class="content">
+          <h2 style="color: #2c3e50; margin-top: 0;">${processedTemplate.greeting('')}</h2>
+
+          <p>${processedTemplate.message}</p>
+
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${resetLink}"
+               style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);" class="reset-button">
+              ${processedTemplate.buttonText}
+            </a>
+          </div>
+
+          <div style="background-color: #ecf0f1; padding: 20px; border-radius: 6px; margin: 20px 0;" class="security-box">
+            <p style="margin: 0; font-size: 14px; line-height: 1.5;">
+              <strong>Security Notice:</strong> ${processedTemplate.validity}. ${processedTemplate.security}
+            </p>
+          </div>
+
+          <p>${processedTemplate.instructions}</p>
+
+          <p style="word-break: break-all; background-color: #f8f9fa; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 14px; color: #2c3e50;">
+            ${resetLink}
+          </p>
+
+          <p>${processedTemplate.ignore}</p>
+
+          <hr style="margin: 30px 0; border: none; border-top: 1px solid #e2e8f0;">
+
+          <p style="color: #64748b; font-size: 14px; text-align: center;">
+            ${processedTemplate.contact}<br>
+            <strong>${processedTemplate.signature}</strong><br>
+            ${processedTemplate.teamName}<br>
+            <em>${processedTemplate.footer}</em>
+          </p>
+        </div>
+      </body>
+      </html>
+    `;
+
+    const textContent = `
+${processedTemplate.greeting('')}
+
+${processedTemplate.message}
+
+${processedTemplate.instructions}
+${resetLink}
+
+${processedTemplate.validity}
+${processedTemplate.security}
+
+${processedTemplate.ignore}
+
+${processedTemplate.contact}
+
+${processedTemplate.signature}
+${processedTemplate.teamName}
+${processedTemplate.footer}
+    `;
+
+    return this.sendEmail({
+      to: { email: userEmail, name: '' },
+      subject,
+      htmlContent,
+      textContent
+    });
+  }
+
   async sendBulkEmails(emails) {
     const results = [];
     

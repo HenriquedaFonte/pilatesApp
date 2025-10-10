@@ -516,38 +516,50 @@ export const emailTemplates = {
     pt: {
       subject: 'Redefinição de Senha - Josi Pilates',
       greeting: (name) => `Olá, ${name}!`,
-      message: 'Recebemos uma solicitação para redefinir sua senha.',
-      instructions: 'Para redefinir sua senha, clique no link abaixo:',
-      resetLink: 'Redefinir Senha',
+      title: 'Redefinição de Senha Solicitada',
+      message: 'Recebemos uma solicitação para redefinir sua senha da conta Josi Pilates.',
+      instructions: 'Para criar uma nova senha, clique no botão abaixo:',
+      buttonText: 'Redefinir Minha Senha',
       validity: 'Este link é válido por 1 hora.',
+      security: 'Por segurança, este link expirará automaticamente após 1 hora.',
       ignore: 'Se você não solicitou esta redefinição, ignore este e-mail.',
       support: 'Se precisar de ajuda, entre em contato conosco.',
+      contact: 'Contato: +1 (438) 274-8396 | josi@josipilates.com',
       signature: 'Atenciosamente,',
-      teamName: 'Equipe Josi Pilates'
+      teamName: 'Equipe Josi Pilates',
+      footer: '© 2024 Josi Pilates. Todos os direitos reservados.'
     },
     en: {
       subject: 'Password Reset - Josi Pilates',
       greeting: (name) => `Hello, ${name}!`,
-      message: 'We received a request to reset your password.',
-      instructions: 'To reset your password, click the link below:',
-      resetLink: 'Reset Password',
+      title: 'Password Reset Requested',
+      message: 'We received a request to reset your Josi Pilates account password.',
+      instructions: 'To create a new password, click the button below:',
+      buttonText: 'Reset My Password',
       validity: 'This link is valid for 1 hour.',
+      security: 'For security, this link will automatically expire after 1 hour.',
       ignore: 'If you did not request this reset, please ignore this email.',
       support: 'If you need help, contact us.',
+      contact: 'Contact: +1 (438) 274-8396 | josi@josipilates.com',
       signature: 'Best regards,',
-      teamName: 'Josi Pilates Team'
+      teamName: 'Josi Pilates Team',
+      footer: '© 2024 Josi Pilates. All rights reserved.'
     },
     fr: {
       subject: 'Réinitialisation du Mot de Passe - Josi Pilates',
       greeting: (name) => `Bonjour, ${name}!`,
-      message: 'Nous avons reçu une demande de réinitialisation de votre mot de passe.',
-      instructions: 'Pour réinitialiser votre mot de passe, cliquez sur le lien ci-dessous:',
-      resetLink: 'Réinitialiser le Mot de Passe',
+      title: 'Réinitialisation du Mot de Passe Demandée',
+      message: 'Nous avons reçu une demande de réinitialisation de votre mot de passe du compte Josi Pilates.',
+      instructions: 'Pour créer un nouveau mot de passe, cliquez sur le bouton ci-dessous:',
+      buttonText: 'Réinitialiser Mon Mot de Passe',
       validity: 'Ce lien est valide pendant 1 heure.',
+      security: 'Pour des raisons de sécurité, ce lien expirera automatiquement après 1 heure.',
       ignore: 'Si vous n\'avez pas demandé cette réinitialisation, ignorez cet e-mail.',
       support: 'Si vous avez besoin d\'aide, contactez-nous.',
+      contact: 'Contact: +1 (438) 274-8396 | josi@josipilates.com',
       signature: 'Cordialement,',
-      teamName: 'Équipe Josi Pilates'
+      teamName: 'Équipe Josi Pilates',
+      footer: '© 2024 Josi Pilates. Tous droits réservés.'
     }
   },
 
