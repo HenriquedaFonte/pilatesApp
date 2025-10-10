@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { supabase } from '../lib/supabase'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -13,6 +14,7 @@ const ChangePassword = () => {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
 
   const navigate = useNavigate()
 
@@ -34,12 +36,22 @@ const ChangePassword = () => {
     }
 
     try {
-      // Since we can't establish a proper auth session for password reset,
-      // we'll guide the user to use the standard Supabase password reset flow
-      setError('Please use the standard password reset process. Go back to login and click "Forgot Password" to receive an official Supabase reset email.')
+      // Update password in Supabase Auth
+      const { error: authError } = await supabase.auth.updateUser({
+        password: newPassword
+      })
+
+      if (authError) {
+        console.error('Auth error:', authError)
+        setError('Unable to update password. Please try logging in first.')
+        return
+      }
+
+      // Password updated successfully
+      setSuccess('Password updated successfully! You can now log in with your new password.')
       setTimeout(() => {
         navigate('/login')
-      }, 5000)
+      }, 3000)
 
     } catch (error) {
       console.error('Password change error:', error)
@@ -67,6 +79,11 @@ const ChangePassword = () => {
             {error && (
               <Alert variant="destructive">
                 <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+            {success && (
+              <Alert>
+                <AlertDescription>{success}</AlertDescription>
               </Alert>
             )}
 
