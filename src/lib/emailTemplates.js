@@ -732,6 +732,60 @@ export const emailTemplates = {
       signature: 'Avec soin,',
       teamName: 'Équipe Josi Pilates',
     }
+  },
+
+  studioRules: {
+    pt: {
+      title: '📋 Regras do Studio Josi Pilates',
+      classDuration: '⏱️ Duração das Aulas',
+      classDurationText: 'Cada aula tem duração de 55 minutos, incluindo aquecimento, exercícios principais e relaxamento final.',
+      arrivalPolicy: '⏰ Política de Chegada',
+      arrivalPolicyText: 'Pedimos gentilmente que chegue pelo menos 5 minutos antes do início da sua aula.',
+      arrivalPolicyDetail: 'Este tempo extra permite uma transição tranquila entre as aulas e garante que você possa se preparar adequadamente.',
+      cancellationPolicy: '📅 Política de Cancelamento',
+      cancellationPolicyText: 'Cancelamentos devem ser feitos com pelo menos 24 horas de antecedência.',
+      cancellationPolicyDetail: 'O não cumprimento desta política resultará na perda da aula.',
+      cancellationWarning: '⚠️ IMPORTANTE: Aulas não canceladas dentro do prazo de 24 horas serão cobradas normalmente.',
+      additionalGuidelines: '💡 Orientações Adicionais',
+      wearComfortableClothing: 'Vista roupas confortáveis',
+      wearComfortableClothingDesc: 'Use roupas leves e confortáveis que permitam movimento livre.',
+      stayHydrated: 'Mantenha-se hidratado',
+      stayHydratedDesc: 'Beba água antes e depois das aulas para manter o corpo hidratado.'
+    },
+    en: {
+      title: '📋 Josi Pilates Studio Rules',
+      classDuration: '⏱️ Class Duration',
+      classDurationText: 'Each class lasts 55 minutes, including warm-up, main exercises, and final relaxation.',
+      arrivalPolicy: '⏰ Arrival Policy',
+      arrivalPolicyText: 'We kindly ask that you arrive at least 5 minutes before your class begins.',
+      arrivalPolicyDetail: 'This extra time allows for a smooth transition between classes and ensures you can prepare properly.',
+      cancellationPolicy: '📅 Cancellation Policy',
+      cancellationPolicyText: 'Cancellations must be made at least 24 hours in advance.',
+      cancellationPolicyDetail: 'Failure to comply with this policy will result in the loss of the class.',
+      cancellationWarning: '⚠️ IMPORTANT: Classes not cancelled within the 24-hour window will be charged normally.',
+      additionalGuidelines: '💡 Additional Guidelines',
+      wearComfortableClothing: 'Wear comfortable clothing',
+      wearComfortableClothingDesc: 'Wear light, comfortable clothing that allows free movement.',
+      stayHydrated: 'Stay hydrated',
+      stayHydratedDesc: 'Drink water before and after classes to keep your body hydrated.'
+    },
+    fr: {
+      title: '📋 Règles du Studio Josi Pilates',
+      classDuration: '⏱️ Durée des Cours',
+      classDurationText: 'Chaque cours dure 55 minutes, incluant l\'échauffement, les exercices principaux et la relaxation finale.',
+      arrivalPolicy: '⏰ Politique d\'Arrivée',
+      arrivalPolicyText: 'Nous vous demandons gentiment d\'arriver au moins 5 minutes avant le début de votre cours.',
+      arrivalPolicyDetail: 'Ce temps supplémentaire permet une transition fluide entre les cours et garantit que vous pouvez vous préparer correctement.',
+      cancellationPolicy: '📅 Politique d\'Annulation',
+      cancellationPolicyText: 'Les annulations doivent être faites au moins 24 heures à l\'avance.',
+      cancellationPolicyDetail: 'Le non-respect de cette politique entraînera la perte du cours.',
+      cancellationWarning: '⚠️ IMPORTANT: Les cours non annulés dans la fenêtre de 24 heures seront facturés normalement.',
+      additionalGuidelines: '💡 Directives Supplémentaires',
+      wearComfortableClothing: 'Portez des vêtements confortables',
+      wearComfortableClothingDesc: 'Portez des vêtements légers et confortables qui permettent un mouvement libre.',
+      stayHydrated: 'Restez hydraté',
+      stayHydratedDesc: 'Buvez de l\'eau avant et après les cours pour garder votre corps hydraté.'
+    }
   }
 
 };
