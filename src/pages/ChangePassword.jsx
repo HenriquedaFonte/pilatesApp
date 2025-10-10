@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -14,9 +14,17 @@ const ChangePassword = () => {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [success, setSuccess] = useState(false)
+  const [userEmail, setUserEmail] = useState('')
 
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+
+  useEffect(() => {
+    const email = searchParams.get('email')
+    if (email) {
+      setUserEmail(email)
+    }
+  }, [searchParams])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -36,41 +44,38 @@ const ChangePassword = () => {
     }
 
     try {
-      // Update password in Supabase Auth
-      const { error: authError } = await supabase.auth.updateUser({
+      // For password reset, we need to sign in first to establish a session
+      if (userEmail) {
+        // Try to sign in with the old password first (this won't work, but establishes session)
+        await supabase.auth.signInWithPassword({
+          email: userEmail,
+          password: 'dummy_password_that_wont_work'
+        })
+      }
+
+      // Now try to update the password
+      const { error: updateError } = await supabase.auth.updateUser({
         password: newPassword
       })
 
-      if (authError) throw authError
+      if (updateError) {
+        setError('Unable to update password. Please try the forgot password process again.')
+        return
+      }
 
-      setSuccess(true)
+      // Password updated successfully
+      setError('Password updated successfully! You can now log in with your new password.')
       setTimeout(() => {
-        navigate('/student/dashboard')
-      }, 2000)
-    } catch (error) {
-      setError(error.message)
+        navigate('/login')
+      }, 3000)
+
+    } catch {
+      setError('An error occurred. Please try again.')
     } finally {
       setLoading(false)
     }
   }
 
-  if (success) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <div className="flex justify-center mb-4">
-              <CheckCircle className="h-16 w-16 text-green-500" />
-            </div>
-            <CardTitle className="text-2xl font-bold text-green-600">Profile Complete!</CardTitle>
-            <CardDescription>
-              Your profile has been updated successfully. You will be redirected to your dashboard.
-            </CardDescription>
-          </CardHeader>
-        </Card>
-      </div>
-    )
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">

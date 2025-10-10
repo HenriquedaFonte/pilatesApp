@@ -55,26 +55,28 @@ class EmailService {
   }
 
   async sendPasswordResetEmail(userEmail, resetLink) {
+    // First verify the user exists
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('preferred_language')
+      .eq('email', userEmail)
+      .single();
+
+    if (profileError) {
+      throw new Error('User not found');
+    }
+
     // Get user's language preference from their profile
     let userLanguage = 'pt'; // Default to Portuguese
-    try {
-      const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('preferred_language')
-        .eq('email', userEmail)
-        .single();
-
-      if (!error && profile?.preferred_language) {
-        userLanguage = profile.preferred_language;
-      }
-    } catch (error) {
-      console.warn('Could not fetch user language for password reset email:', error);
+    if (profile?.preferred_language) {
+      userLanguage = profile.preferred_language;
     }
 
     const template = getTemplate('passwordReset', userLanguage);
 
     const variables = {
-      resetLink: resetLink
+      resetLink: resetLink,
+      email: userEmail
     };
 
     const processedTemplate = processTemplate(template, variables);
