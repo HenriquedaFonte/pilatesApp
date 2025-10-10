@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
-import emailService from '../lib/emailService'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -76,6 +75,7 @@ const Login = () => {
       return
     }
 
+    // Note: Navigation will be handled by the AuthCallback component
     setGoogleLoading(false)
   }
 
@@ -97,22 +97,11 @@ const Login = () => {
         throw new Error('User not found')
       }
 
-      // Send custom branded email directly (since Supabase reset is having issues)
-      try {
-        const resetLink = `${window.location.origin}/change-password?email=${encodeURIComponent(resetEmail)}`
-        await emailService.sendPasswordResetEmail(resetEmail, resetLink)
-        setResetSuccess('Password reset email sent!')
-      } catch (emailError) {
-        console.error('Custom email failed:', emailError)
-        // Check if it's a user not found error
-        if (emailError.message?.includes('User not found') || emailError.message?.includes('not found')) {
-          throw new Error('No account found with this email address')
-        }
-        throw new Error('Failed to send password reset email')
-      }
-
-      setResetEmail('')
-      setTimeout(() => setForgotPasswordOpen(false), 2000)
+      // For now, just show a message that password reset is not available
+      // This is a temporary solution until Supabase email configuration is fixed
+      setResetError('Password reset is temporarily unavailable. Please contact support.')
+      setTimeout(() => setForgotPasswordOpen(false), 3000)
+      return
     } catch (error) {
       setResetError(error.message)
     } finally {

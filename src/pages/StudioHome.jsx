@@ -62,7 +62,7 @@ Sent from Josi Pilates website contact form.
       `;
 
       await emailService.sendEmail({
-        to: { email: 'contact@josipilates.com', name: 'Josi Pilates' },
+        to: { email: 'josipilatesmontreal@gmail.com', name: 'Josi Pilates' },
         subject,
         htmlContent: `
           <!DOCTYPE html>

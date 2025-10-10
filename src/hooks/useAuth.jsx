@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const { data: existingProfile, error: fetchError } = await supabase
         .from('profiles')
-        .select('*')
+        .select('id, email, full_name, role, individual_credits, duo_credits, group_credits, created_at, observations, phone, preferred_language')
         .eq('id', user.id)
         .single()
 

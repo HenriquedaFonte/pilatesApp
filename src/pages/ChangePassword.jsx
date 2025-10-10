@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -14,17 +13,8 @@ const ChangePassword = () => {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [userEmail, setUserEmail] = useState('')
 
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-
-  useEffect(() => {
-    const email = searchParams.get('email')
-    if (email) {
-      setUserEmail(email)
-    }
-  }, [searchParams])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -44,34 +34,12 @@ const ChangePassword = () => {
     }
 
     try {
-      // For password reset, we need to use Supabase's resetPasswordForEmail properly
-      // First, trigger the reset email which creates a session
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(userEmail, {
-        redirectTo: `${window.location.origin}/change-password?email=${encodeURIComponent(userEmail)}`,
-      })
-
-      if (resetError) {
-        console.error('Reset error:', resetError)
-        setError('Unable to initiate password reset. Please try again.')
-        return
-      }
-
-      // Now try to update the password (this should work if reset was successful)
-      const { error: updateError } = await supabase.auth.updateUser({
-        password: newPassword
-      })
-
-      if (updateError) {
-        console.error('Update error:', updateError)
-        setError('Unable to update password. The reset link may have expired.')
-        return
-      }
-
-      // Password updated successfully
-      setError('Password updated successfully! You can now log in with your new password.')
+      // Since we can't establish a proper auth session for password reset,
+      // we'll guide the user to use the standard Supabase password reset flow
+      setError('Please use the standard password reset process. Go back to login and click "Forgot Password" to receive an official Supabase reset email.')
       setTimeout(() => {
         navigate('/login')
-      }, 3000)
+      }, 5000)
 
     } catch (error) {
       console.error('Password change error:', error)
