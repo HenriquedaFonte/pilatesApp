@@ -104,9 +104,14 @@ const Login = () => {
 
       if (error) throw error
 
-      // Send custom branded email
-      const resetLink = `${window.location.origin}/change-password`
-      await emailService.sendPasswordResetEmail(resetEmail, resetLink)
+      // Send custom branded email (only if Supabase reset succeeds)
+      try {
+        const resetLink = `${window.location.origin}/change-password`
+        await emailService.sendPasswordResetEmail(resetEmail, resetLink)
+      } catch (emailError) {
+        console.warn('Custom email failed, but Supabase reset succeeded:', emailError)
+        // Don't fail the whole operation if custom email fails
+      }
 
       setResetSuccess('Password reset email sent!')
       setResetEmail('')
