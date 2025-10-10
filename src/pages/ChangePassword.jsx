@@ -44,22 +44,26 @@ const ChangePassword = () => {
     }
 
     try {
-      // For password reset, we need to sign in first to establish a session
-      if (userEmail) {
-        // Try to sign in with the old password first (this won't work, but establishes session)
-        await supabase.auth.signInWithPassword({
-          email: userEmail,
-          password: 'dummy_password_that_wont_work'
-        })
+      // For password reset, we need to use Supabase's resetPasswordForEmail properly
+      // First, trigger the reset email which creates a session
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(userEmail, {
+        redirectTo: `${window.location.origin}/change-password?email=${encodeURIComponent(userEmail)}`,
+      })
+
+      if (resetError) {
+        console.error('Reset error:', resetError)
+        setError('Unable to initiate password reset. Please try again.')
+        return
       }
 
-      // Now try to update the password
+      // Now try to update the password (this should work if reset was successful)
       const { error: updateError } = await supabase.auth.updateUser({
         password: newPassword
       })
 
       if (updateError) {
-        setError('Unable to update password. Please try the forgot password process again.')
+        console.error('Update error:', updateError)
+        setError('Unable to update password. The reset link may have expired.')
         return
       }
 
@@ -69,7 +73,8 @@ const ChangePassword = () => {
         navigate('/login')
       }, 3000)
 
-    } catch {
+    } catch (error) {
+      console.error('Password change error:', error)
       setError('An error occurred. Please try again.')
     } finally {
       setLoading(false)
