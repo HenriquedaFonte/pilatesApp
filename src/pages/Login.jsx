@@ -97,20 +97,23 @@ const Login = () => {
         throw new Error('User not found')
       }
 
-      // Send custom branded email directly (bypass Supabase email for now)
+      // Use Supabase's built-in password reset with custom redirect
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: `${window.location.origin}/change-password`,
+      })
+
+      if (error) throw error
+
+      // Also send custom branded email for better user experience
       try {
         const resetLink = `${window.location.origin}/change-password`
         await emailService.sendPasswordResetEmail(resetEmail, resetLink)
-        setResetSuccess('Password reset email sent!')
       } catch (emailError) {
-        console.error('Custom email failed:', emailError)
-        // Fallback to Supabase reset
-        const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-          redirectTo: `${window.location.origin}/change-password`,
-        })
-        if (error) throw error
-        setResetSuccess('Password reset email sent!')
+        console.warn('Custom email failed, but Supabase reset succeeded:', emailError)
+        // Don't fail the operation if custom email fails
       }
+
+      setResetSuccess('Password reset email sent!')
 
       setResetEmail('')
       setTimeout(() => setForgotPasswordOpen(false), 2000)
