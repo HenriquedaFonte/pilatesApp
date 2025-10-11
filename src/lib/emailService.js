@@ -589,6 +589,172 @@ ${processedTemplate.teamName}
     });
   }
 
+  async sendStudentWelcomeSelfSignupEmail(studentData) {
+    const { email, fullName, preferredLanguage } = studentData;
+    const template = getTemplate('studentWelcomeSelfSignup', preferredLanguage);
+
+    const variables = {
+      phone: import.meta.env.VITE_STUDIO_PHONE || import.meta.env.STUDIO_PHONE || '+1(438)274-8396',
+      email: this.fromEmail,
+      name: fullName
+    };
+
+    const processedTemplate = processTemplate(template, variables);
+
+    const subject = processedTemplate.subject;
+
+    // Get studio rules in the user's language
+    const rulesTemplate = getTemplate('rules', preferredLanguage);
+
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>${processedTemplate.welcomeTitle}</title>
+        <style>
+          @media only screen and (max-width: 600px) {
+            .email-container { padding: 10px !important; }
+            .header { padding: 20px !important; }
+            .header h1 { font-size: 24px !important; }
+            .header p { font-size: 14px !important; }
+            .content { padding: 20px !important; }
+            .contact-box, .rules-box { padding: 15px !important; margin: 15px 0 !important; }
+            .contact-box h4, .rules-box h3 { font-size: 16px !important; }
+            .rules-box h4 { font-size: 14px !important; }
+            h2 { font-size: 20px !important; }
+            h4 { font-size: 16px !important; }
+            p { font-size: 16px !important; line-height: 1.5 !important; }
+            ul { padding-left: 15px !important; }
+          }
+        </style>
+      </head>
+      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;" class="email-container">
+        <div style="background: linear-gradient(135deg, #01b48d 0%, #017a6b 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+          <h1 style="color: white; margin: 0; font-size: 28px;">${processedTemplate.welcomeTitle}</h1>
+          <p style="color: #f0f0f0; margin: 5px 0 0 0; font-size: 16px;">Josi Pilates</p>
+        </div>
+
+        <div style="background: white; padding: 30px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 10px 10px;">
+          <h2 style="color: #1e293b; margin-top: 0;">${processedTemplate.greeting(fullName)}</h2>
+
+          <p>${processedTemplate.accountCreated}</p>
+
+          <h4 style="color: #1e293b;">${processedTemplate.nextStepsTitle}</h4>
+          <ul style="margin: 10px 0; padding-left: 20px;">
+            ${processedTemplate.nextSteps.map(step => `<li>${step}</li>`).join('')}
+          </ul>
+
+          <!-- Studio Rules Section -->
+          <div style="background-color: #f8f9fa; padding: 25px; border-radius: 8px; margin: 30px 0; border-left: 4px solid #3b82f6;" class="rules-box">
+            <h3 style="color: #1e293b; margin-top: 0;">📋 ${rulesTemplate.title}</h3>
+
+            <div style="margin: 20px 0;">
+              <h4 style="color: #374151; margin: 15px 0 10px 0;">⏱️ ${rulesTemplate.classDuration}</h4>
+              <div style="background-color: #e0f2fe; padding: 10px; border-radius: 6px;">
+                <p style="margin: 0; color: #0277bd; font-weight: bold;">${rulesTemplate.classDurationText}</p>
+              </div>
+            </div>
+
+            <div style="margin: 20px 0;">
+              <h4 style="color: #374151; margin: 15px 0 10px 0;">⏰ ${rulesTemplate.arrivalPolicy}</h4>
+              <div style="background-color: #fff3e0; padding: 10px; border-radius: 6px;">
+                <p style="margin: 0; color: #f57c00; font-weight: bold;">${rulesTemplate.arrivalPolicyText}</p>
+                <p style="margin: 5px 0 0 0; color: #e65100;">${rulesTemplate.arrivalPolicyDetail}</p>
+              </div>
+            </div>
+
+            <div style="margin: 20px 0;">
+              <h4 style="color: #374151; margin: 15px 0 10px 0;">📅 ${rulesTemplate.cancellationPolicy}</h4>
+              <div style="background-color: #ffebee; padding: 10px; border-radius: 6px;">
+                <p style="margin: 0; color: #d32f2f; font-weight: bold;">${rulesTemplate.cancellationPolicyText}</p>
+                <p style="margin: 5px 0 0 0; color: #b71c1c;">${rulesTemplate.cancellationPolicyDetail}</p>
+                <div style="background-color: #ffcdd2; padding: 8px; border-radius: 4px; margin: 10px 0;">
+                  <p style="margin: 0; color: #b71c1c; font-weight: bold;">⚠️ ${rulesTemplate.cancellationWarning}</p>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin: 20px 0;">
+              <h4 style="color: #374151; margin: 15px 0 10px 0;">💡 ${rulesTemplate.additionalGuidelines}</h4>
+              <ul style="margin: 10px 0; padding-left: 20px; color: #374151;">
+                <li><strong>${rulesTemplate.wearComfortableClothing}:</strong> ${rulesTemplate.wearComfortableClothingDesc}</li>
+                <li><strong>${rulesTemplate.stayHydrated}:</strong> ${rulesTemplate.stayHydratedDesc}</li>
+              </ul>
+            </div>
+          </div>
+
+          <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0;" class="contact-box">
+            <h4 style="color: #1e293b; margin-top: 0;">${processedTemplate.contactTitle}</h4>
+            <p style="margin: 5px 0;">${processedTemplate.contactInfo}</p>
+            <p style="margin: 5px 0;"><strong>${processedTemplate.phone}</strong></p>
+            <p style="margin: 5px 0;"><strong>${processedTemplate.email}</strong></p>
+          </div>
+
+          <p>${processedTemplate.excitement}</p>
+          <p>${processedTemplate.closing}</p>
+
+          <hr style="margin: 30px 0; border: none; border-top: 1px solid #e2e8f0;">
+
+          <p style="color: #64748b; font-size: 14px; text-align: center;">
+            <strong>${processedTemplate.signature}</strong><br>
+            ${processedTemplate.teamName}<br>
+            <em>${processedTemplate.tagline}</em>
+          </p>
+        </div>
+      </body>
+      </html>
+    `;
+
+    const textContent = `
+${processedTemplate.greeting(fullName)}
+
+${processedTemplate.accountCreated}
+
+${processedTemplate.nextStepsTitle}
+${processedTemplate.nextSteps.map(step => `- ${step}`).join('\n')}
+
+--- STUDIO RULES ---
+${rulesTemplate.title}
+
+⏱️ ${rulesTemplate.classDuration}
+${rulesTemplate.classDurationText}
+
+⏰ ${rulesTemplate.arrivalPolicy}
+${rulesTemplate.arrivalPolicyText}
+${rulesTemplate.arrivalPolicyDetail}
+
+📅 ${rulesTemplate.cancellationPolicy}
+${rulesTemplate.cancellationPolicyText}
+${rulesTemplate.cancellationPolicyDetail}
+⚠️ ${rulesTemplate.cancellationWarning}
+
+💡 ${rulesTemplate.additionalGuidelines}
+- ${rulesTemplate.wearComfortableClothing}: ${rulesTemplate.wearComfortableClothingDesc}
+- ${rulesTemplate.stayHydrated}: ${rulesTemplate.stayHydratedDesc}
+
+${processedTemplate.contactTitle}
+${processedTemplate.contactInfo}
+${processedTemplate.phone}
+${processedTemplate.email}
+
+${processedTemplate.excitement}
+${processedTemplate.closing}
+
+${processedTemplate.signature}
+${processedTemplate.teamName}
+${processedTemplate.tagline}
+    `;
+
+    return this.sendEmail({
+      to: { email: email, name: fullName },
+      subject,
+      htmlContent,
+      textContent
+    });
+  }
+
   async sendStudentWelcomeEmail(studentData) {
     const { email, fullName, preferredLanguage } = studentData;
     const template = getTemplate('studentWelcome', preferredLanguage);

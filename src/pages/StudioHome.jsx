@@ -493,8 +493,8 @@ Sent from Josi Pilates website contact form.
                   <span className="text-white">📍</span>
                 </div>
                 <div className="text-gray-700">
-                  <div>10145 Av. Hamel</div>
-                  <div>Montreal, QC, H2C2X1</div>
+                  <div>Av. Hamel</div>
+                  <div>Montreal, H2C 2X1</div>
                 </div>
               </div>
             </div>
@@ -502,7 +502,7 @@ Sent from Josi Pilates website contact form.
             {/* Google Maps */}
             <div className="bg-white p-4 rounded-lg shadow-sm max-w-4xl mx-auto">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2796.1234567890123!2d-73.567890!3d45.501234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cc91a1b2c3d4e5f%3A0x1234567890abcdef!2s10145%20Av.%20Hamel%2C%20Montreal%2C%20QC%20H2C2X1!5e0!3m2!1sen!2sca!4v1234567890123!5m2!1sen!2sca"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2796.1234567890123!2d-73.567890!3d45.501234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cc91a1b2c3d4e5f%3A0x1234567890abcdef!2sAv.%20Hamel%2C%20Montreal%2C%20H2C%202X1!5e0!3m2!1sen!2sca!4v1234567890123!5m2!1sen!2sca"
                 width="100%"
                 height="300"
                 style={{ border: 0 }}

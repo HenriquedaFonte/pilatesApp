@@ -119,6 +119,22 @@ const EmailTemplates = ({ onSelectTemplate, selectedTemplateId, language = 'pt' 
       icon: FileText,
       color: 'text-green-600',
       category: 'feedback'
+    },
+    studentWelcomeSelfSignup: {
+      title: { pt: 'Boas-vindas (Auto-cadastro)', en: 'Welcome (Self-Signup)', fr: 'Bienvenue (Auto-inscription)' },
+      description: {
+        pt: 'Mensagem de boas-vindas para alunos que se cadastram sozinhos',
+        en: 'Welcome message for students who sign up themselves',
+        fr: 'Message de bienvenue pour les élèves qui s\'inscrivent eux-mêmes'
+      },
+      preview: {
+        pt: 'Olá, [Nome]! É com grande alegria que damos as boas-vindas ao Josi Pilates! 🎉',
+        en: 'Hello, [Name]! We are delighted to welcome you to Josi Pilates! 🎉',
+        fr: 'Bonjour, [Nom]! C\'est avec une grande joie que nous vous accueillons chez Josi Pilates! 🎉'
+      },
+      icon: Heart,
+      color: 'text-pink-600',
+      category: 'welcome'
     }
   };
 

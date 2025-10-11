@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }) => {
 
   const fetchOrCreateProfile = async (user) => {
     try {
-      const { data: existingProfile, error: fetchError } = await supabase
+      const { data: existingProfile } = await supabase
         .from('profiles')
         .select('id, email, full_name, role, individual_credits, duo_credits, group_credits, created_at, observations, phone, preferred_language')
         .eq('id', user.id)
@@ -69,74 +69,36 @@ export const AuthProvider = ({ children }) => {
         return
       }
 
-      if (fetchError?.code === 'PGRST116') {
-        console.log('Profile not found, attempting to create for user:', user.email)
+      // Profile not found - create it
+      console.log('Profile not found for user:', user.email, 'Creating new profile...')
 
-        const isOAuthUser = user.app_metadata?.provider === 'google'
+      const { data: newProfile, error: insertError } = await supabase
+        .from('profiles')
+        .insert({
+          id: user.id,
+          email: user.email,
+          full_name: user.user_metadata?.full_name || user.user_metadata?.name || '',
+          role: user.user_metadata?.role || 'student',
+          individual_credits: 0,
+          duo_credits: 0,
+          group_credits: 0,
+          phone: user.user_metadata?.phone || null,
+          preferred_language: user.user_metadata?.preferred_language || 'pt',
+          created_at: new Date().toISOString()
+        })
+        .select()
+        .single()
 
-        if (isOAuthUser) {
-          console.log('Creating profile for Google OAuth user:', user.email)
-
-          const { data: createResult, error: createError } = await supabase.functions.invoke('create-user', {
-            body: {
-              oauth_user_id: user.id,
-              email: user.email,
-              fullName: user.user_metadata?.full_name || user.email,
-            }
-          })
-
-          if (createError) {
-            console.error('Error creating OAuth profile:', createError)
-            throw createError
-          }
-
-          if (createResult.error) {
-            console.error('Error in create-user function:', createResult.error)
-            throw new Error(createResult.error)
-          }
-
-          console.log('Created OAuth profile:', createResult.profile)
-          setProfile(createResult.profile)
-
-          if (createResult.profile.role === 'teacher') {
-            emailScheduler.start()
-          }
-        } else {
-          console.log('Profile not found for traditional user, creating basic profile:', user.email)
-
-          const { data: createResult, error: createError } = await supabase.functions.invoke('create-user', {
-            body: {
-              oauth_user_id: user.id,
-              email: user.email,
-              fullName: user.user_metadata?.full_name || user.email.split('@')[0], 
-              
-              update_existing: false
-            }
-          })
-
-          if (createError) {
-            console.error('Error creating profile for traditional user:', createError)
-            throw createError
-          }
-
-          if (createResult.error) {
-            console.error('Error in create-user function for traditional user:', createResult.error)
-            throw new Error(createResult.error)
-          }
-
-          console.log('Created basic profile for traditional user:', createResult.profile)
-          setProfile(createResult.profile)
-
-          if (createResult.profile.role === 'teacher') {
-            emailScheduler.start()
-          }
-        }
-
+      if (insertError) {
+        console.error('Error creating profile:', insertError)
+        setProfile(null)
         return
       }
 
-      if (fetchError) {
-        throw fetchError
+      setProfile(newProfile)
+
+      if (newProfile.role === 'teacher') {
+        emailScheduler.start()
       }
 
     } catch (error) {
@@ -148,41 +110,21 @@ export const AuthProvider = ({ children }) => {
 
   const signUp = async (email, password, fullName, role = 'student', phone = null, preferredLanguage = 'pt') => {
     try {
-      const { data: createResult, error: createError } = await supabase.functions.invoke('create-user', {
-        body: {
-          email,
-          password,
-          fullName,
-          role,
-          phone,
-          preferredLanguage,
-          isSignup: true
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+            role: role,
+            phone: phone,
+            preferred_language: preferredLanguage
+          }
         }
       })
 
-      if (createError) {
-        throw createError
-      }
-
-      if (createResult.error) {
-        throw new Error(createResult.error)
-      }
-
-      // Update profile state with the created profile
-      if (createResult.profile) {
-        updateProfile(createResult.profile)
-      }
-
-      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      })
-
-      if (signInError) {
-        throw signInError
-      }
-
-      return { data: signInData, error: null }
+      if (error) throw error
+      return { data, error: null }
     } catch (error) {
       return { data: null, error }
     }

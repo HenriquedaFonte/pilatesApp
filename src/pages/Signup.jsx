@@ -11,6 +11,7 @@ import {
   CardTitle
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { PasswordInput } from '@/components/ui/password-input'
 import { Label } from '@/components/ui/label'
 import {
   Select,
@@ -113,9 +114,9 @@ const Signup = () => {
       return
     }
 
-    // Send welcome email with studio rules
+    // Send welcome email for self-signup
     try {
-      await emailService.sendStudentWelcomeEmail({
+      await emailService.sendStudentWelcomeSelfSignupEmail({
         email: formData.email,
         fullName: formData.fullName,
         preferredLanguage: formData.preferredLanguage
@@ -243,10 +244,9 @@ const Signup = () => {
             
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input
+              <PasswordInput
                 id="password"
                 name="password"
-                type="password"
                 placeholder="Create a password"
                 value={formData.password}
                 onChange={handleChange}
@@ -254,13 +254,12 @@ const Signup = () => {
                 disabled={loading}
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input
+              <PasswordInput
                 id="confirmPassword"
                 name="confirmPassword"
-                type="password"
                 placeholder="Confirm your password"
                 value={formData.confirmPassword}
                 onChange={handleChange}

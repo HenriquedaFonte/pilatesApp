@@ -734,6 +734,69 @@ export const emailTemplates = {
     }
   },
 
+  studentWelcomeSelfSignup: {
+    pt: {
+      subject: 'Bem-vindo ao Josi Pilates! 🎉',
+      greeting: (name) => `Olá, ${name}!`,
+      welcomeTitle: '🎉 Bem-vindo ao Josi Pilates!',
+      accountCreated: 'Sua conta foi criada com sucesso!',
+      nextStepsTitle: '🚀 Próximos passos:',
+      nextSteps: [
+        'Agende sua primeira aula experimental',
+        'Conheça nossa equipe e instalações',
+        'Tire todas suas dúvidas conosco'
+      ],
+      contactTitle: '📞 Precisa de ajuda?',
+      contactInfo: 'Entre em contato conosco:',
+      phone: 'WhatsApp: +1(438)274-8396',
+      email: 'E-mail: josi@josopilates.com',
+      excitement: 'Estamos muito felizes em recebê-lo em nossa comunidade!',
+      closing: 'Bem-vindo à família Josi Pilates!',
+      signature: 'Com carinho,',
+      teamName: 'Equipe Josi Pilates',
+    },
+    en: {
+      subject: 'Welcome to Josi Pilates! 🎉',
+      greeting: (name) => `Hello, ${name}!`,
+      welcomeTitle: '🎉 Welcome to Josi Pilates!',
+      accountCreated: 'Your account has been created successfully!',
+      nextStepsTitle: '🚀 Next steps:',
+      nextSteps: [
+        'Schedule your first trial class',
+        'Meet our team and facilities',
+        'Ask us any questions you have'
+      ],
+      contactTitle: '📞 Need help?',
+      contactInfo: 'Contact us:',
+      phone: 'WhatsApp: +1(438)274-8396',
+      email: 'Email: josi@josopilates.com',
+      excitement: 'We are very happy to welcome you to our community!',
+      closing: 'Welcome to the Josi Pilates family!',
+      signature: 'With care,',
+      teamName: 'Josi Pilates Team',
+    },
+    fr: {
+      subject: 'Bienvenue chez Josi Pilates! 🎉',
+      greeting: (name) => `Bonjour, ${name}!`,
+      welcomeTitle: '🎉 Bienvenue chez Josi Pilates!',
+      accountCreated: 'Votre compte a été créé avec succès!',
+      nextStepsTitle: '🚀 Prochaines étapes:',
+      nextSteps: [
+        'Planifiez votre premier cours d\'essai',
+        'Rencontrez notre équipe et nos installations',
+        'Posez-nous toutes vos questions'
+      ],
+      contactTitle: '📞 Besoin d\'aide?',
+      contactInfo: 'Contactez-nous:',
+      phone: 'WhatsApp: +1(438)274-8396',
+      email: 'E-mail: josi@josopilates.com',
+      excitement: 'Nous sommes très heureux de vous accueillir dans notre communauté!',
+      closing: 'Bienvenue dans la famille Josi Pilates!',
+      signature: 'Avec soin,',
+      teamName: 'Équipe Josi Pilates',
+    }
+  },
+
   rules: {
     pt: {
       title: '📋 Regras do Studio Josi Pilates',
