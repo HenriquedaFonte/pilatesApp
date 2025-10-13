@@ -155,13 +155,13 @@ const Login = () => {
                 disabled={loading}
               />
               <div className="text-right">
-                <button
+                {/* <button
                   type="button"
                   className="text-sm text-primary hover:underline cursor-pointer"
                   onClick={() => setForgotPasswordOpen(true)}
                 >
                   Forgot Password?
-                </button>
+                </button> */}
               </div>
             </div>
             
