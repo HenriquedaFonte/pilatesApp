@@ -261,8 +261,7 @@ const TeacherStudents = () => {
 
     try {
       const userData = {
-        ...newUser,
-        password: '000000'
+        ...newUser
       }
 
       // Get the current session token
@@ -277,7 +276,8 @@ const TeacherStudents = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${session.access_token}`
+            'Authorization': `Bearer ${session.access_token}`,
+            'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY
           },
           body: JSON.stringify(userData)
         }
@@ -289,12 +289,13 @@ const TeacherStudents = () => {
         throw new Error(data.error || 'Failed to create user')
       }
 
-      // Send welcome email to the new student
+      // Send welcome email with password reset link
       try {
         await emailService.sendStudentWelcomeEmail({
           email: userData.email,
           fullName: userData.fullName,
-          preferredLanguage: userData.preferredLanguage
+          preferredLanguage: userData.preferredLanguage,
+          resetLink: data.resetLink
         })
       } catch (emailError) {
         console.error('Error sending welcome email:', emailError)

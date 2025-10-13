@@ -756,7 +756,7 @@ ${processedTemplate.tagline}
   }
 
   async sendStudentWelcomeEmail(studentData) {
-    const { email, fullName, preferredLanguage } = studentData;
+    const { email, fullName, preferredLanguage, resetLink } = studentData;
     const template = getTemplate('studentWelcome', preferredLanguage);
 
     const variables = {
@@ -810,6 +810,7 @@ ${processedTemplate.tagline}
 
           <div style="background-color: #fef3c7; border: 1px solid #f59e0b; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;" class="password-box">
             <h3 style="color: #92400e; margin: 0 0 10px 0;">🔐 ${processedTemplate.defaultPassword}</h3>
+            ${resetLink ? `<p style="margin: 10px 0;"><a href="${resetLink}" style="background: #f59e0b; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Set Your Password</a></p>` : ''}
           </div>
 
           <div style="background-color: #f1f5f9; padding: 20px; border-radius: 8px; margin: 20px 0;" class="instructions-box">
@@ -891,6 +892,7 @@ ${processedTemplate.greeting(fullName)}
 ${processedTemplate.accountCreated}
 
 ${processedTemplate.defaultPassword}
+${resetLink ? `\nSet your password: ${resetLink}` : ''}
 
 ${processedTemplate.importantInstructions}
 ${processedTemplate.instructions.map((instruction, index) => `${index + 1}. ${instruction}`).join('\n')}
