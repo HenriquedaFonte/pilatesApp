@@ -648,6 +648,7 @@ export const emailTemplates = {
       welcomeTitle: '🎉 Bem-vindo ao Josi Pilates!',
       accountCreated: 'Sua conta foi criada com sucesso!',
       defaultPassword: 'Sua senha temporária é: <strong>000000</strong>',
+      setPasswordButton: 'Definir Minha Senha',
       importantInstructions: '📋 Instruções importantes:',
       instructions: [
         '1. Visite nosso site: https://josipilates.com',
@@ -678,6 +679,7 @@ export const emailTemplates = {
       welcomeTitle: '🎉 Welcome to Josi Pilates!',
       accountCreated: 'Your account has been created successfully!',
       defaultPassword: 'Your temporary password is: <strong>000000</strong>',
+      setPasswordButton: 'Set Your Password',
       importantInstructions: '📋 Important instructions:',
       instructions: [
         '1. Visit our website: https://josipilates.com',
@@ -708,6 +710,7 @@ export const emailTemplates = {
       welcomeTitle: '🎉 Bienvenue chez Josi Pilates!',
       accountCreated: 'Votre compte a été créé avec succès!',
       defaultPassword: 'Votre mot de passe temporaire est: <strong>000000</strong>',
+      setPasswordButton: 'Définir Votre Mot de Passe',
       importantInstructions: '📋 Instructions importantes:',
       instructions: [
         '1. Visitez notre site web: https://josipilates.com',
