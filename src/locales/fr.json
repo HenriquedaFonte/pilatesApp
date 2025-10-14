@@ -334,7 +334,7 @@
     },
     "hero": {
       "greeting": "Bonjour!",
-      "intro": "Au plaisir, je suis Josi!",
+      "intro": "Qui suis-je:",
       "description": "Physiothérapeute et instructrice de la méthode Pilates depuis 2005. Passionnée par le mouvement humain et le développement de la conscience corporelle.",
       "aboutButton": "À propos de moi"
     },
@@ -349,7 +349,7 @@
       "title": "Services",
       "subtitle": "Instruction professionnelle de Pilates adaptée à vos besoins.",
       "private": {
-        "title": "Cours Privés",
+        "title": "Cours Privés (55 min)",
         "intro": "Classe d'introduction: $80",
         "single": "1 classe: $80",
         "four": "4 classes: $260",
@@ -357,20 +357,20 @@
         "note": "Les forfaits sont valides pour 4 mois. Toute annulation doit être faite au moins 24 heures à l'avance. Les forfaits ne sont ni remboursables ni transférables."
       },
       "duos": {
-        "title": "Cours Duos",
+        "title": "Cours Duos (55 min)",
         "intro": "Classe d'introduction: $125",
         "single": "1 classe: $115",
         "six": "6 classes: $545",
         "twelve": "12 classes: $1008",
-        "note": "Les forfaits sont valides pour 4 mois. Toute annulation doit être faite au moins 24 heures à l'avance. Les forfaits ne sont ni remboursables ni transférables."
+        "note": "Prix par deux personnes. Les forfaits sont valides pour 4 mois. Toute annulation doit être faite au moins 24 heures à l'avance. Les forfaits ne sont ni remboursables ni transférables."
       },
       "group": {
-        "title": "Cours de Groupe",
+        "title": "Cours de Groupe (55 min)",
         "intro": "Classe d'introduction: $80",
         "single": "1 classe: $40",
         "six": "6 classes: $198",
         "twelve": "12 classes: $355",
-        "note": "Les forfaits sont valides pour 4 mois. Toute annulation doit être faite au moins 24 heures à l'avance. Les forfaits ne sont ni remboursables ni transférables."
+        "note": "Prix par personne. Les forfaits sont valides pour 4 mois. Toute annulation doit être faite au moins 24 heures à l'avance. Les forfaits ne sont ni remboursables ni transférables."
       }
     },
     "testimonials": [

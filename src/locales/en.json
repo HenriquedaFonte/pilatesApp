@@ -349,7 +349,7 @@
       "title": "Services",
       "subtitle": "Professional Pilates instruction tailored to your needs.",
       "private": {
-        "title": "Private Classes",
+        "title": "Private Classes (55 min)",
         "intro": "Introductory class: $80",
         "single": "1 class: $80",
         "four": "4 classes: $260",
@@ -357,20 +357,20 @@
         "note": "Packages are valid for 4 months. Any cancellation must be made at least 24 hours in advance. Packages are non-refundable and non-transferable."
       },
       "duos": {
-        "title": "Duos Classes",
+        "title": "Duos Classes (55 min)",
         "intro": "Introductory class: $125",
         "single": "1 class: $115",
         "six": "6 classes: $545",
         "twelve": "12 classes: $1008",
-        "note": "Packages are valid for 4 months. Any cancellation must be made at least 24 hours in advance. Packages are non-refundable and non-transferable."
+        "note": "Price for two people. Packages are valid for 4 months. Any cancellation must be made at least 24 hours in advance. Packages are non-refundable and non-transferable."
       },
       "group": {
-        "title": "Group Classes",
+        "title": "Group Classes (55 min)",
         "intro": "Introductory class: $80",
         "single": "1 class: $40",
         "six": "6 classes: $198",
         "twelve": "12 classes: $355",
-        "note": "Packages are valid for 4 months. Any cancellation must be made at least 24 hours in advance. Packages are non-refundable and non-transferable."
+        "note": "Price per person. Packages are valid for 4 months. Any cancellation must be made at least 24 hours in advance. Packages are non-refundable and non-transferable."
       }
     },
     "testimonials": [
