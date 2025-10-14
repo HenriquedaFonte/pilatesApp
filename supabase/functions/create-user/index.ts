@@ -59,6 +59,9 @@ serve(async (req) => {
     // Use fixed password for initial login
     const password = '000000'
 
+    // TODO: For existing users with random passwords, we need to send password reset emails
+    // This can be done by querying users created before this change and sending reset links
+
     // Create the user
     const { data: authData, error: authError } = await supabaseClient.auth.admin.createUser({
       email,

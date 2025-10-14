@@ -42,7 +42,8 @@ import {
   Users,
   Calendar,
   MessageSquare,
-  Loader2
+  Loader2,
+  Hash
 } from 'lucide-react'
 
 const TeacherStudents = () => {
@@ -57,6 +58,7 @@ const TeacherStudents = () => {
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [selectedObservations, setSelectedObservations] = useState('')
   const [isBalanceDialogOpen, setIsBalanceDialogOpen] = useState(false)
+  const [isBalanceConfirmDialogOpen, setIsBalanceConfirmDialogOpen] = useState(false)
   const [isEnrollDialogOpen, setIsEnrollDialogOpen] = useState(false)
   const [isCommentsDialogOpen, setIsCommentsDialogOpen] = useState(false)
   const [isCreateUserDialogOpen, setIsCreateUserDialogOpen] = useState(false)
@@ -225,6 +227,32 @@ const TeacherStudents = () => {
       setError('Error updating balance: ' + error.message)
     } finally {
       setBalanceLoading(false)
+    }
+  }
+
+  const handleBalanceConfirm = () => {
+    setIsBalanceDialogOpen(false)
+    setIsBalanceConfirmDialogOpen(true)
+  }
+
+  const handleBalanceConfirmSubmit = async () => {
+    setIsBalanceConfirmDialogOpen(false)
+    await handleBalanceChange({ preventDefault: () => {} })
+  }
+
+  const handleSendPasswordReset = async (student) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('reset-password', {
+        body: { email: student.email, origin: window.location.origin }
+      })
+
+      if (error || !data?.success) {
+        throw new Error(data?.error || error?.message || 'Failed to send reset email')
+      }
+
+      setSuccess(`Password reset email sent to ${student.email}`)
+    } catch (error) {
+      setError(`Failed to send password reset: ${error.message}`)
     }
   }
 
@@ -655,6 +683,14 @@ const TeacherStudents = () => {
                       >
                         <Calendar className="h-3 w-3" />
                       </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleSendPasswordReset(student)}
+                        title="Send password reset email"
+                      >
+                        <Hash className="h-3 w-3" />
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
@@ -696,7 +732,7 @@ const TeacherStudents = () => {
                 {selectedStudent?.group_credits || 0}
               </DialogDescription>
             </DialogHeader>
-            <form onSubmit={handleBalanceChange} className="space-y-4">
+            <form onSubmit={(e) => { e.preventDefault(); handleBalanceConfirm(); }} className="space-y-4">
               <div>
                 <Label htmlFor="creditType">Credit Type</Label>
                 <Select
@@ -797,17 +833,76 @@ const TeacherStudents = () => {
                   Cancel
                 </Button>
                 <Button type="submit" disabled={balanceLoading}>
+                  Review Changes
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog
+          open={isBalanceConfirmDialogOpen}
+          onOpenChange={setIsBalanceConfirmDialogOpen}
+        >
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                Confirm Balance Update for {selectedStudent?.full_name}
+              </DialogTitle>
+              <DialogDescription>
+                Please review the changes before confirming.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2">Current Balances:</h4>
+                <div className="space-y-1 text-sm">
+                  <div>Individual: {selectedStudent?.individual_credits || 0}</div>
+                  <div>Duo: {selectedStudent?.duo_credits || 0}</div>
+                  <div>Group: {selectedStudent?.group_credits || 0}</div>
+                </div>
+              </div>
+
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2">Changes to Apply:</h4>
+                <div className="space-y-1 text-sm">
+                  <div>Credit Type: <span className="capitalize">{balanceChange.creditType}</span></div>
+                  <div>Amount: {balanceChange.amount} {parseInt(balanceChange.amount) > 0 ? '(Addition)' : '(Subtraction)'}</div>
+                  {balanceChange.description && <div>Description: {balanceChange.description}</div>}
+                  {balanceChange.amountPaid && <div>Amount Paid: ${balanceChange.amountPaid}</div>}
+                  <div>Payment Method: <span className="capitalize">{balanceChange.paymentMethod?.replace('_', ' ')}</span></div>
+                </div>
+              </div>
+
+              <div className="bg-green-50 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2">Expected New Balances:</h4>
+                <div className="space-y-1 text-sm">
+                  <div>Individual: {balanceChange.creditType === 'individual' ? (selectedStudent?.individual_credits || 0) + parseInt(balanceChange.amount || '0') : (selectedStudent?.individual_credits || 0)}</div>
+                  <div>Duo: {balanceChange.creditType === 'duo' ? (selectedStudent?.duo_credits || 0) + parseInt(balanceChange.amount || '0') : (selectedStudent?.duo_credits || 0)}</div>
+                  <div>Group: {balanceChange.creditType === 'group' ? (selectedStudent?.group_credits || 0) + parseInt(balanceChange.amount || '0') : (selectedStudent?.group_credits || 0)}</div>
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsBalanceConfirmDialogOpen(false)}
+                >
+                  Back to Edit
+                </Button>
+                <Button onClick={handleBalanceConfirmSubmit} disabled={balanceLoading}>
                   {balanceLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Updating...
                     </>
                   ) : (
-                    'Update Balance'
+                    'Confirm & Update'
                   )}
                 </Button>
               </div>
-            </form>
+            </div>
           </DialogContent>
         </Dialog>
 
