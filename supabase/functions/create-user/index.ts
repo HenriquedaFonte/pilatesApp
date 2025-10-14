@@ -56,8 +56,8 @@ serve(async (req) => {
 
     const { email, fullName, role, preferredLanguage } = await req.json()
 
-    // Generate a random password
-    const password = Math.random().toString(36).slice(-12) + Math.random().toString(36).slice(-12)
+    // Use fixed password for initial login
+    const password = '000000'
 
     // Create the user
     const { data: authData, error: authError } = await supabaseClient.auth.admin.createUser({

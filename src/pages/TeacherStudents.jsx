@@ -261,7 +261,8 @@ const TeacherStudents = () => {
 
     try {
       const userData = {
-        ...newUser
+        ...newUser,
+        password: '000000'
       }
 
       // Get the current session token
