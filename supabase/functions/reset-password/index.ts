@@ -21,7 +21,7 @@ serve(async (req) => {
       )
     }
 
-    const redirectTo = origin ? `${origin}/change-password` : `${new URL(req.url).origin}/change-password`
+    const redirectTo = origin ? `${origin}/reset-password` : `${new URL(req.url).origin}/reset-password`
 
     // Create Supabase admin client
     const supabaseAdmin = createClient(

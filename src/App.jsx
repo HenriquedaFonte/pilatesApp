@@ -5,6 +5,7 @@ import Login from './pages/Login'
 import Signup from './pages/Signup'
 import ProfileCompletion from './pages/ProfileCompletion'
 import ChangePassword from './pages/ChangePassword'
+import ResetPassword from './pages/ResetPassword'
 import TeacherDashboard from './pages/TeacherDashboard'
 import TeacherClasses from './pages/TeacherClasses'
 import TeacherStudents from './pages/TeacherStudents'
@@ -53,6 +54,7 @@ function AppRoutes() {
       <Route path="/signup" element={<Signup />} />
       <Route path="/complete-profile" element={<ProfileCompletion />} />
       <Route path="/change-password" element={<ChangePassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/auth/callback" element={<AuthCallback />} />
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="/terms-of-service" element={<TermsOfService />} />
