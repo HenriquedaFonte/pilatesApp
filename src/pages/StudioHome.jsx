@@ -11,7 +11,8 @@ import emailService from '../lib/emailService';
 import studentPilatesImage from '../assets/1584341045.jpg.avif';
 import duosImage from '../assets/screen-shot-2014-07-27-at-10-07-46-pm.png.avif';
 import groupImage from '../assets/download.jpeg.avif';
-import heroImage from '../assets/student-pilates.jpg.avif';
+import capa1Image from '../assets/capa1.avif';
+import capa2Image from '../assets/capa2.avif';
 import instructorImage from '../assets/instructor-photo.jpg.avif';
 import aboutPhoto from '../assets/aboutPhoto.avif';
 import contactPhoto from '../assets/contactPhoto.avif';
@@ -30,11 +31,23 @@ const StudioHome = () => {
   const [contactFormSubmitting, setContactFormSubmitting] = useState(false);
   const [contactFormSuccess, setContactFormSuccess] = useState(false);
   const [contactFormError, setContactFormError] = useState('');
+  const [currentHeroImage, setCurrentHeroImage] = useState(0);
 
   useEffect(() => {
     // Always start in French for homepage
     i18n.changeLanguage('fr');
   }, [i18n]);
+
+  // Hero image rotation
+  const heroImages = [capa1Image, capa2Image];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentHeroImage((prev) => (prev + 1) % heroImages.length);
+    }, 5000); // Change every 5 seconds
+
+    return () => clearInterval(interval);
+  }, []);
 
   const changeLanguage = (language) => {
     i18n.changeLanguage(language);
@@ -213,12 +226,21 @@ Sent from Josi Pilates website contact form.
       {/* Hero Section */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="w-full mb-12">
-            <img
-              src={heroImage}
-              alt="Student doing Pilates exercise"
-              className="w-full h-[500px] object-cover shadow-lg"
-            />
+          <div className="w-full mb-12 overflow-hidden">
+            <div
+              className="flex transition-transform duration-2000 ease-in-out"
+              style={{ transform: `translateX(-${currentHeroImage * 100}%)` }}
+            >
+              {heroImages.map((image, index) => (
+                <img
+                  key={index}
+                  src={image}
+                  alt="Student doing Pilates exercise"
+                  className="w-full h-[500px] object-cover shadow-lg flex-shrink-0"
+                  style={{ width: '100%' }}
+                />
+              ))}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
