@@ -71,6 +71,13 @@ const ResetPassword = () => {
     }
 
     try {
+      // First verify we have a valid session
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+
+      if (sessionError || !session) {
+        throw new Error('Invalid or expired reset link. Please request a new password reset.')
+      }
+
       const { error } = await supabase.auth.updateUser({
         password: password
       })
@@ -79,12 +86,16 @@ const ResetPassword = () => {
 
       setSuccess('Password updated successfully! You can now log in with your new password.')
 
+      // Clear the session after successful password update
+      await supabase.auth.signOut()
+
       // Redirect to login after a delay
       setTimeout(() => {
         navigate('/login')
       }, 3000)
     } catch (error) {
-      setError(error.message)
+      console.error('Password update error:', error)
+      setError(error.message || 'Unable to update password. Please try again.')
     } finally {
       setLoading(false)
     }
