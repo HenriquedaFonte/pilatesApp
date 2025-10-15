@@ -71,41 +71,21 @@ const Login = () => {
     setResetSuccess('')
 
     try {
-      // Check if user exists
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('email', resetEmail)
-        .single()
-
-      if (profileError) {
-        if (profileError.code === 'PGRST116') {
-          throw new Error('No account found with this email address')
-        }
-        throw new Error('Unable to verify account. Please try again later.')
-      }
-
-      if (!profileData) {
-        throw new Error('No account found with this email address')
-      }
-
       // Send password reset email using Supabase function
-      try {
-        const { data, error } = await supabase.functions.invoke('reset-password', {
-          body: { email: resetEmail, origin: window.location.origin }
-        })
+      // The function will handle user verification internally
+      const { data, error } = await supabase.functions.invoke('reset-password', {
+        body: { email: resetEmail, origin: window.location.origin }
+      })
 
-        if (error || !data?.success) {
-          throw new Error(data?.error || error?.message || 'Failed to send reset email')
-        }
-
-        setResetSuccess('Password reset email sent! Check your inbox.')
-      } catch (resetError) {
-        console.error('Error sending password reset:', resetError)
-        setResetError('Unable to send password reset email. Please contact support directly.')
+      if (error || !data?.success) {
+        throw new Error(data?.error || error?.message || 'Failed to send reset email')
       }
+
+      setResetSuccess('Password reset email sent! Check your inbox.')
+      setResetEmail('') // Clear the email field
     } catch (error) {
-      setResetError(error.message)
+      console.error('Error sending password reset:', error)
+      setResetError(error.message || 'Unable to send password reset email. Please try again.')
     } finally {
       setResetLoading(false)
     }
