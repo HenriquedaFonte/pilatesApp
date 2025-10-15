@@ -13,6 +13,7 @@ import duosImage from '../assets/screen-shot-2014-07-27-at-10-07-46-pm.png.avif'
 import groupImage from '../assets/download.jpeg.avif';
 import capa1Image from '../assets/capa1.avif';
 import capa2Image from '../assets/capa2.avif';
+import capa3Image from '../assets/capa3.jpg';
 import instructorImage from '../assets/instructor-photo.jpg.avif';
 import aboutPhoto from '../assets/aboutPhoto.avif';
 import contactPhoto from '../assets/contactPhoto.avif';
@@ -39,12 +40,12 @@ const StudioHome = () => {
   }, [i18n]);
 
   // Hero image rotation
-  const heroImages = [capa1Image, capa2Image];
+  const heroImages = [capa1Image, capa2Image, capa3Image];
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentHeroImage((prev) => (prev + 1) % heroImages.length);
-    }, 5000); // Change every 5 seconds
+    }, 7000); // Change every 7 seconds
 
     return () => clearInterval(interval);
   }, []);
