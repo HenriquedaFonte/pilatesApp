@@ -63,6 +63,7 @@ const TeacherStudents = () => {
   const [isCommentsDialogOpen, setIsCommentsDialogOpen] = useState(false)
   const [isCreateUserDialogOpen, setIsCreateUserDialogOpen] = useState(false)
   const [balanceLoading, setBalanceLoading] = useState(false)
+  const [creatingUser, setCreatingUser] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [newUser, setNewUser] = useState({
@@ -286,6 +287,7 @@ const TeacherStudents = () => {
     e.preventDefault()
     setError('')
     setSuccess('')
+    setCreatingUser(true)
 
     try {
       const userData = {
@@ -338,6 +340,8 @@ const TeacherStudents = () => {
       fetchData() // Refresh student list
     } catch (error) {
       setError('Error creating user: ' + error.message)
+    } finally {
+      setCreatingUser(false)
     }
   }
 
@@ -512,6 +516,7 @@ const TeacherStudents = () => {
                     }
                     placeholder="user@example.com"
                     required
+                    disabled={creatingUser}
                   />
                 </div>
                 <div>
@@ -525,6 +530,7 @@ const TeacherStudents = () => {
                     }
                     placeholder="Full Name"
                     required
+                    disabled={creatingUser}
                   />
                 </div>
                 <div>
@@ -534,6 +540,7 @@ const TeacherStudents = () => {
                     onValueChange={value =>
                       setNewUser({ ...newUser, role: value })
                     }
+                    disabled={creatingUser}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select role" />
@@ -551,6 +558,7 @@ const TeacherStudents = () => {
                     onValueChange={value =>
                       setNewUser({ ...newUser, preferredLanguage: value })
                     }
+                    disabled={creatingUser}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select language" />
@@ -567,10 +575,13 @@ const TeacherStudents = () => {
                     type="button"
                     variant="outline"
                     onClick={() => setIsCreateUserDialogOpen(false)}
+                    disabled={creatingUser}
                   >
                     Cancel
                   </Button>
-                  <Button type="submit">Create User</Button>
+                  <Button type="submit" disabled={creatingUser}>
+                    {creatingUser ? 'Creating...' : 'Create User'}
+                  </Button>
                 </div>
               </form>
             </DialogContent>
