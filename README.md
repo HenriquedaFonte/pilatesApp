@@ -10,12 +10,19 @@ A comprehensive web application for managing Pilates studio operations, built wi
 - **Secure Authentication**: Supabase-powered authentication with email/password
 - **First-Time Login**: Automatic password change requirement for new students
 - **Password Recovery**: Forgot password functionality with multi-language support
+- **Session Management**: Automatic session refresh and secure logout
 
 ### 🌍 Multi-Language Support
 - **Three Languages**: Portuguese (PT), English (EN), and French (FR)
 - **Dynamic Switching**: Automatic language detection based on user preferences
 - **Complete Localization**: All UI elements, emails, and content translated
 - **Cultural Adaptation**: Date/time formatting and content adapted per language
+
+### 🌓 Dark Mode Support
+- **Complete Theme System**: Full dark/light mode toggle available on all pages
+- **System Integration**: Automatic detection of user's system preference
+- **Consistent Design**: All components, forms, and interfaces support both themes
+- **Accessibility**: Proper contrast ratios and readable text in both modes
 
 ### 📊 Teacher Dashboard
 - **Student Management**: Add, view, and manage student profiles
@@ -35,6 +42,7 @@ A comprehensive web application for managing Pilates studio operations, built wi
 - **Attendance History**: Track class attendance and credit usage
 - **Profile Management**: Update personal information and language preferences
 - **Activity Feed**: Recent credit transactions and class history
+- **Studio Rules**: Access to complete studio policies and guidelines
 
 ### 📧 Communication System
 - **Multi-Language Emails**: All notifications sent in student's preferred language
@@ -51,26 +59,39 @@ A comprehensive web application for managing Pilates studio operations, built wi
 - **Credit History**: Complete transaction history for all students
 - **Export Functionality**: CSV export for all reports
 
+### ⚡ Performance & UX
+- **Lazy Loading**: Code splitting for faster page loads
+- **Data Caching**: React Query for efficient data management
+- **Loading States**: Skeleton screens and progress indicators
+- **Error Boundaries**: Graceful error handling and recovery
+- **Responsive Design**: Optimized for all device sizes
+
 ## 🛠️ Technology Stack
 
 ### Frontend
 - **React 19** - Modern React with hooks and concurrent features
 - **Vite** - Fast build tool and development server
-- **React Router** - Client-side routing
-- **Tailwind CSS** - Utility-first CSS framework
+- **React Router** - Client-side routing with lazy loading
+- **Tailwind CSS** - Utility-first CSS framework with dark mode
 - **Radix UI** - Accessible component library
 - **React Hook Form** - Form management and validation
 - **React i18next** - Internationalization framework
+- **Next Themes** - Theme management system
+- **React Query** - Data fetching and caching
+- **Framer Motion** - Smooth animations and transitions
 
 ### Backend & Database
 - **Supabase** - Backend-as-a-Service (Authentication, Database, Storage)
-- **PostgreSQL** - Robust relational database
+- **PostgreSQL** - Robust relational database with optimized indexes
 - **Supabase Functions** - Serverless functions for complex operations
+- **Row Level Security** - Database-level access control
 
 ### Development Tools
 - **ESLint** - Code linting and formatting
 - **Vite** - Development server and build tool
 - **pnpm** - Fast package manager
+- **Error Boundaries** - React error handling
+- **Loading Skeletons** - Better UX during data loading
 
 ## 🚀 Installation
 
@@ -128,21 +149,26 @@ pilatesApp/
 │   └── logo.jpg
 ├── src/
 │   ├── components/         # Reusable UI components
-│   │   ├── ui/            # Radix UI components
+│   │   ├── ui/            # Radix UI components with dark mode
+│   │   ├── ErrorBoundary.jsx    # Error handling component
+│   │   ├── ThemeProvider.jsx    # Theme management
+│   │   ├── ThemeToggle.jsx      # Dark/light mode toggle
 │   │   └── ...
 │   ├── hooks/             # Custom React hooks
-│   │   ├── useAuth.jsx    # Authentication hook
+│   │   ├── useAuth.jsx    # Authentication with session refresh
 │   │   └── use-mobile.js
 │   ├── lib/               # Utility libraries
 │   │   ├── supabase.js    # Supabase client
 │   │   ├── emailService.js # Email functionality
 │   │   ├── emailTemplates.js # Email templates
-│   │   └── i18n.js        # Internationalization config
+│   │   ├── i18n.js        # Internationalization config
+│   │   ├── queryClient.js # React Query configuration
+│   │   └── errorTracking.js # Error monitoring utility
 │   ├── locales/           # Translation files
 │   │   ├── en.json        # English translations
 │   │   ├── pt.json        # Portuguese translations
 │   │   └── fr.json        # French translations
-│   ├── pages/             # Application pages
+│   ├── pages/             # Application pages (all with dark mode)
 │   │   ├── Login.jsx      # Authentication
 │   │   ├── Signup.jsx     # Student registration
 │   │   ├── TeacherDashboard.jsx
@@ -154,6 +180,7 @@ pilatesApp/
 │   │   ├── CreditHistoryReport.jsx
 │   │   └── ...
 │   └── utils/             # Utility functions
+├── database_indexes.sql   # Database performance optimization
 ├── .env                   # Environment variables
 ├── package.json           # Dependencies and scripts
 ├── vite.config.js         # Vite configuration
@@ -203,6 +230,9 @@ The application includes a comprehensive email system:
 - **Role-Based Access**: Separate permissions for teachers and students
 - **Data Validation**: Input validation and sanitization
 - **Secure API**: All backend communications secured
+- **Session Management**: Automatic session refresh and secure logout
+- **Error Tracking**: Application monitoring and error reporting
+- **Row Level Security**: Database-level access control in PostgreSQL
 
 ## 🤝 Contributing
 
@@ -215,9 +245,18 @@ The application includes a comprehensive email system:
 ### Development Guidelines
 - Follow ESLint configuration
 - Use TypeScript for type safety (when applicable)
-- Maintain consistent code style
+- Maintain consistent code style with dark mode support
 - Add tests for new features
 - Update documentation
+- Ensure all new components support both light and dark themes
+- Test performance improvements and lazy loading
+- Follow accessibility guidelines for all UI elements
+
+### Recent Major Updates
+- **v2.0.0** - Complete dark mode implementation across all pages
+- **v1.9.0** - Performance optimizations with lazy loading and React Query
+- **v1.8.0** - Enhanced security with session management and error tracking
+- **v1.7.0** - Database optimization with performance indexes
 
 ## 📄 License
 
