@@ -137,16 +137,16 @@ const StudentHistory = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+      <header className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Link to="/student/dashboard" className="mr-4">
-                <ArrowLeft className="h-6 w-6 text-gray-600 hover:text-gray-900" />
+                <ArrowLeft className="h-6 w-6 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white" />
               </Link>
               <Logo className="h-8 w-8 mr-3" />
-              <h1 className="text-xl font-semibold text-gray-900">
+              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
                 {t('history.title')}
               </h1>
             </div>
@@ -177,28 +177,28 @@ const StudentHistory = () => {
           <CardContent>
             {attendanceHistory.length === 0 ? (
               <div className="text-center py-8">
-                <History className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-500">{t('history.noAttendance')}</p>
+                <History className="h-12 w-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+                <p className="text-gray-500 dark:text-gray-400">{t('history.noAttendance')}</p>
               </div>
             ) : (
               <div className="space-y-4">
                 {attendanceHistory.map(record => (
                   <div
                     key={record.id}
-                    className="flex items-center justify-between p-3 border rounded-lg bg-white shadow-sm"
+                    className="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-slate-800 shadow-sm"
                   >
                     <div>
-                      <h3 className="font-semibold text-lg">
+                      <h3 className="font-semibold text-lg text-gray-900 dark:text-white">
                         {record.classes.name}
                       </h3>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-gray-600 dark:text-gray-300">
                         <Calendar className="inline-block h-4 w-4 mr-1" />
                         {new Date(record.class_date).toLocaleDateString(
                           i18n.language === 'pt' ? 'pt-BR' : i18n.language === 'fr' ? 'fr-CA' : 'en-US',
                           { year: 'numeric', month: 'long', day: 'numeric' }
                         )}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
                         {getDayName(record.class_schedules.day_of_week)} {t('history.atTime')}{' '}
                         {formatTime(record.class_schedules.start_time)} -{' '}
                         {formatTime(record.class_schedules.end_time)}
@@ -224,25 +224,25 @@ const StudentHistory = () => {
           <CardContent>
             {balanceHistory.length === 0 ? (
               <div className="text-center py-8">
-                <History className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-500">{t('history.noBalance')}</p>
+                <History className="h-12 w-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+                <p className="text-gray-500 dark:text-gray-400">{t('history.noBalance')}</p>
               </div>
             ) : (
               <div className="space-y-4">
                 {balanceHistory.map(record => (
                   <div
                     key={record.id}
-                    className="flex items-center justify-between p-3 border rounded-lg bg-white shadow-sm"
+                    className="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-slate-800 shadow-sm"
                   >
                     <div>
-                      <h3 className="font-semibold text-lg">
+                      <h3 className="font-semibold text-lg text-gray-900 dark:text-white">
                         {record.change_amount > 0 ? '+' : ''}
                         {record.change_amount} {t('history.classesText')}
                       </h3>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-gray-600 dark:text-gray-300">
                         {record.description}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
                         {new Date(record.created_at).toLocaleDateString(
                           i18n.language === 'pt' ? 'pt-BR' : i18n.language === 'fr' ? 'fr-CA' : 'en-US',
                           {

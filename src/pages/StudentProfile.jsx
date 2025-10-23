@@ -12,6 +12,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Loader2, ArrowLeft, User, Phone, Globe, Mail, Lock } from 'lucide-react'
 import Logo from '../components/Logo'
+import { ThemeToggle } from '../components/ThemeToggle'
 
 const StudentProfile = () => {
   const [profileData, setProfileData] = useState({
@@ -133,20 +134,21 @@ const StudentProfile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+      <header className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <button
                 onClick={() => navigate('/student/dashboard')}
-                className="mr-4 p-2 hover:bg-gray-100 rounded-lg"
+                className="mr-4 p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg"
               >
-                <ArrowLeft className="h-5 w-5 text-gray-600" />
+                <ArrowLeft className="h-5 w-5 text-gray-600 dark:text-gray-300" />
               </button>
               <Logo className="h-8 w-8 mr-3" />
-              <h1 className="text-xl font-semibold text-gray-900">My Profile</h1>
+              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">My Profile</h1>
             </div>
+            <ThemeToggle />
           </div>
         </div>
       </header>
@@ -186,7 +188,7 @@ const StudentProfile = () => {
                     <div className="space-y-2">
                       <Label htmlFor="fullName">Full Name</Label>
                       <div className="relative">
-                        <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                        <User className="absolute left-3 top-3 h-4 w-4 text-gray-400 dark:text-gray-500" />
                         <Input
                           id="fullName"
                           value={profileData.full_name}
@@ -201,7 +203,7 @@ const StudentProfile = () => {
                     <div className="space-y-2">
                       <Label htmlFor="email">Email Address</Label>
                       <div className="relative">
-                        <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                        <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400 dark:text-gray-500" />
                         <Input
                           id="email"
                           type="email"
@@ -217,7 +219,7 @@ const StudentProfile = () => {
                     <div className="space-y-2">
                       <Label htmlFor="phone">Phone Number</Label>
                       <div className="relative">
-                        <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                        <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400 dark:text-gray-500" />
                         <Input
                           id="phone"
                           value={profileData.phone}
@@ -231,7 +233,7 @@ const StudentProfile = () => {
                     <div className="space-y-2">
                       <Label htmlFor="language">Preferred Language</Label>
                       <div className="relative">
-                        <Globe className="absolute left-3 top-3 h-4 w-4 text-gray-400 z-10" />
+                        <Globe className="absolute left-3 top-3 h-4 w-4 text-gray-400 dark:text-gray-500 z-10" />
                         <Select
                           value={profileData.preferred_language}
                           onValueChange={(value) => setProfileData({ ...profileData, preferred_language: value })}

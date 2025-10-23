@@ -18,16 +18,16 @@ const StudioRules = () => {
   }, [profile, i18n])
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+      <header className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Link to="/student/dashboard" className="mr-4">
-                <ArrowLeft className="h-6 w-6 text-gray-600 hover:text-gray-900" />
+                <ArrowLeft className="h-6 w-6 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white" />
               </Link>
               <Logo className="h-8 w-8 mr-3" />
-              <h1 className="text-xl font-semibold text-gray-900">{t('rules.title')}</h1>
+              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">{t('rules.title')}</h1>
             </div>
           </div>
         </div>
@@ -35,8 +35,8 @@ const StudioRules = () => {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">{t('rules.title')}</h2>
-          <p className="text-gray-600">{t('rules.subtitle')}</p>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{t('rules.title')}</h2>
+          <p className="text-gray-600 dark:text-gray-300">{t('rules.subtitle')}</p>
         </div>
 
         <div className="space-y-6">
@@ -46,13 +46,13 @@ const StudioRules = () => {
                 <Clock className="h-5 w-5 mr-2 text-primary" />
                 {t('rules.classDuration')}
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-gray-600 dark:text-gray-300">
                 {t('rules.classDurationDesc')}
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <p className="text-lg font-semibold text-blue-800 mb-2">
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                <p className="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-2">
                   {t('rules.classDurationText')}
                 </p>
               </div>
@@ -65,16 +65,16 @@ const StudioRules = () => {
                 <AlertTriangle className="h-5 w-5 mr-2 text-orange-500" />
                 {t('rules.arrivalPolicy')}
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-gray-600 dark:text-gray-300">
                 {t('rules.arrivalPolicyDesc')}
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="bg-orange-50 p-4 rounded-lg">
-                <p className="text-lg font-semibold text-orange-800 mb-2">
+              <div className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg">
+                <p className="text-lg font-semibold text-orange-800 dark:text-orange-200 mb-2">
                   {t('rules.arrivalPolicyText')}
                 </p>
-                <p className="text-orange-700">
+                <p className="text-orange-700 dark:text-orange-300">
                   {t('rules.arrivalPolicyDetail')}
                 </p>
               </div>
@@ -87,20 +87,20 @@ const StudioRules = () => {
                 <Calendar className="h-5 w-5 mr-2 text-red-500" />
                 {t('rules.cancellationPolicy')}
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-gray-600 dark:text-gray-300">
                 {t('rules.cancellationPolicyDesc')}
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="bg-red-50 p-4 rounded-lg">
-                <p className="text-lg font-semibold text-red-800 mb-2">
+              <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg">
+                <p className="text-lg font-semibold text-red-800 dark:text-red-200 mb-2">
                   {t('rules.cancellationPolicyText')}
                 </p>
-                <p className="text-red-700 mb-3">
+                <p className="text-red-700 dark:text-red-300 mb-3">
                   {t('rules.cancellationPolicyDetail')}
                 </p>
-                <div className="bg-red-100 p-3 rounded border-l-4 border-red-500">
-                  <p className="text-red-800 font-medium">
+                <div className="bg-red-100 dark:bg-red-900/30 p-3 rounded border-l-4 border-red-500">
+                  <p className="text-red-800 dark:text-red-200 font-medium">
                     ⚠️ {t('rules.cancellationWarning')}
                   </p>
                 </div>
@@ -111,7 +111,7 @@ const StudioRules = () => {
           <Card>
             <CardHeader>
               <CardTitle>{t('rules.additionalGuidelines')}</CardTitle>
-              <CardDescription>
+              <CardDescription className="text-gray-600 dark:text-gray-300">
                 {t('rules.additionalGuidelinesDesc')}
               </CardDescription>
             </CardHeader>
@@ -120,15 +120,15 @@ const StudioRules = () => {
                 <div className="flex items-start space-x-3">
                   <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
                   <div>
-                    <p className="font-medium text-gray-900">{t('rules.wearComfortableClothing')}</p>
-                    <p className="text-gray-600">{t('rules.wearComfortableClothingDesc')}</p>
+                    <p className="font-medium text-gray-900 dark:text-white">{t('rules.wearComfortableClothing')}</p>
+                    <p className="text-gray-600 dark:text-gray-300">{t('rules.wearComfortableClothingDesc')}</p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
                   <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
                   <div>
-                    <p className="font-medium text-gray-900">{t('rules.stayHydrated')}</p>
-                    <p className="text-gray-600">{t('rules.stayHydratedDesc')}</p>
+                    <p className="font-medium text-gray-900 dark:text-white">{t('rules.stayHydrated')}</p>
+                    <p className="text-gray-600 dark:text-gray-300">{t('rules.stayHydratedDesc')}</p>
                   </div>
                 </div>
              </div>
@@ -138,28 +138,28 @@ const StudioRules = () => {
           <Card>
             <CardHeader>
               <CardTitle>{t('rules.contactInformation')}</CardTitle>
-              <CardDescription>
+              <CardDescription className="text-gray-600 dark:text-gray-300">
                 {t('rules.contactInformationDesc')}
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="text-gray-700 mb-2">
+              <div className="bg-gray-50 dark:bg-slate-800 p-4 rounded-lg">
+                <p className="text-gray-700 dark:text-gray-300 mb-2">
                   {t('rules.contactIntro')}
                 </p>
-                <div className="space-y-2 text-gray-600">
+                <div className="space-y-2 text-gray-600 dark:text-gray-400">
                   <p>💬 {t('rules.whatsapp')}: +1 438 274-8396</p>
                   <p>📧 {t('rules.email')}: josi@josipilates.com</p>
                   <div className="flex items-center space-x-2">
                     <span>📍</span>
                     <div>
-                      <p className="font-medium">{t('rules.studioLocation')}:</p>
-                      <p>10145 Avenue Hamel, Montreal, QC H2N 2X1</p>
+                      <p className="font-medium text-gray-900 dark:text-white">{t('rules.studioLocation')}:</p>
+                      <p className="text-gray-600 dark:text-gray-300">10145 Avenue Hamel, Montreal, QC H2N 2X1</p>
                       <a
                         href="https://www.google.com/maps/search/?api=1&query=10145+Avenue+Hamel+Montreal+QC+H2N+2X1"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800 underline text-sm"
+                        className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline text-sm"
                       >
                         {t('rules.viewOnGoogleMaps')}
                       </a>

@@ -33,6 +33,7 @@ import {
 } from 'lucide-react'
 import Logo from '../components/Logo'
 import { ThemeToggle } from '../components/ThemeToggle'
+import { TableSkeleton } from '../components/ui/skeleton'
 
 const StudentDashboard = () => {
   const { profile, signOut } = useAuth()
@@ -269,8 +270,8 @@ const StudentDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center">
+        <TableSkeleton rows={5} columns={4} />
       </div>
     )
   }
@@ -346,29 +347,29 @@ const StudentDashboard = () => {
             </CardHeader>
             <CardContent>
               {myClasses.length === 0 ? (
-                <p className="text-gray-500 text-center py-4">
+                <p className="text-gray-500 dark:text-gray-400 text-center py-4">
                   {t('dashboard.noClasses')}
                 </p>
               ) : (
                 <div className="space-y-3">
                   {Object.entries(getWeekSchedule()).map(([dayOfWeek, classes]) => (
-                    <div key={dayOfWeek} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div key={dayOfWeek} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-800 rounded-lg">
                       <div>
-                        <h4 className="font-medium">
+                        <h4 className="font-medium text-gray-900 dark:text-white">
                           {getDayName(parseInt(dayOfWeek))}
                         </h4>
                         {classes.map(enrollment => (
-                          <div key={enrollment.id} className="text-sm text-gray-600">
+                          <div key={enrollment.id} className="text-sm text-gray-600 dark:text-gray-300">
                             {enrollment.class_schedules.classes.name} at {formatTime(enrollment.class_schedules.start_time)}
                             {hasMultipleClassesOrDays() && enrollment.class_schedules.classes.description && (
-                              <span className="block text-xs text-gray-500 mt-1">
+                              <span className="block text-xs text-gray-500 dark:text-gray-400 mt-1">
                                 {enrollment.class_schedules.classes.description}
                               </span>
                             )}
                           </div>
                         ))}
                       </div>
-                      <Clock className="h-4 w-4 text-gray-400" />
+                      <Clock className="h-4 w-4 text-gray-400 dark:text-gray-500" />
                     </div>
                   ))}
                 </div>
@@ -388,7 +389,7 @@ const StudentDashboard = () => {
             </CardHeader>
             <CardContent>
               {getCombinedActivities().length === 0 ? (
-                <p className="text-gray-500 text-center py-4">
+                <p className="text-gray-500 dark:text-gray-400 text-center py-4">
                   {t('dashboard.noActivity')}
                 </p>
               ) : (
@@ -396,7 +397,7 @@ const StudentDashboard = () => {
                   {getCombinedActivities().map(activity => (
                     <div
                       key={activity.id}
-                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                      className="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-800 rounded-lg"
                     >
                       <div className="flex items-center space-x-3">
                         {activity.type === 'attendance' && getAttendanceIcon(activity.status)}
@@ -408,22 +409,22 @@ const StudentDashboard = () => {
                         <div>
                           {activity.type === 'attendance' ? (
                             <>
-                              <p className="text-sm font-medium">
+                              <p className="text-sm font-medium text-gray-900 dark:text-white">
                                 {activity.class_name}
                               </p>
                               <p className={`text-xs font-medium ${getAttendanceStatusColor(activity.status)}`}>
                                 {t(`status.${activity.status}`)}
                               </p>
-                              <p className="text-xs text-gray-500">
+                              <p className="text-xs text-gray-500 dark:text-gray-400">
                                 {new Date(activity.check_in_date).toLocaleDateString()}
                               </p>
                             </>
                           ) : (
                             <>
-                              <p className="text-sm font-medium">
+                              <p className="text-sm font-medium text-gray-900 dark:text-white">
                                 {activity.description}
                               </p>
-                              <p className="text-xs text-gray-500">
+                              <p className="text-xs text-gray-500 dark:text-gray-400">
                                 {new Date(activity.date).toLocaleDateString()}
                               </p>
                             </>
@@ -443,7 +444,7 @@ const StudentDashboard = () => {
                               {activity.change_amount > 0 ? '+' : ''}
                               {activity.change_amount}
                             </span>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
                               Balance: {activity.new_balance}
                             </p>
                           </>
@@ -475,19 +476,19 @@ const StudentDashboard = () => {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Link to="/student/history">
-                  <Button variant="outline" className="w-full justify-start">
+                  <Button variant="outline" className="w-full justify-start bg-white dark:bg-slate-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-primary hover:text-primary-foreground">
                     <History className="h-4 w-4 mr-2" />
                     {t('dashboard.viewFullHistory')}
                   </Button>
                 </Link>
                 <Link to="/student/profile">
-                  <Button variant="outline" className="w-full justify-start">
+                  <Button variant="outline" className="w-full justify-start bg-white dark:bg-slate-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-primary hover:text-primary-foreground">
                     <User className="h-4 w-4 mr-2" />
                     {t('nav.profile')}
                   </Button>
                 </Link>
                 <Link to="/student/rules">
-                  <Button variant="outline" className="w-full justify-start">
+                  <Button variant="outline" className="w-full justify-start bg-white dark:bg-slate-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-primary hover:text-primary-foreground">
                     <FileText className="h-4 w-4 mr-2" />
                     {t('rules.title')}
                   </Button>
