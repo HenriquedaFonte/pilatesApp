@@ -37,6 +37,7 @@ import {
   Calendar,
   ArrowLeft
 } from 'lucide-react'
+import { ThemeToggle } from '../components/ThemeToggle'
 
 const TeacherClasses = () => {
   const { profile, signOut } = useAuth()
@@ -226,21 +227,22 @@ const TeacherClasses = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+      <header className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Link to="/teacher/dashboard" className="mr-4">
-                <ArrowLeft className="h-6 w-6 text-gray-600 hover:text-gray-900" />
+                <ArrowLeft className="h-6 w-6 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" />
               </Link>
               <Activity className="h-8 w-8 text-primary mr-3" />
-              <h1 className="text-xl font-semibold text-gray-900">
+              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
                 Class Management
               </h1>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-700">
+              <ThemeToggle />
+              <span className="text-sm text-gray-700 dark:text-gray-300">
                 Welcome, {profile?.full_name}
               </span>
               <Button variant="outline" size="sm" onClick={handleSignOut}>
@@ -266,10 +268,10 @@ const TeacherClasses = () => {
 
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
               Classes & Schedules
             </h2>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-300">
               Manage your pilates classes and weekly schedules
             </p>
           </div>
@@ -379,20 +381,20 @@ const TeacherClasses = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  <h4 className="font-medium text-sm text-gray-700">
+                  <h4 className="font-medium text-sm text-gray-700 dark:text-gray-300">
                     Weekly Schedule:
                   </h4>
                   {getClassSchedules(classItem.id).length === 0 ? (
-                    <p className="text-sm text-gray-500">No schedules set</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">No schedules set</p>
                   ) : (
                     getClassSchedules(classItem.id).map(schedule => (
                       <div
                         key={schedule.id}
-                        className="flex items-center justify-between p-2 bg-gray-50 rounded"
+                        className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded"
                       >
                         <div className="flex items-center space-x-2">
-                          <Calendar className="h-4 w-4 text-gray-400" />
-                          <span className="text-sm">
+                          <Calendar className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+                          <span className="text-sm text-gray-900 dark:text-gray-100">
                             {getDayName(schedule.day_of_week)} at{' '}
                             {formatTime(schedule.start_time)} -{' '}
                             {formatTime(schedule.end_time)}

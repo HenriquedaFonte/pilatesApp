@@ -31,6 +31,7 @@ import {
   FileText,
   Search
 } from 'lucide-react';
+import { ThemeToggle } from '../components/ThemeToggle'
 
 const EmailNotifications = () => {
   const { profile, signOut } = useAuth();
@@ -421,24 +422,25 @@ const EmailNotifications = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+      <header className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Link to="/teacher/dashboard" className="mr-4">
-                <ArrowLeft className="h-6 w-6 text-gray-600 hover:text-gray-900" />
+                <ArrowLeft className="h-6 w-6 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" />
               </Link>
               <Activity className="h-8 w-8 text-primary mr-3" />
-              <h1 className="text-xl font-semibold text-gray-900">Email Notifications</h1>
+              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Email Notifications</h1>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-700">Welcome, {profile?.full_name}</span>
+              <ThemeToggle />
+              <span className="text-sm text-gray-700 dark:text-gray-300">Welcome, {profile?.full_name}</span>
               <Button variant="outline" size="sm" onClick={handleSignOut}>
                 <LogOut className="h-4 w-4 mr-2" />
                 Sign Out
               </Button>
-            </div>            
+            </div>
           </div>
         </div>
       </header>
@@ -459,8 +461,8 @@ const EmailNotifications = () => {
               <div className="flex items-center">
                 <Users className="h-8 w-8 text-blue-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Total Students</p>
-                  <p className="text-2xl font-bold text-gray-900">{students.length}</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Students</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{students.length}</p>
                 </div>
               </div>
             </CardContent>
@@ -471,8 +473,8 @@ const EmailNotifications = () => {
               <div className="flex items-center">
                 <AlertTriangle className="h-8 w-8 text-orange-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Low Balance</p>
-                  <p className="text-2xl font-bold text-gray-900">{lowCreditsStudents.length}</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Low Balance</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{lowCreditsStudents.length}</p>
                 </div>
               </div>
             </CardContent>
@@ -483,8 +485,8 @@ const EmailNotifications = () => {
               <div className="flex items-center">
                 <XCircle className="h-8 w-8 text-red-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">No Credits</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">No Credits</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
                     {students.filter(s => s.totalCredits === 0).length}
                   </p>
                 </div>
@@ -497,8 +499,8 @@ const EmailNotifications = () => {
               <div className="flex items-center">
                 <Mail className="h-8 w-8 text-green-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Emails Sent</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Emails Sent</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
                     {emailHistory.reduce((total, entry) => total + entry.success, 0)}
                   </p>
                 </div>
@@ -551,7 +553,7 @@ const EmailNotifications = () => {
                       min="0"
                       max="50"
                     />
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
                       {lowCreditsStudents.length} student(s) eligible
                     </span>
                   </div>
@@ -590,7 +592,7 @@ const EmailNotifications = () => {
                         <div key={student.id} className="flex justify-between items-center p-2 border rounded">
                           <div>
                             <div className="font-medium">{student.full_name}</div>
-                            <div className="text-sm text-gray-500">{student.email}</div>
+                            <div className="text-sm text-gray-500 dark:text-gray-400">{student.email}</div>
                           </div>
                           <Badge variant={student.totalCredits === 0 ? 'destructive' : 'secondary'}>
                             {student.totalCredits} credits
@@ -599,7 +601,7 @@ const EmailNotifications = () => {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-gray-500 text-center py-4">
+                    <p className="text-gray-500 dark:text-gray-400 text-center py-4">
                       No students with low balance found
                     </p>
                   )}
@@ -701,7 +703,7 @@ const EmailNotifications = () => {
                       </div>
                       <div className="mb-4">
                         <div className="relative">
-                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 h-4 w-4" />
                           <Input
                             placeholder="Search students by name or email..."
                             value={studentSearchTerm}
@@ -728,15 +730,15 @@ const EmailNotifications = () => {
                   )}
                 </div>
 
-                <div className="bg-gray-50 p-3 rounded border">
+                <div className="bg-gray-50 dark:bg-slate-800 p-3 rounded border border-slate-200 dark:border-slate-700">
                   <div className="flex items-center gap-2 mb-2">
                      <Filter className="h-4 w-4" />
-                     <span className="font-medium">
+                     <span className="font-medium text-gray-900 dark:text-white">
                        Selected students: {filteredStudents.length}
                      </span>
                    </div>
                   {filteredStudents.length > 0 && (
-                    <div className="text-sm text-gray-600">
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
                       {filteredStudents.slice(0, 5).map(s => s.full_name).join(', ')}
                       {filteredStudents.length > 5 && ` and ${filteredStudents.length - 5} more...`}
                     </div>
@@ -840,7 +842,7 @@ const EmailNotifications = () => {
                         <div className="flex items-center justify-between mb-2">
                           <div>
                             <h4 className="font-medium">{entry.subject}</h4>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
                               {new Date(entry.timestamp).toLocaleString('en-US')}
                             </p>
                           </div>
@@ -855,7 +857,7 @@ const EmailNotifications = () => {
                             )}
                           </div>
                         </div>
-                        <div className="text-sm text-gray-600">
+                        <div className="text-sm text-gray-600 dark:text-gray-400">
                           <p>Type: {entry.type === 'low_credits' ? 'Low Balance' : 'Custom'}</p>
                           <p>Recipients: {entry.recipients}</p>
                           {entry.filterType && <p>Filter: {entry.filterType}</p>}
@@ -864,7 +866,7 @@ const EmailNotifications = () => {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-500 text-center py-8">
+                  <p className="text-gray-500 dark:text-gray-400 text-center py-8">
                     No emails sent yet
                   </p>
                 )}

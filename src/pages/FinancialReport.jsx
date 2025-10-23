@@ -32,6 +32,7 @@ import {
   FileText
 } from 'lucide-react'
 import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, LabelList } from 'recharts'
+import { ThemeToggle } from '../components/ThemeToggle'
 
 const FinancialReport = () => {
   const { profile, signOut } = useAuth()
@@ -256,21 +257,22 @@ const FinancialReport = () => {
 
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+      <header className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Link to="/teacher/dashboard" className="mr-4">
-                <ArrowLeft className="h-6 w-6 text-gray-600 hover:text-gray-900" />
+                <ArrowLeft className="h-6 w-6 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" />
               </Link>
               <FileText className="h-8 w-8 text-primary mr-3" />
-              <h1 className="text-xl font-semibold text-gray-900">
+              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
                 Financial Report
               </h1>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-700">
+              <ThemeToggle />
+              <span className="text-sm text-gray-700 dark:text-gray-300">
                 Welcome, {profile?.full_name}
               </span>
               <Button variant="outline" size="sm" onClick={handleSignOut}>
@@ -321,7 +323,7 @@ const FinancialReport = () => {
           <CardContent>
             <div className="flex flex-col md:flex-row gap-4 mb-6 items-end">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Start Date
                 </label>
                 <Input
@@ -332,7 +334,7 @@ const FinancialReport = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   End Date
                 </label>
                 <Input
@@ -348,7 +350,7 @@ const FinancialReport = () => {
               </Button>
               <div className="flex-1" />
               <div className="relative">
-                <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" />
                 <Input
                   type="text"
                   placeholder="Search by student, Description or Payment Type..."
@@ -360,7 +362,7 @@ const FinancialReport = () => {
               </div>
             </div>
             {!hasSearched ? (
-              <div className="py-8 text-center text-gray-500">
+              <div className="py-8 text-center text-gray-500 dark:text-gray-400">
                 Select a date range and click "Search" to view financial transactions.
               </div>
             ) : loading ? (
@@ -390,7 +392,7 @@ const FinancialReport = () => {
                       <TableRow>
                         <TableCell
                           colSpan={7}
-                          className="text-center text-gray-500 py-8"
+                          className="text-center text-gray-500 dark:text-gray-400 py-8"
                         >
                           No financial transactions found for this period.
                         </TableCell>

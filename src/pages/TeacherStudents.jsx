@@ -45,6 +45,7 @@ import {
   Loader2,
   Hash
 } from 'lucide-react'
+import { ThemeToggle } from '../components/ThemeToggle'
 
 const TeacherStudents = () => {
   const { profile, signOut } = useAuth()
@@ -439,22 +440,23 @@ const TeacherStudents = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
 
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Link to="/teacher/dashboard" className="mr-4">
-                <ArrowLeft className="h-6 w-6 text-gray-600 hover:text-gray-900" />
+                <ArrowLeft className="h-6 w-6 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" />
               </Link>
               <Activity className="h-8 w-8 text-primary mr-3" />
-              <h1 className="text-xl font-semibold text-gray-900">
+              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
                 Student Management
               </h1>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-700">
+              <ThemeToggle />
+              <span className="text-sm text-gray-700 dark:text-gray-300">
                 Welcome, {profile?.full_name}
               </span>
               <Button variant="outline" size="sm" onClick={handleSignOut}>
@@ -482,8 +484,8 @@ const TeacherStudents = () => {
 
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900">Students</h2>
-            <p className="text-gray-600">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Students</h2>
+            <p className="text-gray-600 dark:text-gray-300">
               Manage student profiles, balances, and enrollments
             </p>
           </div>
@@ -622,26 +624,26 @@ const TeacherStudents = () => {
                   <div className="space-y-4">
                     {/* Credit Balances */}
                     <div className="space-y-2">
-                      <div className="flex items-center justify-between p-2 bg-blue-50 rounded-lg">
-                        <span className="text-sm font-medium">Individual</span>
-                        <span className="font-bold text-blue-600">
+                      <div className="flex items-center justify-between p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                        <span className="text-sm font-medium text-gray-900 dark:text-gray-100">Individual</span>
+                        <span className="font-bold text-blue-600 dark:text-blue-400">
                           {student.individual_credits || 0}
                         </span>
                       </div>
-                      <div className="flex items-center justify-between p-2 bg-green-50 rounded-lg">
-                        <span className="text-sm font-medium">Duo</span>
-                        <span className="font-bold text-green-600">
+                      <div className="flex items-center justify-between p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                        <span className="text-sm font-medium text-gray-900 dark:text-gray-100">Duo</span>
+                        <span className="font-bold text-green-600 dark:text-green-400">
                           {student.duo_credits || 0}
                         </span>
                       </div>
-                      <div className="flex items-center justify-between p-2 bg-purple-50 rounded-lg">
-                        <span className="text-sm font-medium">Group</span>
-                        <span className="font-bold text-purple-600">
+                      <div className="flex items-center justify-between p-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                        <span className="text-sm font-medium text-gray-900 dark:text-gray-100">Group</span>
+                        <span className="font-bold text-purple-600 dark:text-purple-400">
                           {student.group_credits || 0}
                         </span>
                       </div>
-                      <div className="flex items-center justify-between p-2 bg-gray-100 rounded-lg border-t">
-                        <span className="text-sm font-bold">Total</span>
+                      <div className="flex items-center justify-between p-2 bg-gray-100 dark:bg-gray-800 rounded-lg border-t border-gray-200 dark:border-gray-600">
+                        <span className="text-sm font-bold text-gray-900 dark:text-gray-100">Total</span>
                         <span
                           className={`font-bold ${getBalanceColor(
                             totalBalance
@@ -654,7 +656,7 @@ const TeacherStudents = () => {
 
                     {/* Last Check-in Note */}
                     {lastCheckIns[student.id] && (
-                      <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded-lg">
+                      <div className="text-xs text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 p-2 rounded-lg">
                         Last check-in: {lastCheckIns[student.id].class_schedules?.classes?.name} -{' '}
                         {getDayName(lastCheckIns[student.id].class_schedules?.day_of_week)}{' '}
                         {new Date(lastCheckIns[student.id].check_in_date).toLocaleDateString()} -{' '}
@@ -865,18 +867,18 @@ const TeacherStudents = () => {
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-semibold mb-2">Current Balances:</h4>
-                <div className="space-y-1 text-sm">
+              <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">Current Balances:</h4>
+                <div className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
                   <div>Individual: {selectedStudent?.individual_credits || 0}</div>
                   <div>Duo: {selectedStudent?.duo_credits || 0}</div>
                   <div>Group: {selectedStudent?.group_credits || 0}</div>
                 </div>
               </div>
 
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <h4 className="font-semibold mb-2">Changes to Apply:</h4>
-                <div className="space-y-1 text-sm">
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">Changes to Apply:</h4>
+                <div className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
                   <div>Credit Type: <span className="capitalize">{balanceChange.creditType}</span></div>
                   <div>Amount: {balanceChange.amount} {parseInt(balanceChange.amount) > 0 ? '(Addition)' : '(Subtraction)'}</div>
                   {balanceChange.description && <div>Description: {balanceChange.description}</div>}
@@ -885,9 +887,9 @@ const TeacherStudents = () => {
                 </div>
               </div>
 
-              <div className="bg-green-50 p-4 rounded-lg">
-                <h4 className="font-semibold mb-2">Expected New Balances:</h4>
-                <div className="space-y-1 text-sm">
+              <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">Expected New Balances:</h4>
+                <div className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
                   <div>Individual: {balanceChange.creditType === 'individual' ? (selectedStudent?.individual_credits || 0) + parseInt(balanceChange.amount || '0') : (selectedStudent?.individual_credits || 0)}</div>
                   <div>Duo: {balanceChange.creditType === 'duo' ? (selectedStudent?.duo_credits || 0) + parseInt(balanceChange.amount || '0') : (selectedStudent?.duo_credits || 0)}</div>
                   <div>Group: {balanceChange.creditType === 'group' ? (selectedStudent?.group_credits || 0) + parseInt(balanceChange.amount || '0') : (selectedStudent?.group_credits || 0)}</div>

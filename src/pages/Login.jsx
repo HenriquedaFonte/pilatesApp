@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/dialog'
 import { Loader2 } from 'lucide-react'
 import Logo from '../components/Logo'
+import { ThemeToggle } from '../components/ThemeToggle'
 
 const Login = () => {
   const [email, setEmail] = useState('')
@@ -92,8 +93,11 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-slate-900 dark:to-slate-800 p-4">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
+      <Card className="w-full max-w-md border-0 shadow-xl dark:shadow-slate-900/20">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
             <Logo className="h-12 w-12" />
@@ -106,7 +110,7 @@ const Login = () => {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <Alert variant="destructive">
+              <Alert variant="destructive" id="login-error">
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
@@ -121,6 +125,8 @@ const Login = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={loading}
+                aria-label="Email address"
+                aria-describedby={error ? "login-error" : undefined}
               />
             </div>
             
@@ -133,6 +139,8 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={loading}
+                aria-label="Password"
+                aria-describedby={error ? "login-error" : undefined}
               />
               <div className="text-right">
                 <button

@@ -48,7 +48,30 @@ export const AuthProvider = ({ children }) => {
       }
     )
 
-    return () => subscription.unsubscribe()
+    // Auto-refresh session before expiry
+    const refreshInterval = setInterval(async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        if (session) {
+          const expiresAt = session.expires_at
+          const now = Math.floor(Date.now() / 1000)
+          // Refresh 5 minutes before expiry
+          if (expiresAt - now < 300) {
+            const { error } = await supabase.auth.refreshSession()
+            if (error) {
+              console.warn('Session refresh failed:', error.message)
+            }
+          }
+        }
+      } catch (error) {
+        console.warn('Session check failed:', error.message)
+      }
+    }, 60000) // Check every minute
+
+    return () => {
+      subscription.unsubscribe()
+      clearInterval(refreshInterval)
+    }
   }, [])
 
   const fetchOrCreateProfile = async (user) => {
@@ -231,6 +254,21 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
+  const updateThemePreference = async (theme) => {
+    try {
+      if (!user) return
+
+      const { error } = await supabase
+        .from('profiles')
+        .update({ theme_preference: theme })
+        .eq('id', user.id)
+
+      if (error) throw error
+    } catch (error) {
+      console.error('Error updating theme preference:', error)
+    }
+  }
+
   const value = {
     user,
     profile,
@@ -241,10 +279,11 @@ export const AuthProvider = ({ children }) => {
     signOut,
     updateProfile,
     completeProfile,
+    updateThemePreference,
     isTeacher: profile?.role === 'teacher',
     isStudent: profile?.role === 'student',
     isProfileComplete: profile?.phone != null,
-    supabase 
+    supabase
   }
 
   return (

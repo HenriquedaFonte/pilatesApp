@@ -35,6 +35,7 @@ import {
   TrendingDown,
   AlertCircle
 } from 'lucide-react'
+import { ThemeToggle } from '../components/ThemeToggle'
 
 const LowCreditsReport = () => {
   const { profile, signOut } = useAuth()
@@ -197,21 +198,22 @@ const LowCreditsReport = () => {
   const totalZeroCredits = combinedZeroCredits.length
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+      <header className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Link to="/teacher/dashboard" className="mr-4">
-                <ArrowLeft className="h-6 w-6 text-gray-600 hover:text-gray-900" />
+                <ArrowLeft className="h-6 w-6 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" />
               </Link>
               <Activity className="h-8 w-8 text-primary mr-3" />
-              <h1 className="text-xl font-semibold text-gray-900">
+              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
                 Low Credits Report
               </h1>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-700">
+              <ThemeToggle />
+              <span className="text-sm text-gray-700 dark:text-gray-300">
                 Welcome, {profile?.full_name}
               </span>
               <Button variant="outline" size="sm" onClick={handleSignOut}>
@@ -273,10 +275,10 @@ const LowCreditsReport = () => {
               <div className="flex items-center">
                 <AlertTriangle className="h-8 w-8 text-red-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                     Critical Cases
                   </p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
                     {criticalCount}
                   </p>
                 </div>
@@ -288,10 +290,10 @@ const LowCreditsReport = () => {
               <div className="flex items-center">
                 <AlertCircle className="h-8 w-8 text-orange-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                     High Priority
                   </p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
                     {highCount}
                   </p>
                 </div>
@@ -303,10 +305,10 @@ const LowCreditsReport = () => {
               <div className="flex items-center">
                 <TrendingDown className="h-8 w-8 text-yellow-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                     Total Low Credits
                   </p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
                     {totalLowCredits}
                   </p>
                 </div>
@@ -318,10 +320,10 @@ const LowCreditsReport = () => {
               <div className="flex items-center">
                 <Users className="h-8 w-8 text-blue-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                     Zero Credits
                   </p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
                     {totalZeroCredits}
                   </p>
                 </div>
@@ -332,7 +334,7 @@ const LowCreditsReport = () => {
 
         <div className="flex justify-between items-center mb-6">
           <div className="relative">
-            <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" />
             <Input
               type="text"
               placeholder="Search students..."
@@ -400,7 +402,7 @@ const LowCreditsReport = () => {
                                   <div className="font-medium">
                                     {student.student_name}
                                   </div>
-                                  <div className="text-sm text-gray-500">
+                                  <div className="text-sm text-gray-500 dark:text-gray-400">
                                     {student.student_email}
                                   </div>
                                 </div>
@@ -446,7 +448,7 @@ const LowCreditsReport = () => {
                                     {student.last_attendance_date || 'Never'}
                                   </div>
                                   {student.days_since_last_attendance && (
-                                    <div className="text-xs text-gray-500">
+                                    <div className="text-xs text-gray-500 dark:text-gray-400">
                                       {student.days_since_last_attendance} days
                                       ago
                                     </div>
@@ -462,7 +464,7 @@ const LowCreditsReport = () => {
                 ) : (
                   <div className="text-center py-8">
                     <CreditCard className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-500">
+                    <p className="text-gray-500 dark:text-gray-400">
                       No students with low credits found.
                     </p>
                   </div>
@@ -518,7 +520,7 @@ const LowCreditsReport = () => {
                                 <div className="font-medium">
                                   {student.student_name}
                                 </div>
-                                <div className="text-sm text-gray-500">
+                                <div className="text-sm text-gray-500 dark:text-gray-400">
                                   {student.student_email}
                                 </div>
                               </div>
@@ -534,7 +536,7 @@ const LowCreditsReport = () => {
                                   {student.last_attendance_date || 'Never'}
                                 </div>
                                 {student.days_since_last_attendance && (
-                                  <div className="text-xs text-gray-500">
+                                  <div className="text-xs text-gray-500 dark:text-gray-400">
                                     {student.days_since_last_attendance} days
                                     ago
                                   </div>
@@ -558,7 +560,7 @@ const LowCreditsReport = () => {
                 ) : (
                   <div className="text-center py-8">
                     <AlertTriangle className="h-12 w-12 text-green-400 mx-auto mb-4" />
-                    <p className="text-gray-500">
+                    <p className="text-gray-500 dark:text-gray-400">
                       Great! No students with zero credits.
                     </p>
                   </div>

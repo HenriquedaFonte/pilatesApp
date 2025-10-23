@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Menu, X } from 'lucide-react';
 import Logo from '../components/Logo';
+import { ThemeToggle } from '../components/ThemeToggle';
 import emailService from '../lib/emailService';
 import studentPilatesImage from '../assets/1584341045.jpg.avif';
 import duosImage from '../assets/screen-shot-2014-07-27-at-10-07-46-pm.png.avif';
@@ -150,14 +151,14 @@ Sent from Josi Pilates website contact form.
   }, [user, profile, isProfileComplete, navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 pt-20 md:pt-0">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-slate-900 dark:to-slate-800 pt-20 md:pt-0">
       {/* Header */}
-      <header className="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
+      <header className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm shadow-sm fixed top-0 left-0 right-0 z-50 border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
               <Logo className="h-8 w-8 mr-2" />
-              <span className="text-xl font-bold text-gray-900">Josi Pilates</span>
+              <span className="text-xl font-bold text-gray-900 dark:text-white">Josi Pilates</span>
             </div>
 
             {/* Desktop Navigation */}
@@ -173,10 +174,11 @@ Sent from Josi Pilates website contact form.
                 </SelectContent>
               </Select>
               <nav className="flex space-x-6">
-                <a href="#about" className="text-gray-600 hover:text-gray-900">{t('studioHome.nav.about')}</a>
-                <a href="#services" className="text-gray-600 hover:text-gray-900">{t('studioHome.nav.services')}</a>
-                <a href="#contact" className="text-gray-600 hover:text-gray-900">{t('studioHome.nav.contact')}</a>
+                <a href="#about" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">{t('studioHome.nav.about')}</a>
+                <a href="#services" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">{t('studioHome.nav.services')}</a>
+                <a href="#contact" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">{t('studioHome.nav.contact')}</a>
               </nav>
+              <ThemeToggle />
               <Button asChild>
                 <Link to="/login">{t('studioHome.nav.studentPortal')}</Link>
               </Button>
@@ -199,7 +201,7 @@ Sent from Josi Pilates website contact form.
 
           {/* Mobile Menu */}
           {mobileMenuOpen && (
-            <div className="md:hidden border-t border-gray-200 py-4">
+            <div className="md:hidden border-t border-gray-200 dark:border-gray-700 py-4">
               <div className="flex flex-col space-y-4">
                 <div className="px-4">
                   <Select onValueChange={changeLanguage} value={i18n.language}>
@@ -213,10 +215,13 @@ Sent from Josi Pilates website contact form.
                     </SelectContent>
                   </Select>
                 </div>
+                <div className="px-4">
+                  <ThemeToggle />
+                </div>
                 <nav className="flex flex-col space-y-2 px-4">
-                  <a href="#about" className="text-gray-600 hover:text-gray-900 py-2" onClick={() => setMobileMenuOpen(false)}>{t('studioHome.nav.about')}</a>
-                  <a href="#services" className="text-gray-600 hover:text-gray-900 py-2" onClick={() => setMobileMenuOpen(false)}>{t('studioHome.nav.services')}</a>
-                  <a href="#contact" className="text-gray-600 hover:text-gray-900 py-2" onClick={() => setMobileMenuOpen(false)}>{t('studioHome.nav.contact')}</a>
+                  <a href="#about" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white py-2" onClick={() => setMobileMenuOpen(false)}>{t('studioHome.nav.about')}</a>
+                  <a href="#services" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white py-2" onClick={() => setMobileMenuOpen(false)}>{t('studioHome.nav.services')}</a>
+                  <a href="#contact" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white py-2" onClick={() => setMobileMenuOpen(false)}>{t('studioHome.nav.contact')}</a>
                 </nav>
               </div>
             </div>
@@ -237,7 +242,7 @@ Sent from Josi Pilates website contact form.
                   key={index}
                   src={image}
                   alt="Student doing Pilates exercise"
-                  className="w-full h-[500px] object-cover shadow-lg flex-shrink-0"
+                  className="w-full h-[550px] object-cover shadow-lg flex-shrink-0"
                   style={{ width: '100%' }}
                 />
               ))}
@@ -247,12 +252,12 @@ Sent from Josi Pilates website contact form.
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             {/* Text Content */}
             <div className="lg:col-span-2">
-              <div className="bg-white p-10 rounded-lg shadow-sm">
-                <h1 className="text-4xl font-bold text-gray-900 mb-6">
+              <div className="bg-white dark:bg-slate-800 p-10 rounded-lg shadow-sm">
+                <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">
                   {t('studioHome.hero.greeting')}<br />
                   {t('studioHome.hero.intro')}
                 </h1>
-                <p className="text-gray-600 mb-8 text-lg leading-relaxed">
+                <p className="text-gray-600 dark:text-gray-300 mb-8 text-lg leading-relaxed">
                   {t('studioHome.hero.description')}
                 </p>
                 <Button size="lg" asChild>
@@ -274,7 +279,7 @@ Sent from Josi Pilates website contact form.
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-16 bg-gray-50">
+      <section id="about" className="py-16 bg-slate-50 dark:bg-slate-800/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-8">
@@ -287,15 +292,15 @@ Sent from Josi Pilates website contact form.
             </div>
 
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">{t('studioHome.about.title')}</h2>
-              <p className="text-gray-600 mb-6">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">{t('studioHome.about.title')}</h2>
+              <p className="text-gray-600 dark:text-gray-300 mb-6">
                 {t('studioHome.about.description')}
               </p>
             </div>
 
-            <div className="bg-white p-8 rounded-lg shadow-sm">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">{t('studioHome.about.extendedTitle')}</h3>
-              <div className="text-gray-600 whitespace-pre-line">
+            <div className="bg-white dark:bg-slate-800 p-8 rounded-lg shadow-sm">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{t('studioHome.about.extendedTitle')}</h3>
+              <div className="text-gray-600 dark:text-gray-300 whitespace-pre-line">
                 {t('studioHome.about.extended')}
               </div>
             </div>
@@ -304,11 +309,11 @@ Sent from Josi Pilates website contact form.
       </section>
 
       {/* Services Section */}
-      <section id="services" className="py-16 bg-white">
+      <section id="services" className="py-16 bg-white dark:bg-slate-900/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('studioHome.services.title')}</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">{t('studioHome.services.title')}</h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               {t('studioHome.services.subtitle')}
             </p>
           </div>
@@ -329,7 +334,7 @@ Sent from Josi Pilates website contact form.
                   <p><strong>{t('studioHome.services.private.single')}</strong></p>
                   <p><strong>{t('studioHome.services.private.four')}</strong></p>
                   <p><strong>{t('studioHome.services.private.eight')}</strong></p>
-                  <p className="text-xs text-gray-600 mt-4">
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-4">
                     {t('studioHome.services.private.note')}
                   </p>
                 </div>
@@ -351,7 +356,7 @@ Sent from Josi Pilates website contact form.
                   <p><strong>{t('studioHome.services.duos.single')}</strong></p>
                   <p><strong>{t('studioHome.services.duos.six')}</strong></p>
                   <p><strong>{t('studioHome.services.duos.twelve')}</strong></p>
-                  <p className="text-xs text-gray-600 mt-4">
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-4">
                     {t('studioHome.services.duos.note')}
                   </p>
                 </div>
@@ -373,7 +378,7 @@ Sent from Josi Pilates website contact form.
                   <p><strong>{t('studioHome.services.group.single')}</strong></p>
                   <p><strong>{t('studioHome.services.group.six')}</strong></p>
                   <p><strong>{t('studioHome.services.group.twelve')}</strong></p>
-                  <p className="text-xs text-gray-600 mt-4">
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-4">
                     {t('studioHome.services.group.note')}
                   </p>
                 </div>
@@ -390,10 +395,10 @@ Sent from Josi Pilates website contact form.
             {t('studioHome.testimonials', { returnObjects: true }).map((testimonial, index) => (
               <Card key={index}>
                 <CardContent className="pt-6">
-                  <p className="text-gray-600 italic mb-4">
+                  <p className="text-gray-600 dark:text-gray-300 italic mb-4">
                     "{testimonial.text}"
                   </p>
-                  <p className="text-sm text-gray-500">- {testimonial.author}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">- {testimonial.author}</p>
                 </CardContent>
               </Card>
             ))}
@@ -402,11 +407,11 @@ Sent from Josi Pilates website contact form.
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-16 bg-gray-50">
+      <section id="contact" className="py-16 bg-slate-50 dark:bg-slate-800/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Contactez nous</h2>
-            <p className="text-gray-600">Get in touch with us</p>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Contactez nous</h2>
+            <p className="text-gray-600 dark:text-gray-300">Get in touch with us</p>
           </div>
 
           {/* Top Section: Photo and Form */}
@@ -421,7 +426,7 @@ Sent from Josi Pilates website contact form.
             </div>
 
             {/* Contact Form */}
-            <div className="bg-white p-8 rounded-lg shadow-sm flex justify-center">
+            <div className="bg-white dark:bg-slate-800 p-8 rounded-lg shadow-sm flex justify-center items-center min-h-[400px]">
               {contactFormSuccess ? (
                 <div className="text-center">
                   <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -429,58 +434,58 @@ Sent from Josi Pilates website contact form.
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Message Sent!</h3>
-                  <p className="text-gray-600">Thank you for your message. We'll get back to you soon.</p>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Message Sent!</h3>
+                  <p className="text-gray-600 dark:text-gray-300">Thank you for your message. We'll get back to you soon.</p>
                 </div>
               ) : (
                 <form onSubmit={handleContactSubmit} className="space-y-6 w-full max-w-md">
                   {contactFormError && (
-                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
+                    <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 px-4 py-3 rounded-md text-sm">
                       {contactFormError}
                     </div>
                   )}
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">First Name</label>
                       <input
                         type="text"
                         value={contactForm.firstName}
                         onChange={(e) => setContactForm({...contactForm, firstName: e.target.value})}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                         placeholder="First Name"
                         required
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Last Name</label>
                       <input
                         type="text"
                         value={contactForm.lastName}
                         onChange={(e) => setContactForm({...contactForm, lastName: e.target.value})}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                         placeholder="Last Name"
                         required
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Email</label>
                     <input
                       type="email"
                       value={contactForm.email}
                       onChange={(e) => setContactForm({...contactForm, email: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                       placeholder="Email"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Message</label>
                     <textarea
                       rows="4"
                       value={contactForm.message}
                       onChange={(e) => setContactForm({...contactForm, message: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 resize-none"
                       placeholder="Your message"
                       required
                     ></textarea>
@@ -501,21 +506,21 @@ Sent from Josi Pilates website contact form.
                 <div className="w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center">
                   <span className="text-white">@</span>
                 </div>
-                <span className="text-gray-700">josi@josipilates.com</span>
+                <span className="text-gray-700 dark:text-gray-300">josi@josipilates.com</span>
               </div>
 
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center">
                   <span className="text-white">💬</span>
                 </div>
-                <span className="text-gray-700">+1 438 274 8396</span>
+                <span className="text-gray-700 dark:text-gray-300">+1 438 274 8396</span>
               </div>
 
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center">
                   <span className="text-white">📍</span>
                 </div>
-                <div className="text-gray-700">
+                <div className="text-gray-700 dark:text-gray-300">
                   <div>Av. Hamel</div>
                   <div>Montreal, H2C 2X1</div>
                 </div>
@@ -540,7 +545,7 @@ Sent from Josi Pilates website contact form.
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-8">
+      <footer className="bg-slate-900 dark:bg-slate-950 text-white py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center mb-4 md:mb-0">

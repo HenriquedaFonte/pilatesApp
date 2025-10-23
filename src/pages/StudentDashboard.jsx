@@ -32,6 +32,7 @@ import {
   FileText
 } from 'lucide-react'
 import Logo from '../components/Logo'
+import { ThemeToggle } from '../components/ThemeToggle'
 
 const StudentDashboard = () => {
   const { profile, signOut } = useAuth()
@@ -275,19 +276,20 @@ const StudentDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+      <header className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Logo className="h-8 w-8 mr-3" />
-              <h1 className="text-xl font-semibold text-gray-900">
+              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
                 Pilates Studio
               </h1>
             </div>
             <div className="flex items-center space-x-4">
+              <ThemeToggle />
               <span
-                className="text-sm text-gray-700 cursor-pointer hover:text-gray-900"
+                className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer hover:text-gray-900 dark:hover:text-white"
                 onClick={() => navigate('/student/profile')}
               >
                 {t('common.welcome')}, {profile?.full_name}
@@ -303,10 +305,10 @@ const StudentDashboard = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
             {t('dashboard.title')}
           </h2>
-          <p className="text-gray-600">{t('dashboard.subtitle')}</p>
+          <p className="text-gray-600 dark:text-gray-300">{t('dashboard.subtitle')}</p>
         </div>
 
         <div className="mb-8">

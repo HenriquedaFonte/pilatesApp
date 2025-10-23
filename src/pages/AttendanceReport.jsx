@@ -41,6 +41,7 @@ import {
   TrendingUp,
   TrendingDown
 } from 'lucide-react'
+import { ThemeToggle } from '../components/ThemeToggle'
 
 const AttendanceReport = () => {
   const { profile, signOut } = useAuth()
@@ -193,21 +194,22 @@ const AttendanceReport = () => {
       : 0
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+      <header className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Link to="/teacher/dashboard" className="mr-4">
-                <ArrowLeft className="h-6 w-6 text-gray-600 hover:text-gray-900" />
+                <ArrowLeft className="h-6 w-6 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" />
               </Link>
               <Activity className="h-8 w-8 text-primary mr-3" />
-              <h1 className="text-xl font-semibold text-gray-900">
+              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
                 Attendance Report
               </h1>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-700">
+              <ThemeToggle />
+              <span className="text-sm text-gray-700 dark:text-gray-300">
                 Welcome, {profile?.full_name}
               </span>
               <Button variant="outline" size="sm" onClick={handleSignOut}>
@@ -295,10 +297,10 @@ const AttendanceReport = () => {
                 <div className="flex items-center">
                   <Users className="h-8 w-8 text-blue-600" />
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                       Total Students
                     </p>
-                    <p className="text-2xl font-bold text-gray-900">
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
                       {totalStats.totalStudents}
                     </p>
                   </div>
@@ -310,10 +312,10 @@ const AttendanceReport = () => {
                 <div className="flex items-center">
                   <TrendingUp className="h-8 w-8 text-green-600" />
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                       Average Attendance
                     </p>
-                    <p className="text-2xl font-bold text-gray-900">
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
                       {averageAttendance}%
                     </p>
                   </div>
@@ -325,10 +327,10 @@ const AttendanceReport = () => {
                 <div className="flex items-center">
                   <Calendar className="h-8 w-8 text-purple-600" />
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                       Total Classes
                     </p>
-                    <p className="text-2xl font-bold text-gray-900">
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
                       {totalStats.totalClasses}
                     </p>
                   </div>
@@ -340,10 +342,10 @@ const AttendanceReport = () => {
                 <div className="flex items-center">
                   <TrendingDown className="h-8 w-8 text-red-600" />
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                       Credits Lost
                     </p>
-                    <p className="text-2xl font-bold text-gray-900">
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
                       {totalStats.totalCreditsLost}
                     </p>
                   </div>
@@ -357,7 +359,7 @@ const AttendanceReport = () => {
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center space-x-4">
               <div className="relative">
-                <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" />
                 <Input
                   type="text"
                   placeholder="Search students..."
@@ -412,7 +414,7 @@ const AttendanceReport = () => {
                               <div className="font-medium">
                                 {student.student_name}
                               </div>
-                              <div className="text-sm text-gray-500">
+                              <div className="text-sm text-gray-500 dark:text-gray-400">
                                 {student.student_email}
                               </div>
                             </div>
@@ -485,7 +487,7 @@ const AttendanceReport = () => {
             <Card>
               <CardContent className="text-center py-8">
                 <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-500">
+                <p className="text-gray-500 dark:text-gray-400">
                   No report data available. Generate a report to see attendance
                   information.
                 </p>

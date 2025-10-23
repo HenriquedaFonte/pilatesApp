@@ -37,6 +37,7 @@ import {
   Users,
   Plus
 } from 'lucide-react'
+import { ThemeToggle } from '../components/ThemeToggle'
 
 const TeacherCheckIn = () => {
   const { profile, signOut } = useAuth()
@@ -330,21 +331,22 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+      <header className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 py-4 sm:py-0">
             <div className="flex items-center">
               <Link to="/teacher/dashboard" className="mr-4">
-                <ArrowLeft className="h-6 w-6 text-gray-600 hover:text-gray-900" />
+                <ArrowLeft className="h-6 w-6 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" />
               </Link>
               <Activity className="h-8 w-8 text-primary mr-3" />
-              <h1 className="text-xl font-semibold text-gray-900">
+              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
                 Daily Check-in
               </h1>
             </div>
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
-              <span className="text-sm text-gray-700">
+              <ThemeToggle />
+              <span className="text-sm text-gray-700 dark:text-gray-300">
                 Welcome, {profile?.full_name}
               </span>
               <Button variant="outline" size="sm" className="w-full sm:w-auto" onClick={handleSignOut}>
@@ -372,7 +374,7 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
           <div className="w-full sm:w-auto">
             <Label
               htmlFor="checkinDate"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
             >
               Select Date
             </Label>
@@ -428,7 +430,7 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
   .map(student => (
                   <div
                     key={`${student.student_id}-${student.schedule_id}`}
-                    className="flex flex-col lg:flex-row lg:items-center justify-between p-4 border rounded-lg bg-white shadow-sm gap-4"
+                    className="flex flex-col lg:flex-row lg:items-center justify-between p-4 border rounded-lg bg-white dark:bg-slate-800 shadow-sm gap-4"
                   >
                     <div className="flex-1">
                       <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
@@ -451,28 +453,28 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
                             : 'Manual'}
                         </Badge>
                       </div>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
                         {student.class_name} ({formatTime(student.start_time)} -{' '}
                         {formatTime(student.end_time)})
                       </p>
 
                       <div className="flex flex-wrap gap-2 mt-2">
-                        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                        <span className="text-xs bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 px-2 py-1 rounded">
                           Individual: {student.individual_credits}
                         </span>
-                        <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                        <span className="text-xs bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300 px-2 py-1 rounded">
                           Duo: {student.duo_credits}
                         </span>
-                        <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                        <span className="text-xs bg-purple-100 dark:bg-purple-900/20 text-purple-800 dark:text-purple-300 px-2 py-1 rounded">
                           Group: {student.group_credits}
                         </span>
-                        <span className="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded">
+                        <span className="text-xs bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300 px-2 py-1 rounded">
                           Total: {getTotalCredits(student)}
                         </span>
                       </div>
 
                       {student.credit_type_used && (
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                           Used: {student.credit_type_used} credit
                         </p>
                       )}
@@ -606,16 +608,16 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
             />
             <div className="max-h-60 overflow-y-auto">
               {filteredStudents.length === 0 ? (
-                <p className="text-gray-500 text-sm">
+                <p className="text-gray-500 dark:text-gray-400 text-sm">
                   No students found or all students are already scheduled.
                 </p>
               ) : (
                 filteredStudents.map(student => (
                   <div
                     key={student.id}
-                    className="flex items-center justify-between py-2 border-b last:border-b-0"
+                    className="flex items-center justify-between py-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0"
                   >
-                    <span>
+                    <span className="text-gray-900 dark:text-gray-100">
                       {student.full_name} (Credits: {getTotalCredits(student)})
                     </span>
                     <Select
