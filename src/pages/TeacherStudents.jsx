@@ -264,16 +264,27 @@ const TeacherStudents = () => {
     setSuccess('')
 
     try {
-      const enrollments = selectedSchedules.map(scheduleId => ({
-        student_id: selectedStudent.id,
-        class_schedule_id: scheduleId
-      }))
-
-      const { error } = await supabase
+      // First, delete all existing enrollments for this student
+      const { error: deleteError } = await supabase
         .from('student_class_link')
-        .insert(enrollments)
+        .delete()
+        .eq('student_id', selectedStudent.id)
 
-      if (error) throw error
+      if (deleteError) throw deleteError
+
+      // Then, insert the new enrollments if any are selected
+      if (selectedSchedules.length > 0) {
+        const enrollments = selectedSchedules.map(scheduleId => ({
+          student_id: selectedStudent.id,
+          class_schedule_id: scheduleId
+        }))
+
+        const { error: insertError } = await supabase
+          .from('student_class_link')
+          .insert(enrollments)
+
+        if (insertError) throw insertError
+      }
 
       setSelectedSchedules([])
       setIsEnrollDialogOpen(false)
