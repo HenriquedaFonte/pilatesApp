@@ -140,7 +140,17 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
       })
 
 
-      setScheduledStudents(Array.from(allStudentsForDay.values()))
+      // Sort students by class start time
+      const sortedStudents = Array.from(allStudentsForDay.values()).sort((a, b) => {
+        // First sort by start time
+        const timeComparison = a.start_time.localeCompare(b.start_time)
+        if (timeComparison !== 0) return timeComparison
+
+        // If same time, sort by student name
+        return a.full_name.localeCompare(b.full_name)
+      })
+
+      setScheduledStudents(sortedStudents)
     } catch (error) {
       setError('Error fetching scheduled students: ' + error.message)
     } finally {
