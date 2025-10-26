@@ -852,6 +852,105 @@ export const emailTemplates = {
       stayHydrated: 'Restez hydraté',
       stayHydratedDesc: 'Buvez de l\'eau avant et après les cours pour garder votre corps hydraté.'
     }
+  },
+
+  consentForm: {
+    pt: {
+      id: 'consent_form',
+      title: '📄 Formulário de Consentimento - Josi Pilates',
+      subject: 'Formulário de Consentimento - Josi Pilates',
+      greeting: (name) => `Olá, ${name}!`,
+      introduction: 'Para garantir que você tenha todas as informações necessárias sobre nossas aulas de Pilates, estamos enviando o formulário de consentimento e políticas das aulas.',
+      instructionsTitle: '📋 Instruções para preenchimento:',
+      instructions: [
+        '1. Baixe o arquivo PDF anexado a este e-mail',
+        '2. Leia atentamente todas as informações',
+        '3. Preencha os campos necessários',
+        '4. Assine o documento digitalmente',
+        '5. Envie o documento preenchido e assinado de volta para nós'
+      ],
+      returnInstructions: '📧 Como devolver o formulário:',
+      returnMethods: [
+        'Envie por e-mail para: josi@josipilates.com'
+      ],
+      importance: 'Este formulário é obrigatório para participar das aulas e contém informações importantes sobre:',
+      importantPoints: [
+        'Políticas e regras do studio',
+        'Termos de responsabilidade',
+        'Informações sobre saúde e contraindicações',
+        'Direitos e deveres dos alunos'
+      ],
+      deadline: 'Por favor, devolva o formulário preenchido e assinado o mais breve possível',
+      questions: 'Se tiver alguma dúvida sobre o preenchimento do formulário, não hesite em nos contactar.',
+      closing: 'Agradecemos sua atenção e estamos ansiosos para recebê-lo(a) em nossas aulas!',
+      signature: 'Atenciosamente,',
+      teamName: 'Equipe Josi Pilates',
+      attachmentNote: '📎 Anexo: PilatesLessonsPolicies.pdf'
+    },
+    en: {
+      id: 'consent_form',
+      title: '📄 Consent Form - Josi Pilates',
+      subject: 'Consent Form - Josi Pilates',
+      greeting: (name) => `Hello, ${name}!`,
+      introduction: 'To ensure you have all the necessary information about our Pilates classes, we are sending you the consent form and class policies.',
+      instructionsTitle: '📋 Instructions for completion:',
+      instructions: [
+        '1. Download the PDF file attached to this email',
+        '2. Read all information carefully',
+        '3. Fill in the required fields',
+        '4. Sign the document digitally',
+        '5. Send the completed and signed document back to us'
+      ],
+      returnInstructions: '📧 How to return the form:',
+      returnMethods: [
+        'Send by email to: josi@josipilates.com'
+      ],
+      importance: 'This form is mandatory to participate in classes and contains important information about:',
+      importantPoints: [
+        'Studio policies and rules',
+        'Terms of liability',
+        'Health information and contraindications',
+        'Student rights and responsibilities'
+      ],
+      deadline: 'Please return the completed and signed form as soon as possible',
+      questions: 'If you have any questions about filling out the form, please do not hesitate to contact us.',
+      closing: 'Thank you for your attention and we look forward to welcoming you to our classes!',
+      signature: 'Best regards,',
+      teamName: 'Josi Pilates Team',
+      attachmentNote: '📎 Attachment: PilatesLessonsPolicies.pdf'
+    },
+    fr: {
+      id: 'consent_form',
+      title: '📄 Formulaire de Consentement - Josi Pilates',
+      subject: 'Formulaire de Consentement - Josi Pilates',
+      greeting: (name) => `Bonjour, ${name}!`,
+      introduction: 'Pour vous assurer que vous disposez de toutes les informations nécessaires sur nos cours de Pilates, nous vous envoyons le formulaire de consentement et les politiques de cours.',
+      instructionsTitle: '📋 Instructions de remplissage:',
+      instructions: [
+        '1. Téléchargez le fichier PDF joint à cet e-mail',
+        '2. Lisez attentivement toutes les informations',
+        '3. Remplissez les champs requis',
+        '4. Signez le document numériquement',
+        '5. Renvoyez-nous le document rempli et signé'
+      ],
+      returnInstructions: '📧 Comment retourner le formulaire:',
+      returnMethods: [
+        'Envoyez par e-mail à: josi@josipilates.com'
+      ],
+      importance: 'Ce formulaire est obligatoire pour participer aux cours et contient des informations importantes sur:',
+      importantPoints: [
+        'Politiques et règles du studio',
+        'Conditions de responsabilité',
+        'Informations sur la santé et contre-indications',
+        'Droits et devoirs des étudiants'
+      ],
+      deadline: 'Veuillez retourner le formulaire rempli et signé dès que possible.',
+      questions: 'Si vous avez des questions sur le remplissage du formulaire, n\'hésitez pas à nous contacter.',
+      closing: 'Nous vous remercions de votre attention et nous sommes impatients de vous accueillir dans nos cours!',
+      signature: 'Cordialement,',
+      teamName: 'Équipe Josi Pilates',
+      attachmentNote: '📎 Pièce jointe: PilatesLessonsPolicies.pdf'
+    }
   }
 
 };

@@ -29,7 +29,7 @@ class EmailService {
     }
   }
 
-  async sendEmail({ to, subject, htmlContent, textContent }) {
+  async sendEmail({ to, subject, htmlContent, textContent, attachments = [] }) {
     try {
       const payload = {
         from: `${this.fromName} <${this.fromEmail}>`,
@@ -38,6 +38,11 @@ class EmailService {
         html: htmlContent,
         text: textContent
       };
+
+      // Add attachments if provided
+      if (attachments.length > 0) {
+        payload.attachments = attachments;
+      }
 
       const { data, error } = await supabase.functions.invoke('send-email', {
         body: payload
@@ -752,6 +757,131 @@ ${processedTemplate.tagline}
       subject,
       htmlContent,
       textContent
+    });
+  }
+
+  async sendConsentFormEmail(student) {
+    const language = await this.getUserLanguage(student.id);
+    const template = getTemplate('consentForm', language);
+
+    const variables = {
+      name: student.name || student.full_name
+    };
+
+    const processedTemplate = processTemplate(template, variables);
+
+    const subject = processedTemplate.subject;
+
+    // Prepare PDF attachment - use full URL for Resend API
+    const baseUrl = import.meta.env.VITE_APP_URL || window.location.origin
+    const attachments = [{
+      filename: 'PilatesLessonsPolicies.pdf',
+      path: `${baseUrl}/PilatesLessonsPolicies.pdf`, // Full URL for Resend API
+      contentType: 'application/pdf'
+    }];
+
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>${processedTemplate.title}</title>
+        <style>
+          @media only screen and (max-width: 600px) {
+            .email-container { padding: 10px !important; }
+            .header { padding: 20px !important; }
+            .header h1 { font-size: 24px !important; }
+            .content { padding: 20px !important; }
+            .instructions-box, .contact-box { padding: 15px !important; margin: 15px 0 !important; }
+            .instructions-box h4 { font-size: 16px !important; }
+            .contact-box h4 { font-size: 16px !important; }
+            h2 { font-size: 20px !important; }
+            h4 { font-size: 16px !important; }
+            p { font-size: 16px !important; line-height: 1.5 !important; }
+            ol, ul { padding-left: 15px !important; }
+          }
+        </style>
+      </head>
+      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;" class="email-container">
+        <div style="background: linear-gradient(135deg, #01b48d 0%, #017a6b 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+          <h1 style="color: white; margin: 0; font-size: 28px;">Josi Pilates</h1>
+          <p style="color: #f0f0f0; margin: 5px 0 0 0; font-size: 16px;">${processedTemplate.title}</p>
+        </div>
+
+        <div style="background: white; padding: 30px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 10px 10px;">
+          <h2 style="color: #1e293b; margin-top: 0;">${processedTemplate.greeting(student.name || student.full_name)}</h2>
+
+          <p>${processedTemplate.introduction}</p>
+
+          <div style="background-color: #f1f5f9; padding: 20px; border-radius: 8px; margin: 20px 0;" class="instructions-box">
+            <h4 style="color: #1e293b; margin-top: 0;">${processedTemplate.instructionsTitle}</h4>
+            <ol style="margin: 10px 0; padding-left: 20px;">
+              ${processedTemplate.instructions.map(instruction => `<li>${instruction}</li>`).join('')}
+            </ol>
+          </div>
+
+          <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0;" class="contact-box">
+            <h4 style="color: #1e293b; margin-top: 0;">${processedTemplate.returnInstructions}</h4>
+            <ul style="margin: 10px 0; padding-left: 20px;">
+              ${processedTemplate.returnMethods.map(method => `<li>${method}</li>`).join('')}
+            </ul>
+          </div>
+
+          <div style="background-color: #fef3c7; border: 1px solid #f59e0b; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h4 style="color: #92400e; margin-top: 0;">📋 ${processedTemplate.importance}</h4>
+            <ul style="margin: 10px 0; padding-left: 20px; color: #92400e;">
+              ${processedTemplate.importantPoints.map(point => `<li>${point}</li>`).join('')}
+            </ul>
+          </div>
+
+          <p>${processedTemplate.deadline}</p>
+          <p>${processedTemplate.questions}</p>
+
+          <p>${processedTemplate.closing}</p>
+
+          <hr style="margin: 30px 0; border: none; border-top: 1px solid #e2e8f0;">
+
+          <p style="color: #64748b; font-size: 14px; text-align: center;">
+            <strong>${processedTemplate.signature}</strong><br>
+            ${processedTemplate.teamName}<br>
+            <em>${processedTemplate.tagline}</em>
+          </p>
+        </div>
+      </body>
+      </html>
+    `;
+
+    const textContent = `
+${processedTemplate.greeting(student.name || student.full_name)}
+
+${processedTemplate.introduction}
+
+${processedTemplate.instructionsTitle}
+${processedTemplate.instructions.map((instruction, index) => `${index + 1}. ${instruction}`).join('\n')}
+
+${processedTemplate.returnInstructions}
+${processedTemplate.returnMethods.map(method => `- ${method}`).join('\n')}
+
+${processedTemplate.importance}
+${processedTemplate.importantPoints.map(point => `- ${point}`).join('\n')}
+
+${processedTemplate.deadline}
+${processedTemplate.questions}
+
+${processedTemplate.closing}
+
+${processedTemplate.signature}
+${processedTemplate.teamName}
+${processedTemplate.tagline}
+    `;
+
+    return this.sendEmail({
+      to: { email: student.email, name: student.name || student.full_name },
+      subject,
+      htmlContent,
+      textContent,
+      attachments
     });
   }
 

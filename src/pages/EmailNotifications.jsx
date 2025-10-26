@@ -298,6 +298,47 @@ const EmailNotifications = () => {
   };
 
   const sendCustomEmail = async () => {
+    // Special handling for consent form template
+    if (selectedTemplateId === 'consentForm') {
+      const targetStudents = getFilteredStudents();
+
+      if (targetStudents.length === 0) {
+        setMessage('No students selected for sending.');
+        setMessageType('error');
+        return;
+      }
+
+      setSending(true);
+      setMessage('');
+
+      try {
+        let successCount = 0;
+        let failCount = 0;
+
+        for (const student of targetStudents) {
+          try {
+            await sendConsentFormEmail(student);
+            successCount++;
+          } catch (error) {
+            console.error(`Error sending consent form to ${student.full_name}:`, error);
+            failCount++;
+          }
+        }
+
+        setMessage(`Consent forms sent: ${successCount} successes, ${failCount} failures.`);
+        setMessageType(failCount === 0 ? 'success' : 'error');
+
+        await loadEmailHistory();
+      } catch (error) {
+        console.error('Error sending consent forms:', error);
+        setMessage('Error sending consent forms: ' + error.message);
+        setMessageType('error');
+      } finally {
+        setSending(false);
+      }
+      return;
+    }
+
     if (!emailSubject.trim() || !emailMessage.trim()) {
       setMessage('Please fill in the email subject and message.');
       setMessageType('error');
@@ -305,7 +346,7 @@ const EmailNotifications = () => {
     }
 
     const targetStudents = getFilteredStudents();
-    
+
     if (targetStudents.length === 0) {
       setMessage('No students selected for sending.');
       setMessageType('error');
@@ -314,7 +355,7 @@ const EmailNotifications = () => {
 
     setSending(true);
     setMessage('');
-    
+
     try {
       const results = await emailService.sendCustomNotification(
         targetStudents,
@@ -367,10 +408,70 @@ const EmailNotifications = () => {
 
   const handleTemplateSelection = (template) => {
     setSelectedTemplateId(template.id);
-    setEmailSubject(template.subject);
-    setEmailMessage(template.message);
-    setMessage(`Template "${template.title}" selected! You can customize the message before sending.`);
-    setMessageType('info');
+
+    // Special handling for consent form template
+    if (template.id === 'consentForm') {
+      // For consent form, we don't set subject/message as it's handled by the service
+      setEmailSubject('');
+      setEmailMessage('');
+      setMessage(`Template "${template.title}" selected! This will send the consent form with PDF attachment.`);
+      setMessageType('info');
+    } else {
+      setEmailSubject(template.subject);
+      setEmailMessage(template.message);
+      setMessage(`Template "${template.title}" selected! You can customize the message before sending.`);
+      setMessageType('info');
+    }
+  };
+
+  const sendConsentFormEmail = async (student) => {
+    setSending(true);
+    setMessage('');
+
+    try {
+      await emailService.sendConsentFormEmail(student);
+
+      await supabase.rpc('log_email_notification', {
+        p_student_id: student.id,
+        p_email_type: 'consent_form',
+        p_recipient_email: student.email,
+        p_subject: 'Formulário de Consentimento - Josi Pilates',
+        p_status: 'sent',
+        p_credits_at_time: {
+          individual: student.individual_credits,
+          duo: student.duo_credits,
+          group: student.group_credits,
+          total: student.totalCredits
+        }
+      });
+
+      setMessage(`Consent form sent successfully to ${student.full_name}!`);
+      setMessageType('success');
+
+      await loadEmailHistory();
+    } catch (error) {
+      console.error('Error sending consent form:', error);
+
+      await supabase.rpc('log_email_notification', {
+        p_student_id: student.id,
+        p_email_type: 'consent_form',
+        p_recipient_email: student.email,
+        p_subject: 'Formulário de Consentimento - Josi Pilates',
+        p_status: 'failed',
+        p_error_message: error.message,
+        p_credits_at_time: {
+          individual: student.individual_credits,
+          duo: student.duo_credits,
+          group: student.group_credits,
+          total: student.totalCredits
+        }
+      });
+
+      setMessage('Error sending consent form: ' + error.message);
+      setMessageType('error');
+    } finally {
+      setSending(false);
+    }
   };
   const toggleStudentSelection = (studentId) => {
     setSelectedStudents(prev => 
@@ -745,32 +846,51 @@ const EmailNotifications = () => {
                   )}
                 </div>
 
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="email-subject">Email subject:</Label>
-                    <Input
-                      id="email-subject"
-                      value={emailSubject}
-                      onChange={(e) => setEmailSubject(e.target.value)}
-                      placeholder="Enter email subject"
-                    />
-                  </div>
+                {selectedTemplateId !== 'consentForm' && (
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="email-subject">Email subject:</Label>
+                      <Input
+                        id="email-subject"
+                        value={emailSubject}
+                        onChange={(e) => setEmailSubject(e.target.value)}
+                        placeholder="Enter email subject"
+                      />
+                    </div>
 
-                  <div>
-                    <Label htmlFor="email-message">Message:</Label>
-                    <Textarea
-                      id="email-message"
-                      value={emailMessage}
-                      onChange={(e) => setEmailMessage(e.target.value)}
-                      placeholder="Enter your message here..."
-                      rows={6}
-                    />
+                    <div>
+                      <Label htmlFor="email-message">Message:</Label>
+                      <Textarea
+                        id="email-message"
+                        value={emailMessage}
+                        onChange={(e) => setEmailMessage(e.target.value)}
+                        placeholder="Enter your message here..."
+                        rows={6}
+                      />
+                    </div>
                   </div>
-                </div>
+                )}
 
-                <Button 
+                {selectedTemplateId === 'consentForm' && (
+                  <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <div className="flex items-center gap-2 mb-2">
+                      <FileText className="h-5 w-5 text-blue-600" />
+                      <h4 className="font-medium text-blue-900 dark:text-blue-100">
+                        Consent Form Template Selected
+                      </h4>
+                    </div>
+                    <p className="text-sm text-blue-800 dark:text-blue-200 mb-2">
+                      This will send the Pilates Lessons Policies consent form with the PDF attachment to selected students.
+                    </p>
+                    <p className="text-xs text-blue-700 dark:text-blue-300">
+                      📎 Attachment: PilatesLessonsPolicies.pdf
+                    </p>
+                  </div>
+                )}
+
+                <Button
                   onClick={sendCustomEmail}
-                  disabled={sending || filteredStudents.length === 0 || !emailSubject.trim() || !emailMessage.trim()}
+                  disabled={sending || filteredStudents.length === 0 || (selectedTemplateId !== 'consentForm' && (!emailSubject.trim() || !emailMessage.trim()))}
                   className="w-full"
                 >
                   {sending ? (
@@ -781,7 +901,10 @@ const EmailNotifications = () => {
                   ) : (
                     <>
                       <Send className="mr-2 h-4 w-4" />
-                      Send Email to {filteredStudents.length} student(s)
+                      {selectedTemplateId === 'consentForm'
+                        ? `Send Consent Form to ${filteredStudents.length} student(s)`
+                        : `Send Email to ${filteredStudents.length} student(s)`
+                      }
                     </>
                   )}
                 </Button>

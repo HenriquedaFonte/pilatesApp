@@ -135,6 +135,22 @@ const EmailTemplates = ({ onSelectTemplate, selectedTemplateId, language = 'pt' 
       icon: Heart,
       color: 'text-pink-600',
       category: 'welcome'
+    },
+    consentForm: {
+      title: { pt: 'Formulário de Consentimento', en: 'Consent Form', fr: 'Formulaire de Consentement' },
+      description: {
+        pt: 'Envio do formulário de consentimento com anexo PDF',
+        en: 'Send consent form with PDF attachment',
+        fr: 'Envoyer le formulaire de consentement avec pièce jointe PDF'
+      },
+      preview: {
+        pt: 'Olá, [Nome]! Enviando o formulário de consentimento para preenchimento.',
+        en: 'Hello, [Name]! Sending the consent form for completion.',
+        fr: 'Bonjour, [Nom]! Envoi du formulaire de consentement à remplir.'
+      },
+      icon: FileText,
+      color: 'text-blue-600',
+      category: 'consent'
     }
   };
 
@@ -191,6 +207,11 @@ const EmailTemplates = ({ onSelectTemplate, selectedTemplateId, language = 'pt' 
         pt: { label: 'Feedback', variant: 'secondary' },
         en: { label: 'Feedback', variant: 'secondary' },
         fr: { label: 'Retour', variant: 'secondary' }
+      },
+      consent: {
+        pt: { label: 'Consentimento', variant: 'default' },
+        en: { label: 'Consent', variant: 'default' },
+        fr: { label: 'Consentement', variant: 'default' }
       }
     };
 
