@@ -316,13 +316,15 @@ const EmailNotifications = () => {
         let failCount = 0;
 
         for (const student of targetStudents) {
-          try {
-            await sendConsentFormEmail(student);
+          const result = await sendConsentFormEmail(student);
+          if (result.success) {
             successCount++;
-          } catch (error) {
-            console.error(`Error sending consent form to ${student.full_name}:`, error);
+          } else {
+            console.error(`Error sending consent form to ${student.full_name}:`, result.error);
             failCount++;
           }
+          // Add small delay to avoid rate limiting
+          await new Promise(resolve => setTimeout(resolve, 200));
         }
 
         setMessage(`Consent forms sent: ${successCount} successes, ${failCount} failures.`);
@@ -425,9 +427,6 @@ const EmailNotifications = () => {
   };
 
   const sendConsentFormEmail = async (student) => {
-    setSending(true);
-    setMessage('');
-
     try {
       await emailService.sendConsentFormEmail(student);
 
@@ -445,10 +444,7 @@ const EmailNotifications = () => {
         }
       });
 
-      setMessage(`Consent form sent successfully to ${student.full_name}!`);
-      setMessageType('success');
-
-      await loadEmailHistory();
+      return { success: true };
     } catch (error) {
       console.error('Error sending consent form:', error);
 
@@ -467,10 +463,7 @@ const EmailNotifications = () => {
         }
       });
 
-      setMessage('Error sending consent form: ' + error.message);
-      setMessageType('error');
-    } finally {
-      setSending(false);
+      return { success: false, error: error.message };
     }
   };
   const toggleStudentSelection = (studentId) => {

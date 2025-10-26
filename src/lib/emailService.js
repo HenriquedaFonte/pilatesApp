@@ -835,7 +835,6 @@ ${processedTemplate.tagline}
             </ul>
           </div>
 
-          <p>${processedTemplate.deadline}</p>
           <p>${processedTemplate.questions}</p>
 
           <p>${processedTemplate.closing}</p>
@@ -866,7 +865,7 @@ ${processedTemplate.returnMethods.map(method => `- ${method}`).join('\n')}
 ${processedTemplate.importance}
 ${processedTemplate.importantPoints.map(point => `- ${point}`).join('\n')}
 
-${processedTemplate.deadline}
+
 ${processedTemplate.questions}
 
 ${processedTemplate.closing}

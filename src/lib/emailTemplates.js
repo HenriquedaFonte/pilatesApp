@@ -880,7 +880,6 @@ export const emailTemplates = {
         'Informações sobre saúde e contraindicações',
         'Direitos e deveres dos alunos'
       ],
-      deadline: 'Por favor, devolva o formulário preenchido e assinado o mais breve possível',
       questions: 'Se tiver alguma dúvida sobre o preenchimento do formulário, não hesite em nos contactar.',
       closing: 'Agradecemos sua atenção e estamos ansiosos para recebê-lo(a) em nossas aulas!',
       signature: 'Atenciosamente,',
@@ -912,7 +911,6 @@ export const emailTemplates = {
         'Health information and contraindications',
         'Student rights and responsibilities'
       ],
-      deadline: 'Please return the completed and signed form as soon as possible',
       questions: 'If you have any questions about filling out the form, please do not hesitate to contact us.',
       closing: 'Thank you for your attention and we look forward to welcoming you to our classes!',
       signature: 'Best regards,',
@@ -944,7 +942,6 @@ export const emailTemplates = {
         'Informations sur la santé et contre-indications',
         'Droits et devoirs des étudiants'
       ],
-      deadline: 'Veuillez retourner le formulaire rempli et signé dès que possible.',
       questions: 'Si vous avez des questions sur le remplissage du formulaire, n\'hésitez pas à nous contacter.',
       closing: 'Nous vous remercions de votre attention et nous sommes impatients de vous accueillir dans nos cours!',
       signature: 'Cordialement,',
