@@ -1,8 +1,11 @@
 -- Database indexes for better performance
 -- Add event date to attendance report function
 
--- Create or replace the get_attendance_report function with event date
-CREATE OR REPLACE FUNCTION get_attendance_report(
+-- Drop existing function first due to return type change
+DROP FUNCTION IF EXISTS get_attendance_report(date,date,uuid);
+
+-- Create the get_attendance_report_new function with event date
+CREATE OR REPLACE FUNCTION get_attendance_report_new(
     start_date DATE,
     end_date DATE,
     student_id_filter UUID DEFAULT NULL
@@ -76,5 +79,6 @@ CREATE INDEX IF NOT EXISTS idx_profiles_email ON profiles(email);
 CREATE INDEX IF NOT EXISTS idx_check_ins_student_id ON check_ins(student_id);
 CREATE INDEX IF NOT EXISTS idx_check_ins_date ON check_ins(check_in_date);
 CREATE INDEX IF NOT EXISTS idx_check_ins_status ON check_ins(status);
-CREATE INDEX IF NOT EXISTS idx_class_history_student_id ON class_history(student_id);
-CREATE INDEX IF NOT EXISTS idx_class_history_date ON class_history(date);
+-- Note: class_history table may not exist yet, these indexes will be created when the table is added
+-- CREATE INDEX IF NOT EXISTS idx_class_history_student_id ON class_history(student_id);
+-- CREATE INDEX IF NOT EXISTS idx_class_history_date ON class_history(date);
