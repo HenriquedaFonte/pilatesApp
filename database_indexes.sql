@@ -50,8 +50,11 @@ BEGIN
         -- Credits lost (unjustified absences)
         COUNT(CASE WHEN ci.status = 'absent_unjustified' THEN 1 END) as credits_lost,
 
-        -- Event date (most recent class date in the period)
-        MAX(ci.check_in_date) as event_date
+        -- Event date (most recent class date in the period, or NULL if no classes)
+        CASE
+            WHEN COUNT(ci.id) > 0 THEN MAX(ci.check_in_date)
+            ELSE NULL
+        END as event_date
 
     FROM profiles p
     LEFT JOIN check_ins ci ON p.id = ci.student_id
