@@ -116,7 +116,8 @@ const AttendanceReport = () => {
       'Days Absent (Justified)',
       'Total Classes',
       'Attendance %',
-      'Credits Lost'
+      'Credits Lost',
+      'Event Date'
     ]
 
     const csvContent = [
@@ -134,7 +135,8 @@ const AttendanceReport = () => {
           row.days_absent_justified,
           row.total_classes,
           row.attendance_percentage,
-          row.credits_lost
+          row.credits_lost,
+          row.event_date || ''
         ].join(',')
       )
     ].join('\n')
@@ -400,6 +402,7 @@ const AttendanceReport = () => {
                       <TableHead>Total Classes</TableHead>
                       <TableHead>Attendance %</TableHead>
                       <TableHead>Credits Lost</TableHead>
+                      <TableHead>Event Date</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -472,6 +475,11 @@ const AttendanceReport = () => {
                           <TableCell>
                             <span className="text-red-600 font-medium">
                               {student.credits_lost}
+                            </span>
+                          </TableCell>
+                          <TableCell>
+                            <span className="text-gray-600 dark:text-gray-400">
+                              {student.event_date ? new Date(student.event_date).toLocaleDateString() : 'No classes'}
                             </span>
                           </TableCell>
                         </TableRow>

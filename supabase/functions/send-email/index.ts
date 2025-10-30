@@ -56,29 +56,47 @@ Deno.serve(async (req) => {
 
     // Add attachments if present
     if (emailPayload.attachments && emailPayload.attachments.length > 0) {
+      console.log(`Processing ${emailPayload.attachments.length} attachments`)
       resendPayload.attachments = []
 
       for (const attachment of emailPayload.attachments) {
         try {
+          console.log(`Processing attachment: ${attachment.filename} from ${attachment.path}`)
+
           // For URLs (https/http), fetch them first
           if (attachment.path.startsWith('http://') || attachment.path.startsWith('https://')) {
+            console.log(`Fetching attachment from URL: ${attachment.path}`)
             const fileResponse = await fetch(attachment.path)
 
             if (!fileResponse.ok) {
-              console.error(`Failed to fetch attachment: ${attachment.path}`)
+              console.error(`Failed to fetch attachment: ${attachment.path} - Status: ${fileResponse.status}`)
               continue
             }
 
+            const contentType = fileResponse.headers.get('content-type')
+            console.log(`Attachment content-type: ${contentType}`)
+
             const fileBuffer = await fileResponse.arrayBuffer()
-            const base64Content = btoa(String.fromCharCode.apply(null, Array.from(new Uint8Array(fileBuffer))))
+            console.log(`Attachment size: ${fileBuffer.byteLength} bytes`)
+
+            // Convert to base64 properly
+            const uint8Array = new Uint8Array(fileBuffer)
+            let binaryString = ''
+            for (let i = 0; i < uint8Array.length; i++) {
+              binaryString += String.fromCharCode(uint8Array[i])
+            }
+            const base64Content = btoa(binaryString)
 
             resendPayload.attachments.push({
               filename: attachment.filename,
               content: base64Content,
               type: attachment.contentType
             })
+
+            console.log(`Successfully processed attachment: ${attachment.filename}`)
           } else {
             // For local files, read from filesystem
+            console.log(`Reading local file: ${attachment.path}`)
             const fileContent = await Deno.readFile(attachment.path)
             const base64Content = btoa(String.fromCharCode.apply(null, Array.from(fileContent)))
 
@@ -92,6 +110,8 @@ Deno.serve(async (req) => {
           console.error(`Error processing attachment ${attachment.filename}:`, error)
         }
       }
+
+      console.log(`Final attachments count: ${resendPayload.attachments.length}`)
     }
 
     const response = await fetch('https://api.resend.com/emails', {
