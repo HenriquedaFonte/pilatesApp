@@ -232,6 +232,11 @@ const FinancialReport = () => {
     }
   }
 
+  // Calculate global totals for summary by payment method
+  const totalTransactions = Object.values(summary).reduce((sum, data) => sum + data.transactionCount, 0)
+  const totalCredits = Object.values(summary).reduce((sum, data) => sum + data.totalCredits, 0)
+  const totalAmount = Object.values(summary).reduce((sum, data) => sum + data.totalAmount, 0)
+
   // Prepare chart data
   const pieData = Object.entries(summary).map(([method, data]) => ({
     name: method === 'unknown' ? 'Unknown' : method.replace('_', ' '),
@@ -474,6 +479,13 @@ const FinancialReport = () => {
                         <TableCell>${data.totalAmount.toFixed(2)}</TableCell>
                       </TableRow>
                     ))}
+                    {/* Global Total Row */}
+                    <TableRow className="font-semibold bg-gray-50 dark:bg-slate-800">
+                      <TableCell>Total</TableCell>
+                      <TableCell>{totalTransactions}</TableCell>
+                      <TableCell>{totalCredits}</TableCell>
+                      <TableCell>${totalAmount.toFixed(2)}</TableCell>
+                    </TableRow>
                   </TableBody>
                 </Table>
               </div>

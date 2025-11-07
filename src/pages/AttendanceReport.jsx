@@ -116,8 +116,7 @@ const AttendanceReport = () => {
       'Days Absent (Justified)',
       'Total Classes',
       'Attendance %',
-      'Credits Lost',
-      'Event Date'
+      'Credits Lost'
     ]
 
     const csvContent = [
@@ -135,8 +134,7 @@ const AttendanceReport = () => {
           row.days_absent_justified,
           row.total_classes,
           row.attendance_percentage,
-          row.credits_lost,
-          row.event_date || ''
+          row.credits_lost
         ].join(',')
       )
     ].join('\n')
@@ -151,8 +149,9 @@ const AttendanceReport = () => {
   }
 
   const getAttendanceColor = percentage => {
-    if (percentage >= 90) return 'text-green-600'
-    if (percentage >= 75) return 'text-yellow-600'
+    if (percentage >= 90) return 'text-green-700'
+    if (percentage >= 75) return 'text-green-500'
+    if (percentage >= 50) return 'text-orange-600'
     return 'text-red-600'
   }
 
@@ -318,7 +317,7 @@ const AttendanceReport = () => {
                       Average Attendance
                     </p>
                     <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                      {averageAttendance}%
+                      {isNaN(averageAttendance) ? '0.0' : averageAttendance}%
                     </p>
                   </div>
                 </div>
@@ -402,13 +401,12 @@ const AttendanceReport = () => {
                       <TableHead>Total Classes</TableHead>
                       <TableHead>Attendance %</TableHead>
                       <TableHead>Credits Lost</TableHead>
-                      <TableHead>Event Date</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {filteredData.map(student => {
                       const badge = getAttendanceBadge(
-                        student.attendance_percentage
+                        student.attendance_percentage || 0
                       )
                       return (
                         <TableRow key={student.student_id}>
@@ -475,11 +473,6 @@ const AttendanceReport = () => {
                           <TableCell>
                             <span className="text-red-600 font-medium">
                               {student.credits_lost}
-                            </span>
-                          </TableCell>
-                          <TableCell>
-                            <span className="text-gray-600 dark:text-gray-400">
-                              {student.event_date ? new Date(student.event_date).toLocaleDateString() : 'No classes'}
                             </span>
                           </TableCell>
                         </TableRow>

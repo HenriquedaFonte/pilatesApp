@@ -1,11 +1,12 @@
 -- Database indexes for better performance
--- Add event date to attendance report function
 
--- Drop existing function first due to return type change
+-- Drop existing functions
 DROP FUNCTION IF EXISTS get_attendance_report(date,date,uuid);
+DROP FUNCTION IF EXISTS get_attendance_report_new(date,date,uuid);
+DROP FUNCTION IF EXISTS get_attendance_report_simple(date,date);
 
--- Create the get_attendance_report_new function with event date
-CREATE OR REPLACE FUNCTION get_attendance_report_new(
+-- Create the get_attendance_report function
+CREATE OR REPLACE FUNCTION get_attendance_report(
     start_date DATE,
     end_date DATE,
     student_id_filter UUID DEFAULT NULL
@@ -23,41 +24,34 @@ RETURNS TABLE (
     days_absent_justified INTEGER,
     total_classes INTEGER,
     attendance_percentage NUMERIC,
-    credits_lost INTEGER,
-    event_date DATE
+    credits_lost INTEGER
 ) AS $$
 BEGIN
     RETURN QUERY
     SELECT
-        p.id as student_id,
-        p.full_name as student_name,
-        p.email as student_email,
-        COALESCE(p.individual_credits, 0) as individual_credits,
-        COALESCE(p.duo_credits, 0) as duo_credits,
-        COALESCE(p.group_credits, 0) as group_credits,
-        (COALESCE(p.individual_credits, 0) + COALESCE(p.duo_credits, 0) + COALESCE(p.group_credits, 0)) as total_credits,
+        p.id::UUID as student_id,
+        p.full_name::TEXT as student_name,
+        p.email::TEXT as student_email,
+        COALESCE(p.individual_credits, 0)::INTEGER as individual_credits,
+        COALESCE(p.duo_credits, 0)::INTEGER as duo_credits,
+        COALESCE(p.group_credits, 0)::INTEGER as group_credits,
+        (COALESCE(p.individual_credits, 0) + COALESCE(p.duo_credits, 0) + COALESCE(p.group_credits, 0))::INTEGER as total_credits,
 
         -- Attendance calculations
-        COUNT(CASE WHEN ci.status = 'present' THEN 1 END) as days_present,
-        COUNT(CASE WHEN ci.status = 'absent_unjustified' THEN 1 END) as days_absent_unjustified,
-        COUNT(CASE WHEN ci.status = 'absent_justified' THEN 1 END) as days_absent_justified,
-        COUNT(ci.id) as total_classes,
+        COUNT(CASE WHEN ci.status = 'present' THEN 1 END)::INTEGER as days_present,
+        COUNT(CASE WHEN ci.status = 'absent_notified' THEN 1 END)::INTEGER as days_absent_unjustified,
+        COUNT(CASE WHEN ci.status = 'absent_unnotified' THEN 1 END)::INTEGER as days_absent_justified,
+        (COUNT(CASE WHEN ci.status = 'present' THEN 1 END) + COUNT(CASE WHEN ci.status = 'absent_notified' THEN 1 END) + COUNT(CASE WHEN ci.status = 'absent_unnotified' THEN 1 END))::INTEGER as total_classes,
 
         -- Attendance percentage
         CASE
-            WHEN COUNT(ci.id) > 0 THEN
-                ROUND((COUNT(CASE WHEN ci.status = 'present' THEN 1 END)::NUMERIC / COUNT(ci.id)::NUMERIC) * 100, 1)
+            WHEN (COUNT(CASE WHEN ci.status = 'present' THEN 1 END) + COUNT(CASE WHEN ci.status = 'absent_notified' THEN 1 END) + COUNT(CASE WHEN ci.status = 'absent_unnotified' THEN 1 END)) > 0 THEN
+                ROUND((COUNT(CASE WHEN ci.status = 'present' THEN 1 END)::NUMERIC / (COUNT(CASE WHEN ci.status = 'present' THEN 1 END) + COUNT(CASE WHEN ci.status = 'absent_notified' THEN 1 END) + COUNT(CASE WHEN ci.status = 'absent_unnotified' THEN 1 END))::NUMERIC) * 100, 1)
             ELSE 0
-        END as attendance_percentage,
+        END::NUMERIC as attendance_percentage,
 
-        -- Credits lost (unjustified absences)
-        COUNT(CASE WHEN ci.status = 'absent_unjustified' THEN 1 END) as credits_lost,
-
-        -- Event date (most recent class date in the period, or NULL if no classes)
-        CASE
-            WHEN COUNT(ci.id) > 0 THEN MAX(ci.check_in_date)
-            ELSE NULL
-        END as event_date
+        -- Credits lost (unjustified absences - assuming absent_notified are unjustified)
+        COUNT(CASE WHEN ci.status = 'absent_notified' THEN 1 END)::INTEGER as credits_lost
 
     FROM profiles p
     LEFT JOIN check_ins ci ON p.id = ci.student_id
