@@ -39,14 +39,14 @@ BEGIN
 
         -- Attendance calculations
         COUNT(CASE WHEN ci.status = 'present' THEN 1 END)::INTEGER as days_present,
-        COUNT(CASE WHEN ci.status = 'absent_notified' THEN 1 END)::INTEGER as days_absent_unjustified,
-        COUNT(CASE WHEN ci.status = 'absent_unnotified' THEN 1 END)::INTEGER as days_absent_justified,
+        COUNT(CASE WHEN ci.status = 'absent_unnotified' THEN 1 END)::INTEGER as days_absent_unjustified,
+        COUNT(CASE WHEN ci.status = 'absent_notified' THEN 1 END)::INTEGER as days_absent_justified,
         (COUNT(CASE WHEN ci.status = 'present' THEN 1 END) + COUNT(CASE WHEN ci.status = 'absent_notified' THEN 1 END) + COUNT(CASE WHEN ci.status = 'absent_unnotified' THEN 1 END))::INTEGER as total_classes,
 
         -- Attendance percentage
         CASE
-            WHEN (COUNT(CASE WHEN ci.status = 'present' THEN 1 END) + COUNT(CASE WHEN ci.status = 'absent_notified' THEN 1 END) + COUNT(CASE WHEN ci.status = 'absent_unnotified' THEN 1 END)) > 0 THEN
-                ROUND((COUNT(CASE WHEN ci.status = 'present' THEN 1 END)::NUMERIC / (COUNT(CASE WHEN ci.status = 'present' THEN 1 END) + COUNT(CASE WHEN ci.status = 'absent_notified' THEN 1 END) + COUNT(CASE WHEN ci.status = 'absent_unnotified' THEN 1 END))::NUMERIC) * 100, 1)
+            WHEN (COUNT(CASE WHEN ci.status = 'present' THEN 1 END) + COUNT(CASE WHEN ci.status = 'absent_unnotified' THEN 1 END) + COUNT(CASE WHEN ci.status = 'absent_notified' THEN 1 END)) > 0 THEN
+                ROUND((COUNT(CASE WHEN ci.status = 'present' THEN 1 END)::NUMERIC / (COUNT(CASE WHEN ci.status = 'present' THEN 1 END) + COUNT(CASE WHEN ci.status = 'absent_unnotified' THEN 1 END) + COUNT(CASE WHEN ci.status = 'absent_notified' THEN 1 END))::NUMERIC) * 100, 1)
             ELSE 0
         END::NUMERIC as attendance_percentage,
 

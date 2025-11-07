@@ -114,9 +114,8 @@ const AttendanceReport = () => {
       'Days Present',
       'Days Absent (Unjustified)',
       'Days Absent (Justified)',
-      'Total Classes',
-      'Attendance %',
-      'Credits Lost'
+       'Total Classes',
+       'Attendance %'
     ]
 
     const csvContent = [
@@ -133,8 +132,7 @@ const AttendanceReport = () => {
           row.days_absent_unjustified,
           row.days_absent_justified,
           row.total_classes,
-          row.attendance_percentage,
-          row.credits_lost
+          row.attendance_percentage
         ].join(',')
       )
     ].join('\n')
@@ -156,10 +154,10 @@ const AttendanceReport = () => {
   }
 
   const getAttendanceBadge = percentage => {
-    if (percentage >= 90) return { variant: 'default', text: 'Excellent' }
-    if (percentage >= 75) return { variant: 'secondary', text: 'Good' }
-    if (percentage >= 50) return { variant: 'outline', text: 'Fair' }
-    return { variant: 'destructive', text: 'Poor' }
+    if (percentage >= 90) return { variant: 'default', text: 'Excellent', className: 'bg-green-700 text-white' }
+    if (percentage >= 75) return { variant: 'secondary', text: 'Good', className: 'bg-green-300 text-black' }
+    if (percentage >= 50) return { variant: 'outline', text: 'Fair', className: 'bg-orange-400 text-black' }
+    return { variant: 'destructive', text: 'Poor', className: 'bg-red-600 text-white' }
   }
 
   const filteredData = reportData.filter(
@@ -400,7 +398,6 @@ const AttendanceReport = () => {
                       <TableHead>Absent (Justified)</TableHead>
                       <TableHead>Total Classes</TableHead>
                       <TableHead>Attendance %</TableHead>
-                      <TableHead>Credits Lost</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -460,20 +457,15 @@ const AttendanceReport = () => {
                             <div className="flex items-center space-x-2">
                               <span
                                 className={`font-medium ${getAttendanceColor(
-                                  student.attendance_percentage
+                                  student.attendance_percentage || 0
                                 )}`}
                               >
-                                {student.attendance_percentage}%
+                                {student.attendance_percentage || 0}%
                               </span>
-                              <Badge variant={badge.variant}>
+                              <Badge variant={badge.variant} className={badge.className}>
                                 {badge.text}
                               </Badge>
                             </div>
-                          </TableCell>
-                          <TableCell>
-                            <span className="text-red-600 font-medium">
-                              {student.credits_lost}
-                            </span>
                           </TableCell>
                         </TableRow>
                       )
