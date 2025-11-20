@@ -96,25 +96,67 @@ const CreditHistoryReport = () => {
       query = query.lte('created_at', utcEnd)
     }
 
-    const { data, error } = await query
+    const { data: balanceData, error: balanceError } = await query
 
-    if (error) setError('Error fetching credit history: ' + error.message)
-    else {
-      setHistory(data || [])
-      // Compute summary by payment method
-      const summaryData = {}
-      ;(data || []).forEach(row => {
-        const method = row.payment_method || 'unknown'
-        if (!summaryData[method]) {
-          summaryData[method] = { totalAmount: 0, transactionCount: 0 }
-        }
-        if (row.amount_paid) {
-          summaryData[method].totalAmount += row.amount_paid
-        }
-        summaryData[method].transactionCount += 1
-      })
-      setSummary(summaryData)
+    if (balanceError) {
+      setError('Error fetching credit history: ' + balanceError.message)
+      setLoading(false)
+      return
     }
+
+    // Fetch absent_notified check-ins
+    let checkInQuery = supabase
+      .from('check_ins')
+      .select('id, student_id, check_in_date, status, credit_type, created_at')
+      .eq('status', 'absent_notified')
+      .order('created_at', { ascending: false })
+      .limit(500)
+
+    if (dateStart) {
+      checkInQuery = checkInQuery.gte('check_in_date', dateStart)
+    }
+    if (dateEnd) {
+      checkInQuery = checkInQuery.lte('check_in_date', dateEnd)
+    }
+
+    const { data: absentNotifiedData, error: checkInError } = await checkInQuery
+
+    if (checkInError) {
+      setError('Error fetching absent notified entries: ' + checkInError.message)
+      setLoading(false)
+      return
+    }
+
+    // Combine balance history and absent_notified entries
+    const combinedData = [
+      ...(balanceData || []),
+      ...(absentNotifiedData || []).map(checkIn => ({
+        id: `absent-${checkIn.id}`,
+        student_id: checkIn.student_id,
+        type: checkIn.credit_type,
+        change_amount: 0,
+        created_at: checkIn.created_at,
+        description: 'Notified absence',
+        payment_method: null,
+        amount_paid: null,
+        new_balance: null
+      }))
+    ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+
+    setHistory(combinedData)
+    // Compute summary by payment method
+    const summaryData = {}
+    combinedData.forEach(row => {
+      const method = row.payment_method || 'unknown'
+      if (!summaryData[method]) {
+        summaryData[method] = { totalAmount: 0, transactionCount: 0 }
+      }
+      if (row.amount_paid) {
+        summaryData[method].totalAmount += row.amount_paid
+      }
+      summaryData[method].transactionCount += 1
+    })
+    setSummary(summaryData)
     setLoading(false)
   }
 

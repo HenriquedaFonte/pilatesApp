@@ -75,7 +75,34 @@ const StudentSummary = () => {
         .order('created_at', { ascending: false })
 
       if (historyError) throw historyError
-      setCreditHistory(historyData || [])
+
+      // Fetch absent_notified check-ins
+      const { data: absentNotifiedData, error: checkInError } = await supabase
+        .from('check_ins')
+        .select('id, student_id, check_in_date, status, credit_type, created_at')
+        .eq('student_id', studentId)
+        .eq('status', 'absent_notified')
+        .order('created_at', { ascending: false })
+
+      if (checkInError) throw checkInError
+
+      // Combine balance history and absent_notified entries
+      const combinedData = [
+        ...(historyData || []),
+        ...(absentNotifiedData || []).map(checkIn => ({
+          id: `absent-${checkIn.id}`,
+          student_id: checkIn.student_id,
+          type: checkIn.credit_type,
+          change_amount: 0,
+          created_at: checkIn.created_at,
+          description: 'Notified absence',
+          payment_method: null,
+          amount_paid: null,
+          new_balance: null
+        }))
+      ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+
+      setCreditHistory(combinedData)
     } catch (error) {
       setError('Error fetching student data: ' + error.message)
     } finally {
