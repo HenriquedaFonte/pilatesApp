@@ -57,6 +57,8 @@ const TeacherCheckIn = () => {
   const [isAddStudentDialogOpen, setIsAddStudentDialogOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCreditType, setSelectedCreditType] = useState('group')
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false)
+  const [confirmAction, setConfirmAction] = useState(null)
   
   
 
@@ -524,14 +526,14 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
                               variant="outline"
                               size="sm"
                               className="w-full sm:w-auto"
-                              onClick={() =>
-                                handleMarkAttendance(
-                                  student.student_id,
-                                  student.schedule_id,
-                                  'present',
-                                  selectedCreditType
-                                )
-                              }
+                              onClick={() => {
+                                setConfirmAction({
+                                  student,
+                                  status: 'present',
+                                  creditType: selectedCreditType
+                                })
+                                setIsConfirmDialogOpen(true)
+                              }}
                             >
                               <CheckCircle className="h-4 w-4 mr-2" />
                               Present
@@ -540,14 +542,14 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
                               variant="outline"
                               size="sm"
                               className="w-full sm:w-auto"
-                              onClick={() =>
-                                handleMarkAttendance(
-                                  student.student_id,
-                                  student.schedule_id,
-                                  'absent_unnotified',
-                                  selectedCreditType
-                                )
-                              }
+                              onClick={() => {
+                                setConfirmAction({
+                                  student,
+                                  status: 'absent_unnotified',
+                                  creditType: selectedCreditType
+                                })
+                                setIsConfirmDialogOpen(true)
+                              }}
                             >
                               <XCircle className="h-4 w-4 mr-2" />
                               Absent
@@ -556,14 +558,14 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
                               variant="outline"
                               size="sm"
                               className="w-full sm:w-auto"
-                              onClick={() =>
-                                handleMarkAttendance(
-                                  student.student_id,
-                                  student.schedule_id,
-                                  'absent_notified',
-                                  selectedCreditType
-                                )
-                              }
+                              onClick={() => {
+                                setConfirmAction({
+                                  student,
+                                  status: 'absent_notified',
+                                  creditType: selectedCreditType
+                                })
+                                setIsConfirmDialogOpen(true)
+                              }}
                             >
                               <XCircle className="h-4 w-4 mr-2 text-orange-500" />
                               Absent (Justified)
@@ -596,6 +598,81 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
           </CardContent>
         </Card>
       </div>
+
+      <Dialog
+        open={isConfirmDialogOpen}
+        onOpenChange={setIsConfirmDialogOpen}
+      >
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Confirm Attendance</DialogTitle>
+            <DialogDescription>
+              Please verify the credit deduction details before confirming.
+            </DialogDescription>
+          </DialogHeader>
+          {confirmAction && (
+            <div className="space-y-4">
+              <div className="bg-gray-50 dark:bg-slate-800 p-4 rounded-lg">
+                <h4 className="font-semibold text-lg mb-2">{confirmAction.student.full_name}</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                  {confirmAction.student.class_name} ({formatTime(confirmAction.student.start_time)} - {formatTime(confirmAction.student.end_time)})
+                </p>
+                <div className="grid grid-cols-3 gap-2 mb-3">
+                  <div className="text-center">
+                    <div className="text-xs text-gray-500 dark:text-gray-400">Individual</div>
+                    <div className="font-semibold">{confirmAction.student.individual_credits}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs text-gray-500 dark:text-gray-400">Duo</div>
+                    <div className="font-semibold">{confirmAction.student.duo_credits}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs text-gray-500 dark:text-gray-400">Group</div>
+                    <div className="font-semibold">{confirmAction.student.group_credits}</div>
+                  </div>
+                </div>
+                <div className="border-t pt-3">
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium">Action:</span>
+                    <span className={`font-semibold ${confirmAction.status === 'present' ? 'text-green-600' : confirmAction.status === 'absent_unnotified' ? 'text-red-600' : 'text-orange-600'}`}>
+                      {confirmAction.status === 'present' ? 'Present' : confirmAction.status === 'absent_unnotified' ? 'Absent' : 'Absent (Justified)'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center mt-2">
+                    <span className="font-medium">Credit Type:</span>
+                    <span className="font-semibold capitalize">{confirmAction.creditType}</span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-end gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setIsConfirmDialogOpen(false)
+                    setConfirmAction(null)
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={() => {
+                    handleMarkAttendance(
+                      confirmAction.student.student_id,
+                      confirmAction.student.schedule_id,
+                      confirmAction.status,
+                      confirmAction.creditType
+                    )
+                    setIsConfirmDialogOpen(false)
+                    setConfirmAction(null)
+                  }}
+                >
+                  Confirm
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       <Dialog
         open={isAddStudentDialogOpen}

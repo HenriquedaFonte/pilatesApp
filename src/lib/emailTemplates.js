@@ -568,19 +568,55 @@ export const emailTemplates = {
       id: 'zero_credits',
       title: 'Sem Créditos - Compra Necessária',
       subject: 'Aviso: Você não possui créditos - Josi Pilates',
-      message: 'Notamos que você não possui créditos disponíveis para aulas.\n\nPara continuar aproveitando nossas aulas de Pilates, é necessário adquirir novos créditos.\n\nEntre em contato conosco para renovar seus créditos e manter sua rotina de exercícios!'
+      greeting: (name) => `Olá, ${name}!`,
+      message: 'Notamos que você não possui créditos disponíveis para aulas.',
+      warning: 'Para continuar aproveitando nossas aulas de Pilates, é necessário adquirir novos créditos.',
+      contactTitle: '💡 Como renovar seus créditos:',
+      contactItems: [
+        'Entre em contato conosco pelo WhatsApp: {phone}',
+        'Envie o valor do seu pacote de aulas para o interac pilatesmontreal@gmail.com',
+        'Visite nosso studio durante o horário de funcionamento'
+      ],
+      closing: 'Estamos aqui para ajudar você a manter sua rotina de exercícios e bem-estar!',
+      signature: 'Atenciosamente,',
+      teamName: 'Equipe Josi Pilates',
+      tagline: 'Cuidando do seu bem-estar com carinho e profissionalismo'
     },
     en: {
       id: 'zero_credits',
       title: 'Zero Credits - Purchase Required',
       subject: 'Notice: You have no credits remaining - Josi Pilates',
-      message: 'We notice that you have no credits available for classes.\n\nTo continue enjoying our Pilates classes, you need to purchase new credits.\n\nContact us to renew your credits and maintain your exercise routine!'
+      greeting: (name) => `Hello, ${name}!`,
+      message: 'We notice that you have no credits available for classes.',
+      warning: 'To continue enjoying our Pilates classes, you need to purchase new credits.',
+      contactTitle: '💡 How to renew your credits:',
+      contactItems: [
+        'Contact us by WhatsApp: {phone}',
+        'Send the amount for your class package via Interac to pilatesmontreal@gmail.com.',
+        'Visit our studio during business hours'
+      ],
+      closing: 'We are here to help you maintain your exercise routine and well-being!',
+      signature: 'Best regards,',
+      teamName: 'Josi Pilates Team',
+      tagline: 'Caring for your well-being with care and professionalism'
     },
-    es: {
+    fr: {
       id: 'zero_credits',
-      title: 'Sin Créditos - Compra Requerida',
-      subject: 'Aviso: No tienes créditos restantes - Josi Pilates',
-      message: 'Notamos que no tienes créditos disponibles para clases.\n\nPara continuar disfrutando de nuestras clases de Pilates, necesitas adquirir nuevos créditos.\n\n¡Contáctanos para renovar tus créditos y mantener tu rutina de ejercicios!'
+      title: 'Sans Crédits - Achat Requis',
+      subject: 'Avis: Vous n\'avez plus de crédits - Josi Pilates',
+      greeting: (name) => `Bonjour, ${name}!`,
+      message: 'Nous remarquons que vous n\'avez plus de crédits disponibles pour les cours.',
+      warning: 'Pour continuer à profiter de nos cours de Pilates, vous devez acheter de nouveaux crédits.',
+      contactTitle: '💡 Comment renouveler vos crédits:',
+      contactItems: [
+        'Contactez-nous par WhatsApp: {phone}',
+        'Envoyez le montant de votre forfait de cours via Interac à pilatesmontreal@gmail.com.',
+        'Visitez notre studio pendant les heures d\'ouverture'
+      ],
+      closing: 'Nous sommes là pour vous aider à maintenir votre routine d\'exercice et votre bien-être!',
+      signature: 'Cordialement,',
+      teamName: 'Équipe Josi Pilates',
+      tagline: 'Prendre soin de votre bien-être avec soin et professionnalisme'
     }
   },
 

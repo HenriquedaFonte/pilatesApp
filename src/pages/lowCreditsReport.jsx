@@ -13,6 +13,17 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
 import {
   Table,
@@ -547,7 +558,24 @@ const LowCreditsReport = () => {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                onClick={() => navigate(`/teacher/email-notifications?student=${student.student_id}&filter=selected&tab=custom&template=zero_credits`)}
+                                onClick={async () => {
+                                  try {
+                                    // Get student's language preference
+                                    const { data: profile, error } = await supabase
+                                      .from('profiles')
+                                      .select('preferred_language')
+                                      .eq('id', student.student_id)
+                                      .single();
+
+                                    const language = profile?.preferred_language || 'pt';
+
+                                    navigate(`/teacher/email-notifications?student=${student.student_id}&filter=selected&tab=custom&template=zeroCredits&language=${language}`);
+                                  } catch (error) {
+                                    console.error('Error fetching student language:', error);
+                                    // Default to Portuguese if error
+                                    navigate(`/teacher/email-notifications?student=${student.student_id}&filter=selected&tab=custom&template=zero_credits&language=pt`);
+                                  }
+                                }}
                               >
                                 Send Email
                               </Button>

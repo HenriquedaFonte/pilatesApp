@@ -73,6 +73,7 @@ const EmailNotifications = () => {
     const filterParam = searchParams.get('filter');
     const tabParam = searchParams.get('tab');
     const templateParam = searchParams.get('template');
+    const languageParam = searchParams.get('language');
 
     if (filterParam) {
       setFilterType(filterParam);
@@ -87,9 +88,13 @@ const EmailNotifications = () => {
       setActiveTab(tabParam);
     }
 
+    if (languageParam) {
+      setPreviewLanguage(languageParam);
+    }
+
     if (templateParam) {
       // Load the template
-      const template = getTemplate(templateParam, previewLanguage);
+      const template = getTemplate(templateParam, languageParam || previewLanguage);
       if (template) {
         setSelectedTemplateId(templateParam);
         setEmailSubject(template.subject || '');
@@ -219,6 +224,82 @@ const EmailNotifications = () => {
     }
 
     return filtered;
+  };
+
+  const sendZeroCreditsNotifications = async () => {
+    setSending(true);
+    setMessage('');
+
+    try {
+      const zeroCreditsStudents = students.filter(student => student.totalCredits === 0);
+
+      if (zeroCreditsStudents.length === 0) {
+        setMessage('No students with zero credits found.');
+        setMessageType('info');
+        return;
+      }
+
+      const results = [];
+      let successCount = 0;
+      let failCount = 0;
+
+      for (const student of zeroCreditsStudents) {
+        try {
+          await emailService.sendZeroCreditsNotification(student);
+
+          await supabase.rpc('log_email_notification', {
+            p_student_id: student.id,
+            p_email_type: 'zero_credits',
+            p_recipient_email: student.email,
+            p_subject: 'Aviso: Você não possui créditos - Josi Pilates',
+            p_status: 'sent',
+            p_credits_at_time: {
+              individual: student.individual_credits,
+              duo: student.duo_credits,
+              group: student.group_credits,
+              total: student.totalCredits
+            }
+          });
+
+          results.push({ student: student.full_name, success: true });
+          successCount++;
+        } catch (error) {
+          console.error(`Error sending email to ${student.full_name}:`, error);
+
+          await supabase.rpc('log_email_notification', {
+            p_student_id: student.id,
+            p_email_type: 'zero_credits',
+            p_recipient_email: student.email,
+            p_subject: 'Aviso: Você não possui créditos - Josi Pilates',
+            p_status: 'failed',
+            p_error_message: error.message,
+            p_credits_at_time: {
+              individual: student.individual_credits,
+              duo: student.duo_credits,
+              group: student.group_credits,
+              total: student.totalCredits
+            }
+          });
+
+          results.push({ student: student.full_name, success: false, error: error.message });
+          failCount++;
+        }
+
+        await new Promise(resolve => setTimeout(resolve, 200));
+      }
+
+
+      setMessage(`Notifications sent: ${successCount} successes, ${failCount} failures.`);
+      setMessageType(failCount === 0 ? 'success' : 'error');
+
+      await loadEmailHistory();
+    } catch (error) {
+      console.error('Error sending notifications:', error);
+      setMessage('Error sending notifications: ' + error.message);
+      setMessageType('error');
+    } finally {
+      setSending(false);
+    }
   };
 
   const sendLowCreditsNotifications = async () => {
