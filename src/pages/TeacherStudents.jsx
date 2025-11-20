@@ -43,7 +43,8 @@ import {
   Calendar,
   MessageSquare,
   Loader2,
-  Hash
+  Hash,
+  Info
 } from 'lucide-react'
 import { ThemeToggle } from '../components/ThemeToggle'
 
@@ -676,6 +677,14 @@ const TeacherStudents = () => {
                     )}
 
                     <div className="flex flex-wrap gap-2 justify-center">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => navigate(`/teacher/student-summary/${student.id}`)}
+                        title="View student summary"
+                      >
+                        <Info className="h-3 w-3" />
+                      </Button>
                       <Button
                         size="sm"
                         variant="outline"

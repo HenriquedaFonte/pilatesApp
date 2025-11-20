@@ -23,6 +23,7 @@ const StudentHistory = lazy(() => import('./pages/StudentHistory'))
 const StudioRules = lazy(() => import('./pages/StudioRules'))
 const StudentProfile = lazy(() => import('./pages/StudentProfile'))
 const TeacherProfile = lazy(() => import('./pages/TeacherProfile'))
+const StudentSummary = lazy(() => import('./pages/StudentSummary'))
 const AttendanceReport = lazy(() => import('./pages/AttendanceReport'))
 const LowCreditsReport = lazy(() => import('./pages/lowCreditsReport'))
 const CreditHistoryReport = lazy(() => import('./pages/CreditHistoryReport'))
@@ -151,7 +152,16 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
-      <Route 
+      <Route
+        path="/teacher/student-summary/:studentId"
+        element={
+          <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
+            <StudentSummary />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
         path="/student/dashboard" 
         element={
           <ProtectedRoute requireRole="student" requireCompleteProfile={true}>
