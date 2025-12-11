@@ -94,6 +94,11 @@ export const AuthProvider = ({ children }) => {
         //   emailScheduler.start()
         // }
 
+        // Ensure scheduler is stopped for all users
+        if (existingProfile.role === 'teacher') {
+          emailScheduler.stop()
+        }
+
         return
       }
 
@@ -134,6 +139,11 @@ export const AuthProvider = ({ children }) => {
       // if (newProfile.role === 'teacher') {
       //   emailScheduler.start()
       // }
+
+      // Ensure scheduler is stopped for all users
+      if (newProfile.role === 'teacher') {
+        emailScheduler.stop()
+      }
     } catch (error) {
       console.error('Error fetching/creating profile:', error)
       console.log('User ID for failed profile operation:', user.id)
