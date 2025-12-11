@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const handleSession = async (session) => {
+    const handleSession = async session => {
       try {
         if (session?.user) {
           setUser(session.user)
@@ -42,16 +42,18 @@ export const AuthProvider = ({ children }) => {
       handleSession(session)
     })
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        handleSession(session)
-      }
-    )
+    const {
+      data: { subscription }
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      handleSession(session)
+    })
 
     // Auto-refresh session before expiry
     const refreshInterval = setInterval(async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession()
+        const {
+          data: { session }
+        } = await supabase.auth.getSession()
         if (session) {
           const expiresAt = session.expires_at
           const now = Math.floor(Date.now() / 1000)
@@ -74,33 +76,41 @@ export const AuthProvider = ({ children }) => {
     }
   }, [])
 
-  const fetchOrCreateProfile = async (user) => {
+  const fetchOrCreateProfile = async user => {
     try {
       const { data: existingProfile } = await supabase
         .from('profiles')
-        .select('id, email, full_name, role, individual_credits, duo_credits, group_credits, created_at, observations, phone, preferred_language')
+        .select(
+          'id, email, full_name, role, individual_credits, duo_credits, group_credits, created_at, observations, phone, preferred_language'
+        )
         .eq('id', user.id)
         .single()
 
       if (existingProfile) {
         setProfile(existingProfile)
 
-        if (existingProfile.role === 'teacher') {
-          emailScheduler.start()
-        }
+        // Automatic email scheduler disabled - only manual emails via Email Notifications remain active
+        // if (existingProfile.role === 'teacher') {
+        //   emailScheduler.start()
+        // }
 
         return
       }
 
       // Profile not found - create it
-      console.log('Profile not found for user:', user.email, 'Creating new profile...')
+      console.log(
+        'Profile not found for user:',
+        user.email,
+        'Creating new profile...'
+      )
 
       const { data: newProfile, error: insertError } = await supabase
         .from('profiles')
         .insert({
           id: user.id,
           email: user.email,
-          full_name: user.user_metadata?.full_name || user.user_metadata?.name || '',
+          full_name:
+            user.user_metadata?.full_name || user.user_metadata?.name || '',
           role: user.user_metadata?.role || 'student',
           individual_credits: 0,
           duo_credits: 0,
@@ -120,10 +130,10 @@ export const AuthProvider = ({ children }) => {
 
       setProfile(newProfile)
 
-      if (newProfile.role === 'teacher') {
-        emailScheduler.start()
-      }
-
+      // Automatic email scheduler disabled - only manual emails via Email Notifications remain active
+      // if (newProfile.role === 'teacher') {
+      //   emailScheduler.start()
+      // }
     } catch (error) {
       console.error('Error fetching/creating profile:', error)
       console.log('User ID for failed profile operation:', user.id)
@@ -131,7 +141,14 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  const signUp = async (email, password, fullName, role = 'student', phone = null, preferredLanguage = 'pt') => {
+  const signUp = async (
+    email,
+    password,
+    fullName,
+    role = 'student',
+    phone = null,
+    preferredLanguage = 'pt'
+  ) => {
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -188,7 +205,9 @@ export const AuthProvider = ({ children }) => {
       emailScheduler.stop()
 
       // Check if there's a session before attempting to sign out
-      const { data: { session } } = await supabase.auth.getSession()
+      const {
+        data: { session }
+      } = await supabase.auth.getSession()
       if (session) {
         // Only attempt server logout if there's an active session
         const { error } = await supabase.auth.signOut()
@@ -212,7 +231,7 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  const updateProfile = async (updates) => {
+  const updateProfile = async updates => {
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -254,7 +273,7 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  const updateThemePreference = async (theme) => {
+  const updateThemePreference = async theme => {
     try {
       if (!user) return
 
@@ -286,10 +305,5 @@ export const AuthProvider = ({ children }) => {
     supabase
   }
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  )
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
-
