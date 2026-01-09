@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import emailScheduler from '../utils/emailScheduler'
 
 const AuthContext = createContext({})
 
@@ -89,16 +88,6 @@ export const AuthProvider = ({ children }) => {
       if (existingProfile) {
         setProfile(existingProfile)
 
-        // Automatic email scheduler disabled - only manual emails via Email Notifications remain active
-        // if (existingProfile.role === 'teacher') {
-        //   emailScheduler.start()
-        // }
-
-        // Ensure scheduler is stopped for all users
-        if (existingProfile.role === 'teacher') {
-          emailScheduler.stop()
-        }
-
         return
       }
 
@@ -134,16 +123,6 @@ export const AuthProvider = ({ children }) => {
       }
 
       setProfile(newProfile)
-
-      // Automatic email scheduler disabled - only manual emails via Email Notifications remain active
-      // if (newProfile.role === 'teacher') {
-      //   emailScheduler.start()
-      // }
-
-      // Ensure scheduler is stopped for all users
-      if (newProfile.role === 'teacher') {
-        emailScheduler.stop()
-      }
     } catch (error) {
       console.error('Error fetching/creating profile:', error)
       console.log('User ID for failed profile operation:', user.id)
@@ -212,8 +191,6 @@ export const AuthProvider = ({ children }) => {
 
   const signOut = async () => {
     try {
-      emailScheduler.stop()
-
       // Check if there's a session before attempting to sign out
       const {
         data: { session }

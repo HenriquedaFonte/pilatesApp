@@ -444,8 +444,8 @@
         "title": "Aulas Privadas (55 min)",
         "intro": "Aula introdutória: $80",
         "single": "1 aula: $80",
-        "four": "4 aulas: $260",
-        "eight": "8 aulas: $472",
+        "four": "4 aulas: $286",
+        "eight": "8 aulas: $520",
         "note": "Os pacotes são válidos por 4 meses. Qualquer cancelamento deve ser feito com pelo menos 24 horas de antecedência. Os pacotes não são reembolsáveis nem transferíveis."
       },
       "duos": {
@@ -453,15 +453,15 @@
         "intro": "Aula introdutória: $125",
         "single": "1 aula: $115",
         "six": "6 aulas: $545",
-        "twelve": "12 aulas: $1008",
+        "twelve": "12 aulas: $1028",
         "note": "Valor para duas pessoas. Os pacotes são válidos por 4 meses. Qualquer cancelamento deve ser feito com pelo menos 24 horas de antecedência. Os pacotes não são reembolsáveis nem transferíveis."
       },
       "group": {
         "title": "Aulas em Grupo (55 min)",
         "intro": "Aula introdutória: $80",
         "single": "1 aula: $40",
-        "six": "6 aulas: $198",
-        "twelve": "12 aulas: $355",
+        "six": "6 aulas: $202",
+        "twelve": "12 aulas: $360",
         "note": "Valor por pessoa. Os pacotes são válidos por 4 meses. Qualquer cancelamento deve ser feito com pelo menos 24 horas de antecedência. Os pacotes não são reembolsáveis nem transferíveis."
       }
     },

@@ -352,8 +352,8 @@
         "title": "Private Classes (55 min)",
         "intro": "Introductory class: $80",
         "single": "1 class: $80",
-        "four": "4 classes: $260",
-        "eight": "8 classes: $472",
+        "four": "4 classes: $286",
+        "eight": "8 classes: $520",
         "note": "Packages are valid for 4 months. Any cancellation must be made at least 24 hours in advance. Packages are non-refundable and non-transferable."
       },
       "duos": {
@@ -361,15 +361,15 @@
         "intro": "Introductory class: $125",
         "single": "1 class: $115",
         "six": "6 classes: $545",
-        "twelve": "12 classes: $1008",
+        "twelve": "12 classes: $1028",
         "note": "Price for two people. Packages are valid for 4 months. Any cancellation must be made at least 24 hours in advance. Packages are non-refundable and non-transferable."
       },
       "group": {
         "title": "Group Classes (55 min)",
         "intro": "Introductory class: $80",
         "single": "1 class: $40",
-        "six": "6 classes: $198",
-        "twelve": "12 classes: $355",
+        "six": "6 classes: $202",
+        "twelve": "12 classes: $360",
         "note": "Price per person. Packages are valid for 4 months. Any cancellation must be made at least 24 hours in advance. Packages are non-refundable and non-transferable."
       }
     },
