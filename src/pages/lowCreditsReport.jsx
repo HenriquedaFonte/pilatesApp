@@ -22,7 +22,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
+  AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -124,8 +124,18 @@ const LowCreditsReport = () => {
           row.duo_credits || 0,
           row.group_credits || 0,
           row.total_credits || 0,
-          `"${(row.total_credits < 0 ? 'Negative' : row.status) || 'No Credits'}"`,
-          `"${row.total_credits <= 0 ? 'Critical' : row.total_credits <= 2 ? 'High' : row.total_credits <= 5 ? 'Medium' : 'Low'}"`,
+          `"${
+            (row.total_credits < 0 ? 'Negative' : row.status) || 'No Credits'
+          }"`,
+          `"${
+            row.total_credits <= 0
+              ? 'Critical'
+              : row.total_credits <= 2
+              ? 'High'
+              : row.total_credits <= 5
+              ? 'Medium'
+              : 'Low'
+          }"`,
           row.last_attendance_date || 'Never',
           row.days_since_last_attendance || 'N/A'
         ].join(',')
@@ -140,7 +150,6 @@ const LowCreditsReport = () => {
     a.click()
     window.URL.revokeObjectURL(url)
   }
-
 
   const getPriorityBadge = totalCredits => {
     if (totalCredits <= 0) {
@@ -175,7 +184,9 @@ const LowCreditsReport = () => {
   }
 
   // Filter students with low credits based on total threshold, then apply search filter
-  const allLowCreditsStudents = lowCreditsData.filter(student => student.total_credits <= thresholds.total)
+  const allLowCreditsStudents = lowCreditsData.filter(
+    student => student.total_credits <= thresholds.total
+  )
 
   const filteredLowCredits = allLowCreditsStudents.filter(
     student =>
@@ -184,7 +195,9 @@ const LowCreditsReport = () => {
   )
 
   // Include students with negative balances in zero credits
-  const negativeBalanceStudents = lowCreditsData.filter(student => student.total_credits < 0)
+  const negativeBalanceStudents = lowCreditsData.filter(
+    student => student.total_credits < 0
+  )
   const combinedZeroCredits = [...zeroCreditsData, ...negativeBalanceStudents]
 
   const filteredZeroCredits = combinedZeroCredits.filter(
@@ -194,10 +207,14 @@ const LowCreditsReport = () => {
   )
 
   // Count students with low credits based on current threshold
-  const lowCreditsStudents = lowCreditsData.filter(s => s.total_credits <= thresholds.total)
+  const lowCreditsStudents = lowCreditsData.filter(
+    s => s.total_credits <= thresholds.total
+  )
 
   // Critical: students with 0 or negative credits
-  const criticalCount = lowCreditsStudents.filter(s => s.total_credits <= 0).length
+  const criticalCount = lowCreditsStudents.filter(
+    s => s.total_credits <= 0
+  ).length
 
   // High priority: includes both high and critical cases (all low credit students)
   const highCount = lowCreditsStudents.length
@@ -247,7 +264,8 @@ const LowCreditsReport = () => {
           <CardHeader>
             <CardTitle>Credit Thresholds</CardTitle>
             <CardDescription>
-              Adjust the threshold to define what constitutes "low credits" (currently: ≤{thresholds.total} credits)
+              Adjust the threshold to define what constitutes "low credits"
+              (currently: ≤{thresholds.total} credits)
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -373,12 +391,16 @@ const LowCreditsReport = () => {
                   <div>
                     <CardTitle>Students with Low Credits</CardTitle>
                     <CardDescription>
-                      Students who have {thresholds.total} or fewer total credits
+                      Students who have {thresholds.total} or fewer total
+                      credits
                     </CardDescription>
                   </div>
                   <Button
                     onClick={() =>
-                      exportToCSV(allLowCreditsStudents, 'low_credits_report.csv')
+                      exportToCSV(
+                        allLowCreditsStudents,
+                        'low_credits_report.csv'
+                      )
                     }
                     variant="outline"
                     disabled={allLowCreditsStudents.length === 0}
@@ -404,8 +426,13 @@ const LowCreditsReport = () => {
                       </TableHeader>
                       <TableBody>
                         {filteredLowCredits.map(student => {
-                          const statusBadge = getStatusBadge(student.status, student.total_credits)
-                          const priorityBadge = getPriorityBadge(student.total_credits)
+                          const statusBadge = getStatusBadge(
+                            student.status,
+                            student.total_credits
+                          )
+                          const priorityBadge = getPriorityBadge(
+                            student.total_credits
+                          )
                           return (
                             <TableRow key={student.student_id}>
                               <TableCell>
@@ -561,19 +588,27 @@ const LowCreditsReport = () => {
                                 onClick={async () => {
                                   try {
                                     // Get student's language preference
-                                    const { data: profile, error } = await supabase
+                                    const { data: profile } = await supabase
                                       .from('profiles')
                                       .select('preferred_language')
                                       .eq('id', student.student_id)
-                                      .single();
+                                      .single()
 
-                                    const language = profile?.preferred_language || 'pt';
+                                    const language =
+                                      profile?.preferred_language || 'pt'
 
-                                    navigate(`/teacher/email-notifications?student=${student.student_id}&filter=selected&tab=custom&template=zeroCredits&language=${language}`);
+                                    navigate(
+                                      `/teacher/email-notifications?student=${student.student_id}&filter=selected&tab=custom&template=zeroCredits&language=${language}`
+                                    )
                                   } catch (error) {
-                                    console.error('Error fetching student language:', error);
+                                    console.error(
+                                      'Error fetching student language:',
+                                      error
+                                    )
                                     // Default to Portuguese if error
-                                    navigate(`/teacher/email-notifications?student=${student.student_id}&filter=selected&tab=custom&template=zero_credits&language=pt`);
+                                    navigate(
+                                      `/teacher/email-notifications?student=${student.student_id}&filter=selected&tab=custom&template=zero_credits&language=pt`
+                                    )
                                   }
                                 }}
                               >

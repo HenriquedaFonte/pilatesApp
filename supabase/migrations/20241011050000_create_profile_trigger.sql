@@ -12,6 +12,7 @@ BEGIN
     group_credits,
     phone,
     preferred_language,
+    date_of_birth,
     created_at
   )
   VALUES (
@@ -24,6 +25,7 @@ BEGIN
     0, -- group_credits
     NEW.raw_user_meta_data->>'phone',
     COALESCE(NEW.raw_user_meta_data->>'preferred_language', 'pt'),
+    (NEW.raw_user_meta_data->>'date_of_birth')::DATE,
     NOW()
   );
   RETURN NEW;

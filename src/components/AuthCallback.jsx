@@ -14,7 +14,6 @@ const AuthCallback = () => {
         const { data, error } = await supabase.auth.getSession()
 
         if (error) {
-          console.error('Auth callback error:', error)
           navigate('/login', { replace: true })
           return
         }
@@ -23,22 +22,19 @@ const AuthCallback = () => {
           // User is authenticated, wait for profile to load and then check completion
           const checkProfileAndRedirect = () => {
             if (!loading && profile) {
-              console.log('Profile loaded:', profile)
-              console.log('Is profile complete:', isProfileComplete)
-
               if (!isProfileComplete) {
                 // Profile not complete, redirect to profile completion
-                console.log('Redirecting to profile completion')
                 navigate('/complete-profile', { replace: true })
               } else {
                 // Profile complete, redirect to appropriate dashboard
-                const targetPath = profile.role === 'teacher' ? '/teacher/dashboard' : '/student/dashboard'
-                console.log('Redirecting to dashboard:', targetPath)
+                const targetPath =
+                  profile.role === 'teacher'
+                    ? '/teacher/dashboard'
+                    : '/student/dashboard'
                 navigate(targetPath, { replace: true })
               }
             } else if (!loading && !profile) {
               // Profile failed to load, redirect to home
-              console.log('No profile found, redirecting to home')
               navigate('/', { replace: true })
             }
           }
@@ -53,11 +49,9 @@ const AuthCallback = () => {
           }
         } else {
           // No session, redirect to login
-          console.log('No session found, redirecting to login')
           navigate('/login', { replace: true })
         }
-      } catch (error) {
-        console.error('Auth callback handling error:', error)
+      } catch {
         navigate('/login', { replace: true })
       }
     }

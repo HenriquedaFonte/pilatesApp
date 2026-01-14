@@ -19,6 +19,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger
@@ -44,7 +45,8 @@ import {
   MessageSquare,
   Loader2,
   Hash,
-  Info
+  Info,
+  Cake
 } from 'lucide-react'
 import { ThemeToggle } from '../components/ThemeToggle'
 
@@ -60,7 +62,8 @@ const TeacherStudents = () => {
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [selectedObservations, setSelectedObservations] = useState('')
   const [isBalanceDialogOpen, setIsBalanceDialogOpen] = useState(false)
-  const [isBalanceConfirmDialogOpen, setIsBalanceConfirmDialogOpen] = useState(false)
+  const [isBalanceConfirmDialogOpen, setIsBalanceConfirmDialogOpen] =
+    useState(false)
   const [isEnrollDialogOpen, setIsEnrollDialogOpen] = useState(false)
   const [isCommentsDialogOpen, setIsCommentsDialogOpen] = useState(false)
   const [isCreateUserDialogOpen, setIsCreateUserDialogOpen] = useState(false)
@@ -68,6 +71,9 @@ const TeacherStudents = () => {
   const [creatingUser, setCreatingUser] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [upcomingBirthdays, setUpcomingBirthdays] = useState([])
+  const [showBirthdayNotification, setShowBirthdayNotification] =
+    useState(false)
   const [newUser, setNewUser] = useState({
     email: '',
     fullName: '',
@@ -115,13 +121,12 @@ const TeacherStudents = () => {
       const { data: studentsData, error: studentsError } = await supabase
         .from('profiles')
         .select(
-          'id, email, full_name, role, individual_credits, duo_credits, group_credits, created_at, observations'
+          'id, email, full_name, role, individual_credits, duo_credits, group_credits, created_at, observations, date_of_birth'
         )
         .eq('role', 'student')
         .order('full_name')
 
       if (studentsError) throw studentsError
-
 
       const { data: schedulesData, error: schedulesError } = await supabase
         .from('class_schedules')
@@ -132,6 +137,11 @@ const TeacherStudents = () => {
 
       setStudents(studentsData || [])
       setSchedules(schedulesData || [])
+      const birthdays = getUpcomingBirthdays(studentsData || [])
+      setUpcomingBirthdays(birthdays)
+      if (birthdays.length > 0) {
+        setShowBirthdayNotification(true)
+      }
 
       // Fetch last check-ins for each student
       if (studentsData && studentsData.length > 0) {
@@ -160,6 +170,36 @@ const TeacherStudents = () => {
     }
   }
 
+  const getUpcomingBirthdays = students => {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0) // Set to start of day for date comparison
+    // Get start of current week (Monday)
+    const startOfWeek = new Date(today)
+    const day = today.getDay()
+    const diff = today.getDate() - day + (day === 0 ? -6 : 1) // Monday
+    startOfWeek.setDate(diff)
+    startOfWeek.setHours(0, 0, 0, 0)
+    const endOfWeek = new Date(startOfWeek)
+    endOfWeek.setDate(startOfWeek.getDate() + 6)
+    endOfWeek.setHours(23, 59, 59, 999)
+
+    return students.filter(student => {
+      if (!student.date_of_birth) return false
+      const dateStr = student.date_of_birth
+      const [year, month, day] = dateStr.split('-').map(Number)
+      const birthDate = new Date(year, month - 1, day)
+      const thisYearBirthday = new Date(
+        today.getFullYear(),
+        birthDate.getMonth(),
+        birthDate.getDate()
+      )
+      if (thisYearBirthday < startOfWeek) {
+        thisYearBirthday.setFullYear(today.getFullYear() + 1)
+      }
+      return thisYearBirthday >= startOfWeek && thisYearBirthday <= endOfWeek
+    })
+  }
+
   const handleBalanceChange = async e => {
     e.preventDefault()
     setError('')
@@ -173,8 +213,9 @@ const TeacherStudents = () => {
         return
       }
 
-      const amountPaidValue = balanceChange.amountPaid.trim();
-      const parsedAmountPaid = amountPaidValue !== '' ? parseFloat(amountPaidValue) : null;
+      const amountPaidValue = balanceChange.amountPaid.trim()
+      const parsedAmountPaid =
+        amountPaidValue !== '' ? parseFloat(amountPaidValue) : null
 
       const { error } = await supabase.rpc('update_class_balance', {
         student_uuid: selectedStudent.id,
@@ -197,9 +238,10 @@ const TeacherStudents = () => {
           .single()
 
         if (updatedStudent) {
-          const currentBalance = (updatedStudent.individual_credits || 0) +
-                               (updatedStudent.duo_credits || 0) +
-                               (updatedStudent.group_credits || 0)
+          const currentBalance =
+            (updatedStudent.individual_credits || 0) +
+            (updatedStudent.duo_credits || 0) +
+            (updatedStudent.group_credits || 0)
 
           await emailService.sendCreditAdditionEmail(
             selectedStudent,
@@ -243,14 +285,19 @@ const TeacherStudents = () => {
     await handleBalanceChange({ preventDefault: () => {} })
   }
 
-  const handleSendPasswordReset = async (student) => {
+  const handleSendPasswordReset = async student => {
     try {
-      const { data, error } = await supabase.functions.invoke('reset-password', {
-        body: { email: student.email, origin: window.location.origin }
-      })
+      const { data, error } = await supabase.functions.invoke(
+        'reset-password',
+        {
+          body: { email: student.email, origin: window.location.origin }
+        }
+      )
 
       if (error || !data?.success) {
-        throw new Error(data?.error || error?.message || 'Failed to send reset email')
+        throw new Error(
+          data?.error || error?.message || 'Failed to send reset email'
+        )
       }
 
       setSuccess(`Password reset email sent to ${student.email}`)
@@ -309,7 +356,9 @@ const TeacherStudents = () => {
       }
 
       // Get the current session token
-      const { data: { session } } = await supabase.auth.getSession()
+      const {
+        data: { session }
+      } = await supabase.auth.getSession()
       if (!session) {
         throw new Error('No authentication session found')
       }
@@ -320,8 +369,8 @@ const TeacherStudents = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${session.access_token}`,
-            'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY
+            Authorization: `Bearer ${session.access_token}`,
+            apikey: import.meta.env.VITE_SUPABASE_ANON_KEY
           },
           body: JSON.stringify(userData)
         }
@@ -344,11 +393,18 @@ const TeacherStudents = () => {
       } catch (emailError) {
         console.error('Error sending welcome email:', emailError)
         // Show warning but don't fail user creation
-        setSuccess('User created successfully, but welcome email could not be sent.')
+        setSuccess(
+          'User created successfully, but welcome email could not be sent.'
+        )
       }
 
       setSuccess('User created successfully!')
-      setNewUser({ email: '', fullName: '', role: 'student', preferredLanguage: 'pt' })
+      setNewUser({
+        email: '',
+        fullName: '',
+        role: 'student',
+        preferredLanguage: 'pt'
+      })
       setIsCreateUserDialogOpen(false)
       fetchData() // Refresh student list
     } catch (error) {
@@ -364,7 +420,6 @@ const TeacherStudents = () => {
     setSuccess('')
 
     try {
-
       const { error } = await supabase
         .from('profiles')
         .update({ observations: selectedObservations })
@@ -394,8 +449,6 @@ const TeacherStudents = () => {
     if (balance <= 6) return 'text-orange-600'
     return 'text-green-600'
   }
-
-
 
   const getBalanceBadge = balance => {
     if (balance < 3) return <Badge variant="destructive">Low</Badge>
@@ -437,11 +490,19 @@ const TeacherStudents = () => {
     })
   }
 
-  const filteredStudents = students.filter(
-    student =>
-      student.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.email.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const filteredStudents = students
+    .filter(
+      student =>
+        student.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        student.email.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      const aBirthday = upcomingBirthdays.some(birth => birth.id === a.id)
+      const bBirthday = upcomingBirthdays.some(birth => birth.id === b.id)
+      if (aBirthday && !bBirthday) return -1
+      if (!aBirthday && bBirthday) return 1
+      return 0
+    })
 
   if (loading) {
     return (
@@ -453,7 +514,6 @@ const TeacherStudents = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-
       <header className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -481,7 +541,6 @@ const TeacherStudents = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
         {error && (
           <Alert variant="destructive" className="mb-6">
             <AlertDescription>{error}</AlertDescription>
@@ -493,10 +552,11 @@ const TeacherStudents = () => {
           </Alert>
         )}
 
-
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Students</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+              Students
+            </h2>
             <p className="text-gray-600 dark:text-gray-300">
               Manage student profiles, balances, and enrollments
             </p>
@@ -602,7 +662,6 @@ const TeacherStudents = () => {
           </Dialog>
         </div>
 
-
         <div className="mb-6">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -615,12 +674,21 @@ const TeacherStudents = () => {
           </div>
         </div>
 
-
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredStudents.map(student => {
             const totalBalance = getTotalBalance(student)
+            const hasUpcomingBirthday = upcomingBirthdays.some(
+              b => b.id === student.id
+            )
             return (
-              <Card key={student.id}>
+              <Card
+                key={student.id}
+                className={
+                  hasUpcomingBirthday
+                    ? 'border-2 border-green-500 bg-green-50 dark:bg-green-900/10'
+                    : ''
+                }
+              >
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <div>
@@ -637,25 +705,33 @@ const TeacherStudents = () => {
                     {/* Credit Balances */}
                     <div className="space-y-2">
                       <div className="flex items-center justify-between p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                        <span className="text-sm font-medium text-gray-900 dark:text-gray-100">Individual</span>
+                        <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                          Individual
+                        </span>
                         <span className="font-bold text-blue-600 dark:text-blue-400">
                           {student.individual_credits || 0}
                         </span>
                       </div>
                       <div className="flex items-center justify-between p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                        <span className="text-sm font-medium text-gray-900 dark:text-gray-100">Duo</span>
+                        <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                          Duo
+                        </span>
                         <span className="font-bold text-green-600 dark:text-green-400">
                           {student.duo_credits || 0}
                         </span>
                       </div>
                       <div className="flex items-center justify-between p-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                        <span className="text-sm font-medium text-gray-900 dark:text-gray-100">Group</span>
+                        <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                          Group
+                        </span>
                         <span className="font-bold text-purple-600 dark:text-purple-400">
                           {student.group_credits || 0}
                         </span>
                       </div>
                       <div className="flex items-center justify-between p-2 bg-gray-100 dark:bg-gray-800 rounded-lg border-t border-gray-200 dark:border-gray-600">
-                        <span className="text-sm font-bold text-gray-900 dark:text-gray-100">Total</span>
+                        <span className="text-sm font-bold text-gray-900 dark:text-gray-100">
+                          Total
+                        </span>
                         <span
                           className={`font-bold ${getBalanceColor(
                             totalBalance
@@ -669,10 +745,19 @@ const TeacherStudents = () => {
                     {/* Last Check-in Note */}
                     {lastCheckIns[student.id] && (
                       <div className="text-xs text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 p-2 rounded-lg">
-                        Last check-in: {lastCheckIns[student.id].class_schedules?.classes?.name} -{' '}
-                        {getDayName(lastCheckIns[student.id].class_schedules?.day_of_week)}{' '}
-                        {new Date(lastCheckIns[student.id].check_in_date).toLocaleDateString()} -{' '}
-                        {formatCheckInStatus(lastCheckIns[student.id].status)}
+                        Last check-in:{' '}
+                        {
+                          lastCheckIns[student.id].class_schedules?.classes
+                            ?.name
+                        }{' '}
+                        -{' '}
+                        {getDayName(
+                          lastCheckIns[student.id].class_schedules?.day_of_week
+                        )}{' '}
+                        {new Date(
+                          lastCheckIns[student.id].check_in_date
+                        ).toLocaleDateString()}{' '}
+                        - {formatCheckInStatus(lastCheckIns[student.id].status)}
                       </div>
                     )}
 
@@ -680,7 +765,9 @@ const TeacherStudents = () => {
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => navigate(`/teacher/student-summary/${student.id}`)}
+                        onClick={() =>
+                          navigate(`/teacher/student-summary/${student.id}`)
+                        }
                         title="View student summary"
                       >
                         <Info className="h-3 w-3" />
@@ -748,7 +835,6 @@ const TeacherStudents = () => {
           </Card>
         )}
 
-
         <Dialog
           open={isBalanceDialogOpen}
           onOpenChange={setIsBalanceDialogOpen}
@@ -765,7 +851,13 @@ const TeacherStudents = () => {
                 {selectedStudent?.group_credits || 0}
               </DialogDescription>
             </DialogHeader>
-            <form onSubmit={(e) => { e.preventDefault(); handleBalanceConfirm(); }} className="space-y-4">
+            <form
+              onSubmit={e => {
+                e.preventDefault()
+                handleBalanceConfirm()
+              }}
+              className="space-y-4"
+            >
               <div>
                 <Label htmlFor="creditType">Credit Type</Label>
                 <Select
@@ -888,31 +980,76 @@ const TeacherStudents = () => {
             </DialogHeader>
             <div className="space-y-4">
               <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-                <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">Current Balances:</h4>
+                <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">
+                  Current Balances:
+                </h4>
                 <div className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
-                  <div>Individual: {selectedStudent?.individual_credits || 0}</div>
+                  <div>
+                    Individual: {selectedStudent?.individual_credits || 0}
+                  </div>
                   <div>Duo: {selectedStudent?.duo_credits || 0}</div>
                   <div>Group: {selectedStudent?.group_credits || 0}</div>
                 </div>
               </div>
 
               <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-                <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">Changes to Apply:</h4>
+                <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">
+                  Changes to Apply:
+                </h4>
                 <div className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
-                  <div>Credit Type: <span className="capitalize">{balanceChange.creditType}</span></div>
-                  <div>Amount: {balanceChange.amount} {parseInt(balanceChange.amount) > 0 ? '(Addition)' : '(Subtraction)'}</div>
-                  {balanceChange.description && <div>Description: {balanceChange.description}</div>}
-                  {balanceChange.amountPaid && <div>Amount Paid: ${balanceChange.amountPaid}</div>}
-                  <div>Payment Method: <span className="capitalize">{balanceChange.paymentMethod?.replace('_', ' ')}</span></div>
+                  <div>
+                    Credit Type:{' '}
+                    <span className="capitalize">
+                      {balanceChange.creditType}
+                    </span>
+                  </div>
+                  <div>
+                    Amount: {balanceChange.amount}{' '}
+                    {parseInt(balanceChange.amount) > 0
+                      ? '(Addition)'
+                      : '(Subtraction)'}
+                  </div>
+                  {balanceChange.description && (
+                    <div>Description: {balanceChange.description}</div>
+                  )}
+                  {balanceChange.amountPaid && (
+                    <div>Amount Paid: ${balanceChange.amountPaid}</div>
+                  )}
+                  <div>
+                    Payment Method:{' '}
+                    <span className="capitalize">
+                      {balanceChange.paymentMethod?.replace('_', ' ')}
+                    </span>
+                  </div>
                 </div>
               </div>
 
               <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
-                <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">Expected New Balances:</h4>
+                <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">
+                  Expected New Balances:
+                </h4>
                 <div className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
-                  <div>Individual: {balanceChange.creditType === 'individual' ? (selectedStudent?.individual_credits || 0) + parseInt(balanceChange.amount || '0') : (selectedStudent?.individual_credits || 0)}</div>
-                  <div>Duo: {balanceChange.creditType === 'duo' ? (selectedStudent?.duo_credits || 0) + parseInt(balanceChange.amount || '0') : (selectedStudent?.duo_credits || 0)}</div>
-                  <div>Group: {balanceChange.creditType === 'group' ? (selectedStudent?.group_credits || 0) + parseInt(balanceChange.amount || '0') : (selectedStudent?.group_credits || 0)}</div>
+                  <div>
+                    Individual:{' '}
+                    {balanceChange.creditType === 'individual'
+                      ? (selectedStudent?.individual_credits || 0) +
+                        parseInt(balanceChange.amount || '0')
+                      : selectedStudent?.individual_credits || 0}
+                  </div>
+                  <div>
+                    Duo:{' '}
+                    {balanceChange.creditType === 'duo'
+                      ? (selectedStudent?.duo_credits || 0) +
+                        parseInt(balanceChange.amount || '0')
+                      : selectedStudent?.duo_credits || 0}
+                  </div>
+                  <div>
+                    Group:{' '}
+                    {balanceChange.creditType === 'group'
+                      ? (selectedStudent?.group_credits || 0) +
+                        parseInt(balanceChange.amount || '0')
+                      : selectedStudent?.group_credits || 0}
+                  </div>
                 </div>
               </div>
 
@@ -924,7 +1061,10 @@ const TeacherStudents = () => {
                 >
                   Back to Edit
                 </Button>
-                <Button onClick={handleBalanceConfirmSubmit} disabled={balanceLoading}>
+                <Button
+                  onClick={handleBalanceConfirmSubmit}
+                  disabled={balanceLoading}
+                >
                   {balanceLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -938,7 +1078,6 @@ const TeacherStudents = () => {
             </div>
           </DialogContent>
         </Dialog>
-
 
         <Dialog open={isEnrollDialogOpen} onOpenChange={setIsEnrollDialogOpen}>
           <DialogContent>
@@ -995,7 +1134,6 @@ const TeacherStudents = () => {
           </DialogContent>
         </Dialog>
 
-
         <Dialog
           open={isCommentsDialogOpen}
           onOpenChange={setIsCommentsDialogOpen}
@@ -1031,6 +1169,64 @@ const TeacherStudents = () => {
                 <Button type="submit">Save</Button>
               </div>
             </form>
+          </DialogContent>
+        </Dialog>
+
+        {/* Birthday Notification Dialog */}
+        <Dialog
+          open={showBirthdayNotification}
+          onOpenChange={setShowBirthdayNotification}
+        >
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="flex items-center">
+                <Cake className="h-5 w-5 mr-2 text-green-500" />
+                Upcoming Birthdays
+              </DialogTitle>
+              <DialogDescription>
+                Here are the students with birthdays in the next 7 days.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-2">
+              {upcomingBirthdays.map(student => {
+                const dateStr = student.date_of_birth
+                const [year, month, day] = dateStr.split('-').map(Number)
+                const birthDate = new Date(year, month - 1, day)
+                const today = new Date()
+                today.setHours(0, 0, 0, 0)
+                const thisYearBirthday = new Date(
+                  today.getFullYear(),
+                  birthDate.getMonth(),
+                  birthDate.getDate()
+                )
+                if (thisYearBirthday < today) {
+                  thisYearBirthday.setFullYear(today.getFullYear() + 1)
+                }
+                const daysUntil = Math.ceil(
+                  (thisYearBirthday - today) / (1000 * 60 * 60 * 24)
+                )
+                return (
+                  <div
+                    key={student.id}
+                    className="flex items-center justify-between p-2 bg-green-50 dark:bg-green-900/20 rounded-lg"
+                  >
+                    <span className="font-medium">{student.full_name}</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                      {daysUntil === 0
+                        ? 'Today!'
+                        : daysUntil === 1
+                        ? 'Tomorrow'
+                        : `${daysUntil} days`}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+            <DialogFooter>
+              <Button onClick={() => setShowBirthdayNotification(false)}>
+                Got it!
+              </Button>
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>

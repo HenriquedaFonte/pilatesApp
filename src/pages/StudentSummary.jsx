@@ -21,6 +21,28 @@ import {
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+import {
   ArrowLeft,
   User,
   CreditCard,
@@ -30,9 +52,18 @@ import {
   Globe,
   FileText,
   Loader2,
-  LogOut
+  LogOut,
+  Edit
 } from 'lucide-react'
 import { ThemeToggle } from '../components/ThemeToggle'
+
+const profileSchema = z.object({
+  full_name: z.string().min(1, 'Full name is required'),
+  phone: z.string().optional(),
+  preferred_language: z.enum(['pt', 'en', 'fr']),
+  date_of_birth: z.string().optional(),
+  observations: z.string().optional()
+})
 
 const StudentSummary = () => {
   const { profile, signOut } = useAuth()
@@ -42,6 +73,19 @@ const StudentSummary = () => {
   const [creditHistory, setCreditHistory] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+  const [updating, setUpdating] = useState(false)
+
+  const form = useForm({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      full_name: '',
+      phone: '',
+      preferred_language: 'pt',
+      date_of_birth: '',
+      observations: ''
+    }
+  })
 
   useEffect(() => {
     fetchStudentData()
@@ -50,6 +94,51 @@ const StudentSummary = () => {
   const handleSignOut = async () => {
     await signOut()
     navigate('/')
+  }
+
+  const handleEditProfile = () => {
+    if (student) {
+      form.reset({
+        full_name: student.full_name || '',
+        phone: student.phone || '',
+        preferred_language: student.preferred_language || 'pt',
+        date_of_birth: student.date_of_birth
+          ? new Date(student.date_of_birth).toISOString().split('T')[0]
+          : '',
+        observations: student.observations || ''
+      })
+      setIsEditDialogOpen(true)
+    }
+  }
+
+  const onSubmitProfile = async data => {
+    try {
+      setUpdating(true)
+      const updateData = {
+        full_name: data.full_name,
+        phone: data.phone || null,
+        preferred_language: data.preferred_language,
+        date_of_birth: data.date_of_birth
+          ? new Date(data.date_of_birth).toISOString().split('T')[0]
+          : null,
+        observations: data.observations || null
+      }
+
+      const { error } = await supabase
+        .from('profiles')
+        .update(updateData)
+        .eq('id', studentId)
+
+      if (error) throw error
+
+      // Refresh student data
+      await fetchStudentData()
+      setIsEditDialogOpen(false)
+    } catch (error) {
+      setError('Error updating profile: ' + error.message)
+    } finally {
+      setUpdating(false)
+    }
   }
 
   const fetchStudentData = async () => {
@@ -79,7 +168,9 @@ const StudentSummary = () => {
       // Fetch absent_notified check-ins
       const { data: absentNotifiedData, error: checkInError } = await supabase
         .from('check_ins')
-        .select('id, student_id, check_in_date, status, credit_type, created_at')
+        .select(
+          'id, student_id, check_in_date, status, credit_type, created_at'
+        )
         .eq('student_id', studentId)
         .eq('status', 'absent_notified')
         .order('created_at', { ascending: false })
@@ -232,13 +323,23 @@ const StudentSummary = () => {
         {/* Student Information */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle className="flex items-center">
-              <User className="h-5 w-5 mr-2" />
-              Student Information
-            </CardTitle>
-            <CardDescription>
-              Basic details and current credit balances
-            </CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center">
+                  <User className="h-5 w-5 mr-2" />
+                  Student Information
+                </CardTitle>
+                <CardDescription>
+                  Basic details and current credit balances
+                </CardDescription>
+              </div>
+              {profile?.role === 'teacher' && (
+                <Button variant="outline" size="sm" onClick={handleEditProfile}>
+                  <Edit className="h-4 w-4 mr-2" />
+                  Edit Profile
+                </Button>
+              )}
+            </div>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -275,10 +376,24 @@ const StudentSummary = () => {
                   </h4>
                   <p className="flex items-center">
                     <Globe className="h-4 w-4 mr-2 text-gray-400" />
-                    {student.preferred_language === 'pt' ? 'Portuguese' :
-                     student.preferred_language === 'en' ? 'English' :
-                     student.preferred_language === 'fr' ? 'French' :
-                     student.preferred_language}
+                    {student.preferred_language === 'pt'
+                      ? 'Portuguese'
+                      : student.preferred_language === 'en'
+                      ? 'English'
+                      : student.preferred_language === 'fr'
+                      ? 'French'
+                      : student.preferred_language}
+                  </p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+                    Date of Birth
+                  </h4>
+                  <p className="flex items-center">
+                    <Calendar className="h-4 w-4 mr-2 text-gray-400" />
+                    {student.date_of_birth
+                      ? (() => { const [y, m, d] = student.date_of_birth.split('-'); return new Date(y, m-1, d).toLocaleDateString(); })()
+                      : 'Not set'}
                   </p>
                 </div>
               </div>
@@ -333,8 +448,8 @@ const StudentSummary = () => {
                       <span className="text-sm font-bold">Total</span>
                       <span className="font-bold">
                         {(student.individual_credits || 0) +
-                         (student.duo_credits || 0) +
-                         (student.group_credits || 0)}
+                          (student.duo_credits || 0) +
+                          (student.group_credits || 0)}
                       </span>
                     </div>
                   </div>
@@ -343,6 +458,100 @@ const StudentSummary = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Edit Profile Dialog */}
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Edit Student Profile</DialogTitle>
+              <DialogDescription>
+                Update the student's profile information.
+              </DialogDescription>
+            </DialogHeader>
+            <form
+              onSubmit={form.handleSubmit(onSubmitProfile)}
+              className="space-y-4"
+            >
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="full_name" className="text-right">
+                  Full Name
+                </Label>
+                <Input
+                  id="full_name"
+                  {...form.register('full_name')}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="phone" className="text-right">
+                  Phone
+                </Label>
+                <Input
+                  id="phone"
+                  {...form.register('phone')}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="preferred_language" className="text-right">
+                  Language
+                </Label>
+                <Select
+                  value={form.watch('preferred_language')}
+                  onValueChange={value =>
+                    form.setValue('preferred_language', value)
+                  }
+                >
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pt">Portuguese</SelectItem>
+                    <SelectItem value="en">English</SelectItem>
+                    <SelectItem value="fr">French</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="date_of_birth" className="text-right">
+                  Date of Birth
+                </Label>
+                <Input
+                  id="date_of_birth"
+                  type="date"
+                  {...form.register('date_of_birth')}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-start gap-4">
+                <Label htmlFor="observations" className="text-right pt-2">
+                  Observations
+                </Label>
+                <Textarea
+                  id="observations"
+                  {...form.register('observations')}
+                  className="col-span-3"
+                  rows={3}
+                />
+              </div>
+              <DialogFooter>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsEditDialogOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={updating}>
+                  {updating && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  Save Changes
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
 
         {/* Credit History */}
         <Card>
@@ -377,7 +586,9 @@ const StudentSummary = () => {
                     {creditHistory.map(row => (
                       <TableRow key={row.id}>
                         <TableCell>{getTypeBadge(row.type)}</TableCell>
-                        <TableCell>{getChangeBadge(row.change_amount)}</TableCell>
+                        <TableCell>
+                          {getChangeBadge(row.change_amount)}
+                        </TableCell>
                         <TableCell>
                           {row.created_at
                             ? new Date(row.created_at).toLocaleString()
@@ -396,7 +607,9 @@ const StudentSummary = () => {
                           </span>
                         </TableCell>
                         <TableCell>
-                          {row.amount_paid ? `$${row.amount_paid.toFixed(2)}` : '-'}
+                          {row.amount_paid
+                            ? `$${row.amount_paid.toFixed(2)}`
+                            : '-'}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -412,3 +625,5 @@ const StudentSummary = () => {
 }
 
 export default StudentSummary
+
+
