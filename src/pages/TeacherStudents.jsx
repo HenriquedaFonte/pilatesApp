@@ -67,6 +67,11 @@ const TeacherStudents = () => {
   const [isEnrollDialogOpen, setIsEnrollDialogOpen] = useState(false)
   const [isCommentsDialogOpen, setIsCommentsDialogOpen] = useState(false)
   const [isCreateUserDialogOpen, setIsCreateUserDialogOpen] = useState(false)
+  const [
+    isPasswordResetConfirmDialogOpen,
+    setIsPasswordResetConfirmDialogOpen
+  ] = useState(false)
+  const [selectedStudentForReset, setSelectedStudentForReset] = useState(null)
   const [balanceLoading, setBalanceLoading] = useState(false)
   const [creatingUser, setCreatingUser] = useState(false)
   const [error, setError] = useState('')
@@ -806,7 +811,10 @@ const TeacherStudents = () => {
                       <Button
                         size="sm"
                         variant="destructive"
-                        onClick={() => handleSendPasswordReset(student)}
+                        onClick={() => {
+                          setSelectedStudentForReset(student)
+                          setIsPasswordResetConfirmDialogOpen(true)
+                        }}
                         title="Send password reset email"
                       >
                         <Hash className="h-3 w-3" />
@@ -1225,6 +1233,40 @@ const TeacherStudents = () => {
             <DialogFooter>
               <Button onClick={() => setShowBirthdayNotification(false)}>
                 Got it!
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog
+          open={isPasswordResetConfirmDialogOpen}
+          onOpenChange={setIsPasswordResetConfirmDialogOpen}
+        >
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Confirm Password Reset</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to send a password reset email to{' '}
+                {selectedStudentForReset?.email}? This will allow the student to
+                reset their password.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setIsPasswordResetConfirmDialogOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={async () => {
+                  await handleSendPasswordReset(selectedStudentForReset)
+                  setIsPasswordResetConfirmDialogOpen(false)
+                  setSelectedStudentForReset(null)
+                }}
+              >
+                Send Reset Email
               </Button>
             </DialogFooter>
           </DialogContent>
