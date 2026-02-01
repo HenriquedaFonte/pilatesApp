@@ -379,27 +379,39 @@
     "testimonials": [
       {
         "text": "Josi est sans aucun doute la meilleure professeure de Pilates à Montréal ! Elle a des connaissances incroyables et explique tous les mouvements très clairement, tout en étant attentive à ce que fait chaque élève. Je l'adore et la recommande à 100%!",
-        "author": "Thaissa Duarte, Montréal, QC"
+        "author_name": "Thaissa Duarte",
+        "city": "Montréal",
+        "state": "QC"
       },
       {
         "text": "Josi est tout simplement incroyable. Chaque cours avec elle est léger, amusant et en même temps extrêmement bien fait. Elle a cet œil attentif qui corrige sans presser, explique tout de manière logique, et crée une atmosphère si agréable que vous repartez toujours en vous sentant mieux qu'à votre arrivée. Vraiment : à Montréal, il n'y a personne comme elle. Josi est la professeure de Pilates. Quiconque prend un cours avec elle comprend immédiatement.",
-        "author": "Henrique da Fonte, Montreal, QC"
+        "author_name": "Henrique da Fonte",
+        "city": "Montreal",
+        "state": "QC"
       },
       {
         "text": "Une excellente professionnelle. Elle est attentive aux particularités de ses élèves.",
-        "author": "Lia Crippa, Montréal, QC"
+        "author_name": "Lia Crippa",
+        "city": "Montréal",
+        "state": "QC"
       },
       {
         "text": "Je n'ai pas de mots pour exprimer ma gratitude et ma reconnaissance pour le travail exceptionnel de Josi. Après avoir affronté des jours de douleurs intenses et de diagnostics imprécis, commencer les cours de Pilates avec elle m'a donné la certitude que je recevais exactement le soutien dont j'avais besoin. Son approche humanisée, alliée à l'écoute active et aux cours personnalisés, fait toute la différence. En quelques semaines seulement, j'ai retrouvé mon autonomie et ma mobilité, et me suis débarrassé de la douleur que je ressentais au début. Pour ceux qui cherchent des résultats réels et des soins authentiques, Josi est le bon choix.",
-        "author": "Danilo Paixão, Montreal, QC"
+        "author_name": "Danilo Paixão",
+        "city": "Montreal",
+        "state": "QC"
       },
       {
         "text": "Je suis revenue au Pilates après un long moment parce que je ressentais beaucoup de douleurs dans le cou, les épaules, le haut du dos et les omoplates. J'ai vécu avec cette douleur, qui ne faisait qu'empirer, pendant deux ans. J'ai essayé plusieurs choses. Enfin, en septembre 2025, une physiothérapeute m'a conseillé de revenir au Pilates. Après trois mois, la douleur a disparu. Je me sens si bien. Parfois, je n'arrive même pas à croire que je suis sans douleur. Josi est une professionnelle dédiée, patiente et très compétente. Je ne peux que la remercier pour tout !",
-        "author": "Lila de Paula, Montreal, QC"
+        "author_name": "Lila de Paula",
+        "city": "Montreal",
+        "state": "QC"
       },
       {
         "text": "Après une crise intense de douleur au nerf sciatique qui a duré environ cinq mois, j'ai commencé les cours de Pilates pour aider à ma récupération et prévenir de nouveaux épisodes. Au début, j'avais peur de ressentir la douleur à nouveau, mais avec un guidage attentif et des exercices bien ciblés, j'ai pu soulager la douleur et renforcer mon corps en toute sécurité. Cela fait maintenant plus d'un an sans crises, et je suis très reconnaissante à Josi pour son attention, son professionnalisme et son guidage tout au long de ce processus.",
-        "author": "Fernanda Guerreiro, Montreal, QC"
+        "author_name": "Fernanda Guerreiro",
+        "city": "Montreal",
+        "state": "QC"
       }
     ],
     "contact": {
