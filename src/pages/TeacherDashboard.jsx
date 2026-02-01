@@ -20,7 +20,8 @@ import {
   FileText,
   CreditCard,
   Mail,
-  User
+  User,
+  MessageSquare
 } from 'lucide-react'
 import Logo from '../components/Logo'
 import { ThemeToggle } from '../components/ThemeToggle'
@@ -179,7 +180,6 @@ const TeacherDashboard = () => {
               </p>
             </CardContent>
           </Card>
-
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -292,7 +292,10 @@ const TeacherDashboard = () => {
             </Link>
           </Card>
           <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-            <Link to="/teacher/email-notifications" className="flex flex-col h-full">
+            <Link
+              to="/teacher/email-notifications"
+              className="flex flex-col h-full"
+            >
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Mail className="h-5 w-5 mr-2 text-primary" />
@@ -300,6 +303,19 @@ const TeacherDashboard = () => {
                 </CardTitle>
                 <CardDescription>
                   Manage and send email notifications to students
+                </CardDescription>
+              </CardHeader>
+            </Link>
+          </Card>
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+            <Link to="/teacher/testimonials" className="flex flex-col h-full">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <MessageSquare className="h-5 w-5 mr-2 text-primary" />
+                  Testimonials
+                </CardTitle>
+                <CardDescription>
+                  Manage testimonials displayed on the homepage
                 </CardDescription>
               </CardHeader>
             </Link>

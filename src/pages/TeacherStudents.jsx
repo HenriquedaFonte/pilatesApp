@@ -74,6 +74,7 @@ const TeacherStudents = () => {
   const [selectedStudentForReset, setSelectedStudentForReset] = useState(null)
   const [balanceLoading, setBalanceLoading] = useState(false)
   const [creatingUser, setCreatingUser] = useState(false)
+  const [passwordResetLoading, setPasswordResetLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [upcomingBirthdays, setUpcomingBirthdays] = useState([])

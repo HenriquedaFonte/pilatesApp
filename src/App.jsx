@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate
+} from 'react-router-dom'
 import { lazy, Suspense } from 'react'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider, useAuth } from './hooks/useAuth'
@@ -18,6 +23,7 @@ const TeacherDashboard = lazy(() => import('./pages/TeacherDashboard'))
 const TeacherClasses = lazy(() => import('./pages/TeacherClasses'))
 const TeacherStudents = lazy(() => import('./pages/TeacherStudents'))
 const TeacherCheckIn = lazy(() => import('./pages/TeacherCheckIn'))
+const TeacherTestimonials = lazy(() => import('./pages/TeacherTestimonials'))
 const StudentDashboard = lazy(() => import('./pages/StudentDashboard'))
 const StudentHistory = lazy(() => import('./pages/StudentHistory'))
 const StudioRules = lazy(() => import('./pages/StudioRules'))
@@ -62,137 +68,145 @@ function AppRoutes() {
   return (
     <Suspense fallback={<CardSkeleton />}>
       <Routes>
-      <Route path="/" element={<StudioHome />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/complete-profile" element={<ProfileCompletion />} />
-      <Route path="/change-password" element={<ChangePassword />} />
-      <Route path="/reset-password" element={<ResetPassword />} />
-      <Route path="/auth/callback" element={<AuthCallback />} />
-      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-      <Route path="/terms-of-service" element={<TermsOfService />} />
+        <Route path="/" element={<StudioHome />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/complete-profile" element={<ProfileCompletion />} />
+        <Route path="/change-password" element={<ChangePassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-of-service" element={<TermsOfService />} />
 
-      <Route 
-        path="/teacher/dashboard" 
-        element={
-          <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
-            <TeacherDashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route 
-        path="/teacher/classes" 
-        element={
-          <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
-            <TeacherClasses />
-          </ProtectedRoute>
-        }
-      />
-      <Route 
-        path="/teacher/students" 
-        element={
-          <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
-            <TeacherStudents />
-          </ProtectedRoute>
-        }
-      />
-      <Route 
-        path="/teacher/check-in" 
-        element={
-          <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
-            <TeacherCheckIn />
-          </ProtectedRoute>
-        }
-      />
-      <Route 
-        path="/teacher/attendance-report" 
-        element={
-          <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
-            <AttendanceReport />
-          </ProtectedRoute>
-        }
-      />
-      <Route 
-        path="/teacher/low-credits-report" 
-        element={
-          <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
-            <LowCreditsReport />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/teacher/credit-history-report"
-        element={
-          <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
-            <CreditHistoryReport />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/teacher/financial-report"
-        element={
-          <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
-            <FinancialReport />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/teacher/email-notifications"
-        element={
-          <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
-            <EmailNotifications />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/teacher/profile"
-        element={
-          <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
-            <TeacherProfile />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/teacher/student-summary/:studentId"
-        element={
-          <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
-            <StudentSummary />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/teacher/dashboard"
+          element={
+            <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
+              <TeacherDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/teacher/classes"
+          element={
+            <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
+              <TeacherClasses />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/teacher/students"
+          element={
+            <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
+              <TeacherStudents />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/teacher/check-in"
+          element={
+            <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
+              <TeacherCheckIn />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/teacher/testimonials"
+          element={
+            <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
+              <TeacherTestimonials />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/teacher/attendance-report"
+          element={
+            <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
+              <AttendanceReport />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/teacher/low-credits-report"
+          element={
+            <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
+              <LowCreditsReport />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/teacher/credit-history-report"
+          element={
+            <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
+              <CreditHistoryReport />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/teacher/financial-report"
+          element={
+            <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
+              <FinancialReport />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/teacher/email-notifications"
+          element={
+            <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
+              <EmailNotifications />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/teacher/profile"
+          element={
+            <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
+              <TeacherProfile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/teacher/student-summary/:studentId"
+          element={
+            <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
+              <StudentSummary />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route
-        path="/student/dashboard" 
-        element={
-          <ProtectedRoute requireRole="student" requireCompleteProfile={true}>
-            <StudentDashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/student/history"
-        element={
-          <ProtectedRoute requireRole="student" requireCompleteProfile={true}>
-            <StudentHistory />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/student/rules"
-        element={
-          <ProtectedRoute requireRole="student" requireCompleteProfile={true}>
-            <StudioRules />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/student/profile"
-        element={
-          <ProtectedRoute requireRole="student" requireCompleteProfile={true}>
-            <StudentProfile />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/student/dashboard"
+          element={
+            <ProtectedRoute requireRole="student" requireCompleteProfile={true}>
+              <StudentDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/history"
+          element={
+            <ProtectedRoute requireRole="student" requireCompleteProfile={true}>
+              <StudentHistory />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/rules"
+          element={
+            <ProtectedRoute requireRole="student" requireCompleteProfile={true}>
+              <StudioRules />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/profile"
+          element={
+            <ProtectedRoute requireRole="student" requireCompleteProfile={true}>
+              <StudentProfile />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </Suspense>

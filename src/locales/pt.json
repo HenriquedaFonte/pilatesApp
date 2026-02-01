@@ -420,6 +420,7 @@
   "studioHome": {
     "nav": {
       "about": "Sobre",
+      "testimonials": "Depoimentos",
       "services": "Serviços",
       "contact": "Contato",
       "studentPortal": "Portal do Aluno"
@@ -437,6 +438,8 @@
       "extendedTitle": "Um pouco mais sobre mim",
       "extended": "Josiane recebeu sua primeira certificação em método Pilates (PhysicalMind Institute–NYC) em 2005, inicialmente atraída pelo método como complemento à sua carreira de fisioterapeuta no Brasil.\n\nEm 2010, ela se mudou para Montreal para aprofundar seus conhecimentos em Educação Somática na UQÀM e foi convidada a dar palestras e workshops sobre avaliação postural, técnicas de prevenção de lesões e práticas somáticas (incluindo Pilates) para estudantes de graduação em música e dança da universidade.\n\nGraças à sua experiência, Josiane é capaz de oferecer um treinamento seguro, equilibrado e variado. Ela está acostumada a trabalhar com uma ampla variedade de pessoas, incluindo atletas, artistas de circo, dançarinos, músicos, mulheres grávidas e idosos.\n\nTrabalhar com Josiane, convida você a se mover conscientemente e com alegria, fortalecendo seu corpo e melhorando seu alinhamento e mobilidade."
     },
+    "testimonialsTitle": "O que Nossos Alunos Dizem",
+    "testimonialsSubtitle": "Experiências reais da nossa comunidade de Pilates",
     "services": {
       "title": "Serviços",
       "subtitle": "Instrução profissional de Pilates adaptada às suas necessidades.",
@@ -467,16 +470,28 @@
     },
     "testimonials": [
       {
-        "text": "Josi est sans aucun doute la meilleure professeure de Pilates à Montreal ! Elle a des connaissances incroyables et explique tous les mouvements très clairement, tout en étant attentive à ce que fait chaque élève. Je l'adore et la recommande à 100%!",
+        "text": "Josi é sem dúvida a melhor professora de Pilates em Montreal! Ela tem conhecimentos incríveis e explica todos os movimentos de forma muito clara, ao mesmo tempo em que está atenta ao que cada aluno está fazendo. Eu a adoro e a recomendo 100%!",
         "author": "Thaissa Duarte, Montréal, QC"
       },
       {
-        "text": "Un excellent professionnel. Elle est attentive aux particularités de ses élèves.",
+        "text": "Josi é simplesmente incrível. Cada aula com ela é leve, divertida e ao mesmo tempo extremamente bem feita. Ela tem aquele olhar atento que corrige sem pressionar, explica tudo de uma forma que faz sentido, e cria uma atmosfera tão agradável que você sempre sai se sentindo melhor do que quando chegou. Verdadeiramente: em Montreal, não há ninguém como ela. Josi é a professora de Pilates. Quem faz aula com ela entende imediatamente.",
+        "author": "Henrique da Fonte, Montreal, QC"
+      },
+      {
+        "text": "Uma excelente profissional. Ela é atenta às particularidades de seus alunos.",
         "author": "Lia Crippa, Montréal, QC"
       },
       {
-        "text": "Josi's classes are the best! She's super kind, knows her stuff, and makes Pilates fun. I feel stronger, more relaxed, and actually look forward to every session.",
-        "author": "Henrique, Montreal, QC"
+        "text": "Não tenho palavras para expressar minha gratidão e reconhecimento pelo trabalho excepcional de Josi. Após enfrentar dias de dores intensas e diagnósticos imprecisos, iniciar as aulas de Pilates com ela me deu a certeza de que estava recebendo exatamente o apoio que precisava. Sua abordagem humanizada, aliada à escuta ativa e aulas personalizadas, faz toda a diferença. Em poucas semanas, recuperei minha autonomia e mobilidade, e me livrei da dor que sentia no início. Para quem busca resultados reais e cuidado genuíno, Josi é a escolha certa.",
+        "author": "Danilo Paixão, Montreal, QC"
+      },
+      {
+        "text": "Retornei ao Pilates após muito tempo porque estava sentindo muitas dores no pescoço, ombros, parte superior das costas e omoplatas. Convivi com essa dor, que só piorava, por dois anos. Tentei várias coisas. Finalmente, em setembro de 2025, uma fisioterapeuta me aconselhou a voltar ao Pilates. Após três meses, a dor desapareceu. Me sinto tão bem. Às vezes nem acredito que estou sem dor. Josi é uma profissional dedicada, paciente e muito competente. Só posso agradecê-la por tudo!",
+        "author": "Lila de Paula, Montreal, QC"
+      },
+      {
+        "text": "Após uma crise intensa de dor no nervo ciático que durou aproximadamente cinco meses, iniciei aulas de Pilates para auxiliar na minha recuperação e prevenir novos episódios. No início, tinha medo de sentir a dor novamente, mas com orientação cuidadosa e exercícios bem direcionados, consegui aliviar a dor e fortalecer meu corpo de forma segura. Já faz mais de um ano sem crises, e sou muito grata a Josi pela atenção, profissionalismo e orientação durante todo esse processo.",
+        "author": "Fernanda Guerreiro, Montreal, QC"
       }
     ],
     "contact": {
