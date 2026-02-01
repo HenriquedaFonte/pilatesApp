@@ -30,7 +30,16 @@ import {
   Eye,
   EyeOff
 } from 'lucide-react'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ThemeToggle } from '../components/ThemeToggle'
+import { translateTestimonialFields } from '../lib/translationService'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 
 const TeacherTestimonials = () => {
   const { profile, signOut } = useAuth()
@@ -42,12 +51,14 @@ const TeacherTestimonials = () => {
   const [selectedTestimonial, setSelectedTestimonial] = useState(null)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [inputLanguage, setInputLanguage] = useState('fr')
+  const [translating, setTranslating] = useState(false)
 
   const [formData, setFormData] = useState({
-    text: '',
-    author_name: '',
-    city: '',
-    state: '',
+    text: JSON.stringify({ fr: '', en: '', pt: '' }),
+    author_name: JSON.stringify({ fr: '', en: '', pt: '' }),
+    city: JSON.stringify({ fr: '', en: '', pt: '' }),
+    state: JSON.stringify({ fr: '', en: '', pt: '' }),
     is_active: true
   })
 
@@ -80,24 +91,51 @@ const TeacherTestimonials = () => {
     e.preventDefault()
     setError('')
     setSuccess('')
+    setTranslating(true)
 
     try {
-      const { error } = await supabase.from('testimonials').insert([formData])
+      // Parse the form data
+      const parsedData = {
+        text: JSON.parse(formData.text),
+        author_name: JSON.parse(formData.author_name),
+        city: JSON.parse(formData.city),
+        state: JSON.parse(formData.state),
+        is_active: formData.is_active
+      }
+
+      // Translate missing languages
+      const translatedData = await translateTestimonialFields(
+        parsedData,
+        inputLanguage
+      )
+
+      // Convert back to JSON strings for database
+      const dbData = {
+        text: JSON.stringify(translatedData.text),
+        author_name: JSON.stringify(translatedData.author_name),
+        city: JSON.stringify(translatedData.city),
+        state: JSON.stringify(translatedData.state),
+        is_active: formData.is_active
+      }
+
+      const { error } = await supabase.from('testimonials').insert([dbData])
 
       if (error) throw error
 
       setSuccess('Testimonial created successfully!')
       setIsCreateDialogOpen(false)
       setFormData({
-        text: '',
-        author_name: '',
-        city: '',
-        state: '',
+        text: JSON.stringify({ fr: '', en: '', pt: '' }),
+        author_name: JSON.stringify({ fr: '', en: '', pt: '' }),
+        city: JSON.stringify({ fr: '', en: '', pt: '' }),
+        state: JSON.stringify({ fr: '', en: '', pt: '' }),
         is_active: true
       })
       fetchTestimonials()
     } catch (error) {
       setError('Error creating testimonial: ' + error.message)
+    } finally {
+      setTranslating(false)
     }
   }
 
@@ -105,11 +143,36 @@ const TeacherTestimonials = () => {
     e.preventDefault()
     setError('')
     setSuccess('')
+    setTranslating(true)
 
     try {
+      // Parse the form data
+      const parsedData = {
+        text: JSON.parse(formData.text),
+        author_name: JSON.parse(formData.author_name),
+        city: JSON.parse(formData.city),
+        state: JSON.parse(formData.state),
+        is_active: formData.is_active
+      }
+
+      // Translate missing languages
+      const translatedData = await translateTestimonialFields(
+        parsedData,
+        inputLanguage
+      )
+
+      // Convert back to JSON strings for database
+      const dbData = {
+        text: JSON.stringify(translatedData.text),
+        author_name: JSON.stringify(translatedData.author_name),
+        city: JSON.stringify(translatedData.city),
+        state: JSON.stringify(translatedData.state),
+        is_active: formData.is_active
+      }
+
       const { error } = await supabase
         .from('testimonials')
-        .update(formData)
+        .update(dbData)
         .eq('id', selectedTestimonial.id)
 
       if (error) throw error
@@ -118,15 +181,17 @@ const TeacherTestimonials = () => {
       setIsEditDialogOpen(false)
       setSelectedTestimonial(null)
       setFormData({
-        text: '',
-        author_name: '',
-        city: '',
-        state: '',
+        text: JSON.stringify({ fr: '', en: '', pt: '' }),
+        author_name: JSON.stringify({ fr: '', en: '', pt: '' }),
+        city: JSON.stringify({ fr: '', en: '', pt: '' }),
+        state: JSON.stringify({ fr: '', en: '', pt: '' }),
         is_active: true
       })
       fetchTestimonials()
     } catch (error) {
       setError('Error updating testimonial: ' + error.message)
+    } finally {
+      setTranslating(false)
     }
   }
 
@@ -165,14 +230,49 @@ const TeacherTestimonials = () => {
 
   const openEditDialog = testimonial => {
     setSelectedTestimonial(testimonial)
+
+    // Parse JSON data or create default structure
+    const parseJsonField = field => {
+      try {
+        const parsed = JSON.parse(field)
+        return typeof parsed === 'object' && parsed !== null
+          ? parsed
+          : { fr: field || '', en: '', pt: '' }
+      } catch {
+        return { fr: field || '', en: '', pt: '' }
+      }
+    }
+
     setFormData({
-      text: testimonial.text,
-      author_name: testimonial.author_name,
-      city: testimonial.city || '',
-      state: testimonial.state || '',
+      text: JSON.stringify(parseJsonField(testimonial.text)),
+      author_name: JSON.stringify(parseJsonField(testimonial.author_name)),
+      city: JSON.stringify(parseJsonField(testimonial.city || '')),
+      state: JSON.stringify(parseJsonField(testimonial.state || '')),
       is_active: testimonial.is_active
     })
     setIsEditDialogOpen(true)
+  }
+
+  // Helper functions to get/set values for specific languages
+  const getFieldValue = (field, lang) => {
+    try {
+      const parsed = JSON.parse(formData[field])
+      return parsed[lang] || ''
+    } catch {
+      return ''
+    }
+  }
+
+  const setFieldValue = (field, lang, value) => {
+    try {
+      const parsed = JSON.parse(formData[field])
+      parsed[lang] = value
+      setFormData({ ...formData, [field]: JSON.stringify(parsed) })
+    } catch {
+      const newData = { fr: '', en: '', pt: '' }
+      newData[lang] = value
+      setFormData({ ...formData, [field]: JSON.stringify(newData) })
+    }
   }
 
   if (loading) {
@@ -250,67 +350,199 @@ const TeacherTestimonials = () => {
                 </DialogDescription>
               </DialogHeader>
               <form onSubmit={handleCreate} className="space-y-4">
-                <div>
-                  <Label htmlFor="text">Testimonial Text</Label>
-                  <Textarea
-                    id="text"
-                    value={formData.text}
-                    onChange={e =>
-                      setFormData({ ...formData, text: e.target.value })
-                    }
-                    placeholder="Enter the testimonial text..."
-                    rows={4}
-                    required
-                  />
+                <div className="space-y-2">
+                  <Label htmlFor="input-language">Write testimonial in</Label>
+                  <Select
+                    value={inputLanguage}
+                    onValueChange={setInputLanguage}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select language" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="fr">Français</SelectItem>
+                      <SelectItem value="en">English</SelectItem>
+                      <SelectItem value="pt">Português</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
-                <div>
-                  <Label htmlFor="author_name">Author Name</Label>
-                  <Input
-                    id="author_name"
-                    type="text"
-                    value={formData.author_name}
-                    onChange={e =>
-                      setFormData({ ...formData, author_name: e.target.value })
-                    }
-                    placeholder="Full name"
-                    required
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="city">City</Label>
-                    <Input
-                      id="city"
-                      type="text"
-                      value={formData.city}
-                      onChange={e =>
-                        setFormData({ ...formData, city: e.target.value })
-                      }
-                      placeholder="City"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="state">State/Province</Label>
-                    <Input
-                      id="state"
-                      type="text"
-                      value={formData.state}
-                      onChange={e =>
-                        setFormData({ ...formData, state: e.target.value })
-                      }
-                      placeholder="QC"
-                    />
-                  </div>
-                </div>
+                <Tabs defaultValue={inputLanguage} className="w-full">
+                  <TabsList className="grid w-full grid-cols-3">
+                    <TabsTrigger value="fr">Français</TabsTrigger>
+                    <TabsTrigger value="en">English</TabsTrigger>
+                    <TabsTrigger value="pt">Português</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="fr" className="space-y-4">
+                    <div>
+                      <Label htmlFor="text-fr">Texte du témoignage</Label>
+                      <Textarea
+                        id="text-fr"
+                        value={getFieldValue('text', 'fr')}
+                        onChange={e =>
+                          setFieldValue('text', 'fr', e.target.value)
+                        }
+                        placeholder="Entrez le texte du témoignage..."
+                        rows={4}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="author_name-fr">Nom de l'auteur</Label>
+                      <Input
+                        id="author_name-fr"
+                        type="text"
+                        value={getFieldValue('author_name', 'fr')}
+                        onChange={e =>
+                          setFieldValue('author_name', 'fr', e.target.value)
+                        }
+                        placeholder="Nom complet"
+                        required
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="city-fr">Ville</Label>
+                        <Input
+                          id="city-fr"
+                          type="text"
+                          value={getFieldValue('city', 'fr')}
+                          onChange={e =>
+                            setFieldValue('city', 'fr', e.target.value)
+                          }
+                          placeholder="Ville"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="state-fr">Province</Label>
+                        <Input
+                          id="state-fr"
+                          type="text"
+                          value={getFieldValue('state', 'fr')}
+                          onChange={e =>
+                            setFieldValue('state', 'fr', e.target.value)
+                          }
+                          placeholder="QC"
+                        />
+                      </div>
+                    </div>
+                  </TabsContent>
+                  <TabsContent value="en" className="space-y-4">
+                    <div>
+                      <Label htmlFor="text-en">Testimonial Text</Label>
+                      <Textarea
+                        id="text-en"
+                        value={getFieldValue('text', 'en')}
+                        onChange={e =>
+                          setFieldValue('text', 'en', e.target.value)
+                        }
+                        placeholder="Enter the testimonial text..."
+                        rows={4}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="author_name-en">Author Name</Label>
+                      <Input
+                        id="author_name-en"
+                        type="text"
+                        value={getFieldValue('author_name', 'en')}
+                        onChange={e =>
+                          setFieldValue('author_name', 'en', e.target.value)
+                        }
+                        placeholder="Full name"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="city-en">City</Label>
+                        <Input
+                          id="city-en"
+                          type="text"
+                          value={getFieldValue('city', 'en')}
+                          onChange={e =>
+                            setFieldValue('city', 'en', e.target.value)
+                          }
+                          placeholder="City"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="state-en">State/Province</Label>
+                        <Input
+                          id="state-en"
+                          type="text"
+                          value={getFieldValue('state', 'en')}
+                          onChange={e =>
+                            setFieldValue('state', 'en', e.target.value)
+                          }
+                          placeholder="QC"
+                        />
+                      </div>
+                    </div>
+                  </TabsContent>
+                  <TabsContent value="pt" className="space-y-4">
+                    <div>
+                      <Label htmlFor="text-pt">Texto do Depoimento</Label>
+                      <Textarea
+                        id="text-pt"
+                        value={getFieldValue('text', 'pt')}
+                        onChange={e =>
+                          setFieldValue('text', 'pt', e.target.value)
+                        }
+                        placeholder="Digite o texto do depoimento..."
+                        rows={4}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="author_name-pt">Nome do Autor</Label>
+                      <Input
+                        id="author_name-pt"
+                        type="text"
+                        value={getFieldValue('author_name', 'pt')}
+                        onChange={e =>
+                          setFieldValue('author_name', 'pt', e.target.value)
+                        }
+                        placeholder="Nome completo"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="city-pt">Cidade</Label>
+                        <Input
+                          id="city-pt"
+                          type="text"
+                          value={getFieldValue('city', 'pt')}
+                          onChange={e =>
+                            setFieldValue('city', 'pt', e.target.value)
+                          }
+                          placeholder="Cidade"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="state-pt">Estado</Label>
+                        <Input
+                          id="state-pt"
+                          type="text"
+                          value={getFieldValue('state', 'pt')}
+                          onChange={e =>
+                            setFieldValue('state', 'pt', e.target.value)
+                          }
+                          placeholder="QC"
+                        />
+                      </div>
+                    </div>
+                  </TabsContent>
+                </Tabs>
                 <DialogFooter>
                   <Button
                     type="button"
                     variant="outline"
                     onClick={() => setIsCreateDialogOpen(false)}
+                    disabled={translating}
                   >
                     Cancel
                   </Button>
-                  <Button type="submit">Add Testimonial</Button>
+                  <Button type="submit" disabled={translating}>
+                    {translating ? 'Translating...' : 'Add Testimonial'}
+                  </Button>
                 </DialogFooter>
               </form>
             </DialogContent>
@@ -318,68 +550,85 @@ const TeacherTestimonials = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {testimonials.map(testimonial => (
-            <Card key={testimonial.id}>
-              <CardHeader>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <CardTitle className="text-lg">
-                      {testimonial.author_name}
-                    </CardTitle>
-                    {testimonial.city && testimonial.state && (
-                      <p className="text-sm text-gray-500">
-                        {testimonial.city}, {testimonial.state}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Badge
-                      variant={testimonial.is_active ? 'default' : 'secondary'}
-                    >
-                      {testimonial.is_active ? 'Active' : 'Inactive'}
-                    </Badge>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 dark:text-gray-300 italic mb-4">
-                  "{testimonial.text}"
-                </p>
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-500">
-                    {new Date(testimonial.created_at).toLocaleDateString()}
-                  </span>
-                  <div className="flex space-x-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleToggleActive(testimonial)}
-                    >
-                      {testimonial.is_active ? (
-                        <EyeOff className="h-3 w-3" />
-                      ) : (
-                        <Eye className="h-3 w-3" />
+          {testimonials.map(testimonial => {
+            // Parse JSON data for display (fallback to raw data)
+            const parseField = field => {
+              try {
+                const parsed = JSON.parse(field)
+                return parsed.fr || field
+              } catch {
+                return field
+              }
+            }
+
+            const displayText = parseField(testimonial.text)
+            const displayAuthor = parseField(testimonial.author_name)
+            const displayCity = parseField(testimonial.city)
+            const displayState = parseField(testimonial.state)
+
+            return (
+              <Card key={testimonial.id}>
+                <CardHeader>
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <CardTitle className="text-lg">{displayAuthor}</CardTitle>
+                      {displayCity && displayState && (
+                        <p className="text-sm text-gray-500">
+                          {displayCity}, {displayState}
+                        </p>
                       )}
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => openEditDialog(testimonial)}
-                    >
-                      <Edit className="h-3 w-3" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      onClick={() => handleDelete(testimonial)}
-                    >
-                      <Trash2 className="h-3 w-3" />
-                    </Button>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Badge
+                        variant={
+                          testimonial.is_active ? 'default' : 'secondary'
+                        }
+                      >
+                        {testimonial.is_active ? 'Active' : 'Inactive'}
+                      </Badge>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600 dark:text-gray-300 italic mb-4">
+                    "{displayText}"
+                  </p>
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-gray-500">
+                      {new Date(testimonial.created_at).toLocaleDateString()}
+                    </span>
+                    <div className="flex space-x-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleToggleActive(testimonial)}
+                      >
+                        {testimonial.is_active ? (
+                          <EyeOff className="h-3 w-3" />
+                        ) : (
+                          <Eye className="h-3 w-3" />
+                        )}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => openEditDialog(testimonial)}
+                      >
+                        <Edit className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleDelete(testimonial)}
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )
+          })}
         </div>
 
         {testimonials.length === 0 && (
@@ -405,67 +654,183 @@ const TeacherTestimonials = () => {
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleEdit} className="space-y-4">
-              <div>
-                <Label htmlFor="edit-text">Testimonial Text</Label>
-                <Textarea
-                  id="edit-text"
-                  value={formData.text}
-                  onChange={e =>
-                    setFormData({ ...formData, text: e.target.value })
-                  }
-                  placeholder="Enter the testimonial text..."
-                  rows={4}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="edit-author_name">Author Name</Label>
-                <Input
-                  id="edit-author_name"
-                  type="text"
-                  value={formData.author_name}
-                  onChange={e =>
-                    setFormData({ ...formData, author_name: e.target.value })
-                  }
-                  placeholder="Full name"
-                  required
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="edit-city">City</Label>
-                  <Input
-                    id="edit-city"
-                    type="text"
-                    value={formData.city}
-                    onChange={e =>
-                      setFormData({ ...formData, city: e.target.value })
-                    }
-                    placeholder="City"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="edit-state">State/Province</Label>
-                  <Input
-                    id="edit-state"
-                    type="text"
-                    value={formData.state}
-                    onChange={e =>
-                      setFormData({ ...formData, state: e.target.value })
-                    }
-                    placeholder="QC"
-                  />
-                </div>
-              </div>
+              <Tabs defaultValue="fr" className="w-full">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="fr">Français</TabsTrigger>
+                  <TabsTrigger value="en">English</TabsTrigger>
+                  <TabsTrigger value="pt">Português</TabsTrigger>
+                </TabsList>
+                <TabsContent value="fr" className="space-y-4">
+                  <div>
+                    <Label htmlFor="edit-text-fr">Texte du témoignage</Label>
+                    <Textarea
+                      id="edit-text-fr"
+                      value={getFieldValue('text', 'fr')}
+                      onChange={e =>
+                        setFieldValue('text', 'fr', e.target.value)
+                      }
+                      placeholder="Entrez le texte du témoignage..."
+                      rows={4}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="edit-author_name-fr">Nom de l'auteur</Label>
+                    <Input
+                      id="edit-author_name-fr"
+                      type="text"
+                      value={getFieldValue('author_name', 'fr')}
+                      onChange={e =>
+                        setFieldValue('author_name', 'fr', e.target.value)
+                      }
+                      placeholder="Nom complet"
+                      required
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="edit-city-fr">Ville</Label>
+                      <Input
+                        id="edit-city-fr"
+                        type="text"
+                        value={getFieldValue('city', 'fr')}
+                        onChange={e =>
+                          setFieldValue('city', 'fr', e.target.value)
+                        }
+                        placeholder="Ville"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="edit-state-fr">Province</Label>
+                      <Input
+                        id="edit-state-fr"
+                        type="text"
+                        value={getFieldValue('state', 'fr')}
+                        onChange={e =>
+                          setFieldValue('state', 'fr', e.target.value)
+                        }
+                        placeholder="QC"
+                      />
+                    </div>
+                  </div>
+                </TabsContent>
+                <TabsContent value="en" className="space-y-4">
+                  <div>
+                    <Label htmlFor="edit-text-en">Testimonial Text</Label>
+                    <Textarea
+                      id="edit-text-en"
+                      value={getFieldValue('text', 'en')}
+                      onChange={e =>
+                        setFieldValue('text', 'en', e.target.value)
+                      }
+                      placeholder="Enter the testimonial text..."
+                      rows={4}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="edit-author_name-en">Author Name</Label>
+                    <Input
+                      id="edit-author_name-en"
+                      type="text"
+                      value={getFieldValue('author_name', 'en')}
+                      onChange={e =>
+                        setFieldValue('author_name', 'en', e.target.value)
+                      }
+                      placeholder="Full name"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="edit-city-en">City</Label>
+                      <Input
+                        id="edit-city-en"
+                        type="text"
+                        value={getFieldValue('city', 'en')}
+                        onChange={e =>
+                          setFieldValue('city', 'en', e.target.value)
+                        }
+                        placeholder="City"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="edit-state-en">State/Province</Label>
+                      <Input
+                        id="edit-state-en"
+                        type="text"
+                        value={getFieldValue('state', 'en')}
+                        onChange={e =>
+                          setFieldValue('state', 'en', e.target.value)
+                        }
+                        placeholder="QC"
+                      />
+                    </div>
+                  </div>
+                </TabsContent>
+                <TabsContent value="pt" className="space-y-4">
+                  <div>
+                    <Label htmlFor="edit-text-pt">Texto do Depoimento</Label>
+                    <Textarea
+                      id="edit-text-pt"
+                      value={getFieldValue('text', 'pt')}
+                      onChange={e =>
+                        setFieldValue('text', 'pt', e.target.value)
+                      }
+                      placeholder="Digite o texto do depoimento..."
+                      rows={4}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="edit-author_name-pt">Nome do Autor</Label>
+                    <Input
+                      id="edit-author_name-pt"
+                      type="text"
+                      value={getFieldValue('author_name', 'pt')}
+                      onChange={e =>
+                        setFieldValue('author_name', 'pt', e.target.value)
+                      }
+                      placeholder="Nome completo"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="edit-city-pt">Cidade</Label>
+                      <Input
+                        id="edit-city-pt"
+                        type="text"
+                        value={getFieldValue('city', 'pt')}
+                        onChange={e =>
+                          setFieldValue('city', 'pt', e.target.value)
+                        }
+                        placeholder="Cidade"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="edit-state-pt">Estado</Label>
+                      <Input
+                        id="edit-state-pt"
+                        type="text"
+                        value={getFieldValue('state', 'pt')}
+                        onChange={e =>
+                          setFieldValue('state', 'pt', e.target.value)
+                        }
+                        placeholder="QC"
+                      />
+                    </div>
+                  </div>
+                </TabsContent>
+              </Tabs>
               <DialogFooter>
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => setIsEditDialogOpen(false)}
+                  disabled={translating}
                 >
                   Cancel
                 </Button>
-                <Button type="submit">Update Testimonial</Button>
+                <Button type="submit" disabled={translating}>
+                  {translating ? 'Translating...' : 'Update Testimonial'}
+                </Button>
               </DialogFooter>
             </form>
           </DialogContent>
