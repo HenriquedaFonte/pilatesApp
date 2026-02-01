@@ -59,7 +59,7 @@ const StudioHome = () => {
 
   useEffect(() => {
     fetchTestimonials()
-  }, [])
+  }, [i18n.language])
 
   const fetchTestimonials = async () => {
     try {
@@ -70,7 +70,51 @@ const StudioHome = () => {
         .order('created_at', { ascending: false })
 
       if (error) throw error
-      setTestimonials(data || [])
+
+      // Get static testimonials
+      const staticTestimonials =
+        t('studioHome.testimonials', { returnObjects: true }) || []
+
+      // Transform database testimonials to match static format with language support
+      const transformedDbTestimonials = (data || []).map(testimonial => {
+        // Parse JSON data for the current language
+        const parseField = field => {
+          try {
+            const parsed = JSON.parse(field)
+            // Try current language, then fallbacks
+            return (
+              parsed[i18n.language] ||
+              parsed.fr ||
+              parsed.en ||
+              parsed.pt ||
+              field
+            )
+          } catch {
+            // If not JSON, return as plain text (for legacy testimonials)
+            return field
+          }
+        }
+
+        return {
+          text: parseField(testimonial.text),
+          author_name: parseField(testimonial.author_name),
+          city: parseField(testimonial.city),
+          state: parseField(testimonial.state),
+          id: testimonial.id,
+          created_at: testimonial.created_at
+        }
+      })
+
+      // Filter out testimonials with empty text and combine database and static testimonials
+      const filteredDbTestimonials = transformedDbTestimonials.filter(
+        t => t.text && t.text.trim()
+      )
+      const combinedTestimonials = [
+        ...filteredDbTestimonials,
+        ...staticTestimonials
+      ]
+
+      setTestimonials(combinedTestimonials)
     } catch (error) {
       console.error('Error fetching testimonials:', error)
       // Fallback to static testimonials if database fails
