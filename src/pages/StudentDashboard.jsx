@@ -86,14 +86,16 @@ const StudentDashboard = () => {
 
       const { data: attendance, error: attendanceError } = await supabase
         .from('check_ins')
-        .select(`
+        .select(
+          `
           id,
           check_in_date,
           status,
           credit_type,
           created_at,
           schedule_id
-        `)
+        `
+        )
         .eq('student_id', profile.id)
         .order('created_at', { ascending: false })
         .limit(5)
@@ -101,24 +103,29 @@ const StudentDashboard = () => {
       if (attendanceError) throw attendanceError
 
       // Get class schedule info separately to avoid relationship conflicts
-      const scheduleIds = attendance?.map(att => att.schedule_id).filter(Boolean) || []
+      const scheduleIds =
+        attendance?.map(att => att.schedule_id).filter(Boolean) || []
       const { data: schedules, error: schedulesError } = await supabase
         .from('class_schedules')
-        .select(`
+        .select(
+          `
           id,
           classes (
             name
           )
-        `)
+        `
+        )
         .in('id', scheduleIds)
 
       if (schedulesError) throw schedulesError
 
       // Merge attendance with schedule info
-      const attendanceWithSchedules = attendance?.map(att => ({
-        ...att,
-        class_schedules: schedules?.find(s => s.id === att.schedule_id) || null
-      })) || []
+      const attendanceWithSchedules =
+        attendance?.map(att => ({
+          ...att,
+          class_schedules:
+            schedules?.find(s => s.id === att.schedule_id) || null
+        })) || []
 
       setMyClasses(enrolledClasses || [])
       setRecentHistory(history || [])
@@ -134,11 +141,9 @@ const StudentDashboard = () => {
     fetchStudentData()
   }, [fetchStudentData])
 
-
   const handleSignOut = async () => {
     await signOut()
   }
-
 
   const getDayName = dayOfWeek => {
     const days = [
@@ -160,7 +165,6 @@ const StudentDashboard = () => {
       hour12: true
     })
   }
-
 
   const getBalanceIcon = balance => {
     if (balance <= 2) return <AlertTriangle className="h-5 w-5 text-red-600" />
@@ -199,7 +203,9 @@ const StudentDashboard = () => {
 
   const hasMultipleClassesOrDays = () => {
     const weekClasses = getCurrentWeekClasses()
-    const uniqueDays = new Set(weekClasses.map(c => c.class_schedules.day_of_week))
+    const uniqueDays = new Set(
+      weekClasses.map(c => c.class_schedules.day_of_week)
+    )
     return weekClasses.length > 1 || uniqueDays.size > 1
   }
 
@@ -238,11 +244,12 @@ const StudentDashboard = () => {
     })
 
     // Sort by date (most recent first) and limit to last 4 records
-    return activities.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 4)
+    return activities
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 4)
   }
 
-
-  const getAttendanceStatusColor = (status) => {
+  const getAttendanceStatusColor = status => {
     switch (status) {
       case 'present':
         return 'text-green-600'
@@ -255,7 +262,7 @@ const StudentDashboard = () => {
     }
   }
 
-  const getAttendanceIcon = (status) => {
+  const getAttendanceIcon = status => {
     switch (status) {
       case 'present':
         return <CheckCircle className="h-4 w-4 text-green-600" />
@@ -309,7 +316,9 @@ const StudentDashboard = () => {
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
             {t('dashboard.title')}
           </h2>
-          <p className="text-gray-600 dark:text-gray-300">{t('dashboard.subtitle')}</p>
+          <p className="text-gray-600 dark:text-gray-300">
+            {t('dashboard.subtitle')}
+          </p>
         </div>
 
         <div className="mb-8">
@@ -321,9 +330,7 @@ const StudentDashboard = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-4xl font-bold mb-2">
-                {getTotalBalance()}
-              </div>
+              <div className="text-4xl font-bold mb-2">{getTotalBalance()}</div>
               <p className="text-primary-foreground opacity-90">
                 {getTotalBalance() <= 2
                   ? t('dashboard.balanceLow')
@@ -332,7 +339,6 @@ const StudentDashboard = () => {
             </CardContent>
           </Card>
         </div>
-
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <Card>
@@ -352,26 +358,42 @@ const StudentDashboard = () => {
                 </p>
               ) : (
                 <div className="space-y-3">
-                  {Object.entries(getWeekSchedule()).map(([dayOfWeek, classes]) => (
-                    <div key={dayOfWeek} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-800 rounded-lg">
-                      <div>
-                        <h4 className="font-medium text-gray-900 dark:text-white">
-                          {getDayName(parseInt(dayOfWeek))}
-                        </h4>
-                        {classes.map(enrollment => (
-                          <div key={enrollment.id} className="text-sm text-gray-600 dark:text-gray-300">
-                            {enrollment.class_schedules.classes.name} at {formatTime(enrollment.class_schedules.start_time)}
-                            {hasMultipleClassesOrDays() && enrollment.class_schedules.classes.description && (
-                              <span className="block text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                {enrollment.class_schedules.classes.description}
-                              </span>
-                            )}
-                          </div>
-                        ))}
+                  {Object.entries(getWeekSchedule()).map(
+                    ([dayOfWeek, classes]) => (
+                      <div
+                        key={dayOfWeek}
+                        className="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-800 rounded-lg"
+                      >
+                        <div>
+                          <h4 className="font-medium text-gray-900 dark:text-white">
+                            {getDayName(parseInt(dayOfWeek))}
+                          </h4>
+                          {classes.map(enrollment => (
+                            <div
+                              key={enrollment.id}
+                              className="text-sm text-gray-600 dark:text-gray-300"
+                            >
+                              {enrollment.class_schedules.classes.name} at{' '}
+                              {formatTime(
+                                enrollment.class_schedules.start_time
+                              )}
+                              {hasMultipleClassesOrDays() &&
+                                enrollment.class_schedules.classes
+                                  .description && (
+                                  <span className="block text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                    {
+                                      enrollment.class_schedules.classes
+                                        .description
+                                    }
+                                  </span>
+                                )}
+                            </div>
+                          ))}
+                        </div>
+                        <Clock className="h-4 w-4 text-gray-400 dark:text-gray-500" />
                       </div>
-                      <Clock className="h-4 w-4 text-gray-400 dark:text-gray-500" />
-                    </div>
-                  ))}
+                    )
+                  )}
                 </div>
               )}
             </CardContent>
@@ -400,11 +422,16 @@ const StudentDashboard = () => {
                       className="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-800 rounded-lg"
                     >
                       <div className="flex items-center space-x-3">
-                        {activity.type === 'attendance' && getAttendanceIcon(activity.status)}
+                        {activity.type === 'attendance' &&
+                          getAttendanceIcon(activity.status)}
                         {activity.type === 'balance' && (
-                          <div className={`w-4 h-4 rounded-full ${
-                            activity.change_amount > 0 ? 'bg-green-500' : 'bg-red-500'
-                          }`} />
+                          <div
+                            className={`w-4 h-4 rounded-full ${
+                              activity.change_amount > 0
+                                ? 'bg-green-500'
+                                : 'bg-red-500'
+                            }`}
+                          />
                         )}
                         <div>
                           {activity.type === 'attendance' ? (
@@ -412,11 +439,15 @@ const StudentDashboard = () => {
                               <p className="text-sm font-medium text-gray-900 dark:text-white">
                                 {activity.class_name}
                               </p>
-                              <p className={`text-xs font-medium ${getAttendanceStatusColor(activity.status)}`}>
+                              <p
+                                className={`text-xs font-medium ${getAttendanceStatusColor(activity.status)}`}
+                              >
                                 {t(`status.${activity.status}`)}
                               </p>
                               <p className="text-xs text-gray-500 dark:text-gray-400">
-                                {new Date(activity.check_in_date).toLocaleDateString()}
+                                {new Date(
+                                  activity.check_in_date
+                                ).toLocaleDateString()}
                               </p>
                             </>
                           ) : (
@@ -449,16 +480,20 @@ const StudentDashboard = () => {
                             </p>
                           </>
                         )}
-                        {activity.type === 'attendance' && activity.credit_type && (
-                          <p className={`text-xs font-medium ${
-                            activity.status === 'absent_notified' ? 'text-green-600' : 'text-red-600'
-                          }`}>
-                            {activity.status === 'absent_notified'
-                              ? t('attendance.notUsed')
-                              : `${t('attendance.used')}: -1 ${activity.credit_type}`
-                            }
-                          </p>
-                        )}
+                        {activity.type === 'attendance' &&
+                          activity.credit_type && (
+                            <p
+                              className={`text-xs font-medium ${
+                                activity.status === 'absent_notified'
+                                  ? 'text-green-600'
+                                  : 'text-red-600'
+                              }`}
+                            >
+                              {activity.status === 'absent_notified'
+                                ? t('attendance.notUsed')
+                                : `${t('attendance.used')}: -1 ${activity.credit_type}`}
+                            </p>
+                          )}
                       </div>
                     </div>
                   ))}
@@ -476,19 +511,28 @@ const StudentDashboard = () => {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Link to="/student/history">
-                  <Button variant="outline" className="w-full justify-start bg-white dark:bg-slate-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-primary hover:text-primary-foreground">
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start bg-white dark:bg-slate-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-primary hover:text-primary-foreground"
+                  >
                     <History className="h-4 w-4 mr-2" />
                     {t('dashboard.viewFullHistory')}
                   </Button>
                 </Link>
                 <Link to="/student/profile">
-                  <Button variant="outline" className="w-full justify-start bg-white dark:bg-slate-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-primary hover:text-primary-foreground">
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start bg-white dark:bg-slate-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-primary hover:text-primary-foreground"
+                  >
                     <User className="h-4 w-4 mr-2" />
                     {t('nav.profile')}
                   </Button>
                 </Link>
                 <Link to="/student/rules">
-                  <Button variant="outline" className="w-full justify-start bg-white dark:bg-slate-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-primary hover:text-primary-foreground">
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start bg-white dark:bg-slate-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-primary hover:text-primary-foreground"
+                  >
                     <FileText className="h-4 w-4 mr-2" />
                     {t('rules.title')}
                   </Button>

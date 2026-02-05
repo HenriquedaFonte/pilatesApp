@@ -336,18 +336,18 @@
     "hero": {
       "greeting": "Bonjour!",
       "intro": "Nice to meet you, I'm Josi!",
-      "description": "Physiotherapist and Pilates Method instructor since 2005. Passionate about human movement and the development of body awareness.",
+      "description": "Montreal's premier Pilates studio. Physiotherapist and Pilates Method instructor since 2005. Specialized in helping Montreal residents achieve better posture, strength, and mobility through personalized Pilates instruction.",
       "aboutButton": "About Me"
     },
     "about": {
-      "title": "About Me",
+      "title": "About Josi - Your Montreal Pilates Expert",
       "greeting": "Hi!!",
-      "description": "Physiotherapist and Pilates Method instructor since 2005. Passionate about human movement and the development of body awareness.",
+      "description": "Montreal's trusted Pilates instructor and physiotherapist since 2005. Specializing in helping Montreal residents improve their posture, strength, and overall well-being through personalized Pilates instruction.",
       "extendedTitle": "A little more about me",
       "extended": "Josiane received her first Pilates Method certification (PhysicalMind Institute–NYC) in 2005, initially drawn to the method as a complement to her career as a physiotherapist in Brazil.\n\nIn 2010, she moved to Montreal to deepen her knowledge in Somatic Education at UQÀM and was invited to give lectures and workshops on postural assessment, injury prevention techniques, and somatic practices (including Pilates) to undergraduate music and dance students at the university.\n\nThanks to her experience, Josiane is able to offer safe, balanced, and varied training. She is accustomed to working with a wide range of people, including athletes, circus artists, dancers, musicians, pregnant women, and seniors.\n\nWorking with Josiane, you'll be invited to move consciously and joyfully, while strengthening your body and improving your alignment and mobility."
     },
-    "testimonialsTitle": "What Our Clients Say",
-    "testimonialsSubtitle": "Real experiences from our Pilates community",
+    "testimonialsTitle": "What Montreal Clients Say About Josi Pilates",
+    "testimonialsSubtitle": "Real experiences from Montreal residents who trust us with their Pilates journey",
     "services": {
       "title": "Services",
       "subtitle": "Professional Pilates instruction tailored to your needs.",
