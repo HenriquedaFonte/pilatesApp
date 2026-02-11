@@ -179,11 +179,8 @@ const TeacherStudents = () => {
   const getUpcomingBirthdays = students => {
     const today = new Date()
     today.setHours(0, 0, 0, 0) // Set to start of day for date comparison
-    // Get start of current week (Monday)
+    // Get start from today
     const startOfWeek = new Date(today)
-    const day = today.getDay()
-    const diff = today.getDate() - day + (day === 0 ? -6 : 1) // Monday
-    startOfWeek.setDate(diff)
     startOfWeek.setHours(0, 0, 0, 0)
     const endOfWeek = new Date(startOfWeek)
     endOfWeek.setDate(startOfWeek.getDate() + 6)
@@ -199,9 +196,8 @@ const TeacherStudents = () => {
         birthDate.getMonth(),
         birthDate.getDate()
       )
-      if (thisYearBirthday < startOfWeek) {
-        thisYearBirthday.setFullYear(today.getFullYear() + 1)
-      }
+      // If birthday has passed this year, don't include
+      if (thisYearBirthday < today) return false
       return thisYearBirthday >= startOfWeek && thisYearBirthday <= endOfWeek
     })
   }
@@ -1224,8 +1220,8 @@ const TeacherStudents = () => {
                       {daysUntil === 0
                         ? 'Today!'
                         : daysUntil === 1
-                        ? 'Tomorrow'
-                        : `${daysUntil} days`}
+                          ? 'Tomorrow'
+                          : `${daysUntil} days`}
                     </span>
                   </div>
                 )
