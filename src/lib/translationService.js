@@ -4,29 +4,39 @@ const MYMEMORY_URL = 'https://api.mymemory.translated.net/get'
 export const translateText = async (text, fromLang, toLang) => {
   if (!text || text.trim() === '') return ''
 
-  try {
-    const langpair = `${fromLang}|${toLang}`
-    const url = `${MYMEMORY_URL}?q=${encodeURIComponent(text)}&langpair=${langpair}`
+  // Split text into sentences to handle long texts
+  const sentences = text.split(/(?<=[.!?])\s+/)
+  const translatedSentences = []
 
-    const response = await fetch(url)
+  for (const sentence of sentences) {
+    if (sentence.trim() === '') continue
 
-    if (!response.ok) {
-      throw new Error(`Translation failed: ${response.status}`)
+    try {
+      const langpair = `${fromLang}|${toLang}`
+      const url = `${MYMEMORY_URL}?q=${encodeURIComponent(sentence)}&langpair=${langpair}`
+
+      const response = await fetch(url)
+
+      if (!response.ok) {
+        throw new Error(`Translation failed: ${response.status}`)
+      }
+
+      const data = await response.json()
+      const translated = data.responseData?.translatedText
+      if (translated && !translated.includes('QUERY LENGTH LIMIT EXCEEDED')) {
+        translatedSentences.push(translated)
+      } else {
+        // If limit exceeded or no translation, use original sentence
+        translatedSentences.push(sentence)
+      }
+    } catch (error) {
+      console.error('Translation error for sentence:', error)
+      // Use original sentence if translation fails
+      translatedSentences.push(sentence)
     }
-
-    const data = await response.json()
-    const translated = data.responseData?.translatedText
-    if (translated && !translated.includes('QUERY LENGTH LIMIT EXCEEDED')) {
-      return translated
-    } else {
-      // If limit exceeded or no translation, return the original text
-      return text
-    }
-  } catch (error) {
-    console.error('Translation error:', error)
-    // Return original text if translation fails
-    return text
   }
+
+  return translatedSentences.join(' ')
 }
 
 export const translateTestimonialFields = async (fields, inputLang) => {
