@@ -4,6 +4,9 @@ const MYMEMORY_URL = 'https://api.mymemory.translated.net/get'
 export const translateText = async (text, fromLang, toLang) => {
   if (!text || text.trim() === '') return ''
 
+  // For now, don't translate from English as the API may not work well
+  if (fromLang === 'en') return ''
+
   try {
     const langpair = `${fromLang}|${toLang}`
     const url = `${MYMEMORY_URL}?q=${encodeURIComponent(text)}&langpair=${langpair}`
