@@ -15,7 +15,13 @@ export const translateText = async (text, fromLang, toLang) => {
     }
 
     const data = await response.json()
-    return data.responseData?.translatedText || text
+    const translated = data.responseData?.translatedText
+    if (translated && !translated.includes('QUERY LENGTH LIMIT EXCEEDED')) {
+      return translated
+    } else {
+      // If limit exceeded or no translation, return original
+      return text
+    }
   } catch (error) {
     console.error('Translation error:', error)
     // Return original text if translation fails
@@ -25,37 +31,48 @@ export const translateText = async (text, fromLang, toLang) => {
 
 export const translateTestimonialFields = async (fields, inputLang) => {
   const languages = ['fr', 'en', 'pt']
-  const translatedFields = { ...fields }
+  const translatedFields = {
+    text: { ...fields.text },
+    author_name: { ...fields.author_name },
+    city: { ...fields.city },
+    state: { ...fields.state }
+  }
 
   for (const lang of languages) {
     if (lang === inputLang) continue
 
     // Translate text
-    if (fields.text && fields.text[inputLang]) {
+    if (fields.text && typeof fields.text[inputLang] === 'string') {
       translatedFields.text[lang] = await translateText(
         fields.text[inputLang],
         inputLang,
         lang
       )
+    } else {
+      translatedFields.text[lang] = fields.text[inputLang] || ''
     }
 
     // Translate author_name
-    if (fields.author_name && fields.author_name[inputLang]) {
+    if (
+      fields.author_name &&
+      typeof fields.author_name[inputLang] === 'string'
+    ) {
       translatedFields.author_name[lang] = await translateText(
         fields.author_name[inputLang],
         inputLang,
         lang
       )
+    } else {
+      translatedFields.author_name[lang] = fields.author_name[inputLang] || ''
     }
 
-    // For city and state, keep them as is or translate if they have content
-    // For now, copy from input language
-    if (fields.city && fields.city[inputLang]) {
-      translatedFields.city[lang] = fields.city[inputLang]
-    }
-    if (fields.state && fields.state[inputLang]) {
-      translatedFields.state[lang] = fields.state[inputLang]
-    }
+    // For city and state, copy from input language
+    translatedFields.city[lang] = fields.city
+      ? fields.city[inputLang] || ''
+      : ''
+    translatedFields.state[lang] = fields.state
+      ? fields.state[inputLang] || ''
+      : ''
   }
 
   return translatedFields

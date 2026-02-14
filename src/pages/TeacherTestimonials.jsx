@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -44,6 +45,15 @@ import {
 const TeacherTestimonials = () => {
   const { profile, signOut } = useAuth()
   const navigate = useNavigate()
+  const { i18n } = useTranslation()
+
+  // Set language based on user preference
+  useEffect(() => {
+    if (profile?.preferred_language) {
+      i18n.changeLanguage(profile.preferred_language)
+    }
+  }, [profile?.preferred_language, i18n])
+
   const [testimonials, setTestimonials] = useState([])
   const [loading, setLoading] = useState(true)
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
@@ -555,7 +565,13 @@ const TeacherTestimonials = () => {
             const parseField = field => {
               try {
                 const parsed = JSON.parse(field)
-                return parsed.fr || field
+                return (
+                  parsed[i18n.language] ||
+                  parsed.fr ||
+                  parsed.en ||
+                  parsed.pt ||
+                  ''
+                )
               } catch {
                 return field
               }
