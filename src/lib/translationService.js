@@ -16,14 +16,10 @@ export const translateText = async (text, fromLang, toLang) => {
 
     const data = await response.json()
     const translated = data.responseData?.translatedText
-    if (
-      translated &&
-      !translated.includes('QUERY LENGTH LIMIT EXCEEDED') &&
-      translated.trim().toLowerCase() !== text.trim().toLowerCase()
-    ) {
+    if (translated && !translated.includes('QUERY LENGTH LIMIT EXCEEDED')) {
       return translated
     } else {
-      // If limit exceeded, no translation, or same as original, return empty
+      // If limit exceeded or no translation, return empty
       return ''
     }
   } catch (error) {
