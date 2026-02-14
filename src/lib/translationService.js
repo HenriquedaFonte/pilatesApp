@@ -4,9 +4,6 @@ const MYMEMORY_URL = 'https://api.mymemory.translated.net/get'
 export const translateText = async (text, fromLang, toLang) => {
   if (!text || text.trim() === '') return ''
 
-  // For now, don't translate from English as the API may not work well
-  if (fromLang === 'en') return ''
-
   try {
     const langpair = `${fromLang}|${toLang}`
     const url = `${MYMEMORY_URL}?q=${encodeURIComponent(text)}&langpair=${langpair}`
@@ -22,13 +19,13 @@ export const translateText = async (text, fromLang, toLang) => {
     if (translated && !translated.includes('QUERY LENGTH LIMIT EXCEEDED')) {
       return translated
     } else {
-      // If limit exceeded or no translation, return empty
-      return ''
+      // If limit exceeded or no translation, return the original text
+      return text
     }
   } catch (error) {
     console.error('Translation error:', error)
-    // Return empty if translation fails
-    return ''
+    // Return original text if translation fails
+    return text
   }
 }
 
