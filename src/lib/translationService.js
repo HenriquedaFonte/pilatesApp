@@ -4,12 +4,9 @@ const MYMEMORY_URL = 'https://api.mymemory.translated.net/get'
 export const translateText = async (text, fromLang, toLang) => {
   if (!text || text.trim() === '') return ''
 
-  // Truncate text to 500 chars to fit API limit
-  const truncatedText = text.length > 500 ? text.substring(0, 500) : text
-
   try {
     const langpair = `${fromLang}|${toLang}`
-    const url = `${MYMEMORY_URL}?q=${encodeURIComponent(truncatedText)}&langpair=${langpair}`
+    const url = `${MYMEMORY_URL}?q=${encodeURIComponent(text)}&langpair=${langpair}`
 
     const response = await fetch(url)
 
