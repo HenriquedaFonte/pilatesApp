@@ -1,28 +1,27 @@
-// Translation service using LibreTranslate (free, no API key required)
-const LIBRETRANSLATE_URL = 'https://libretranslate.com/translate'
+// Translation service using MyMemory API (free, no API key required)
+const MYMEMORY_URL = 'https://api.mymemory.translated.net/get'
 
 export const translateText = async (text, fromLang, toLang) => {
   if (!text || text.trim() === '') return ''
 
   try {
-    const response = await fetch(LIBRETRANSLATE_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        q: text,
-        source: fromLang,
-        target: toLang
-      })
-    })
+    const langpair = `${fromLang}|${toLang}`
+    const url = `${MYMEMORY_URL}?q=${encodeURIComponent(text)}&langpair=${langpair}`
+
+    const response = await fetch(url)
 
     if (!response.ok) {
       throw new Error(`Translation failed: ${response.status}`)
     }
 
     const data = await response.json()
-    return data.translatedText || text
+    const translated = data.responseData?.translatedText
+    if (translated && !translated.includes('QUERY LENGTH LIMIT EXCEEDED')) {
+      return translated
+    } else {
+      // If limit exceeded or no translation, return the original text
+      return text
+    }
   } catch (error) {
     console.error('Translation error:', error)
     // Return original text if translation fails
