@@ -505,7 +505,10 @@ Sent from Josi Pilates website contact form.
                       className="md:basis-1/2 lg:basis-1/3"
                     >
                       <div className="p-1">
-                        <Card className="h-full">
+                        <Card
+                          className="h-full cursor-pointer"
+                          onClick={() => setAutoAdvancePaused(true)}
+                        >
                           <CardContent className="flex flex-col justify-between p-6 h-full">
                             <div>
                               <div className="flex items-center mb-4">
