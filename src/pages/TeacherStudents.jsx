@@ -48,7 +48,15 @@ import {
   Info,
   Cake
 } from 'lucide-react'
-import { ThemeToggle } from '../components/ThemeToggle'
+import TeacherLayout from '../components/TeacherLayout'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
 
 const TeacherStudents = () => {
   const { profile, signOut } = useAuth()
@@ -354,7 +362,9 @@ const TeacherStudents = () => {
     try {
       const userData = {
         ...newUser,
-        password: '000000'
+        // BUG-1.2 FIX: use a random UUID instead of the exposed '000000' default password.
+        // The welcome email sends a password-reset link, so the student never uses this value.
+        password: crypto.randomUUID()
       }
 
       // Get the current session token
@@ -365,8 +375,9 @@ const TeacherStudents = () => {
         throw new Error('No authentication session found')
       }
 
+      // BUG-1.3 FIX: use env variable instead of hardcoded Supabase URL
       const response = await fetch(
-        'https://kezfpyhsejhjcvlbmejq.supabase.co/functions/v1/create-user',
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-user`,
         {
           method: 'POST',
           headers: {
@@ -515,52 +526,15 @@ const TeacherStudents = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      <header className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Link to="/teacher/dashboard" className="mr-4">
-                <ArrowLeft className="h-6 w-6 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" />
-              </Link>
-              <Activity className="h-8 w-8 text-primary mr-3" />
-              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
-                Student Management
-              </h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <ThemeToggle />
-              <span className="text-sm text-gray-700 dark:text-gray-300">
-                Welcome, {profile?.full_name}
-              </span>
-              <Button variant="outline" size="sm" onClick={handleSignOut}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Sign Out
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {error && (
-          <Alert variant="destructive" className="mb-6">
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
-        {success && (
-          <Alert className="mb-6">
-            <AlertDescription>{success}</AlertDescription>
-          </Alert>
-        )}
-
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-              Students
-            </h2>
-            <p className="text-gray-600 dark:text-gray-300">
-              Manage student profiles, balances, and enrollments
+    <TeacherLayout>
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/50 pb-6 mb-6">
+          <div className="space-y-1">
+            <h1 className="font-serif-display text-3xl tracking-tight text-foreground">
+              Gestão de <span className="text-primary italic">Alunos</span>
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Gerencie cadastros, saldos de créditos, turmas e históricos dos alunos do estúdio
             </p>
           </div>
           <Dialog
@@ -568,21 +542,21 @@ const TeacherStudents = () => {
             onOpenChange={setIsCreateUserDialogOpen}
           >
             <DialogTrigger asChild>
-              <Button>
+              <Button className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-4 h-10 transition-colors">
                 <Plus className="h-4 w-4 mr-2" />
-                Add User
+                Cadastrar Aluno
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="rounded-2xl border border-border bg-card p-6 shadow-lg">
               <DialogHeader>
-                <DialogTitle>Create New User</DialogTitle>
-                <DialogDescription>
-                  Add a new student or teacher to the system.
+                <DialogTitle className="text-lg font-bold text-foreground">Cadastrar Novo Usuário</DialogTitle>
+                <DialogDescription className="text-xs text-muted-foreground">
+                  Adicione um novo aluno ou professor ao sistema do estúdio.
                 </DialogDescription>
               </DialogHeader>
-              <form onSubmit={handleCreateUser} className="space-y-4">
-                <div>
-                  <Label htmlFor="email">Email</Label>
+              <form onSubmit={handleCreateUser} className="space-y-4 pt-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-xs font-semibold text-muted-foreground">E-mail</Label>
                   <Input
                     id="email"
                     type="email"
@@ -590,13 +564,14 @@ const TeacherStudents = () => {
                     onChange={e =>
                       setNewUser({ ...newUser, email: e.target.value })
                     }
-                    placeholder="user@example.com"
+                    placeholder="exemplo@estudio.com"
                     required
                     disabled={creatingUser}
+                    className="rounded-xl border-border bg-background focus-visible:ring-primary h-10"
                   />
                 </div>
-                <div>
-                  <Label htmlFor="fullName">Full Name</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="fullName" className="text-xs font-semibold text-muted-foreground">Nome Completo</Label>
                   <Input
                     id="fullName"
                     type="text"
@@ -604,13 +579,14 @@ const TeacherStudents = () => {
                     onChange={e =>
                       setNewUser({ ...newUser, fullName: e.target.value })
                     }
-                    placeholder="Full Name"
+                    placeholder="Nome e Sobrenome"
                     required
                     disabled={creatingUser}
+                    className="rounded-xl border-border bg-background focus-visible:ring-primary h-10"
                   />
                 </div>
-                <div>
-                  <Label htmlFor="role">Role</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="role" className="text-xs font-semibold text-muted-foreground">Função / Perfil</Label>
                   <Select
                     value={newUser.role}
                     onValueChange={value =>
@@ -618,17 +594,17 @@ const TeacherStudents = () => {
                     }
                     disabled={creatingUser}
                   >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select role" />
+                    <SelectTrigger className="rounded-xl border-border bg-background focus-visible:ring-primary h-10 w-full">
+                      <SelectValue placeholder="Selecione o perfil" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="student">Student</SelectItem>
-                      <SelectItem value="teacher">Teacher</SelectItem>
+                    <SelectContent className="rounded-xl">
+                      <SelectItem value="student">Aluno</SelectItem>
+                      <SelectItem value="teacher">Professor</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                <div>
-                  <Label htmlFor="preferredLanguage">Preferred Language</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="preferredLanguage" className="text-xs font-semibold text-muted-foreground">Idioma Preferencial</Label>
                   <Select
                     value={newUser.preferredLanguage}
                     onValueChange={value =>
@@ -636,33 +612,55 @@ const TeacherStudents = () => {
                     }
                     disabled={creatingUser}
                   >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select language" />
+                    <SelectTrigger className="rounded-xl border-border bg-background focus-visible:ring-primary h-10 w-full">
+                      <SelectValue placeholder="Selecione o idioma" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="pt">Portuguese</SelectItem>
-                      <SelectItem value="en">English</SelectItem>
-                      <SelectItem value="fr">French</SelectItem>
+                    <SelectContent className="rounded-xl">
+                      <SelectItem value="pt">🇧🇷 Português</SelectItem>
+                      <SelectItem value="en">🇺🇸 Inglês</SelectItem>
+                      <SelectItem value="fr">🇫🇷 Francês</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="flex justify-end space-x-2">
+                <div className="flex justify-end space-x-2 pt-4 border-t border-border/50">
                   <Button
                     type="button"
                     variant="outline"
                     onClick={() => setIsCreateUserDialogOpen(false)}
                     disabled={creatingUser}
+                    className="rounded-xl border-border hover:bg-muted text-xs font-semibold h-10 px-4"
                   >
-                    Cancel
+                    Cancelar
                   </Button>
-                  <Button type="submit" disabled={creatingUser}>
-                    {creatingUser ? 'Creating...' : 'Create User'}
+                  <Button 
+                    type="submit" 
+                    disabled={creatingUser}
+                    className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold h-10 px-5"
+                  >
+                    {creatingUser ? (
+                      <>
+                        <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                        Cadastrando...
+                      </>
+                    ) : (
+                      'Cadastrar Usuário'
+                    )}
                   </Button>
                 </div>
               </form>
             </DialogContent>
           </Dialog>
         </div>
+        {error && (
+          <Alert variant="destructive" className="mb-6 rounded-2xl border-destructive/30 bg-destructive/5 text-destructive">
+            <AlertDescription className="font-medium">{error}</AlertDescription>
+          </Alert>
+        )}
+        {success && (
+          <Alert className="mb-6 rounded-2xl border-emerald-200/50 bg-emerald-50/50 text-emerald-800 dark:bg-emerald-950/20 dark:text-emerald-400">
+            <AlertDescription className="font-medium">{success}</AlertDescription>
+          </Alert>
+        )}
 
         <div className="mb-6">
           <div className="relative">
@@ -676,153 +674,169 @@ const TeacherStudents = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredStudents.map(student => {
-            const totalBalance = getTotalBalance(student)
-            const hasUpcomingBirthday = upcomingBirthdays.some(
-              b => b.id === student.id
-            )
-            return (
-              <Card
-                key={student.id}
-                className={
-                  hasUpcomingBirthday
-                    ? 'border-2 border-green-500 bg-green-50 dark:bg-green-900/10'
-                    : ''
-                }
-              >
-                <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <CardTitle className="text-lg">
-                        {student.full_name}
-                      </CardTitle>
-                      <CardDescription>{student.email}</CardDescription>
-                    </div>
-                    {getBalanceBadge(totalBalance)}
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {/* Credit Balances */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                        <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                          Individual
-                        </span>
-                        <span className="font-bold text-blue-600 dark:text-blue-400">
-                          {student.individual_credits || 0}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                        <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                          Duo
-                        </span>
-                        <span className="font-bold text-green-600 dark:text-green-400">
-                          {student.duo_credits || 0}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between p-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                        <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                          Group
-                        </span>
-                        <span className="font-bold text-purple-600 dark:text-purple-400">
-                          {student.group_credits || 0}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between p-2 bg-gray-100 dark:bg-gray-800 rounded-lg border-t border-gray-200 dark:border-gray-600">
-                        <span className="text-sm font-bold text-gray-900 dark:text-gray-100">
-                          Total
-                        </span>
-                        <span
-                          className={`font-bold ${getBalanceColor(
-                            totalBalance
-                          )}`}
-                        >
+        <Card className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader className="bg-muted/40">
+                  <TableRow>
+                    <TableHead className="font-semibold text-foreground px-6 py-4">Aluno</TableHead>
+                    <TableHead className="font-semibold text-foreground px-6 py-4">Créditos (Ind / Duo / Grupo)</TableHead>
+                    <TableHead className="font-semibold text-foreground px-6 py-4">Total</TableHead>
+                    <TableHead className="font-semibold text-foreground px-6 py-4">Status</TableHead>
+                    <TableHead className="font-semibold text-foreground px-6 py-4">Último Check-in</TableHead>
+                    <TableHead className="font-semibold text-foreground px-6 py-4 text-right">Ações</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredStudents.map(student => {
+                    const totalBalance = getTotalBalance(student)
+                    const hasUpcomingBirthday = upcomingBirthdays.some(
+                      b => b.id === student.id
+                    )
+                    
+                    // Status Badge Logic
+                    let statusBadge = (
+                      <Badge variant="outline" className="bg-emerald-50 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-400 border-emerald-200/50">
+                        Em dia
+                      </Badge>
+                    )
+                    if (totalBalance === 0) {
+                      statusBadge = (
+                        <Badge variant="outline" className="bg-rose-50 text-rose-700 dark:bg-rose-950/20 dark:text-rose-400 border-rose-200/50">
+                          Sem créditos
+                        </Badge>
+                      )
+                    } else if (totalBalance <= 2) {
+                      statusBadge = (
+                        <Badge variant="outline" className="bg-amber-50 text-amber-700 dark:bg-amber-950/20 dark:text-amber-400 border-amber-200/50">
+                          Saldo baixo
+                        </Badge>
+                      )
+                    }
+
+                    return (
+                      <TableRow 
+                        key={student.id} 
+                        className={`transition-colors hover:bg-muted/20 ${
+                          hasUpcomingBirthday 
+                            ? 'bg-emerald-50/30 dark:bg-emerald-950/5 border-l-4 border-l-emerald-500' 
+                            : ''
+                        }`}
+                      >
+                        <TableCell className="px-6 py-4">
+                          <div className="flex flex-col">
+                            <span className="font-semibold text-foreground flex items-center gap-1.5">
+                              {student.full_name}
+                              {hasUpcomingBirthday && (
+                                <Cake className="h-4 w-4 text-emerald-600 dark:text-emerald-400 animate-bounce" title="Aniversário chegando!" />
+                              )}
+                            </span>
+                            <span className="text-xs text-muted-foreground">{student.email}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="px-6 py-4">
+                          <div className="flex gap-2">
+                            <Badge variant="outline" className="bg-blue-50/50 text-blue-700 dark:bg-blue-900/10 dark:text-blue-400 border-blue-200/30 font-medium">
+                              Ind: {student.individual_credits || 0}
+                            </Badge>
+                            <Badge variant="outline" className="bg-emerald-50/50 text-emerald-700 dark:bg-emerald-900/10 dark:text-emerald-400 border-emerald-200/30 font-medium">
+                              Duo: {student.duo_credits || 0}
+                            </Badge>
+                            <Badge variant="outline" className="bg-violet-50/50 text-violet-700 dark:bg-violet-900/10 dark:text-violet-400 border-violet-200/30 font-medium">
+                              Grupo: {student.group_credits || 0}
+                            </Badge>
+                          </div>
+                        </TableCell>
+                        <TableCell className="px-6 py-4 font-bold text-foreground">
                           {totalBalance}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Last Check-in Note */}
-                    {lastCheckIns[student.id] && (
-                      <div className="text-xs text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 p-2 rounded-lg">
-                        Last check-in:{' '}
-                        {
-                          lastCheckIns[student.id].class_schedules?.classes
-                            ?.name
-                        }{' '}
-                        -{' '}
-                        {getDayName(
-                          lastCheckIns[student.id].class_schedules?.day_of_week
-                        )}{' '}
-                        {new Date(
-                          lastCheckIns[student.id].check_in_date
-                        ).toLocaleDateString()}{' '}
-                        - {formatCheckInStatus(lastCheckIns[student.id].status)}
-                      </div>
-                    )}
-
-                    <div className="flex flex-wrap gap-2 justify-center">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() =>
-                          navigate(`/teacher/student-summary/${student.id}`)
-                        }
-                        title="View student summary"
-                      >
-                        <Info className="h-3 w-3" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => {
-                          setSelectedStudent(student)
-                          setIsBalanceDialogOpen(true)
-                        }}
-                      >
-                        <Edit className="h-3 w-3" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => {
-                          setSelectedStudent(student)
-                          setSelectedObservations(student.observations || '')
-                          setIsCommentsDialogOpen(true)
-                        }}
-                      >
-                        <MessageSquare className="h-3 w-3" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => {
-                          setSelectedStudent(student)
-                          setIsEnrollDialogOpen(true)
-                        }}
-                      >
-                        <Calendar className="h-3 w-3" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => {
-                          setSelectedStudentForReset(student)
-                          setIsPasswordResetConfirmDialogOpen(true)
-                        }}
-                        title="Send password reset email"
-                      >
-                        <Hash className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )
-          })}
-        </div>
+                        </TableCell>
+                        <TableCell className="px-6 py-4">
+                          {statusBadge}
+                        </TableCell>
+                        <TableCell className="px-6 py-4 text-xs text-muted-foreground">
+                          {lastCheckIns[student.id] ? (
+                            <div className="flex flex-col">
+                              <span className="font-medium text-foreground">
+                                {lastCheckIns[student.id].class_schedules?.classes?.name}
+                              </span>
+                              <span>
+                                {new Date(lastCheckIns[student.id].check_in_date).toLocaleDateString()} ({formatCheckInStatus(lastCheckIns[student.id].status)})
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="text-muted-foreground/60">-</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="px-6 py-4 text-right">
+                          <div className="flex justify-end items-center gap-1.5">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => navigate(`/teacher/student-summary/${student.id}`)}
+                              className="rounded-lg h-7 px-2 text-xs"
+                              title="Resumo"
+                            >
+                              <Info className="h-3.5 w-3.5 mr-1 text-muted-foreground" />
+                              Ver
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => {
+                                setSelectedStudent(student)
+                                setIsBalanceDialogOpen(true)
+                              }}
+                              className="rounded-lg h-7 px-2.5 text-xs text-primary hover:text-primary font-medium"
+                            >
+                              Saldo
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => {
+                                setSelectedStudent(student)
+                                setIsEnrollDialogOpen(true)
+                              }}
+                              className="rounded-lg h-7 px-2.5 text-xs text-foreground font-medium"
+                            >
+                              Turmas
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => {
+                                setSelectedStudent(student)
+                                setSelectedObservations(student.observations || '')
+                                setIsCommentsDialogOpen(true)
+                              }}
+                              className="rounded-lg h-7 w-7 p-0"
+                              title="Observações"
+                            >
+                              <MessageSquare className="h-3.5 w-3.5 text-muted-foreground" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => {
+                                setSelectedStudentForReset(student)
+                                setIsPasswordResetConfirmDialogOpen(true)
+                              }}
+                              className="rounded-lg h-7 w-7 p-0 hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
+                              title="Resetar Senha"
+                            >
+                              <Hash className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
 
         {filteredStudents.length === 0 && (
           <Card>
@@ -1269,7 +1283,7 @@ const TeacherStudents = () => {
           </DialogContent>
         </Dialog>
       </div>
-    </div>
+    </TeacherLayout>
   )
 }
 
