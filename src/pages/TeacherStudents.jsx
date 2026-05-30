@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import emailService from '../lib/emailService'
+import { getDayName as getDayNameLocale, formatTime as formatTimeLocale } from '../lib/format'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -61,6 +63,7 @@ import {
 const TeacherStudents = () => {
   const { profile, signOut } = useAuth()
   const navigate = useNavigate()
+  const { t, i18n } = useTranslation()
   const [students, setStudents] = useState([])
   // const [classes, setClasses] = useState([])
   const [schedules, setSchedules] = useState([])
@@ -464,22 +467,15 @@ const TeacherStudents = () => {
   }
 
   const getBalanceBadge = balance => {
-    if (balance < 3) return <Badge variant="destructive">Low</Badge>
-    if (balance <= 6) return <Badge variant="secondary">Medium</Badge>
-    return <Badge variant="default">High</Badge>
+    // 2.4 FIX: use i18n translations instead of hardcoded English
+    if (balance < 3) return <Badge variant="destructive">{t('teacher.students.balanceLevels.low', { defaultValue: 'Baixo' })}</Badge>
+    if (balance <= 6) return <Badge variant="secondary">{t('teacher.students.balanceLevels.medium', { defaultValue: 'Médio' })}</Badge>
+    return <Badge variant="default">{t('teacher.students.balanceLevels.high', { defaultValue: 'Alto' })}</Badge>
   }
 
   const getDayName = dayOfWeek => {
-    const days = [
-      'Sunday',
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday'
-    ]
-    return days[dayOfWeek]
+    // 2.3 FIX: use locale-aware getDayName from format.js
+    return getDayNameLocale(dayOfWeek, i18n.language)
   }
 
   const formatCheckInStatus = status => {
@@ -496,11 +492,8 @@ const TeacherStudents = () => {
   }
 
   const formatTime = time => {
-    return new Date(`2000-01-01T${time}`).toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
-    })
+    // 2.2 FIX: use locale-aware formatTime from format.js instead of hardcoded en-US/AM-PM
+    return formatTimeLocale(time, i18n.language)
   }
 
   const filteredStudents = students

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { Button } from '@/components/ui/button'
 import { formatTime } from '../lib/format'
@@ -44,6 +45,7 @@ import TeacherLayout from '../components/TeacherLayout'
 const TeacherCheckIn = () => {
   const { profile, signOut } = useAuth()
   const navigate = useNavigate()
+  const { i18n } = useTranslation()
   const [selectedDate, setSelectedDate] = useState(() => {
     const today = new Date()
     const year = today.getFullYear()
@@ -401,13 +403,14 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
               {(() => {
                 const [year, month, day] = selectedDate.split('-').map(Number)
                 const localDate = new Date(year, month - 1, day)
-                const formattedDate = localDate.toLocaleDateString('pt-BR', {
+                // 2.6 FIX: use active i18n locale instead of hardcoded pt-BR
+                const locale = i18n.language === 'en' ? 'en-US' : i18n.language === 'fr' ? 'fr-FR' : 'pt-BR'
+                const formattedDate = localDate.toLocaleDateString(locale, {
                   weekday: 'long',
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric'
                 })
-                // Capitalizar a primeira letra do dia da semana
                 return `Alunos Agendados para ${formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1)}`
               })()}
             </CardTitle>
