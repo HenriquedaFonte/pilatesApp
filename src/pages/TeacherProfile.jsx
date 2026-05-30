@@ -34,6 +34,15 @@ const TeacherProfile = () => {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
 
+  const showSuccess = msg => {
+    setSuccess(msg)
+    if (msg) setTimeout(() => setSuccess(''), 5000)
+  }
+  const showError = msg => {
+    setError(msg)
+    if (msg) setTimeout(() => setError(''), 5000)
+  }
+
   const { user, profile, updateProfile } = useAuth()
   const navigate = useNavigate()
   const { t } = useTranslation()
@@ -71,9 +80,9 @@ const TeacherProfile = () => {
       if (error) throw error
 
       updateProfile(data)
-      setSuccess('Profile updated successfully!')
+      showSuccess('Profile updated successfully!')
     } catch (error) {
-      setError(error.message || 'Failed to update profile')
+      showError(error.message || 'Failed to update profile')
     } finally {
       setUpdatingProfile(false)
     }
@@ -86,13 +95,13 @@ const TeacherProfile = () => {
     setSuccess('')
 
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      setError('New passwords do not match')
+      showError('New passwords do not match')
       setUpdatingPassword(false)
       return
     }
 
     if (passwordData.newPassword.length < 6) {
-      setError('New password must be at least 6 characters long')
+      showError('New password must be at least 6 characters long')
       setUpdatingPassword(false)
       return
     }
@@ -115,14 +124,14 @@ const TeacherProfile = () => {
 
       if (updateError) throw updateError
 
-      setSuccess('Password updated successfully!')
+      showSuccess('Password updated successfully!')
       setPasswordData({
         currentPassword: '',
         newPassword: '',
         confirmPassword: ''
       })
     } catch (error) {
-      setError(error.message || 'Failed to update password')
+      showError(error.message || 'Failed to update password')
     } finally {
       setUpdatingPassword(false)
     }

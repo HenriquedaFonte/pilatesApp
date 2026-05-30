@@ -58,6 +58,16 @@ const TeacherCheckIn = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+
+  const showSuccess = msg => {
+    setSuccess(msg)
+    if (msg) setTimeout(() => setSuccess(''), 5000)
+  }
+  const showError = msg => {
+    setError(msg)
+    if (msg) setTimeout(() => setError(''), 5000)
+  }
+
   const [isAddStudentDialogOpen, setIsAddStudentDialogOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   // BUG-01 FIX: creditTypes is a per-student map { [studentId-scheduleId]: type }
@@ -162,7 +172,7 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
 
       setScheduledStudents(sortedStudents)
     } catch (error) {
-      setError('Error fetching scheduled students: ' + error.message)
+      showError('Error fetching scheduled students: ' + error.message)
     } finally {
       setLoading(false)
     }
@@ -179,7 +189,7 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
       if (error) throw error
       setAllStudents(students || [])
     } catch (error) {
-      setError('Error fetching students: ' + error.message)
+      showError('Error fetching students: ' + error.message)
     }
   }
 
@@ -249,9 +259,9 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
         )
       )
 
-      setSuccess('Attendance marked successfully!')
+      showSuccess('Attendance marked successfully!')
     } catch (error) {
-      setError('Error marking attendance: ' + error.message)
+      showError('Error marking attendance: ' + error.message)
     }
   }
 
@@ -270,7 +280,7 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
 
       const student = allStudents.find(s => s.id === studentId)
       if (!student) {
-        setError('Student not found')
+        showError('Student not found')
         return
       }
 
@@ -292,9 +302,9 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
       setScheduledStudents(prev => [...prev, newStudent])
       setIsAddStudentDialogOpen(false)
       setSearchTerm('')
-      setSuccess('Student added to class!')
+      showSuccess('Student added to class!')
     } catch (error) {
-      setError('Error adding student: ' + error.message)
+      showError('Error adding student: ' + error.message)
     }
   }
 

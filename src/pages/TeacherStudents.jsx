@@ -88,6 +88,16 @@ const TeacherStudents = () => {
   const [passwordResetLoading, setPasswordResetLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+
+  const showSuccess = msg => {
+    setSuccess(msg)
+    if (msg) setTimeout(() => setSuccess(''), 5000)
+  }
+  const showError = msg => {
+    setError(msg)
+    if (msg) setTimeout(() => setError(''), 5000)
+  }
+
   const [upcomingBirthdays, setUpcomingBirthdays] = useState([])
   const [showBirthdayNotification, setShowBirthdayNotification] =
     useState(false)
@@ -181,7 +191,7 @@ const TeacherStudents = () => {
         setLastCheckIns(lastCheckInMap)
       }
     } catch (error) {
-      setError('Error fetching data: ' + error.message)
+      showError('Error fetching data: ' + error.message)
     } finally {
       setLoading(false)
     }
@@ -221,8 +231,9 @@ const TeacherStudents = () => {
 
     try {
       const amount = parseInt(balanceChange.amount)
-      if (isNaN(amount)) {
-        setError('Please enter a valid number')
+      if (isNaN(amount) || amount === 0) {
+        showError('Please enter a valid number')
+        setBalanceLoading(false)
         return
       }
 
@@ -278,11 +289,11 @@ const TeacherStudents = () => {
       })
       setIsBalanceDialogOpen(false)
       setSelectedStudent(null)
-      setSuccess('Balance updated successfully!')
+      showSuccess('Balance updated successfully!')
 
       await fetchData()
     } catch (error) {
-      setError('Error updating balance: ' + error.message)
+      showError('Error updating balance: ' + error.message)
     } finally {
       setBalanceLoading(false)
     }
@@ -313,9 +324,9 @@ const TeacherStudents = () => {
         )
       }
 
-      setSuccess(`Password reset email sent to ${student.email}`)
+      showSuccess(`Password reset email sent to ${student.email}`)
     } catch (error) {
-      setError(`Failed to send password reset: ${error.message}`)
+      showError(`Failed to send password reset: ${error.message}`)
     }
   }
 
@@ -350,9 +361,9 @@ const TeacherStudents = () => {
       setSelectedSchedules([])
       setIsEnrollDialogOpen(false)
       setSelectedStudent(null)
-      setSuccess('Student enrolled successfully!')
+      showSuccess('Student enrolled successfully!')
     } catch (error) {
-      setError('Error enrolling student: ' + error.message)
+      showError('Error enrolling student: ' + error.message)
     }
   }
 
@@ -409,12 +420,12 @@ const TeacherStudents = () => {
       } catch (emailError) {
         console.error('Error sending welcome email:', emailError)
         // Show warning but don't fail user creation
-        setSuccess(
+        showSuccess(
           'User created successfully, but welcome email could not be sent.'
         )
       }
 
-      setSuccess('User created successfully!')
+      showSuccess('User created successfully!')
       setNewUser({
         email: '',
         fullName: '',
@@ -424,7 +435,7 @@ const TeacherStudents = () => {
       setIsCreateUserDialogOpen(false)
       fetchData() // Refresh student list
     } catch (error) {
-      setError('Error creating user: ' + error.message)
+      showError('Error creating user: ' + error.message)
     } finally {
       setCreatingUser(false)
     }
@@ -443,12 +454,12 @@ const TeacherStudents = () => {
 
       if (error) throw error
 
-      setSuccess('Observations updated successfully!')
+      showSuccess('Observations updated successfully!')
       setIsCommentsDialogOpen(false)
       setSelectedStudent(null)
       await fetchData()
     } catch (error) {
-      setError('Error updating observations: ' + error.message)
+      showError('Error updating observations: ' + error.message)
     }
   }
 
