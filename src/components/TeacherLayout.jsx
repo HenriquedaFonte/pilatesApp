@@ -17,7 +17,9 @@ import {
   Mail,
   LogOut,
   Menu,
-  X
+  X,
+  TrendingUp,
+  MessageSquare
 } from 'lucide-react'
 
 const TeacherLayout = ({ children }) => {
@@ -55,6 +57,8 @@ const TeacherLayout = ({ children }) => {
     { labelKey: 'teacher.sidebar.lowCredits', path: '/teacher/low-credits-report', icon: CreditCard },
     { labelKey: 'teacher.sidebar.creditHistory', path: '/teacher/credit-history-report', icon: History },
     { labelKey: 'teacher.sidebar.emails', path: '/teacher/email-notifications', icon: Mail },
+    { labelKey: 'teacher.sidebar.financial', path: '/teacher/financial-report', icon: TrendingUp },
+    { labelKey: 'teacher.sidebar.testimonials', path: '/teacher/testimonials', icon: MessageSquare },
   ]
 
   const isActive = (path) => location.pathname === path
