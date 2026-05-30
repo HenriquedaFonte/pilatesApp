@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
+import { getDayName, formatTime } from '../lib/format'
 import {
   Card,
   CardContent,
@@ -33,6 +34,7 @@ import {
 } from 'lucide-react'
 import Logo from '../components/Logo'
 import { ThemeToggle } from '../components/ThemeToggle'
+import { LanguageToggle } from '../components/LanguageToggle'
 import { TableSkeleton } from '../components/ui/skeleton'
 
 const StudentDashboard = () => {
@@ -145,38 +147,28 @@ const StudentDashboard = () => {
     await signOut()
   }
 
-  const getDayName = dayOfWeek => {
-    const days = [
-      'Sunday',
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday'
-    ]
-    return days[dayOfWeek]
-  }
-
-  const formatTime = time => {
-    return new Date(`2000-01-01T${time}`).toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
-    })
-  }
-
   const getBalanceIcon = balance => {
     if (balance <= 2) return <AlertTriangle className="h-5 w-5 text-red-600" />
     return <CheckCircle className="h-5 w-5 text-green-600" />
   }
 
+  // TODO Fase 2: validar campo de saldo total com o backend
   const getTotalBalance = () => {
     return (
       (profile?.individual_credits || 0) +
       (profile?.duo_credits || 0) +
       (profile?.group_credits || 0)
     )
+  }
+
+  const getNextClass = () => {
+    if (myClasses.length === 0) return null
+    const sorted = [...myClasses].sort((a, b) => {
+      const dayDiff = a.class_schedules.day_of_week - b.class_schedules.day_of_week
+      if (dayDiff !== 0) return dayDiff
+      return a.class_schedules.start_time.localeCompare(b.class_schedules.start_time)
+    })
+    return sorted[0]
   }
 
   const getCurrentWeekClasses = () => {
@@ -289,13 +281,14 @@ const StudentDashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <Logo className="h-8 w-8 mr-3" />
-              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
-                Pilates Studio
+              <Logo className="h-9 w-9 mr-3" />
+              <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+                Josi Pilates
               </h1>
             </div>
             <div className="flex items-center space-x-4">
               <ThemeToggle />
+              <LanguageToggle />
               <span
                 className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer hover:text-gray-900 dark:hover:text-white"
                 onClick={() => navigate('/student/profile')}
@@ -311,86 +304,166 @@ const StudentDashboard = () => {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            {t('dashboard.title')}
+      <div className="max-w-4xl mx-auto px-4 py-6 md:py-8 space-y-6">
+        {/* Cabeçalho Editorial */}
+        <div className="space-y-1">
+          <h2 className="font-serif-display text-3xl tracking-tight text-foreground">
+            {t('common.welcome', 'Olá')}, <span className="text-primary italic">{profile?.full_name ? profile.full_name.split(' ')[0] : t('common.student', 'Aluno')}</span>
           </h2>
-          <p className="text-gray-600 dark:text-gray-300">
-            {t('dashboard.subtitle')}
+          <p className="text-sm text-muted-foreground">
+            {(() => {
+              const currentLang = i18n.language || 'pt'
+              const locale = currentLang.substring(0, 2).toLowerCase() === 'en' ? 'en-US' : currentLang.substring(0, 2).toLowerCase() === 'fr' ? 'fr-CA' : 'pt-BR'
+              const formattedDate = new Date().toLocaleDateString(locale, {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })
+              return formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1)
+            })()}
           </p>
         </div>
 
-        <div className="mb-8">
-          <Card className="bg-primary text-primary-foreground">
-            <CardHeader>
-              <CardTitle className="flex items-center text-primary-foreground">
-                {getBalanceIcon(getTotalBalance())}
-                <span className="ml-2">{t('dashboard.balanceTitle')}</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-4xl font-bold mb-2">{getTotalBalance()}</div>
-              <p className="text-primary-foreground opacity-90">
+        {/* Card de Saldo e Chips em Grid */}
+        <div className="space-y-4">
+          <Card className="bg-gradient-to-br from-emerald-600 to-teal-700 dark:from-emerald-700 dark:to-teal-800 text-white shadow-lg border-0 rounded-3xl p-6 overflow-hidden relative">
+            {/* Efeito de círculo decorativo no fundo */}
+            <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+            <div className="space-y-3 relative z-10">
+              <span className="text-xs font-bold tracking-wider uppercase opacity-80">{t('dashboard.balanceTitle', 'Saldo Total de Créditos')}</span>
+              <div className="text-5xl font-serif-display font-bold tracking-tight">{getTotalBalance()}</div>
+              <p className="text-xs font-medium opacity-90 leading-relaxed">
                 {getTotalBalance() <= 2
-                  ? t('dashboard.balanceLow')
-                  : t('dashboard.balanceOk')}
+                  ? t('dashboard.balanceLowMsg', 'Seus créditos estão acabando. Converse com a professora para renovar seu plano.')
+                  : t('dashboard.balanceOkMsg', 'Seu saldo está excelente! Aproveite as suas sessões de pilates.')}
               </p>
-            </CardContent>
+            </div>
           </Card>
+
+          {/* Chips coloridos por tipo de crédito */}
+          <div className="grid grid-cols-3 gap-3">
+            <Card className="rounded-2xl border border-border bg-card shadow-xs p-3 text-center flex flex-col items-center gap-1.5">
+              <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{t('teacher.students.balance.individual', 'Individual')}</span>
+              <span className="text-2xl font-serif-display font-bold text-blue-600 dark:text-blue-400">{profile?.individual_credits || 0}</span>
+            </Card>
+            <Card className="rounded-2xl border border-border bg-card shadow-xs p-3 text-center flex flex-col items-center gap-1.5">
+              <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{t('teacher.students.balance.duo', 'Duo')}</span>
+              <span className="text-2xl font-serif-display font-bold text-emerald-600 dark:text-emerald-400">{profile?.duo_credits || 0}</span>
+            </Card>
+            <Card className="rounded-2xl border border-border bg-card shadow-xs p-3 text-center flex flex-col items-center gap-1.5">
+              <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{t('teacher.students.balance.group', 'Grupo')}</span>
+              <span className="text-2xl font-serif-display font-bold text-violet-600 dark:text-violet-400">{profile?.group_credits || 0}</span>
+            </Card>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Calendar className="h-5 w-5 mr-2 text-primary" />
-                {t('dashboard.weeklySchedule')}
+        {/* Acesso Rápido (Compacto e Altamente Visível) */}
+        <div className="space-y-2">
+          <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider px-1">
+            {t('dashboard.quickActions', 'Acesso Rápido')}
+          </h3>
+          <div className="grid grid-cols-3 gap-2.5">
+            <Link to="/student/history" className="w-full">
+              <Button
+                variant="outline"
+                className="w-full h-11 justify-center rounded-2xl border border-border bg-card text-foreground hover:bg-primary hover:text-primary-foreground font-semibold px-2 transition-colors flex flex-col md:flex-row items-center gap-1 md:gap-2 shadow-xs text-xs md:text-sm py-2"
+              >
+                <History className="h-4 w-4 text-primary shrink-0" />
+                <span className="truncate">{t('nav.history', 'Histórico')}</span>
+              </Button>
+            </Link>
+            <Link to="/student/profile" className="w-full">
+              <Button
+                variant="outline"
+                className="w-full h-11 justify-center rounded-2xl border border-border bg-card text-foreground hover:bg-primary hover:text-primary-foreground font-semibold px-2 transition-colors flex flex-col md:flex-row items-center gap-1 md:gap-2 shadow-xs text-xs md:text-sm py-2"
+              >
+                <User className="h-4 w-4 text-primary shrink-0" />
+                <span className="truncate">{t('nav.profile', 'Perfil')}</span>
+              </Button>
+            </Link>
+            <Link to="/student/rules" className="w-full">
+              <Button
+                variant="outline"
+                className="w-full h-11 justify-center rounded-2xl border border-border bg-card text-foreground hover:bg-primary hover:text-primary-foreground font-semibold px-2 transition-colors flex flex-col md:flex-row items-center gap-1 md:gap-2 shadow-xs text-xs md:text-sm py-2"
+              >
+                <FileText className="h-4 w-4 text-primary shrink-0" />
+                <span className="truncate">{t('rules.title', 'Regulamento')}</span>
+              </Button>
+            </Link>
+          </div>
+        </div>
+
+        {/* Card de Próxima Aula em Destaque */}
+        {(() => {
+          const nextClass = getNextClass()
+          if (!nextClass) return null
+          return (
+            <Card className="rounded-2xl border border-primary/20 bg-primary/5 shadow-xs p-5 flex items-center justify-between gap-4 animate-in fade-in duration-200">
+              <div className="space-y-1.5 flex-1 min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+                  <span className="text-xs font-bold text-primary uppercase tracking-wider">{t('dashboard.nextClass', 'Sua Próxima Aula')}</span>
+                </div>
+                <h3 className="text-lg font-bold text-foreground truncate">
+                  {nextClass.class_schedules.classes.name}
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  {getDayName(nextClass.class_schedules.day_of_week, i18n.language)} {t('common.from', 'das')} {formatTime(nextClass.class_schedules.start_time, i18n.language)} {t('common.to', 'às')} {formatTime(nextClass.class_schedules.end_time, i18n.language)}
+                </p>
+              </div>
+              <div className="p-3 rounded-xl bg-primary/10 text-primary shrink-0">
+                <Calendar className="h-5 w-5" />
+              </div>
+            </Card>
+          )
+        })()}
+
+        {/* Seções de Grade Semanal e Atividades em Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+            <CardHeader className="border-b border-border/50 bg-muted/10 p-5">
+              <CardTitle className="text-base font-bold text-foreground flex items-center gap-2">
+                <Calendar className="h-5 w-5 text-primary" />
+                {t('dashboard.weeklySchedule', 'Grade Semanal')}
               </CardTitle>
-              <CardDescription>
-                {t('dashboard.weeklyScheduleDesc')}
+              <CardDescription className="text-sm">
+                {t('dashboard.weeklyScheduleDesc', 'Seus horários fixos de aulas matriculadas')}
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-5">
               {myClasses.length === 0 ? (
-                <p className="text-gray-500 dark:text-gray-400 text-center py-4">
-                  {t('dashboard.noClasses')}
-                </p>
+                <div className="text-center py-6">
+                  <Calendar className="h-10 w-10 text-muted-foreground mx-auto mb-3 opacity-50" />
+                  <p className="text-sm text-muted-foreground">{t('dashboard.noClasses', 'Nenhum horário semanal agendado.')}</p>
+                </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-2.5">
                   {Object.entries(getWeekSchedule()).map(
                     ([dayOfWeek, classes]) => (
                       <div
                         key={dayOfWeek}
-                        className="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-800 rounded-lg"
+                        className="flex items-center justify-between p-3.5 border border-border/40 bg-muted/10 rounded-xl"
                       >
-                        <div>
-                          <h4 className="font-medium text-gray-900 dark:text-white">
-                            {getDayName(parseInt(dayOfWeek))}
+                        <div className="space-y-0.5">
+                          <h4 className="font-bold text-base text-foreground">
+                            {getDayName(parseInt(dayOfWeek), i18n.language)}
                           </h4>
                           {classes.map(enrollment => (
                             <div
                               key={enrollment.id}
-                              className="text-sm text-gray-600 dark:text-gray-300"
+                              className="text-sm text-muted-foreground mt-0.5"
                             >
-                              {enrollment.class_schedules.classes.name} at{' '}
-                              {formatTime(
-                                enrollment.class_schedules.start_time
+                              {enrollment.class_schedules.classes.name} {t('history.atTime', 'às')} {formatTime(enrollment.class_schedules.start_time, i18n.language)}
+                              {hasMultipleClassesOrDays() && enrollment.class_schedules.classes.description && (
+                                <span className="block text-xs text-muted-foreground mt-0.5 italic">
+                                  {enrollment.class_schedules.classes.description}
+                                </span>
                               )}
-                              {hasMultipleClassesOrDays() &&
-                                enrollment.class_schedules.classes
-                                  .description && (
-                                  <span className="block text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                    {
-                                      enrollment.class_schedules.classes
-                                        .description
-                                    }
-                                  </span>
-                                )}
                             </div>
                           ))}
                         </div>
-                        <Clock className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+                        <Clock className="h-4 w-4 text-muted-foreground opacity-60" />
                       </div>
                     )
                   )}
@@ -399,153 +472,111 @@ const StudentDashboard = () => {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <History className="h-5 w-5 mr-2 text-primary" />
-                {t('dashboard.recentActivity')}
+          <Card className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+            <CardHeader className="border-b border-border/50 bg-muted/10 p-5">
+              <CardTitle className="text-base font-bold text-foreground flex items-center gap-2">
+                <History className="h-5 w-5 text-primary" />
+                {t('dashboard.recentActivity', 'Atividade Recente')}
               </CardTitle>
-              <CardDescription>
-                {t('dashboard.recentActivityDesc')}
+              <CardDescription className="text-sm">
+                {t('dashboard.recentActivityDesc', 'Últimos registros de frequências e créditos')}
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-5">
               {getCombinedActivities().length === 0 ? (
-                <p className="text-gray-500 dark:text-gray-400 text-center py-4">
-                  {t('dashboard.noActivity')}
-                </p>
+                <div className="text-center py-6">
+                  <History className="h-10 w-10 text-muted-foreground mx-auto mb-3 opacity-50" />
+                  <p className="text-sm text-muted-foreground">{t('dashboard.noActivity', 'Nenhuma atividade recente registrada.')}</p>
+                </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-2.5">
                   {getCombinedActivities().map(activity => (
                     <div
                       key={activity.id}
-                      className="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-800 rounded-lg"
+                      className="flex items-center justify-between p-3.5 border border-border/40 bg-muted/10 rounded-xl text-sm"
                     >
-                      <div className="flex items-center space-x-3">
-                        {activity.type === 'attendance' &&
-                          getAttendanceIcon(activity.status)}
-                        {activity.type === 'balance' && (
-                          <div
-                            className={`w-4 h-4 rounded-full ${
-                              activity.change_amount > 0
-                                ? 'bg-green-500'
-                                : 'bg-red-500'
-                            }`}
-                          />
-                        )}
-                        <div>
+                      <div className="flex items-center space-x-3 min-w-0">
+                        <div className="shrink-0">
+                          {activity.type === 'attendance' && getAttendanceIcon(activity.status)}
+                          {activity.type === 'balance' && (
+                            <div
+                              className={`w-3.5 h-3.5 rounded-full ${
+                                activity.change_amount > 0
+                                  ? 'bg-emerald-500'
+                                  : 'bg-rose-500'
+                              }`}
+                            />
+                          )}
+                        </div>
+                        <div className="min-w-0">
                           {activity.type === 'attendance' ? (
                             <>
-                              <p className="text-sm font-medium text-gray-900 dark:text-white">
+                              <p className="font-bold text-foreground truncate text-sm">
                                 {activity.class_name}
                               </p>
-                              <p
-                                className={`text-xs font-medium ${getAttendanceStatusColor(activity.status)}`}
-                              >
+                              <p className={`text-xs font-semibold ${getAttendanceStatusColor(activity.status)} mt-0.5`}>
                                 {t(`status.${activity.status}`)}
                               </p>
-                              <p className="text-xs text-gray-500 dark:text-gray-400">
-                                {new Date(
-                                  activity.check_in_date
-                                ).toLocaleDateString()}
+                              <p className="text-xs text-muted-foreground mt-0.5">
+                                {(() => {
+                                  const currentLang = i18n.language || 'pt'
+                                  const locale = currentLang.substring(0, 2).toLowerCase() === 'en' ? 'en-US' : currentLang.substring(0, 2).toLowerCase() === 'fr' ? 'fr-CA' : 'pt-BR'
+                                  return new Date(activity.check_in_date).toLocaleDateString(locale)
+                                })()}
                               </p>
                             </>
                           ) : (
                             <>
-                              <p className="text-sm font-medium text-gray-900 dark:text-white">
+                              <p className="font-bold text-foreground truncate text-sm">
                                 {activity.description}
                               </p>
-                              <p className="text-xs text-gray-500 dark:text-gray-400">
-                                {new Date(activity.date).toLocaleDateString()}
+                              <p className="text-xs text-muted-foreground mt-0.5">
+                                {(() => {
+                                  const currentLang = i18n.language || 'pt'
+                                  const locale = currentLang.substring(0, 2).toLowerCase() === 'en' ? 'en-US' : currentLang.substring(0, 2).toLowerCase() === 'fr' ? 'fr-CA' : 'pt-BR'
+                                  return new Date(activity.date).toLocaleDateString(locale)
+                                })()}
                               </p>
                             </>
                           )}
                         </div>
                       </div>
-                      <div className="text-right">
+                      <div className="text-right shrink-0">
                         {activity.type === 'balance' && (
                           <>
                             <span
-                              className={`font-medium ${
+                              className={`font-bold text-sm ${
                                 activity.change_amount > 0
-                                  ? 'text-green-600'
-                                  : 'text-red-600'
+                                  ? 'text-emerald-600'
+                                  : 'text-rose-600'
                               }`}
                             >
                               {activity.change_amount > 0 ? '+' : ''}
                               {activity.change_amount}
                             </span>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                              Balance: {activity.new_balance}
+                            <p className="text-xs text-muted-foreground mt-0.5">
+                              {t('history.balanceText', 'Saldo')}: {activity.new_balance}
                             </p>
                           </>
                         )}
-                        {activity.type === 'attendance' &&
-                          activity.credit_type && (
-                            <p
-                              className={`text-xs font-medium ${
-                                activity.status === 'absent_notified'
-                                  ? 'text-green-600'
-                                  : 'text-red-600'
-                              }`}
-                            >
-                              {activity.status === 'absent_notified'
-                                ? t('attendance.notUsed')
-                                : `${t('attendance.used')}: -1 ${activity.credit_type}`}
-                            </p>
-                          )}
+                        {activity.type === 'attendance' && activity.credit_type && (
+                          <p
+                            className={`font-bold text-xs ${
+                              activity.status === 'absent_notified'
+                                ? 'text-emerald-600'
+                                : 'text-rose-600'
+                            }`}
+                          >
+                            {activity.status === 'absent_notified'
+                              ? t('attendance.creditSaved', 'Crédito Poupat.')
+                              : `-1 ${t(`teacher.students.balance.${activity.credit_type}`)}`}
+                          </p>
+                        )}
                       </div>
                     </div>
                   ))}
                 </div>
               )}
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="mt-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t('dashboard.quickActions')}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Link to="/student/history">
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start bg-white dark:bg-slate-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-primary hover:text-primary-foreground"
-                  >
-                    <History className="h-4 w-4 mr-2" />
-                    {t('dashboard.viewFullHistory')}
-                  </Button>
-                </Link>
-                <Link to="/student/profile">
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start bg-white dark:bg-slate-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-primary hover:text-primary-foreground"
-                  >
-                    <User className="h-4 w-4 mr-2" />
-                    {t('nav.profile')}
-                  </Button>
-                </Link>
-                <Link to="/student/rules">
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start bg-white dark:bg-slate-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-primary hover:text-primary-foreground"
-                  >
-                    <FileText className="h-4 w-4 mr-2" />
-                    {t('rules.title')}
-                  </Button>
-                </Link>
-                {/* <Button
-                  variant="outline"
-                  className="w-full justify-start"
-                  disabled
-                >
-                  <Calendar className="h-4 w-4 mr-2" />
-                  Book a Class (Coming Soon)
-                </Button> */}
-              </div>
             </CardContent>
           </Card>
         </div>

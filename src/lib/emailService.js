@@ -3,10 +3,15 @@ import { getTemplate, processTemplate } from './emailTemplates';
 
 class EmailService {
   constructor() {
-    this.apiKey = import.meta.env.VITE_RESEND_API_KEY || import.meta.env.RESEND_API_KEY;
     this.fromEmail = import.meta.env.VITE_STUDIO_EMAIL || import.meta.env.STUDIO_EMAIL || 'josi@josipilates.com';
     this.fromName = import.meta.env.VITE_STUDIO_NAME || import.meta.env.STUDIO_NAME || 'Josi Pilates';
-    this.baseUrl = 'https://api.resend.com';
+  }
+
+  getBaseUrl() {
+    if (import.meta.env.VITE_APP_URL) {
+      return import.meta.env.VITE_APP_URL;
+    }
+    return typeof window !== 'undefined' ? window.location.origin : 'https://josipilates.com';
   }
 
   async getUserLanguage(userId) {
@@ -773,7 +778,7 @@ ${processedTemplate.tagline}
     const subject = processedTemplate.subject;
 
     // Prepare PDF attachment - use full URL for Resend API
-    const baseUrl = import.meta.env.VITE_APP_URL || window.location.origin
+    const baseUrl = this.getBaseUrl()
     const attachments = [{
       filename: 'PilatesLessonsPolicies.pdf',
       path: `${baseUrl}/PilatesLessonsPolicies.pdf`, // Full URL for Resend API

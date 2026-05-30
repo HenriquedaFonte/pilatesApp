@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import { Button } from '@/components/ui/button'
@@ -13,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Loader2, ArrowLeft, User, Phone, Globe, Mail, Lock } from 'lucide-react'
 import { ThemeToggle } from '../components/ThemeToggle'
 import Logo from '../components/Logo'
+import TeacherLayout from '../components/TeacherLayout'
 
 const TeacherProfile = () => {
   const [profileData, setProfileData] = useState({
@@ -34,6 +36,7 @@ const TeacherProfile = () => {
 
   const { user, profile, updateProfile } = useAuth()
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (profile) {
@@ -134,131 +137,125 @@ const TeacherProfile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      <header className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <button
-                onClick={() => navigate('/teacher/dashboard')}
-                className="mr-4 p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg"
-              >
-                <ArrowLeft className="h-5 w-5 text-gray-600 dark:text-gray-300" />
-              </button>
-              <Logo className="h-8 w-8 mr-3" />
-              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">My Profile</h1>
-            </div>
-            <ThemeToggle />
+    <TeacherLayout>
+      <div className="space-y-8 animate-in fade-in duration-300 max-w-4xl mx-auto">
+        {/* Cabeçalho Editorial */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <h1 className="font-serif-display text-3xl tracking-tight text-foreground">
+              {t('teacher.profile.title')} <span className="text-primary italic">{t('teacher.profile.titleAccent')}</span>
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              {t('teacher.profile.subtitle')}
+            </p>
           </div>
         </div>
-      </header>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {error && (
-          <Alert variant="destructive" className="mb-6">
-            <AlertDescription>{error}</AlertDescription>
+          <Alert variant="destructive" className="rounded-2xl border-destructive/30 bg-destructive/5 text-destructive">
+            <AlertDescription className="font-medium">{error}</AlertDescription>
           </Alert>
         )}
         {success && (
-          <Alert className="mb-6">
-            <AlertDescription>{success}</AlertDescription>
+          <Alert className="rounded-2xl border-emerald-200/50 bg-emerald-50/50 text-emerald-800 dark:bg-emerald-950/20 dark:text-emerald-400">
+            <AlertDescription className="font-medium">{success}</AlertDescription>
           </Alert>
         )}
 
         <Tabs defaultValue="personal" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="personal">Personal Information</TabsTrigger>
-            <TabsTrigger value="security">Security</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 rounded-xl p-1 bg-muted">
+            <TabsTrigger value="personal" className="rounded-lg py-2.5 text-xs font-bold transition-all">{t('teacher.profile.tabs.personal')}</TabsTrigger>
+            <TabsTrigger value="security" className="rounded-lg py-2.5 text-xs font-bold transition-all">{t('teacher.profile.tabs.security')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="personal">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <User className="h-5 w-5 mr-2" />
-                  Personal Information
+            <Card className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+              <CardHeader className="border-b border-border/50 bg-muted/10 p-6">
+                <CardTitle className="flex items-center text-lg font-bold text-foreground">
+                  <User className="h-5 w-5 mr-2 text-primary" />
+                  {t('teacher.profile.personal.title')}
                 </CardTitle>
-                <CardDescription>
-                  Update your personal details and preferences
+                <CardDescription className="text-xs">
+                  {t('teacher.profile.personal.description')}
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-6">
                 <form onSubmit={handleProfileUpdate} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="fullName">Full Name</Label>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="fullName" className="text-xs font-semibold text-muted-foreground">{t('teacher.profile.personal.fullName')}</Label>
                       <div className="relative">
-                        <User className="absolute left-3 top-3 h-4 w-4 text-gray-400 dark:text-gray-500" />
+                        <User className="absolute left-3.5 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
                           id="fullName"
                           value={profileData.full_name}
                           onChange={(e) => setProfileData({ ...profileData, full_name: e.target.value })}
-                          placeholder="Your full name"
-                          className="pl-10"
+                          placeholder={t('teacher.profile.personal.fullNamePlaceholder')}
+                          className="pl-10 rounded-xl border-border bg-background focus-visible:ring-primary h-10 w-full text-sm"
                           required
                         />
                       </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email Address</Label>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="email" className="text-xs font-semibold text-muted-foreground">{t('teacher.profile.personal.email')}</Label>
                       <div className="relative">
-                        <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400 dark:text-gray-500" />
+                        <Mail className="absolute left-3.5 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
                           id="email"
                           type="email"
                           value={profileData.email}
                           onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
-                          placeholder="your.email@example.com"
-                          className="pl-10"
+                          placeholder={t('teacher.profile.personal.emailPlaceholder')}
+                          className="pl-10 rounded-xl border-border bg-background focus-visible:ring-primary h-10 w-full text-sm"
                           required
                         />
                       </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">Phone Number</Label>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="phone" className="text-xs font-semibold text-muted-foreground">{t('teacher.profile.personal.phone')}</Label>
                       <div className="relative">
-                        <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400 dark:text-gray-500" />
+                        <Phone className="absolute left-3.5 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
                           id="phone"
                           value={profileData.phone}
                           onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
-                          placeholder="+1 555 555 5555"
-                          className="pl-10"
+                          placeholder={t('teacher.profile.personal.phonePlaceholder')}
+                          className="pl-10 rounded-xl border-border bg-background focus-visible:ring-primary h-10 w-full text-sm"
                         />
                       </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="language">Preferred Language</Label>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="language" className="text-xs font-semibold text-muted-foreground">{t('teacher.profile.personal.language')}</Label>
                       <div className="relative">
-                        <Globe className="absolute left-3 top-3 h-4 w-4 text-gray-400 dark:text-gray-500 z-10" />
+                        <Globe className="absolute left-3.5 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
                         <Select
                           value={profileData.preferred_language}
                           onValueChange={(value) => setProfileData({ ...profileData, preferred_language: value })}
                         >
-                          <SelectTrigger className="pl-10">
-                            <SelectValue placeholder="Select language" />
+                          <SelectTrigger className="pl-10 rounded-xl border-border bg-background focus-visible:ring-primary h-10">
+                            <SelectValue placeholder={t('teacher.profile.personal.languagePlaceholder')} />
                           </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="pt">🇧🇷 Portuguese</SelectItem>
-                            <SelectItem value="en">🇺🇸 English</SelectItem>
-                            <SelectItem value="fr">🇫🇷 French</SelectItem>
+                          <SelectContent className="rounded-xl">
+                            <SelectItem value="pt">{t('teacher.profile.personal.portuguese')}</SelectItem>
+                            <SelectItem value="en">{t('teacher.profile.personal.english')}</SelectItem>
+                            <SelectItem value="fr">{t('teacher.profile.personal.french')}</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
                     </div>
                   </div>
 
-                  <Button type="submit" disabled={updatingProfile}>
+                  <Button type="submit" disabled={updatingProfile} className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-5 h-10 transition-colors">
                     {updatingProfile ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Updating Profile...
+                        {t('teacher.profile.personal.updating')}
                       </>
                     ) : (
-                      'Update Profile'
+                      t('teacher.profile.personal.update')
                     )}
                   </Button>
                 </form>
@@ -267,59 +264,62 @@ const TeacherProfile = () => {
           </TabsContent>
 
           <TabsContent value="security">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Lock className="h-5 w-5 mr-2" />
-                  Change Password
+            <Card className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+              <CardHeader className="border-b border-border/50 bg-muted/10 p-6">
+                <CardTitle className="flex items-center text-lg font-bold text-foreground">
+                  <Lock className="h-5 w-5 mr-2 text-primary" />
+                  {t('teacher.profile.security.title')}
                 </CardTitle>
-                <CardDescription>
-                  Update your password to keep your account secure
+                <CardDescription className="text-xs">
+                  {t('teacher.profile.security.description')}
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-6">
                 <form onSubmit={handlePasswordUpdate} className="space-y-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="currentPassword">Current Password</Label>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="currentPassword" className="text-xs font-semibold text-muted-foreground">{t('teacher.profile.security.currentPassword')}</Label>
                     <PasswordInput
                       id="currentPassword"
                       value={passwordData.currentPassword}
                       onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
-                      placeholder="Enter your current password"
+                      placeholder={t('teacher.profile.security.currentPasswordPlaceholder')}
+                      className="rounded-xl border-border bg-background"
                       required
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="newPassword">New Password</Label>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="newPassword" className="text-xs font-semibold text-muted-foreground">{t('teacher.profile.security.newPassword')}</Label>
                     <PasswordInput
                       id="newPassword"
                       value={passwordData.newPassword}
                       onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                      placeholder="Enter your new password"
+                      placeholder={t('teacher.profile.security.newPasswordPlaceholder')}
+                      className="rounded-xl border-border bg-background"
                       required
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="confirmPassword" className="text-xs font-semibold text-muted-foreground">{t('teacher.profile.security.confirmPassword')}</Label>
                     <PasswordInput
                       id="confirmPassword"
                       value={passwordData.confirmPassword}
                       onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                      placeholder="Confirm your new password"
+                      placeholder={t('teacher.profile.security.confirmPasswordPlaceholder')}
+                      className="rounded-xl border-border bg-background"
                       required
                     />
                   </div>
 
-                  <Button type="submit" disabled={updatingPassword}>
+                  <Button type="submit" disabled={updatingPassword} className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-5 h-10 transition-colors">
                     {updatingPassword ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Updating Password...
+                        {t('teacher.profile.security.updating')}
                       </>
                     ) : (
-                      'Change Password'
+                      t('teacher.profile.security.update')
                     )}
                   </Button>
                 </form>
@@ -328,7 +328,7 @@ const TeacherProfile = () => {
           </TabsContent>
         </Tabs>
       </div>
-    </div>
+    </TeacherLayout>
   )
 }
 

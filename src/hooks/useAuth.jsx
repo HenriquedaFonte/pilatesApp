@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
@@ -18,6 +18,9 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
 
+  // Lock de concorrência de inicialização de perfil
+  const profileFetchLock = useRef(new Map())
+
   useEffect(() => {
     const handleSession = async session => {
       try {
@@ -29,7 +32,9 @@ export const AuthProvider = ({ children }) => {
           setProfile(null)
         }
       } catch (error) {
-        console.error('Error in handleSession:', error)
+        if (import.meta.env.DEV) {
+          console.error('Error in handleSession:', error)
+        }
         setUser(null)
         setProfile(null)
       } finally {
@@ -59,13 +64,15 @@ export const AuthProvider = ({ children }) => {
           // Refresh 5 minutes before expiry
           if (expiresAt - now < 300) {
             const { error } = await supabase.auth.refreshSession()
-            if (error) {
+            if (error && import.meta.env.DEV) {
               console.warn('Session refresh failed:', error.message)
             }
           }
         }
       } catch (error) {
-        console.warn('Session check failed:', error.message)
+        if (import.meta.env.DEV) {
+          console.warn('Session check failed:', error.message)
+        }
       }
     }, 60000) // Check every minute
 
@@ -75,59 +82,79 @@ export const AuthProvider = ({ children }) => {
     }
   }, [])
 
-  const fetchOrCreateProfile = async user => {
-    try {
-      const { data: existingProfile } = await supabase
-        .from('profiles')
-        .select(
-          'id, email, full_name, role, individual_credits, duo_credits, group_credits, created_at, observations, phone, preferred_language'
-        )
-        .eq('id', user.id)
-        .single()
+  const fetchOrCreateProfile = async sessionUser => {
+    if (!sessionUser) return null
 
-      if (existingProfile) {
-        setProfile(existingProfile)
-
-        return
-      }
-
-      // Profile not found - create it
-      console.log(
-        'Profile not found for user:',
-        user.email,
-        'Creating new profile...'
-      )
-
-      const { data: newProfile, error: insertError } = await supabase
-        .from('profiles')
-        .insert({
-          id: user.id,
-          email: user.email,
-          full_name:
-            user.user_metadata?.full_name || user.user_metadata?.name || '',
-          role: user.user_metadata?.role || 'student',
-          individual_credits: 0,
-          duo_credits: 0,
-          group_credits: 0,
-          phone: user.user_metadata?.phone || null,
-          preferred_language: user.user_metadata?.preferred_language || 'pt',
-          created_at: new Date().toISOString()
-        })
-        .select()
-        .single()
-
-      if (insertError) {
-        console.error('Error creating profile:', insertError)
-        setProfile(null)
-        return
-      }
-
-      setProfile(newProfile)
-    } catch (error) {
-      console.error('Error fetching/creating profile:', error)
-      console.log('User ID for failed profile operation:', user.id)
-      setProfile(null)
+    // Se o perfil para esse usuário já está sendo resolvido em paralelo, retorna a promessa existente
+    if (profileFetchLock.current.has(sessionUser.id)) {
+      return profileFetchLock.current.get(sessionUser.id)
     }
+
+    const fetchPromise = (async () => {
+      try {
+        const { data: existingProfile } = await supabase
+          .from('profiles')
+          .select(
+            'id, email, full_name, role, individual_credits, duo_credits, group_credits, created_at, observations, phone, preferred_language'
+          )
+          .eq('id', sessionUser.id)
+          .single()
+
+        if (existingProfile) {
+          setProfile(existingProfile)
+          return existingProfile
+        }
+
+        // Profile not found - create it
+        if (import.meta.env.DEV) {
+          console.log(
+            'Profile not found for user:',
+            sessionUser.email,
+            'Creating new profile...'
+          )
+        }
+
+        const { data: newProfile, error: insertError } = await supabase
+          .from('profiles')
+          .insert({
+            id: sessionUser.id,
+            email: sessionUser.email,
+            full_name:
+              sessionUser.user_metadata?.full_name || sessionUser.user_metadata?.name || '',
+            role: sessionUser.user_metadata?.role || 'student',
+            individual_credits: 0,
+            duo_credits: 0,
+            group_credits: 0,
+            phone: sessionUser.user_metadata?.phone || null,
+            preferred_language: sessionUser.user_metadata?.preferred_language || 'pt',
+            created_at: new Date().toISOString()
+          })
+          .select()
+          .single()
+
+        if (insertError) {
+          if (import.meta.env.DEV) {
+            console.error('Error creating profile:', insertError)
+          }
+          setProfile(null)
+          return null
+        }
+
+        setProfile(newProfile)
+        return newProfile
+      } catch (error) {
+        if (import.meta.env.DEV) {
+          console.error('Error fetching/creating profile:', error)
+        }
+        setProfile(null)
+        return null
+      } finally {
+        profileFetchLock.current.delete(sessionUser.id)
+      }
+    })()
+
+    profileFetchLock.current.set(sessionUser.id, fetchPromise)
+    return fetchPromise
   }
 
   const signUp = async (
@@ -271,7 +298,9 @@ export const AuthProvider = ({ children }) => {
 
       if (error) throw error
     } catch (error) {
-      console.error('Error updating theme preference:', error)
+      if (import.meta.env.DEV) {
+        console.error('Error updating theme preference:', error)
+      }
     }
   }
 
@@ -288,7 +317,7 @@ export const AuthProvider = ({ children }) => {
     updateThemePreference,
     isTeacher: profile?.role === 'teacher',
     isStudent: profile?.role === 'student',
-    isProfileComplete: profile?.phone != null,
+    isProfileComplete: profile?.full_name != null && profile?.full_name !== '',
     supabase
   }
 

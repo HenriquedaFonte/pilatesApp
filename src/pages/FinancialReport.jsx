@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../hooks/useAuth'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { Button } from '@/components/ui/button'
 import {
@@ -8,8 +7,7 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
-  CardDescription as CardDesc
+  CardTitle
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -28,15 +26,13 @@ import {
   Search,
   Download,
   CalendarDays,
-  User2,
-  FileText
+  User2
 } from 'lucide-react'
 import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, LabelList } from 'recharts'
-import { ThemeToggle } from '../components/ThemeToggle'
+import TeacherLayout from '../components/TeacherLayout'
 
 const FinancialReport = () => {
-  const { profile, signOut } = useAuth()
-  const navigate = useNavigate()
+  const { t, i18n } = useTranslation()
   const [history, setHistory] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -64,10 +60,6 @@ const FinancialReport = () => {
     fetchStudents()
   }, [])
 
-  const handleSignOut = async () => {
-    await signOut()
-    navigate('/')
-  }
 
   function getUTCDateRangeForLocalDay(dateStr) {
     const [year, month, day] = dateStr.split('-').map(Number)
@@ -138,13 +130,13 @@ const FinancialReport = () => {
     const filename = detailed ? 'financial_report_detailed.csv' : 'financial_report_simple.csv'
 
     if (detailed) {
-      csvContent = 'Financial Report\n\n'
+      csvContent = `${t('teacher.reports.financial.title')}\n\n`
 
       // Overall Summary
-      csvContent += 'SUMMARY\n'
-      csvContent += 'Payment Method,Transactions,Total Credits,Total Amount\n'
+      csvContent += `${t('teacher.reports.financial.summaryTitle')}\n`
+      csvContent += `${t('teacher.reports.financial.summaryTable.method')},${t('teacher.reports.financial.summaryTable.count')},${t('teacher.reports.financial.summaryTable.credits')},${t('teacher.reports.financial.summaryTable.amount')}\n`
       Object.entries(summary).forEach(([method, data]) => {
-        csvContent += `"${method === 'unknown' ? 'Unknown' : method.replace('_', ' ')}",${data.transactionCount},${data.totalCredits},${data.totalAmount.toFixed(2)}\n`
+        csvContent += `"${method === 'unknown' ? t('teacher.reports.financial.unknown') : method.replace('_', ' ')}",${data.transactionCount},${data.totalCredits},${data.totalAmount.toFixed(2)}\n`
       })
       csvContent += '\n'
 
@@ -160,8 +152,8 @@ const FinancialReport = () => {
 
       // Transactions by payment method
       Object.entries(groupedByMethod).forEach(([method, transactions]) => {
-        csvContent += `TRANSACTIONS - ${method === 'unknown' ? 'Unknown' : method.replace('_', ' ')}\n`
-        csvContent += 'Student Name,Type,Credits Added,Date,Description,Amount Paid\n'
+        csvContent += `${t('teacher.reports.financial.transactionsTitle')} - ${method === 'unknown' ? t('teacher.reports.financial.unknown') : method.replace('_', ' ')}\n`
+        csvContent += `${t('teacher.reports.financial.table.student')},${t('teacher.reports.financial.table.type')},${t('teacher.reports.financial.table.creditsAdded')},${t('teacher.reports.financial.table.date')},${t('teacher.reports.financial.table.description')},${t('teacher.reports.financial.table.amountPaid')}\n`
 
         transactions.forEach(row => {
           csvContent += `"${students[row.student_id] || ''}","${row.type}",${row.change_amount},"${new Date(row.created_at).toLocaleDateString()}","${row.description || ''}",${row.amount_paid ? row.amount_paid.toFixed(2) : ''}\n`
@@ -171,13 +163,13 @@ const FinancialReport = () => {
     } else {
       // Simple CSV - original format
       const headers = [
-        'Student Name',
-        'Type',
-        'Credits Added',
-        'Date',
-        'Description',
-        'Amount Paid',
-        'Payment Method'
+        t('teacher.reports.financial.table.student'),
+        t('teacher.reports.financial.table.type'),
+        t('teacher.reports.financial.table.creditsAdded'),
+        t('teacher.reports.financial.table.date'),
+        t('teacher.reports.financial.table.description'),
+        t('teacher.reports.financial.table.amountPaid'),
+        t('teacher.reports.financial.table.paymentMethod')
       ]
       csvContent = [
         headers.join(','),
@@ -209,13 +201,13 @@ const FinancialReport = () => {
       case 'individual':
         return (
           <Badge variant="outline" className="text-blue-700 border-blue-300">
-            Individual
+            {t('teacher.studentSummary.individual')}
           </Badge>
         )
       case 'duo':
         return (
           <Badge variant="outline" className="text-green-700 border-green-300">
-            Duo
+            {t('teacher.studentSummary.duo')}
           </Badge>
         )
       case 'group':
@@ -224,7 +216,7 @@ const FinancialReport = () => {
             variant="outline"
             className="text-purple-700 border-purple-300"
           >
-            Group
+            {t('teacher.studentSummary.group')}
           </Badge>
         )
       default:
@@ -237,9 +229,15 @@ const FinancialReport = () => {
   const totalCredits = Object.values(summary).reduce((sum, data) => sum + data.totalCredits, 0)
   const totalAmount = Object.values(summary).reduce((sum, data) => sum + data.totalAmount, 0)
 
+  const formatCurrency = amount => {
+    const locale = i18n.language === 'en' ? 'en-US' : i18n.language === 'fr' ? 'fr-FR' : 'pt-BR'
+    const symbol = i18n.language === 'en' ? '$' : i18n.language === 'fr' ? '€' : 'R$'
+    return `${symbol} ${amount.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+  }
+
   // Prepare chart data
   const pieData = Object.entries(summary).map(([method, data]) => ({
-    name: method === 'unknown' ? 'Unknown' : method.replace('_', ' '),
+    name: method === 'unknown' ? t('teacher.reports.financial.unknown') : method.replace('_', ' '),
     value: data.totalAmount,
     fill: method === 'cash' ? '#10b981' : method === 'interac' ? '#3b82f6' : method === 'credit_card' ? '#8b5cf6' : '#6b7280'
   }))
@@ -262,34 +260,16 @@ const FinancialReport = () => {
 
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      <header className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Link to="/teacher/dashboard" className="mr-4">
-                <ArrowLeft className="h-6 w-6 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" />
-              </Link>
-              <FileText className="h-8 w-8 text-primary mr-3" />
-              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
-                Financial Report
-              </h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <ThemeToggle />
-              <span className="text-sm text-gray-700 dark:text-gray-300">
-                Welcome, {profile?.full_name}
-              </span>
-              <Button variant="outline" size="sm" onClick={handleSignOut}>
-                <CreditCard className="h-4 w-4 mr-2" />
-                Sign Out
-              </Button>
-            </div>
-          </div>
+    <TeacherLayout>
+      <div className="space-y-6">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
+            {t('teacher.reports.financial.title').split(' ').slice(0, -1).join(' ')} <span className="text-primary italic">{t('teacher.reports.financial.titleAccent')}</span>
+          </h1>
+          <p className="text-muted-foreground">
+            {t('teacher.reports.financial.subtitle')}
+          </p>
         </div>
-      </header>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {error && (
           <Alert variant="destructive" className="mb-6">
             <AlertDescription>{error}</AlertDescription>
@@ -300,9 +280,9 @@ const FinancialReport = () => {
           <CardHeader>
             <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
               <div>
-                <CardTitle>Financial Transactions</CardTitle>
+                <CardTitle>{t('teacher.reports.financial.transactionsTitle')}</CardTitle>
                 <CardDescription>
-                  View financial transactions for credit purchases. Select a date range and click "Search" to view results.
+                  {t('teacher.reports.financial.transactionsDesc')}
                 </CardDescription>
               </div>
               <div className="flex gap-2">
@@ -312,7 +292,7 @@ const FinancialReport = () => {
                   disabled={filteredHistory.length === 0}
                 >
                   <Download className="h-4 w-4 mr-2" />
-                  Export Simple CSV
+                  {t('teacher.reports.financial.exportSimpleCsv')}
                 </Button>
                 <Button
                   onClick={() => exportToCSV(true)}
@@ -320,7 +300,7 @@ const FinancialReport = () => {
                   disabled={filteredHistory.length === 0}
                 >
                   <Download className="h-4 w-4 mr-2" />
-                  Export Detailed CSV
+                  {t('teacher.reports.financial.exportDetailedCsv')}
                 </Button>
               </div>
             </div>
@@ -329,7 +309,7 @@ const FinancialReport = () => {
             <div className="flex flex-col md:flex-row gap-4 mb-6 items-end">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Start Date
+                  {t('teacher.reports.financial.startDate')}
                 </label>
                 <Input
                   type="date"
@@ -340,7 +320,7 @@ const FinancialReport = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  End Date
+                  {t('teacher.reports.financial.endDate')}
                 </label>
                 <Input
                   type="date"
@@ -351,14 +331,14 @@ const FinancialReport = () => {
               </div>
               <Button onClick={fetchHistory} className="h-10">
                 <Search className="h-4 w-4 mr-2" />
-                Search
+                {t('teacher.reports.financial.search')}
               </Button>
               <div className="flex-1" />
               <div className="relative">
                 <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" />
                 <Input
                   type="text"
-                  placeholder="Search by student, Description or Payment Type..."
+                  placeholder={t('teacher.reports.financial.searchPlaceholder')}
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
                   className="pl-10 w-64"
@@ -368,10 +348,10 @@ const FinancialReport = () => {
             </div>
             {!hasSearched ? (
               <div className="py-8 text-center text-gray-500 dark:text-gray-400">
-                Select a date range and click "Search" to view financial transactions.
+                {t('teacher.reports.financial.emptyStateDesc')}
               </div>
             ) : loading ? (
-              <div className="py-8 text-center">Loading...</div>
+              <div className="py-8 text-center">{t('teacher.reports.financial.loading')}</div>
             ) : (
               <div className="overflow-x-auto">
                 <Table>
@@ -379,17 +359,17 @@ const FinancialReport = () => {
                     <TableRow>
                       <TableHead>
                         <User2 className="inline h-4 w-4 mr-1" />
-                        Student
+                        {t('teacher.reports.financial.table.student')}
                       </TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Credits Added</TableHead>
+                      <TableHead>{t('teacher.reports.financial.table.type')}</TableHead>
+                      <TableHead>{t('teacher.reports.financial.table.creditsAdded')}</TableHead>
                       <TableHead>
                         <CalendarDays className="inline h-4 w-4 mr-1" />
-                        Date
+                        {t('teacher.reports.financial.table.date')}
                       </TableHead>
-                      <TableHead>Description</TableHead>
-                      <TableHead>Amount Paid</TableHead>
-                      <TableHead>Payment Method</TableHead>
+                      <TableHead>{t('teacher.reports.financial.table.description')}</TableHead>
+                      <TableHead>{t('teacher.reports.financial.table.amountPaid')}</TableHead>
+                      <TableHead>{t('teacher.reports.financial.table.paymentMethod')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -399,7 +379,7 @@ const FinancialReport = () => {
                           colSpan={7}
                           className="text-center text-gray-500 dark:text-gray-400 py-8"
                         >
-                          No financial transactions found for this period.
+                          {t('teacher.reports.financial.noTransactionsDesc')}
                         </TableCell>
                       </TableRow>
                     ) : (
@@ -418,7 +398,7 @@ const FinancialReport = () => {
                           </TableCell>
                           <TableCell>
                             {row.created_at
-                              ? new Date(row.created_at).toLocaleDateString()
+                              ? new Date(row.created_at).toLocaleDateString(i18n.language === 'en' ? 'en-US' : i18n.language === 'fr' ? 'fr-FR' : 'pt-BR')
                               : ''}
                           </TableCell>
                           <TableCell>
@@ -427,7 +407,7 @@ const FinancialReport = () => {
                             </span>
                           </TableCell>
                           <TableCell>
-                            {row.amount_paid ? `$${row.amount_paid.toFixed(2)}` : '-'}
+                            {row.amount_paid ? formatCurrency(row.amount_paid) : '-'}
                           </TableCell>
                           <TableCell>
                             <span className="capitalize">
@@ -450,9 +430,9 @@ const FinancialReport = () => {
         {hasSearched && Object.keys(summary).length > 0 && (
           <Card className="mt-6">
             <CardHeader>
-              <CardTitle>Summary by Payment Method</CardTitle>
+              <CardTitle>{t('teacher.reports.financial.summaryTitle')}</CardTitle>
               <CardDescription>
-                Total amounts and transaction counts grouped by payment method
+                {t('teacher.reports.financial.summaryDesc')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -460,10 +440,10 @@ const FinancialReport = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Payment Method</TableHead>
-                      <TableHead>Transaction Count</TableHead>
-                      <TableHead>Total Credits</TableHead>
-                      <TableHead>Total Amount</TableHead>
+                      <TableHead>{t('teacher.reports.financial.summaryTable.method')}</TableHead>
+                      <TableHead>{t('teacher.reports.financial.summaryTable.count')}</TableHead>
+                      <TableHead>{t('teacher.reports.financial.summaryTable.credits')}</TableHead>
+                      <TableHead>{t('teacher.reports.financial.summaryTable.amount')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -471,20 +451,20 @@ const FinancialReport = () => {
                       <TableRow key={method}>
                         <TableCell>
                           <span className="capitalize">
-                            {method === 'unknown' ? 'Unknown' : method.replace('_', ' ')}
+                            {method === 'unknown' ? t('teacher.reports.financial.unknown') : method.replace('_', ' ')}
                           </span>
                         </TableCell>
                         <TableCell>{data.transactionCount}</TableCell>
                         <TableCell>{data.totalCredits}</TableCell>
-                        <TableCell>${data.totalAmount.toFixed(2)}</TableCell>
+                        <TableCell>{formatCurrency(data.totalAmount)}</TableCell>
                       </TableRow>
                     ))}
                     {/* Global Total Row */}
                     <TableRow className="font-semibold bg-gray-50 dark:bg-slate-800">
-                      <TableCell>Total</TableCell>
+                      <TableCell>{t('teacher.reports.financial.total')}</TableCell>
                       <TableCell>{totalTransactions}</TableCell>
                       <TableCell>{totalCredits}</TableCell>
-                      <TableCell>${totalAmount.toFixed(2)}</TableCell>
+                      <TableCell>{formatCurrency(totalAmount)}</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
@@ -497,9 +477,9 @@ const FinancialReport = () => {
         {hasSearched && (pieData.length > 0 || barData.length > 0) && (
           <Card className="mt-6">
             <CardHeader>
-              <CardTitle>Financial Charts</CardTitle>
+              <CardTitle>{t('teacher.reports.financial.chartsTitle')}</CardTitle>
               <CardDescription>
-                Visual representation of financial data
+                {t('teacher.reports.financial.chartsDesc')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -507,12 +487,12 @@ const FinancialReport = () => {
                 {/* Pie Chart for Payment Methods */}
                 {pieData.length > 0 && (
                   <div className="flex flex-col">
-                    <h4 className="text-lg font-semibold mb-6 text-center">Revenue by Payment Method</h4>
+                    <h4 className="text-lg font-semibold mb-6 text-center">{t('teacher.reports.financial.revenueByMethod')}</h4>
                     <div className="flex-1 min-h-[350px] sm:min-h-[400px] lg:min-h-[350px]">
                       <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                           <Tooltip
-                            formatter={(value) => [`$${value.toFixed(2)}`, 'Revenue']}
+                            formatter={(value) => [formatCurrency(value), t('teacher.reports.financial.revenue')]}
                             labelStyle={{ color: '#374151' }}
                             contentStyle={{
                               backgroundColor: '#f9fafb',
@@ -542,7 +522,7 @@ const FinancialReport = () => {
                 {/* Bar Chart for Credits by Type */}
                 {barData.length > 0 && (
                   <div className="flex flex-col">
-                    <h4 className="text-lg font-semibold mb-6 text-center">Credits and Revenue by Type</h4>
+                    <h4 className="text-lg font-semibold mb-6 text-center">{t('teacher.reports.financial.creditsAndRevenue')}</h4>
                     <div className="flex-1 min-h-[350px] sm:min-h-[400px] lg:min-h-[350px]">
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart
@@ -569,7 +549,7 @@ const FinancialReport = () => {
                           />
                           <Tooltip
                             formatter={(value, name) => [
-                              name === 'Revenue' ? `$${value.toFixed(2)}` : value,
+                              name === t('teacher.reports.financial.revenue') ? formatCurrency(value) : value,
                               name
                             ]}
                             labelStyle={{ color: '#374151', fontWeight: '600' }}
@@ -584,13 +564,13 @@ const FinancialReport = () => {
                             dataKey="credits"
                             fill="#2563eb"
                             radius={[4, 4, 0, 0]}
-                            name="Credits"
+                            name={t('teacher.reports.financial.credits')}
                           />
                           <Bar
                             dataKey="amount"
                             fill="#dc2626"
                             radius={[4, 4, 0, 0]}
-                            name="Revenue"
+                            name={t('teacher.reports.financial.revenue')}
                           />
                         </BarChart>
                       </ResponsiveContainer>
@@ -602,7 +582,7 @@ const FinancialReport = () => {
           </Card>
         )}
       </div>
-    </div>
+    </TeacherLayout>
   )
 }
 

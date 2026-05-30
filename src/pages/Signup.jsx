@@ -82,19 +82,19 @@ const Signup = () => {
     setError('')
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match')
+      setError('As senhas não coincidem.')
       setLoading(false)
       return
     }
 
     if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long')
+      setError('A senha deve ter pelo menos 6 caracteres.')
       setLoading(false)
       return
     }
 
     if (formData.phone && !formData.phone.match(/^\+[1-9]\d{1,14}$/)) {
-      setError('Please enter a valid phone number in international format')
+      setError('Digite um número de telefone válido no formato internacional (ex: +55...).')
       setLoading(false)
       return
     }
@@ -109,7 +109,7 @@ const Signup = () => {
     )
 
     if (error) {
-      setError(error.message)
+      setError(error.message === 'User already registered' ? 'Este e-mail já está cadastrado.' : error.message)
       setLoading(false)
       return
     }
@@ -136,15 +136,15 @@ const Signup = () => {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <div className="flex justify-center mb-4">
-              <Logo className="h-12 w-12" />
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-900 p-4 animate-in fade-in duration-200">
+        <Card className="w-full max-w-md rounded-3xl border-border shadow-lg p-3">
+          <CardHeader className="text-center space-y-2">
+            <div className="flex justify-center mb-2">
+              <Logo className="h-14 w-14 shadow-xs" />
             </div>
-            <CardTitle className="text-2xl font-bold text-green-600">Account Created!</CardTitle>
-            <CardDescription>
-              Your student account has been created successfully. You will be redirected to the login page.
+            <CardTitle className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">Conta Criada!</CardTitle>
+            <CardDescription className="text-sm">
+              Sua conta de aluno foi criada com sucesso. Você será redirecionado para a página de login.
             </CardDescription>
           </CardHeader>
         </Card>
@@ -153,138 +153,142 @@ const Signup = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="flex justify-center mb-4">
-            <Logo className="h-12 w-12" />
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-900 p-4">
+      <Card className="w-full max-w-md rounded-3xl border-border shadow-lg p-2 bg-card">
+        <CardHeader className="text-center space-y-2.5">
+          <div className="flex justify-center mb-1">
+            <Logo className="h-14 w-14 shadow-xs" />
           </div>
-          <CardTitle className="text-2xl font-bold">
-            Join Pilates Studio
+          <CardTitle className="font-serif-display text-3xl tracking-tight text-foreground">
+            Criar conta no <span className="text-primary italic">Josi Pilates</span>
           </CardTitle>
-          <CardDescription>
-            Create your student account to get started
+          <CardDescription className="text-sm">
+            Crie sua conta de aluno para começar
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <Alert variant="destructive">
+              <Alert variant="destructive" className="rounded-2xl">
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="fullName">Full Name</Label>
+              <Label htmlFor="fullName">Nome Completo</Label>
               <Input
                 id="fullName"
                 name="fullName"
                 type="text"
-                placeholder="Enter your full name"
+                placeholder="Seu nome completo"
                 value={formData.fullName}
                 onChange={handleChange}
                 required
                 disabled={loading}
+                className="rounded-xl border-border bg-background"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">E-mail</Label>
               <Input
                 id="email"
                 name="email"
                 type="email"
-                placeholder="Enter your email"
+                placeholder="nome@exemplo.com"
                 value={formData.email}
                 onChange={handleChange}
                 required
                 disabled={loading}
+                className="rounded-xl border-border bg-background"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number</Label>
+              <Label htmlFor="phone">Número de Telefone</Label>
               <div className="relative">
-                <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground opacity-60" />
                 <Input
                   id="phone"
                   name="phone"
                   type="tel"
-                  value={displayPhone} // Use displayPhone for the input value
+                  value={displayPhone} 
                   onChange={handlePhoneChange}
-                  placeholder="+1 555 555 5555"
-                  className="pl-10"
+                  placeholder="+55 11 99999-9999"
+                  className="pl-10 rounded-xl border-border bg-background"
                   disabled={loading}
                 />
               </div>
-              <p className="text-xs text-gray-500">
-                Format: +1 555 555 5555 (optional)
+              <p className="text-[10px] text-muted-foreground px-1">
+                Formato: +55 (DDD) 99999-9999 (opcional)
               </p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="preferredLanguage">Email Language Preference</Label>
+              <Label htmlFor="preferredLanguage">Preferência de Idioma dos E-mails</Label>
               <div className="relative">
-                <Globe className="absolute left-3 top-3 h-4 w-4 text-gray-400 z-10" />
+                <Globe className="absolute left-3 top-3 h-4 w-4 text-muted-foreground opacity-60 z-10" />
                 <Select value={formData.preferredLanguage} onValueChange={handleLanguageChange} disabled={loading}>
-                  <SelectTrigger className="pl-10">
-                    <SelectValue placeholder="Select language" />
+                  <SelectTrigger className="pl-10 rounded-xl border-border bg-background">
+                    <SelectValue placeholder="Selecione um idioma" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="rounded-xl">
                     <SelectItem value="pt">🇧🇷 Português</SelectItem>
                     <SelectItem value="en">🇺🇸 English</SelectItem>
                     <SelectItem value="fr">🇫🇷 Français</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              <p className="text-xs text-gray-500">
-                Language for email notifications about credits
+              <p className="text-[10px] text-muted-foreground px-1">
+                Idioma em que receberá avisos sobre créditos e agendamentos
               </p>
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">Senha</Label>
               <PasswordInput
                 id="password"
                 name="password"
-                placeholder="Create a password"
+                placeholder="Crie uma senha forte"
                 value={formData.password}
                 onChange={handleChange}
                 required
                 disabled={loading}
+                className="rounded-xl border-border bg-background"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Label htmlFor="confirmPassword">Confirmar Senha</Label>
               <PasswordInput
                 id="confirmPassword"
                 name="confirmPassword"
-                placeholder="Confirm your password"
+                placeholder="Confirme sua senha"
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 required
                 disabled={loading}
+                className="rounded-xl border-border bg-background"
               />
             </div>
             
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full rounded-xl py-5 font-semibold mt-2" disabled={loading}>
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Creating account...
+                  Criando conta...
                 </>
               ) : (
-                'Create Account'
+                'Criar Conta'
               )}
             </Button>
           </form>
           
-          <div className="mt-6 text-center">
+          <div className="text-center pt-2">
             <p className="text-sm text-muted-foreground">
-              Already have an account?{' '}
-              <Link to="/login" className="text-primary hover:underline">
-                Sign in
+              Já tem uma conta?{' '}
+              <Link to="/login" className="text-primary hover:underline font-semibold">
+                Entre aqui
               </Link>
             </p>
           </div>

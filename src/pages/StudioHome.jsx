@@ -52,10 +52,6 @@ const StudioHome = () => {
   const [autoAdvancePaused, setAutoAdvancePaused] = useState(false)
   const [testimonials, setTestimonials] = useState([])
 
-  useEffect(() => {
-    // Always start in French for homepage
-    i18n.changeLanguage('fr')
-  }, [i18n])
 
   useEffect(() => {
     fetchTestimonials()
