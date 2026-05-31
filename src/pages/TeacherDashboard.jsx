@@ -68,16 +68,16 @@ const TeacherDashboard = () => {
     try {
       const { data: students, error: studentsError } = await supabase
         .from('profiles')
-        .select('individual_credits, duo_credits, group_credits')
+        .select('is_active, individual_credits, duo_credits, group_credits')
         .eq('role', 'student')
 
       if (studentsError) throw studentsError
 
-      const { data: classes, error: classesError } = await supabase
-        .from('classes')
+      const { data: weeklySchedules, error: weeklySchedulesError } = await supabase
+        .from('class_schedules')
         .select('id')
 
-      if (classesError) throw classesError
+      if (weeklySchedulesError) throw weeklySchedulesError
 
       const today = new Date()
       const dayOfWeek = today.getDay()
@@ -129,7 +129,9 @@ const TeacherDashboard = () => {
         students: studentsPerSchedule[sched.id] || []
       }))
 
-      const studentsWithLowBalance = students.filter(
+      const activeStudents = (students || []).filter(s => s.is_active !== false)
+
+      const studentsWithLowBalance = activeStudents.filter(
         s =>
           (s.individual_credits || 0) +
             (s.duo_credits || 0) +
@@ -138,10 +140,10 @@ const TeacherDashboard = () => {
       ).length
 
       setStats({
-        totalStudents: students.length,
+        totalStudents: activeStudents.length,
         studentsWithLowBalance,
         todayClasses: todaySchedules.length,
-        totalClasses: classes.length
+        totalClasses: (weeklySchedules || []).length
       })
       setTodayClassesList(formattedTodayClasses)
     } catch (error) {
