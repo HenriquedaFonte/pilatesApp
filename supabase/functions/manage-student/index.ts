@@ -13,40 +13,48 @@ serve(async (req) => {
   }
 
   try {
-    // 1. Create user client using the incoming Authorization header to verify who is calling
-    const userClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      {
-        global: {
-          headers: { Authorization: req.headers.get('Authorization')! },
-        },
-      }
-    )
+    const authHeader = req.headers.get('Authorization') ?? '';
+    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? 'never-match-default';
+    const isServiceRole = authHeader.includes(serviceRoleKey);
 
-    const {
-      data: { user },
-    } = await userClient.auth.getUser()
-
-    if (!user) {
-      throw new Error('User not authenticated')
-    }
-
-    // 2. Create admin client with the service role key to perform deletions and auth updates
+    // Create admin client with the service role key to perform deletions and auth updates
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+      serviceRoleKey
     )
 
-    // 3. Verify permissions: Only a user with the 'teacher' role is allowed to perform these operations
-    const { data: profile, error: profileError } = await supabaseClient
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single()
+    if (isServiceRole) {
+      console.log("Authenticated via Service Role Key (diagnostics bypass)");
+    } else {
+      // 1. Create user client using the incoming Authorization header to verify who is calling
+      const userClient = createClient(
+        Deno.env.get('SUPABASE_URL') ?? '',
+        Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+        {
+          global: {
+            headers: { Authorization: authHeader },
+          },
+        }
+      )
 
-    if (profileError || profile?.role !== 'teacher') {
-      throw new Error('Only teachers are authorized to manage student profiles and accounts')
+      const {
+        data: { user },
+      } = await userClient.auth.getUser()
+
+      if (!user) {
+        throw new Error('User not authenticated')
+      }
+
+      // 3. Verify permissions: Only a user with the 'teacher' role is allowed to perform these operations
+      const { data: profile, error: profileError } = await supabaseClient
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single()
+
+      if (profileError || profile?.role !== 'teacher') {
+        throw new Error('Only teachers are authorized to manage student profiles and accounts')
+      }
     }
 
     const { action, studentId, email } = await req.json()
@@ -88,7 +96,13 @@ serve(async (req) => {
       // Delete the login account from Supabase Auth
       const { error: authDeleteError } = await supabaseClient.auth.admin.deleteUser(studentId)
       if (authDeleteError) {
-        throw new Error(`Failed to delete student auth credentials: ${authDeleteError.message}`)
+        const isUserNotFound = authDeleteError.message?.toLowerCase().includes('not found') || 
+                               authDeleteError.status === 404;
+        if (!isUserNotFound) {
+          throw new Error(`Failed to delete student auth credentials: ${authDeleteError.message}`)
+        } else {
+          console.log(`Auth user for student ${studentId} was already deleted or not found. Proceeding with public data deletion success.`)
+        }
       }
 
       return new Response(
