@@ -421,7 +421,7 @@ Sent from Josi Pilates website contact form.
           </div>
 
           {/* Mobile navigation controls */}
-          <div className="lg:hidden flex items-center gap-3">
+          <div className="nav-mobile lg:hidden flex items-center gap-3">
             <a href="#contact" className="btn btn-primary text-xs px-4 py-2 font-bold">
               <Calendar className="w-3.5 h-3.5" /> Essai
             </a>
@@ -436,7 +436,7 @@ Sent from Josi Pilates website contact form.
 
         {/* Mobile slide-down menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-[#e7e9e3] bg-[#f6f3ec] px-4 py-4 flex flex-col gap-4 shadow-lg text-left">
+          <div className="nav-mobile-menu lg:hidden border-t border-[#e7e9e3] bg-[#f6f3ec] px-4 py-4 flex flex-col gap-4 shadow-lg text-left">
             <div className="flex justify-between items-center px-2">
               <span className="lang">
                 <Globe className="w-4 h-4 text-gray-400" />

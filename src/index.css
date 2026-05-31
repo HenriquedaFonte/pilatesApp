@@ -139,7 +139,7 @@ body {
     letter-spacing: -.02em;
   }
   .nav-links {
-    display: flex;
+    display: none;
     align-items: center;
     gap: 30px;
   }
@@ -154,9 +154,34 @@ body {
     color: var(--ink);
   }
   .nav-right {
-    display: flex;
+    display: none;
     align-items: center;
     gap: 14px;
+  }
+  .nav-mobile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .nav-mobile-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  @media (min-width: 1024px) {
+    .nav-links {
+      display: flex;
+    }
+    .nav-right {
+      display: flex;
+    }
+    .nav-mobile {
+      display: none;
+    }
+    .nav-mobile-menu {
+      display: none;
+    }
   }
   .lang {
     display: flex;
