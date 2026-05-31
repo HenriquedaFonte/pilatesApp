@@ -847,26 +847,26 @@
       "services": "Serviços",
       "contact": "Contato",
       "studentPortal": "Área do cliente",
-      "bookTrial": "Agendar aula experimental"
+      "bookTrial": "Agendar aula introdutória"
     },
     "hero": {
       "greeting": "Olá!",
       "intro": "Prazer em conhecer, eu sou a Josi!",
-      "description": "Aulas privadas, duos e pequenos grupos com Josiane — fisioterapeuta e instrutora certificada. Atenção personalizada, postura e prevenção de lesões.",
+      "description": "Aulas particulares, duos e pequenos grupos com Josiane — instrutora certificada de Pilates e especialista em movimento. Atenção personalizada, melhora da sua postura e prevenção de lesões.",
       "title": "O Pilates que cuida do seu corpo, em pequenos grupos.",
       "titleHighlight": "seu corpo",
-      "badgePhysio": "Fisioterapeuta certificada",
-      "badgeExperience": "15 anos de experiência",
+      "badgePhysio": "Especialista em movimento",
+      "badgeExperience": "21 anos de experiência",
       "badgeLocation": "Montréal, QC",
-      "ctaTrial": "Agendar uma aula experimental",
+      "ctaTrial": "Agendar uma aula introdutória",
       "ctaServices": "Ver serviços",
-      "note": "Primeira sessão privada de introdução — ideal para começar bem."
+      "note": "Primeira sessão de introdução — ideal para começar bem."
     },
     "trust": {
-      "physioTitle": "Fisioterapeuta",
-      "physioDesc": "Abordagem clínica e segura",
+      "physioTitle": "Especialista em postura",
+      "physioDesc": "Abordagem segura e estruturada",
       "attentionTitle": "Atenção personalizada",
-      "attentionDesc": "Privado, duo ou pequeno grupo",
+      "attentionDesc": "Particular, duo ou pequeno grupo",
       "levelsTitle": "Todos os níveis",
       "levelsDesc": "Iniciantes bem-vindos",
       "languagesTitle": "FR · EN · PT",
@@ -878,13 +878,13 @@
       "subtitle": "Movimento com intenção, progresso com clareza.",
       "subtitleHighlight": "intenção",
       "greeting": "Olá!!",
-      "description": "Josiane alia sua expertise de fisioterapeuta a uma prática profunda de Pilates para oferecer um acompanhamento único em Montreal. Cada sessão é adaptada ao seu corpo, objetivos e ritmo.",
+      "description": "Josiane alia seu profundo conhecimento de movimento e anatomia a uma prática dedicada de Pilates para oferecer um acompanhamento único em Montreal. Cada sessão é adaptada ao seu corpo, objetivos e ritmo.",
       "extendedTitle": "Um pouco mais sobre mim",
-      "extended": "Em pequenos grupos ou individualmente, o foco é na qualidade do movimento, postura e prevenção de lesões — para que você saia mais forte, móvel e sereno.",
-      "badgePhysio": "Fisioterapeuta certificada",
+      "extended": "Em pequenos grupos ou individualmente, o foco é na qualidade do movimento, melhora da sua postura e prevenção de lesões — para que você saia mais forte, móvel e sereno.",
+      "badgePhysio": "Especialista em movimento",
       "badgePilates": "Instrutora de Pilates",
       "badgePrevention": "Prevenção de lesões",
-      "yearsExperience": "15+",
+      "yearsExperience": "21+",
       "yearsLabel": "anos de experiência"
     },
     "testimonialsTitle": "O que dizem os nossos alunos",
@@ -937,7 +937,7 @@
     "location": {
       "title": "Horários & localização",
       "subtitle": "Venha nos conhecer",
-      "address": "10145 Av. Hamel, Montreal, QC H2C 2X1",
+      "address": "Montréal, QC H2C 2X1",
       "phone": "+1 438 274 8396 · WhatsApp",
       "email": "josi@josipilates.com",
       "lundiVendredi": "Segunda — Sexta",
@@ -947,13 +947,13 @@
     },
     "ctaBand": {
       "title": "Pronto para começar sua jornada?",
-      "subtitle": "Reserve sua aula experimental e descubra o Pilates orientado por uma profissional da saúde.",
-      "ctaTrial": "Reservar aula experimental",
+      "subtitle": "Reserve sua aula introdutória e descubra o Pilates orientado por uma especialista certificada em movimento.",
+      "ctaTrial": "Reservar aula introdutória",
       "ctaWhatsapp": "WhatsApp"
     },
     "testimonials": [
       {
-        "text": "Josiane mudou completamente minha relação com meu corpo. Seus conhecimentos em fisioterapia fazem toda a diferença — não tenho mais dores nas costas.",
+        "text": "Josiane mudou completamente minha relação com meu corpo. Seus conhecimentos em anatomia e postura fazem toda a diferença — não tenho mais dores nas costas.",
         "author_name": "Marie-Claude",
         "city": "Montreal",
         "state": "QC"
@@ -974,7 +974,7 @@
     "contact": {
       "title": "Uma dúvida? Escreva para nós",
       "subtitle": "Respondemos rapidamente. Diga-nos o seu objetivo e nós guiaremos você até a melhor fórmula.",
-      "address": "10145 Av. Hamel, Montreal, QC H2C 2X1",
+      "address": "Montréal, QC H2C 2X1",
       "phone": "+1 438 274 8396",
       "email": "josi@josipilates.com",
       "portalButton": "Área do cliente",
@@ -1002,7 +1002,7 @@
       "navigation": "Navegação",
       "horaires": "Horários",
       "contact": "Contato",
-      "tagline": "Studio de Pilates em Montreal. Aulas privadas, duos e pequenos grupos com fisioterapeuta certificada."
+      "tagline": "Studio de Pilates em Montreal. Aulas particulares, duos e pequenos grupos com especialista certificada em movimento."
     }
   }
 }

@@ -348,26 +348,26 @@
       "services": "Services",
       "contact": "Contact",
       "studentPortal": "Espace client",
-      "bookTrial": "Réserver un essai"
+      "bookTrial": "Séance d'introduction"
     },
     "hero": {
       "greeting": "Bonjour!",
       "intro": "Qui suis-je:",
-      "description": "Cours privés, duos et petits groupes avec Josiane — physiothérapeute et instructrice certifiée. Attention personnalisée, posture et prévention des blessures.",
+      "description": "Cours particuliers, duos et petits groupes avec Josiane — instructrice certifiée de Pilates et spécialiste du mouvement. Attention personnalisée, amélioration de votre posture et prévention des blessures.",
       "title": "Le Pilates qui prend soin de votre corps, en petit comité.",
       "titleHighlight": "votre corps",
-      "badgePhysio": "Physiothérapeute certifiée",
-      "badgeExperience": "15 ans d'expérience",
+      "badgePhysio": "Spécialiste du mouvement",
+      "badgeExperience": "21 ans d'expérience",
       "badgeLocation": "Montréal, QC",
-      "ctaTrial": "Réserver un cours d'essai",
+      "ctaTrial": "Réserver une séance d'introduction",
       "ctaServices": "Voir les services",
-      "note": "Première séance privée d'introduction — idéale pour bien débuter."
+      "note": "Première séance d'introduction — idéale pour bien débuter."
     },
     "trust": {
-      "physioTitle": "Physiothérapeute",
-      "physioDesc": "Approche clinique & sécuritaire",
+      "physioTitle": "Spécialiste posture",
+      "physioDesc": "Approche sûre & structurée",
       "attentionTitle": "Attention personnalisée",
-      "attentionDesc": "Privé, duo ou petit groupe",
+      "attentionDesc": "Particulier, duo ou petit groupe",
       "levelsTitle": "Tous les niveaux",
       "levelsDesc": "Débutants bienvenus",
       "languagesTitle": "FR · EN · PT",
@@ -438,7 +438,7 @@
     "location": {
       "title": "Horaires & emplacement",
       "subtitle": "Venez nous rencontrer",
-      "address": "10145 Av. Hamel, Montréal, QC H2C 2X1",
+      "address": "Montréal, QC H2C 2X1",
       "phone": "+1 438 274 8396 · WhatsApp",
       "email": "josi@josipilates.com",
       "lundiVendredi": "Lundi — Vendredi",
@@ -448,13 +448,13 @@
     },
     "ctaBand": {
       "title": "Prête à commencer votre parcours ?",
-      "subtitle": "Réservez votre cours d'essai et découvrez le Pilates encadré par une professionnelle de la santé.",
-      "ctaTrial": "Réserver un cours d'essai",
+      "subtitle": "Réservez votre séance d'introduction et découvrez le Pilates guidé par une spécialiste certifiée du mouvement.",
+      "ctaTrial": "Réserver une séance d'introduction",
       "ctaWhatsapp": "WhatsApp"
     },
     "testimonials": [
       {
-        "text": "Josiane a complètement changé ma relation avec mon corps. Ses connaissances en physiothérapie font toute la différence — je n'ai plus de douleurs au dos.",
+        "text": "Josiane a complètement changé ma relation avec mon corps. Ses connaissances en anatomie et posture font toute la différence — je n'ai plus de douleurs au dos.",
         "author_name": "Marie-Claude",
         "city": "Montréal",
         "state": "QC"
@@ -475,7 +475,7 @@
     "contact": {
       "title": "Une question ? Écrivez-nous",
       "subtitle": "Nous répondons rapidement. Dites-nous votre objectif et nous vous guiderons vers la meilleure formule.",
-      "address": "10145 Av. Hamel, Montréal, QC H2C 2X1",
+      "address": "Montréal, QC H2C 2X1",
       "phone": "+1 438 274 8396",
       "email": "josi@josipilates.com",
       "portalButton": "Espace client",
@@ -503,7 +503,7 @@
       "navigation": "Navigation",
       "horaires": "Horaires",
       "contact": "Contact",
-      "tagline": "Studio de Pilates à Montréal. Cours privés, duos et petits groupes avec une physiothérapeute certifiée."
+      "tagline": "Studio de Pilates à Montréal. Cours particuliers, duos et petits groupes avec une instructrice certifiée."
     }
   },
   "teacher": {
