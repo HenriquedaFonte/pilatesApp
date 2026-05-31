@@ -77,10 +77,24 @@ body {
 }
 
 /* ════════════ THE REDESIGNED PUBLIC LANDING PAGE SCOPE ════════════ */
+.dark .studio-home-site {
+  --sand: #121a17;       /* deep dark green background */
+  --sand-2: #192320;     /* slightly lighter dark green */
+  --paper: #1b2622;      /* card background */
+  --ink: #f6f3ec;        /* sand light text */
+  --ink-2: #c6ceca;      /* muted sand light text */
+  --ink-3: #8a9590;      /* more muted light text */
+  --line: #22302a;       /* dark borders */
+  --line-2: #2b3b34;     /* dark alternate borders */
+  --brand-50: #0a251f;   /* dark green accents */
+  --brand-100: #0f352c;
+  --brand-200: #14493d;
+}
+
 .studio-home-site {
   /* Site container background & typography */
-  background: #f6f3ec; /* Sand color */
-  color: #1a2420; /* Ink color */
+  background: var(--sand);
+  color: var(--ink);
   font-family: 'Hanken Grotesk', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 
@@ -193,7 +207,7 @@ body {
     border: 1px solid var(--line);
     border-radius: 20px;
     padding: 6px 12px;
-    background: #fff;
+    background: var(--paper);
   }
   .lang b {
     color: var(--brand-700);
@@ -228,13 +242,13 @@ body {
     background: transparent;
     color: var(--ink);
     padding: 11px 18px;
-    border: 1px solid #cfd3cb;
+    border: 1px solid var(--line);
   }
   .btn-ghost:hover {
     border-color: var(--ink-3);
   }
   .btn-white {
-    background: #fff;
+    background: var(--paper);
     color: var(--ink) !important;
     padding: 13px 24px;
   }
@@ -907,7 +921,7 @@ body {
   }
   .fld input:focus, .fld textarea:focus {
     border-color: var(--brand);
-    background: #fff;
+    background: var(--paper);
   }
   .two {
     display: grid;
