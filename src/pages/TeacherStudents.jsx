@@ -535,6 +535,10 @@ const TeacherStudents = () => {
       showSuccess(`Aluno(a) ${selectedStudent.full_name} excluído(a) com sucesso!`)
       await fetchData()
     } catch (err) {
+      console.error('--- DETAILED STUDENT DELETE ERROR ---')
+      console.error(err)
+      console.error('Message:', err.message)
+      console.error('--------------------------------------')
       showError('Erro ao excluir aluno: ' + err.message)
     } finally {
       setIsDeleteConfirmOpen(false)
