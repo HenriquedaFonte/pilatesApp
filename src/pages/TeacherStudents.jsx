@@ -804,75 +804,78 @@ const TeacherStudents = () => {
             return (
               <Card 
                 key={student.id}
-                className={`rounded-2xl border border-border bg-card shadow-sm transition-all hover:shadow-md ${
+                className={`flex flex-col h-full rounded-2xl border border-border bg-card shadow-sm transition-all hover:shadow-md ${
                   hasUpcomingBirthday 
                     ? 'bg-emerald-50/10 dark:bg-emerald-950/5 border-l-4 border-l-emerald-500' 
                     : ''
                 }`}
               >
-                <CardHeader className="pb-4">
+                <CardHeader className="pb-3 pt-4 px-4">
                   <div className="flex justify-between items-start gap-2">
-                    <div className="space-y-1">
-                      <CardTitle className="text-lg font-bold text-foreground flex items-center gap-1.5 flex-wrap">
+                    <div className="space-y-0.5">
+                      <CardTitle className="text-base font-bold text-foreground flex items-center gap-1.5 flex-wrap">
                         {student.full_name}
                         {hasUpcomingBirthday && (
-                          <Cake className="h-4 w-4 text-emerald-600 dark:text-emerald-400 animate-bounce" title="Aniversário chegando!" />
+                          <Cake className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 animate-bounce" title="Aniversário chegando!" />
                         )}
                       </CardTitle>
                       <CardDescription className="text-xs text-muted-foreground break-all">
                         {student.email}
                       </CardDescription>
                     </div>
-                    {statusBadge}
+                    <div className="flex flex-col items-end gap-1.5 shrink-0">
+                      {statusBadge}
+                      <span className="text-[11px] font-semibold bg-muted/60 dark:bg-muted/20 px-2 py-0.5 rounded-full text-foreground border border-border/50">
+                        Total: {totalBalance}
+                      </span>
+                    </div>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  {/* Credit Balances */}
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between p-2 bg-blue-50/50 dark:bg-blue-900/10 rounded-lg border border-blue-200/10">
-                      <span className="text-xs font-semibold text-blue-700 dark:text-blue-400">Individual</span>
-                      <span className="font-bold text-blue-700 dark:text-blue-400">
-                        {student.individual_credits || 0}
-                      </span>
+                <CardContent className="flex-grow flex flex-col justify-between space-y-3 px-4 pb-4 pt-0">
+                  <div className="space-y-3 flex-grow flex flex-col justify-start">
+                    {/* Credit Balances Grid */}
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="flex flex-col items-center justify-center p-1.5 bg-blue-50/40 dark:bg-blue-950/10 rounded-xl border border-blue-200/10 text-center">
+                        <span className="text-[10px] font-bold text-blue-700 dark:text-blue-400">Individual</span>
+                        <span className="text-sm font-extrabold text-blue-700 dark:text-blue-400 mt-0.5">
+                          {student.individual_credits || 0}
+                        </span>
+                      </div>
+                      <div className="flex flex-col items-center justify-center p-1.5 bg-emerald-50/40 dark:bg-emerald-950/10 rounded-xl border border-emerald-200/10 text-center">
+                        <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400">Duo</span>
+                        <span className="text-sm font-extrabold text-emerald-700 dark:text-emerald-400 mt-0.5">
+                          {student.duo_credits || 0}
+                        </span>
+                      </div>
+                      <div className="flex flex-col items-center justify-center p-1.5 bg-purple-50/40 dark:bg-purple-950/10 rounded-xl border border-purple-200/10 text-center">
+                        <span className="text-[10px] font-bold text-purple-700 dark:text-purple-400">Grupo</span>
+                        <span className="text-sm font-extrabold text-purple-700 dark:text-purple-400 mt-0.5">
+                          {student.group_credits || 0}
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex items-center justify-between p-2 bg-emerald-50/50 dark:bg-emerald-900/10 rounded-lg border border-emerald-200/10">
-                      <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">Duo</span>
-                      <span className="font-bold text-emerald-700 dark:text-emerald-400">
-                        {student.duo_credits || 0}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between p-2 bg-purple-50/50 dark:bg-purple-900/10 rounded-lg border border-purple-200/10">
-                      <span className="text-xs font-semibold text-purple-700 dark:text-purple-400">Grupo</span>
-                      <span className="font-bold text-purple-700 dark:text-purple-400">
-                        {student.group_credits || 0}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between p-2 bg-muted/40 dark:bg-muted/10 rounded-lg border-t border-border">
-                      <span className="text-xs font-bold text-foreground">Total</span>
-                      <span className={`font-bold text-sm ${getBalanceColor(totalBalance)}`}>
-                        {totalBalance}
-                      </span>
+
+                    {/* Last Check-in Note (fixed height of 52px to guarantee perfect button alignment) */}
+                    <div className="mt-auto">
+                      {lastCheckIns[student.id] ? (
+                        <div className="text-xs text-muted-foreground bg-muted/30 p-2.5 rounded-xl border border-border/40 text-left w-full h-[52px] flex flex-col justify-center">
+                          <div className="font-semibold text-foreground truncate">
+                            Último check-in: {lastCheckIns[student.id].class_schedules?.classes?.name}
+                          </div>
+                          <div className="mt-0.5 text-[10px] opacity-90 truncate">
+                            {new Date(lastCheckIns[student.id].check_in_date).toLocaleDateString()} - {formatCheckInStatus(lastCheckIns[student.id].status)}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="text-xs text-muted-foreground/60 italic p-2 bg-muted/10 rounded-xl text-center border border-dashed border-border/40 w-full h-[52px] flex items-center justify-center">
+                          Nenhum check-in registrado
+                        </div>
+                      )}
                     </div>
                   </div>
 
-                  {/* Last Check-in Note */}
-                  {lastCheckIns[student.id] ? (
-                    <div className="text-xs text-muted-foreground bg-muted/30 p-2.5 rounded-lg border border-border/50">
-                      <div className="font-medium text-foreground">
-                        Último check-in: {lastCheckIns[student.id].class_schedules?.classes?.name}
-                      </div>
-                      <div className="mt-0.5 text-[11px]">
-                        {new Date(lastCheckIns[student.id].check_in_date).toLocaleDateString()} - {formatCheckInStatus(lastCheckIns[student.id].status)}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-xs text-muted-foreground/60 italic p-2 bg-muted/10 rounded-lg text-center border border-dashed border-border/50">
-                      Nenhum check-in registrado
-                    </div>
-                  )}
-
                   {/* Card Actions Footer */}
-                  <div className="flex items-center justify-between gap-1.5 pt-2 border-t border-border/50">
+                  <div className="flex items-center justify-between gap-1.5 pt-3 border-t border-border/50 w-full mt-auto">
                     <div className="flex items-center gap-1.5">
                       <Button
                         size="sm"
