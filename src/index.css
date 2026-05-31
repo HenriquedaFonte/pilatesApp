@@ -89,6 +89,7 @@ body {
   --brand-50: #0a251f;   /* dark green accents */
   --brand-100: #0f352c;
   --brand-200: #14493d;
+  --nav-bg: rgba(18, 26, 23, 0.82);
 }
 
 .studio-home-site {
@@ -118,13 +119,14 @@ body {
   --rose: #d2664f;
   --font: 'Hanken Grotesk', system-ui, sans-serif;
   --serif: 'Fraunces', Georgia, serif;
+  --nav-bg: rgba(246, 243, 236, 0.82);
 
   /* nav */
   .nav {
     position: sticky;
     top: 0;
     z-index: 40;
-    background: rgba(246, 243, 236, 0.82);
+    background: var(--nav-bg);
     backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--line);
   }
