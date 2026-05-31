@@ -347,99 +347,163 @@
       "testimonials": "Testimonials",
       "services": "Services",
       "contact": "Contact",
-      "studentPortal": "Student Portal"
+      "studentPortal": "Client area",
+      "bookTrial": "Book a trial"
     },
     "hero": {
-      "greeting": "Bonjour!",
+      "greeting": "Hello!",
       "intro": "Nice to meet you, I'm Josi!",
-      "description": "Montreal's premier Pilates studio. Physiotherapist and Pilates Method instructor since 2005. Specialized in helping Montreal residents achieve better posture, strength, and mobility through personalized Pilates instruction.",
-      "aboutButton": "About Me"
+      "description": "Private classes, duos, and small groups with Josiane — certified physiotherapist and Pilates instructor. Personalized attention, posture, and injury prevention.",
+      "title": "Pilates that takes care of your body, in small groups.",
+      "titleHighlight": "your body",
+      "badgePhysio": "Certified Physiotherapist",
+      "badgeExperience": "15 years of experience",
+      "badgeLocation": "Montreal, QC",
+      "ctaTrial": "Book a Trial Class",
+      "ctaServices": "See Services",
+      "note": "First private introductory session — ideal for starting out."
+    },
+    "trust": {
+      "physioTitle": "Physiotherapist",
+      "physioDesc": "Clinical & safe approach",
+      "attentionTitle": "Personalized Attention",
+      "attentionDesc": "Private, duo, or small group",
+      "levelsTitle": "All Levels",
+      "levelsDesc": "Beginners welcome",
+      "languagesTitle": "FR · EN · PT",
+      "languagesDesc": "Classes in your language"
     },
     "about": {
-      "title": "About Josi - Your Montreal Pilates Expert",
+      "title": "About Josiane",
+      "eyebrow": "About Josiane",
+      "subtitle": "Movement with intention, progress with clarity.",
+      "subtitleHighlight": "intention",
       "greeting": "Hi!!",
-      "description": "Montreal's trusted Pilates instructor and physiotherapist since 2005. Specializing in helping Montreal residents improve their posture, strength, and overall well-being through personalized Pilates instruction.",
+      "description": "Josiane combines her expertise as a physiotherapist with a deep practice of Pilates to offer a unique guidance in Montreal. Each session is adapted to your body, your goals, and your rhythm.",
       "extendedTitle": "A little more about me",
-      "extended": "Josiane received her first Pilates Method certification (PhysicalMind Institute–NYC) in 2005, initially drawn to the method as a complement to her career as a physiotherapist in Brazil.\n\nIn 2010, she moved to Montreal to deepen her knowledge in Somatic Education at UQÀM and was invited to give lectures and workshops on postural assessment, injury prevention techniques, and somatic practices (including Pilates) to undergraduate music and dance students at the university.\n\nThanks to her experience, Josiane is able to offer safe, balanced, and varied training. She is accustomed to working with a wide range of people, including athletes, circus artists, dancers, musicians, pregnant women, and seniors.\n\nWorking with Josiane, you'll be invited to move consciously and joyfully, while strengthening your body and improving your alignment and mobility."
+      "extended": "In small groups or privately, the focus is on the quality of movement, posture, and injury prevention — so you leave stronger, more mobile, and more peaceful.",
+      "badgePhysio": "Certified Physiotherapist",
+      "badgePilates": "Pilates Instructor",
+      "badgePrevention": "Injury Prevention",
+      "yearsExperience": "15+",
+      "yearsLabel": "years of experience"
     },
-    "testimonialsTitle": "What Montreal Clients Say About Josi Pilates",
-    "testimonialsSubtitle": "Real experiences from Montreal residents who trust us with their Pilates journey",
+    "testimonialsTitle": "What our students say",
+    "testimonialsSubtitle": "Real experiences from our Pilates community in Montreal.",
+    "testimonialsReadMore": "Read more",
+    "testimonialsReadLess": "Read less",
     "services": {
-      "title": "Services",
-      "subtitle": "Professional Pilates instruction tailored to your needs.",
+      "title": "Our services",
+      "subtitle": "Find the option that suits you",
+      "subtitleDesc": "Flexible packages that save you money on multiple sessions. All levels are welcome.",
+      "mostPopular": "Most Popular",
       "private": {
-        "title": "Private Classes (55 min)",
-        "intro": "Introductory class: $80",
+        "title": "Private",
+        "intro": "One-on-one session, complete attention to your posture.",
         "single": "1 class: $80",
         "four": "4 classes: $286",
         "eight": "8 classes: $520",
-        "note": "Packages are valid for 4 months. Any cancellation must be made at least 24 hours in advance. Packages are non-refundable and non-transferable."
+        "note": "Packages are valid for 4 months. Any cancellation must be made at least 24 hours in advance. Packages are non-refundable and non-transferable.",
+        "cta": "Book a private session",
+        "feature1": "<b>100% personalized</b> program",
+        "feature2": "Ideal for beginners or rehabilitation",
+        "feature3": "Advantageous 4 and 8-session packages"
       },
       "duos": {
-        "title": "Duos Classes (55 min)",
-        "intro": "Introductory class: $125",
+        "title": "Duo",
+        "intro": "For two — friends or couples, guaranteed motivation.",
+        "introClass": "Introductory class: $125",
         "single": "1 class: $115",
         "six": "6 classes: $545",
         "twelve": "12 classes: $1028",
-        "note": "Price for two people. Packages are valid for 4 months. Any cancellation must be made at least 24 hours in advance. Packages are non-refundable and non-transferable."
+        "note": "Price for two people. Packages are valid for 4 months. Any cancellation must be made at least 24 hours in advance. Packages are non-refundable and non-transferable.",
+        "cta": "Book a duo session",
+        "feature1": "Introductory session <b>for two</b>",
+        "feature2": "Close attention, friendly atmosphere",
+        "feature3": "6 and 12-session packages"
       },
       "group": {
-        "title": "Group Classes (55 min)",
-        "intro": "Introductory class: $80",
+        "title": "Group",
+        "intro": "Small group — a social and stimulating workout.",
         "single": "1 class: $40",
         "six": "6 classes: $202",
         "twelve": "12 classes: $360",
-        "note": "Price per person. Packages are valid for 4 months. Any cancellation must be made at least 24 hours in advance. Packages are non-refundable and non-transferable."
+        "note": "Price per person. Packages are valid for 4 months. Any cancellation must be made at least 24 hours in advance. Packages are non-refundable and non-transferable.",
+        "cta": "See schedule",
+        "feature1": "Small groups, <b>never overcrowded</b>",
+        "feature2": "The most accessible option",
+        "feature3": "6 and 12-session packages"
       }
+    },
+    "location": {
+      "title": "Hours & Location",
+      "subtitle": "Come meet us",
+      "address": "10145 Av. Hamel, Montreal, QC H2C 2X1",
+      "phone": "+1 438 274 8396 · WhatsApp",
+      "email": "josi@josipilates.com",
+      "lundiVendredi": "Monday — Friday",
+      "samedi": "Saturday",
+      "dimanche": "Sunday",
+      "closed": "Closed"
+    },
+    "ctaBand": {
+      "title": "Ready to start your journey?",
+      "subtitle": "Book your trial class and discover Pilates guided by a health professional.",
+      "ctaTrial": "Book a Trial Class",
+      "ctaWhatsapp": "WhatsApp"
     },
     "testimonials": [
       {
-        "text": "Josi is without a doubt the best Pilates teacher in Montreal! She has incredible knowledge and explains all the movements very clearly, while being attentive to what each student is doing. I adore her and recommend her 100%!",
-        "author_name": "Thaissa Duarte",
-        "city": "Montréal",
-        "state": "QC"
-      },
-      {
-        "text": "Josi is simply amazing. Every class with her is light, fun, and at the same time extremely well done. She has that attentive eye that corrects without pressuring, explains everything in a way that makes sense, and creates such a pleasant atmosphere that you always leave feeling better than when you arrived. Truly: in Montreal, there's no one like her. Josi is the Pilates teacher. Anyone who takes a class with her understands immediately.",
-        "author_name": "Henrique da Fonte",
+        "text": "Josi completely changed my relationship with my body. Her knowledge in physiotherapy makes all the difference — I no longer have back pain.",
+        "author_name": "Marie-Claude",
         "city": "Montreal",
         "state": "QC"
       },
       {
-        "text": "An excellent professional. She is attentive to the particularities of her students.",
-        "author_name": "Lia Crippa",
-        "city": "Montréal",
+        "text": "Duo classes with my partner have become our favorite ritual. Personalized attention and always a welcoming atmosphere.",
+        "author_name": "Sophie & Patrick",
+        "city": "Rosemont",
         "state": "QC"
       },
       {
-        "text": "I have no words to express my gratitude and recognition for Josi's exceptional work. After facing days of intense pain and imprecise diagnoses, starting Pilates classes with her gave me the certainty that I was receiving exactly the support I needed. Her humanized approach, combined with active listening and personalized classes, makes all the difference. In just a few weeks, I regained my autonomy and mobility, and got rid of the pain I felt at the beginning. For those seeking real results and genuine care, Josi is the right choice.",
-        "author_name": "Danilo Paixão",
-        "city": "Montreal",
-        "state": "QC"
-      },
-      {
-        "text": "I returned to Pilates after a long time because I was feeling a lot of pain in my neck, shoulders, upper back, and shoulder blades. I lived with this pain, which only got worse, for two years. I tried several things. Finally, in September 2025, a physiotherapist advised me to return to Pilates. After three months, the pain disappeared. I feel so good. Sometimes I can't even believe I'm pain-free. Josi is a dedicated, patient, and very competent professional. I can only thank her for everything!",
-        "author_name": "Lila de Paula",
-        "city": "Montreal",
-        "state": "QC"
-      },
-      {
-        "text": "After an intense sciatic nerve pain crisis that lasted approximately five months, I started Pilates classes to help with my recovery and prevent new episodes. At first, I was afraid of feeling the pain again, but with careful guidance and well-targeted exercises, I was able to relieve the pain and strengthen my body safely. It has now been more than a year without any crises, and I am very grateful to Josi for her attention, professionalism, and guidance throughout this entire process.",
-        "author_name": "Fernanda Guerreiro",
-        "city": "Montreal",
+        "text": "A complete beginner, I felt confident from the very first session. The small group really allows for quality tracking.",
+        "author_name": "Amélie L.",
+        "city": "Villeray",
         "state": "QC"
       }
     ],
     "contact": {
-      "title": "Talk to us",
-      "subtitle": "Pilates with Josi",
-      "address": "Montreal, QC, H2C2X1",
-      "phone": "Tel: +1 438 274 8396",
-      "email": "Email: josi@josipilates.com",
-      "portalButton": "Student Portal"
+      "title": "Have a question? Write to us",
+      "subtitle": "We reply quickly. Tell us your goal and we will guide you to the best option.",
+      "address": "10145 Av. Hamel, Montreal, QC H2C 2X1",
+      "phone": "+1 438 274 8396",
+      "email": "josi@josipilates.com",
+      "portalButton": "Client area",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "emailField": "Email",
+      "message": "Message",
+      "firstNamePlaceholder": "Your first name",
+      "lastNamePlaceholder": "Your last name",
+      "emailPlaceholder": "you@email.com",
+      "messagePlaceholder": "Tell us about your goal...",
+      "send": "Send message",
+      "sending": "Sending...",
+      "successTitle": "Message sent!",
+      "successText": "Thank you for your message. We will get back to you soon.",
+      "responseNotice": "Reply within 24h",
+      "whatsappNotice": "WhatsApp · calls",
+      "formTitle": "Send a message",
+      "formSubtitle": "Fill out the form and we will contact you."
     },
     "footer": {
-      "copyright": "© 2025 Josi Pilates. All rights reserved."
+      "copyright": "© 2026 Josi Pilates Studio. All rights reserved.",
+      "privacy": "Privacy policy",
+      "terms": "Terms of service",
+      "navigation": "Navigation",
+      "horaires": "Hours",
+      "contact": "Contact",
+      "tagline": "Pilates studio in Montreal. Private, duo, and small group classes with a certified physiotherapist."
     }
   },
   "teacher": {

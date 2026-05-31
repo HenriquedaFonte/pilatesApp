@@ -327,7 +327,7 @@
       "content": "Ces conditions sont régies par les lois du Québec, Canada. Tout litige sera résolu dans les tribunaux compétents de Montréal."
     },
     "termsChanges": {
-      "title": "14. Modifications des Conditions",
+"title": "14. Modifications des Conditions",
       "content": "Nous pouvons modifier ces conditions à tout moment. Continuer à utiliser l'application après les modifications constitue l'acceptation des nouvelles conditions."
     },
     "contact": {
@@ -347,99 +347,163 @@
       "testimonials": "Témoignages",
       "services": "Services",
       "contact": "Contact",
-      "studentPortal": "Portail Étudiant"
+      "studentPortal": "Espace client",
+      "bookTrial": "Réserver un essai"
     },
     "hero": {
       "greeting": "Bonjour!",
       "intro": "Qui suis-je:",
-      "description": "Physiothérapeute et instructrice de la méthode Pilates depuis 2005. Passionnée par le mouvement humain et le développement de la conscience corporelle.",
-      "aboutButton": "À propos de moi"
+      "description": "Cours privés, duos et petits groupes avec Josiane — physiothérapeute et instructrice certifiée. Attention personnalisée, posture et prévention des blessures.",
+      "title": "Le Pilates qui prend soin de votre corps, en petit comité.",
+      "titleHighlight": "votre corps",
+      "badgePhysio": "Physiothérapeute certifiée",
+      "badgeExperience": "15 ans d'expérience",
+      "badgeLocation": "Montréal, QC",
+      "ctaTrial": "Réserver un cours d'essai",
+      "ctaServices": "Voir les services",
+      "note": "Première séance privée d'introduction — idéale pour bien débuter."
+    },
+    "trust": {
+      "physioTitle": "Physiothérapeute",
+      "physioDesc": "Approche clinique & sécuritaire",
+      "attentionTitle": "Attention personnalisée",
+      "attentionDesc": "Privé, duo ou petit groupe",
+      "levelsTitle": "Tous les niveaux",
+      "levelsDesc": "Débutants bienvenus",
+      "languagesTitle": "FR · EN · PT",
+      "languagesDesc": "Cours dans votre langue"
     },
     "about": {
-      "title": "À propos de moi",
+      "title": "À propos de Josiane",
+      "eyebrow": "À propos de Josiane",
+      "subtitle": "Le mouvement avec intention, le progrès avec clarté.",
+      "subtitleHighlight": "intention",
       "greeting": "Salut!!",
-      "description": "Physiothérapeute et instructrice de la méthode Pilates depuis 2005. Passionnée par le mouvement humain et le développement de la conscience corporelle.",
+      "description": "Josiane allie son expertise de physiothérapeute à une pratique approfondie du Pilates pour offrir un accompagnement unique à Montréal. Chaque séance est adaptée à votre corps, vos objectifs et votre rythme.",
       "extendedTitle": "Un peu plus sur moi",
-      "extended": "Josiane a reçu sa première certification en méthode Pilates (PhysicalMind Institute–NYC) en 2005, initialement attirée par la méthode comme complément à sa carrière de physiothérapeute au Brésil.\n\nEn 2010, elle s'installe à Montréal pour approfondir ses connaissances en Éducation Somatique à l'UQÀM et est invitée à donner des conférences et ateliers sur l'évaluation posturale, les techniques de prévention des blessures et les pratiques somatiques (incluant le Pilates) aux étudiants de premier cycle en musique et danse de l'université.\n\nGrâce à son expérience, Josiane est en mesure d'offrir un entraînement sûr, équilibré et varié. Elle est habituée à travailler avec une grande variété de personnes, incluant les athlètes, artistes de cirque, danseurs, musiciens, femmes enceintes et personnes âgées.\n\nTravailler avec Josiane, vous invite à bouger consciemment et joyeusement, tout en renforçant votre corps et en améliorant votre alignement et mobilité."
+      "extended": "En petits groupes ou en privé, l'accent est mis sur la qualité du mouvement, la posture et la prévention des blessures — pour que vous repartiez plus fort, plus mobile et plus serein.",
+      "badgePhysio": "Physiothérapeute certifiée",
+      "badgePilates": "Instructrice Pilates",
+      "badgePrevention": "Prévention des blessures",
+      "yearsExperience": "15+",
+      "yearsLabel": "ans d'expérience"
     },
-    "testimonialsTitle": "Ce que Disent Nos Clients",
-    "testimonialsSubtitle": "Expériences réelles de notre communauté Pilates",
+    "testimonialsTitle": "Ce que disent nos élèves",
+    "testimonialsSubtitle": "Des expériences réelles de notre communauté Pilates à Montréal.",
+    "testimonialsReadMore": "Lire plus",
+    "testimonialsReadLess": "Lire moins",
     "services": {
-      "title": "Services",
-      "subtitle": "Instruction professionnelle de Pilates adaptée à vos besoins.",
+      "title": "Nos services",
+      "subtitle": "Trouvez la formule qui vous convient",
+      "subtitleDesc": "Des forfaits flexibles qui vous font économiser sur plusieurs séances. Tous les níveis sont les bienvenus.",
+      "mostPopular": "Le plus populaire",
       "private": {
-        "title": "Cours Privés (55 min)",
-        "intro": "Classe d'introduction: $80",
+        "title": "Privé",
+        "intro": "Séance individuelle, attention complète à votre posture.",
         "single": "1 classe: $80",
         "four": "4 classes: $286",
         "eight": "8 classes: $520",
-        "note": "Les forfaits sont valides pour 4 mois. Toute annulation doit être faite au moins 24 heures à l'avance. Les forfaits ne sont ni remboursables ni transférables."
+        "note": "Les forfaits sont valides pour 4 mois. Toute annulation doit être faite au moins 24 heures à l'avance. Les forfaits ne sont ni remboursables ni transférables.",
+        "cta": "Réserver un privé",
+        "feature1": "Programme <b>100% personnalisé</b>",
+        "feature2": "Idéal pour débuter ou en rééducation",
+        "feature3": "Forfaits 4 et 8 séances avantageux"
       },
       "duos": {
-        "title": "Cours Duos (55 min)",
-        "intro": "Classe d'introduction: $125",
+        "title": "Duo",
+        "intro": "À deux — entre amis ou en couple, motivation garantie.",
+        "introClass": "Classe d'introduction: $125",
         "single": "1 classe: $115",
         "six": "6 classes: $545",
         "twelve": "12 classes: $1028",
-        "note": "Prix par deux personnes. Les forfaits sont valides pour 4 mois. Toute annulation doit être faite au moins 24 heures à l'avance. Les forfaits ne sont ni remboursables ni transférables."
+        "note": "Prix par deux personnes. Les forfaits sont valides pour 4 mois. Toute annulation doit être faite au moins 24 heures à l'avance. Les forfaits ne sont ni remboursables ni transférables.",
+        "cta": "Réserver un duo",
+        "feature1": "Séance d'introduction <b>pour deux</b>",
+        "feature2": "Attention rapprochée, ambiance conviviale",
+        "feature3": "Forfaits 6 et 12 séances"
       },
       "group": {
-        "title": "Cours de Groupe (55 min)",
-        "intro": "Classe d'introduction: $80",
+        "title": "Groupe",
+        "intro": "Petit groupe — un entraînement social et stimulant.",
         "single": "1 classe: $40",
         "six": "6 classes: $202",
         "twelve": "12 classes: $360",
-        "note": "Prix par personne. Les forfaits sont valides pour 4 mois. Toute annulation doit être faite au moins 24 heures à l'avance. Les forfaits ne sont ni remboursables ni transférables."
+        "note": "Prix par personne. Les forfaits sont valides pour 4 mois. Toute annulation doit être faite au moins 24 heures à l'avance. Les forfaits ne sont ni remboursables ni transférables.",
+        "cta": "Voir l'horaire",
+        "feature1": "Petits groupes, <b>jamais surchargés</b>",
+        "feature2": "L'option la plus accessible",
+        "feature3": "Forfaits 6 et 12 séances"
       }
+    },
+    "location": {
+      "title": "Horaires & emplacement",
+      "subtitle": "Venez nous rencontrer",
+      "address": "10145 Av. Hamel, Montréal, QC H2C 2X1",
+      "phone": "+1 438 274 8396 · WhatsApp",
+      "email": "josi@josipilates.com",
+      "lundiVendredi": "Lundi — Vendredi",
+      "samedi": "Samedi",
+      "dimanche": "Dimanche",
+      "closed": "Fermé"
+    },
+    "ctaBand": {
+      "title": "Prête à commencer votre parcours ?",
+      "subtitle": "Réservez votre cours d'essai et découvrez le Pilates encadré par une professionnelle de la santé.",
+      "ctaTrial": "Réserver un cours d'essai",
+      "ctaWhatsapp": "WhatsApp"
     },
     "testimonials": [
       {
-        "text": "Josi est sans aucun doute la meilleure professeure de Pilates à Montréal ! Elle a des connaissances incroyables et explique tous les mouvements très clairement, tout en étant attentive à ce que fait chaque élève. Je l'adore et la recommande à 100%!",
-        "author_name": "Thaissa Duarte",
+        "text": "Josiane a complètement changé ma relation avec mon corps. Ses connaissances en physiothérapie font toute la différence — je n'ai plus de douleurs au dos.",
+        "author_name": "Marie-Claude",
         "city": "Montréal",
         "state": "QC"
       },
       {
-        "text": "Josi est tout simplement incroyable. Chaque cours avec elle est léger, amusant et en même temps extrêmement bien fait. Elle a cet œil attentif qui corrige sans presser, explique tout de manière logique, et crée une atmosphère si agréable que vous repartez toujours en vous sentant mieux qu'à votre arrivée. Vraiment : à Montréal, il n'y a personne comme elle. Josi est la professeure de Pilates. Quiconque prend un cours avec elle comprend immédiatement.",
-        "author_name": "Henrique da Fonte",
-        "city": "Montreal",
+        "text": "Les cours en duo avec mon conjoint sont devenus notre rituel préféré. Attention personnalisée et ambiance toujours accueillante.",
+        "author_name": "Sophie & Patrick",
+        "city": "Rosemont",
         "state": "QC"
       },
       {
-        "text": "Une excellente professionnelle. Elle est attentive aux particularités de ses élèves.",
-        "author_name": "Lia Crippa",
-        "city": "Montréal",
-        "state": "QC"
-      },
-      {
-        "text": "Je n'ai pas de mots pour exprimer ma gratitude et ma reconnaissance pour le travail exceptionnel de Josi. Après avoir affronté des jours de douleurs intenses et de diagnostics imprécis, commencer les cours de Pilates avec elle m'a donné la certitude que je recevais exactement le soutien dont j'avais besoin. Son approche humanisée, alliée à l'écoute active et aux cours personnalisés, fait toute la différence. En quelques semaines seulement, j'ai retrouvé mon autonomie et ma mobilité, et me suis débarrassé de la douleur que je ressentais au début. Pour ceux qui cherchent des résultats réels et des soins authentiques, Josi est le bon choix.",
-        "author_name": "Danilo Paixão",
-        "city": "Montreal",
-        "state": "QC"
-      },
-      {
-        "text": "Je suis revenue au Pilates après un long moment parce que je ressentais beaucoup de douleurs dans le cou, les épaules, le haut du dos et les omoplates. J'ai vécu avec cette douleur, qui ne faisait qu'empirer, pendant deux ans. J'ai essayé plusieurs choses. Enfin, en septembre 2025, une physiothérapeute m'a conseillé de revenir au Pilates. Après trois mois, la douleur a disparu. Je me sens si bien. Parfois, je n'arrive même pas à croire que je suis sans douleur. Josi est une professionnelle dédiée, patiente et très compétente. Je ne peux que la remercier pour tout !",
-        "author_name": "Lila de Paula",
-        "city": "Montreal",
-        "state": "QC"
-      },
-      {
-        "text": "Après une crise intense de douleur au nerf sciatique qui a duré environ cinq mois, j'ai commencé les cours de Pilates pour aider à ma récupération et prévenir de nouveaux épisodes. Au début, j'avais peur de ressentir la douleur à nouveau, mais avec un guidage attentif et des exercices bien ciblés, j'ai pu soulager la douleur et renforcer mon corps en toute sécurité. Cela fait maintenant plus d'un an sans crises, et je suis très reconnaissante à Josi pour son attention, son professionnalisme et son guidage tout au long de ce processus.",
-        "author_name": "Fernanda Guerreiro",
-        "city": "Montreal",
+        "text": "Débutante complète, je me suis sentie en confiance dès la première séance. Le petit groupe permet vraiment un suivi de qualité.",
+        "author_name": "Amélie L.",
+        "city": "Villeray",
         "state": "QC"
       }
     ],
     "contact": {
-      "title": "Parlez-nous",
-      "subtitle": "Pilates avec Josi",
-      "address": "Montréal, QC, H2C2X1",
-      "phone": "Tél: +1 438 274 8396",
-      "email": "E-mail: josi@josipilates.com",
-      "portalButton": "Portail Étudiant"
+      "title": "Une question ? Écrivez-nous",
+      "subtitle": "Nous répondons rapidement. Dites-nous votre objectif et nous vous guiderons vers la meilleure formule.",
+      "address": "10145 Av. Hamel, Montréal, QC H2C 2X1",
+      "phone": "+1 438 274 8396",
+      "email": "josi@josipilates.com",
+      "portalButton": "Espace client",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "emailField": "Courriel",
+      "message": "Message",
+      "firstNamePlaceholder": "Votre prénom",
+      "lastNamePlaceholder": "Votre nom",
+      "emailPlaceholder": "vous@courriel.com",
+      "messagePlaceholder": "Parlez-nous de votre objectif…",
+      "send": "Envoyer le message",
+      "sending": "Envoi…",
+      "successTitle": "Message envoyé !",
+      "successText": "Merci pour votre message. Nous vous recontacterons bientôt.",
+      "responseNotice": "Réponse sous 24 h",
+      "whatsappNotice": "WhatsApp · appels",
+      "formTitle": "Envoyez un message",
+      "formSubtitle": "Remplissez le formulaire et nous vous recontacterons."
     },
     "footer": {
-      "copyright": "© 2025 Josi Pilates. Tous droits réservés."
+      "copyright": "© 2026 Josi Pilates Studio. Tous droits réservés.",
+      "privacy": "Politique de confidentialité",
+      "terms": "Conditions d'utilisation",
+      "navigation": "Navigation",
+      "horaires": "Horaires",
+      "contact": "Contact",
+      "tagline": "Studio de Pilates à Montréal. Cours privés, duos et petits groupes avec une physiothérapeute certifiée."
     }
   },
   "teacher": {
