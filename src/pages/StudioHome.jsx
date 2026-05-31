@@ -401,11 +401,11 @@ Sent from Josi Pilates website contact form.
           </div>
           <div className="nav-right hidden lg:flex">
             <Select onValueChange={changeLanguage} value={i18n.language}>
-              <SelectTrigger className="w-[84px] bg-white border border-[#e7e9e3] text-[#1a2420] rounded-full py-1.5 px-3 flex items-center gap-1.5 font-bold text-xs h-[38px] shadow-none outline-none focus:ring-0">
-                <Globe className="w-3.5 h-3.5 text-[#8a958f]" />
+              <SelectTrigger className="w-[84px] bg-[var(--paper)] border border-[var(--line)] text-[var(--ink)] rounded-full py-1.5 px-3 flex items-center gap-1.5 font-bold text-xs h-[38px] shadow-none outline-none focus:ring-0">
+                <Globe className="w-3.5 h-3.5 text-[var(--ink-3)]" />
                 <SelectValue placeholder={i18n.language.toUpperCase()} />
               </SelectTrigger>
-              <SelectContent className="bg-white border border-[#e7e9e3]">
+              <SelectContent className="bg-[var(--paper)] border border-[var(--line)] rounded-xl">
                 <SelectItem value="fr">FR</SelectItem>
                 <SelectItem value="en">EN</SelectItem>
                 <SelectItem value="pt">PT</SelectItem>
@@ -444,7 +444,7 @@ Sent from Josi Pilates website contact form.
                   <SelectTrigger className="border-none p-0 h-auto bg-transparent focus:ring-0 text-sm font-semibold uppercase">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-[var(--paper)] border border-[var(--line)] rounded-xl">
                     <SelectItem value="fr">FR</SelectItem>
                     <SelectItem value="en">EN</SelectItem>
                     <SelectItem value="pt">PT</SelectItem>
