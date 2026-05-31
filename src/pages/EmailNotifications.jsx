@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
+import { useTranslation } from 'react-i18next'
+import { getDayName } from '../lib/format'
 import emailService from '../lib/emailService'
 import EmailTemplates from '../components/EmailTemplates'
 import { getTemplate } from '../lib/emailTemplates'
@@ -33,21 +35,19 @@ import {
   Users,
   AlertTriangle,
   ArrowLeft,
-  Activity,
-  LogOut,
   Mail,
-  Filter,
   CheckCircle,
   XCircle,
   Clock,
   FileText,
-  Search
+  Search,
+  Filter
 } from 'lucide-react'
-import { ThemeToggle } from '../components/ThemeToggle'
+import TeacherLayout from '../components/TeacherLayout'
 
 const EmailNotifications = () => {
-  const { profile, signOut } = useAuth()
-  const navigate = useNavigate()
+  const { t, i18n } = useTranslation()
+  const { profile } = useAuth()
   const [searchParams] = useSearchParams()
   const [students, setStudents] = useState([])
   const [classes, setClasses] = useState([])
@@ -77,10 +77,6 @@ const EmailNotifications = () => {
     loadEmailHistory()
   }, [])
 
-  const handleSignOut = async () => {
-    await signOut()
-    navigate('/')
-  }
 
   useEffect(() => {
     const studentParam = searchParams.get('student')
@@ -161,7 +157,7 @@ const EmailNotifications = () => {
       setClasses(classesData || [])
     } catch (error) {
       console.error('Error loading data:', error)
-      setMessage('Error loading data: ' + error.message)
+      setMessage(t('teacher.emails.messages.loadError', 'Error loading data: ') + error.message)
       setMessageType('error')
     } finally {
       setLoading(false)
@@ -264,7 +260,7 @@ const EmailNotifications = () => {
       )
 
       if (lowCreditsStudents.length === 0) {
-        setMessage('No students with low credits found.')
+        setMessage(t('teacher.emails.messages.noLowCredits', 'No students with low credits found.'))
         setMessageType('info')
         return
       }
@@ -326,14 +322,18 @@ const EmailNotifications = () => {
       }
 
       setMessage(
-        `Notifications sent: ${successCount} successes, ${failCount} failures.`
+        t('teacher.emails.messages.notificationsSent', {
+          defaultValue: 'Notifications sent: {{successCount}} successes, {{failCount}} failures.',
+          successCount,
+          failCount
+        })
       )
       setMessageType(failCount === 0 ? 'success' : 'error')
 
       await loadEmailHistory()
     } catch (error) {
       console.error('Error sending notifications:', error)
-      setMessage('Error sending notifications: ' + error.message)
+      setMessage(t('teacher.emails.messages.sendError', 'Error sending notifications: ') + error.message)
       setMessageType('error')
     } finally {
       setSending(false)
@@ -346,7 +346,7 @@ const EmailNotifications = () => {
       const targetStudents = getFilteredStudents()
 
       if (targetStudents.length === 0) {
-        setMessage('No students selected for sending.')
+        setMessage(t('teacher.emails.messages.noSelectedStudents', 'No students selected for sending.'))
         setMessageType('error')
         return
       }
@@ -374,14 +374,18 @@ const EmailNotifications = () => {
         }
 
         setMessage(
-          `Consent forms sent: ${successCount} successes, ${failCount} failures.`
+          t('teacher.emails.messages.consentFormsSent', {
+            defaultValue: 'Consent forms sent: {{successCount}} successes, {{failCount}} failures.',
+            successCount,
+            failCount
+          })
         )
         setMessageType(failCount === 0 ? 'success' : 'error')
 
         await loadEmailHistory()
       } catch (error) {
         console.error('Error sending consent forms:', error)
-        setMessage('Error sending consent forms: ' + error.message)
+        setMessage(t('teacher.emails.messages.consentError', 'Error sending consent forms: ') + error.message)
         setMessageType('error')
       } finally {
         setSending(false)
@@ -390,7 +394,7 @@ const EmailNotifications = () => {
     }
 
     if (!emailSubject.trim() || !emailMessage.trim()) {
-      setMessage('Please fill in the email subject and message.')
+      setMessage(t('teacher.emails.messages.fillSubjectAndMessage', 'Please fill in the email subject and message.'))
       setMessageType('error')
       return
     }
@@ -398,7 +402,7 @@ const EmailNotifications = () => {
     const targetStudents = getFilteredStudents()
 
     if (targetStudents.length === 0) {
-      setMessage('No students selected for sending.')
+      setMessage(t('teacher.emails.messages.noSelectedStudents', 'No students selected for sending.'))
       setMessageType('error')
       return
     }
@@ -438,7 +442,11 @@ const EmailNotifications = () => {
       const failCount = results.filter(r => !r.success).length
 
       setMessage(
-        `Email sent: ${successCount} successes, ${failCount} failures.`
+        t('teacher.emails.messages.emailSent', {
+          defaultValue: 'Email sent: {{successCount}} successes, {{failCount}} failures.',
+          successCount,
+          failCount
+        })
       )
       setMessageType(failCount === 0 ? 'success' : 'error')
 
@@ -450,7 +458,7 @@ const EmailNotifications = () => {
       }
     } catch (error) {
       console.error('Error sending custom email:', error)
-      setMessage('Error sending email: ' + error.message)
+      setMessage(t('teacher.emails.messages.emailError', 'Error sending email: ') + error.message)
       setMessageType('error')
     } finally {
       setSending(false)
@@ -466,14 +474,20 @@ const EmailNotifications = () => {
       setEmailSubject('')
       setEmailMessage('')
       setMessage(
-        `Template "${template.title}" selected! This will send the consent form with PDF attachment.`
+        t('teacher.emails.messages.templateSelectedConsent', {
+          defaultValue: 'Template "{{title}}" selected! This will send the consent form with PDF attachment.',
+          title: template.title
+        })
       )
       setMessageType('info')
     } else {
       setEmailSubject(template.subject)
       setEmailMessage(template.message)
       setMessage(
-        `Template "${template.title}" selected! You can customize the message before sending.`
+        t('teacher.emails.messages.templateSelected', {
+          defaultValue: 'Template "{{title}}" selected! You can customize the message before sending.',
+          title: template.title
+        })
       )
       setMessageType('info')
     }
@@ -582,56 +596,54 @@ const EmailNotifications = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      <header className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Link to="/teacher/dashboard" className="mr-4">
-                <ArrowLeft className="h-6 w-6 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" />
-              </Link>
-              <Activity className="h-8 w-8 text-primary mr-3" />
-              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
-                Email Notifications
-              </h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <ThemeToggle />
-              <span className="text-sm text-gray-700 dark:text-gray-300">
-                Welcome, {profile?.full_name}
+    <TeacherLayout>
+      <div className="space-y-8 animate-in fade-in duration-300">
+        {/* Cabeçalho Editorial */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <h1 className="font-serif-display text-3xl tracking-tight text-foreground">
+              {t('teacher.emails.title').split(' ').slice(0, -1).join(' ')}{' '}
+              <span className="text-primary italic">
+                {t('teacher.emails.title').split(' ').slice(-1)[0]}
               </span>
-              <Button variant="outline" size="sm" onClick={handleSignOut}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Sign Out
-              </Button>
-            </div>
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              {t('teacher.emails.subtitle')}
+            </p>
           </div>
         </div>
-      </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {message && (
           <Alert
             variant={messageType === 'error' ? 'destructive' : 'default'}
-            className="mb-6"
+            className={`rounded-2xl border ${
+              messageType === 'success'
+                ? 'border-emerald-200/50 bg-emerald-50/50 text-emerald-800 dark:bg-emerald-950/20 dark:text-emerald-400'
+                : messageType === 'error'
+                ? 'border-red-200/50 bg-red-50/50 text-red-800 dark:bg-red-950/20 dark:text-red-400'
+                : 'border-blue-200/50 bg-blue-50/50 text-blue-800 dark:bg-blue-950/20 dark:text-blue-400'
+            }`}
           >
-            {messageType === 'success' && <CheckCircle className="h-4 w-4" />}
-            {messageType === 'error' && <XCircle className="h-4 w-4" />}
-            {messageType === 'info' && <AlertTriangle className="h-4 w-4" />}
-            <AlertDescription>{message}</AlertDescription>
+            {messageType === 'success' && <CheckCircle className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />}
+            {messageType === 'error' && <XCircle className="h-4 w-4 text-red-700 dark:text-red-400" />}
+            {messageType === 'info' && <AlertTriangle className="h-4 w-4 text-blue-700 dark:text-blue-400" />}
+            <AlertDescription className="font-medium ml-2">{message}</AlertDescription>
           </Alert>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <Card>
+        {/* Stat Tiles Premium */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Card className="rounded-2xl border border-border bg-card shadow-sm hover:shadow-md transition-all duration-200">
             <CardContent className="p-6">
-              <div className="flex items-center">
-                <Users className="h-8 w-8 text-blue-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                    Total Students
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/20 dark:text-blue-400">
+                  <Users className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    {t('teacher.reports.lowCredits.table.student', 'Total Alunos')}
                   </p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <p className="text-3xl font-serif-display font-semibold text-foreground mt-0.5">
                     {students.length}
                   </p>
                 </div>
@@ -639,15 +651,17 @@ const EmailNotifications = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="rounded-2xl border border-border bg-card shadow-sm hover:shadow-md transition-all duration-200">
             <CardContent className="p-6">
-              <div className="flex items-center">
-                <AlertTriangle className="h-8 w-8 text-orange-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                    Low Balance
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-950/20 dark:text-amber-400">
+                  <AlertTriangle className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    {t('teacher.reports.lowCredits.lowBalance', 'Saldo Baixo')}
                   </p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <p className="text-3xl font-serif-display font-semibold text-foreground mt-0.5">
                     {lowCreditsStudents.length}
                   </p>
                 </div>
@@ -655,15 +669,17 @@ const EmailNotifications = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="rounded-2xl border border-border bg-card shadow-sm hover:shadow-md transition-all duration-200">
             <CardContent className="p-6">
-              <div className="flex items-center">
-                <XCircle className="h-8 w-8 text-red-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                    No Credits
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-xl bg-red-50 text-red-600 dark:bg-red-950/20 dark:text-red-400">
+                  <XCircle className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    {t('teacher.reports.lowCredits.zeroBalance', 'Sem Créditos')}
                   </p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <p className="text-3xl font-serif-display font-semibold text-foreground mt-0.5">
                     {students.filter(s => s.totalCredits === 0).length}
                   </p>
                 </div>
@@ -671,15 +687,17 @@ const EmailNotifications = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="rounded-2xl border border-border bg-card shadow-sm hover:shadow-md transition-all duration-200">
             <CardContent className="p-6">
-              <div className="flex items-center">
-                <Mail className="h-8 w-8 text-green-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                    Emails Sent
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-400">
+                  <Mail className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    {t('teacher.emails.tabs.history', 'Enviados')}
                   </p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <p className="text-3xl font-serif-display font-semibold text-foreground mt-0.5">
                     {emailHistory.reduce(
                       (total, entry) => total + entry.success,
                       0
@@ -691,132 +709,142 @@ const EmailNotifications = () => {
           </Card>
         </div>
 
+        {/* Abas */}
         <Tabs
           value={activeTab}
           onValueChange={setActiveTab}
-          className="space-y-4"
+          className="space-y-6"
         >
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto">
+          <TabsList className="bg-muted/50 p-1 rounded-xl grid grid-cols-2 md:grid-cols-4 h-auto w-full max-w-2xl">
             <TabsTrigger
               value="notifications"
-              className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2 px-1 sm:px-3"
+              className="rounded-lg py-2.5 text-sm font-medium transition-all flex items-center justify-center gap-2"
             >
-              <AlertTriangle className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="text-center">Low Balance</span>
+              <AlertTriangle className="h-3.5 w-3.5" />
+              <span>{t('teacher.emails.tabs.notifications')}</span>
             </TabsTrigger>
             <TabsTrigger
               value="custom"
-              className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2 px-1 sm:px-3"
+              className="rounded-lg py-2.5 text-sm font-medium transition-all flex items-center justify-center gap-2"
             >
-              <Send className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="text-center">Custom Email</span>
+              <Send className="h-3.5 w-3.5" />
+              <span>{t('teacher.emails.tabs.custom')}</span>
             </TabsTrigger>
             <TabsTrigger
               value="templates"
-              className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2 px-1 sm:px-3"
+              className="rounded-lg py-2.5 text-sm font-medium transition-all flex items-center justify-center gap-2"
             >
-              <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="text-center">Templates</span>
+              <FileText className="h-3.5 w-3.5" />
+              <span>{t('teacher.emails.tabs.templates')}</span>
             </TabsTrigger>
             <TabsTrigger
               value="history"
-              className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2 px-1 sm:px-3"
+              className="rounded-lg py-2.5 text-sm font-medium transition-all flex items-center justify-center gap-2"
             >
-              <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="text-center">History</span>
+              <Clock className="h-3.5 w-3.5" />
+              <span>{t('teacher.emails.tabs.history')}</span>
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="notifications">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <AlertTriangle className="h-5 w-5" />
-                    Low Balance Notifications
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+              <Card className="rounded-2xl border border-border bg-card shadow-sm p-6 overflow-hidden">
+                <CardHeader className="p-0 pb-4 border-b border-border/50">
+                  <CardTitle className="text-lg font-bold text-foreground flex items-center gap-2">
+                    <AlertTriangle className="h-5 w-5 text-amber-500" />
+                    {t('teacher.emails.quick.title')}
                   </CardTitle>
-                  <CardDescription>
-                    Send automatic notifications to students with low credits
+                  <CardDescription className="text-xs">
+                    {t('teacher.emails.quick.desc')}
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center gap-4">
-                    <Label htmlFor="threshold">Credit threshold:</Label>
-                    <Input
-                      id="threshold"
-                      type="number"
-                      value={lowCreditsThreshold}
-                      onChange={e =>
-                        setLowCreditsThreshold(parseInt(e.target.value) || 0)
-                      }
-                      className="w-20"
-                      min="0"
-                      max="50"
-                    />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
-                      {lowCreditsStudents.length} student(s) eligible
-                    </span>
+                <CardContent className="p-0 pt-6 space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-muted/20 p-4 rounded-xl border border-border/40">
+                    <div className="space-y-1">
+                      <Label htmlFor="threshold" className="text-xs font-semibold text-muted-foreground">{t('teacher.emails.quick.thresholdLabel')}</Label>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          id="threshold"
+                          type="number"
+                          value={lowCreditsThreshold}
+                          onChange={e =>
+                            setLowCreditsThreshold(parseInt(e.target.value) || 0)
+                          }
+                          className="w-20 rounded-lg border-border h-9"
+                          min="0"
+                          max="50"
+                        />
+                        <span className="text-xs font-semibold text-foreground">{t('teacher.emails.quick.totalCredits')}</span>
+                      </div>
+                    </div>
+                    <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 px-3 py-1 rounded-md text-xs font-bold w-fit">
+                      {t('teacher.emails.quick.qualifiedBadge', { count: lowCreditsStudents.length })}
+                    </Badge>
                   </div>
 
                   <Button
                     onClick={sendLowCreditsNotifications}
                     disabled={sending || lowCreditsStudents.length === 0}
-                    className="w-full"
+                    className="w-full rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-5 h-11 transition-all"
                   >
                     {sending ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Sending...
+                        {t('teacher.emails.quick.sending')}
                       </>
                     ) : (
                       <>
                         <Send className="mr-2 h-4 w-4" />
-                        Send to {lowCreditsStudents.length} student(s)
+                        {t('teacher.emails.quick.notify', { count: lowCreditsStudents.length })}
                       </>
                     )}
                   </Button>
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Students with Low Balance</CardTitle>
-                  <CardDescription>
-                    List of students who will receive the notification
+              <Card className="rounded-2xl border border-border bg-card shadow-sm p-6 overflow-hidden">
+                <CardHeader className="p-0 pb-4 border-b border-border/50">
+                  <CardTitle className="text-lg font-bold text-foreground">{t('teacher.emails.quick.qualifiedTitle')}</CardTitle>
+                  <CardDescription className="text-xs">
+                    {t('teacher.emails.quick.qualifiedDesc')}
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-0 pt-6">
                   {lowCreditsStudents.length > 0 ? (
-                    <div className="space-y-2 max-h-64 overflow-y-auto">
+                    <div className="space-y-3.5 max-h-80 overflow-y-auto pr-1">
                       {lowCreditsStudents.map(student => (
                         <div
                           key={student.id}
-                          className="flex justify-between items-center p-2 border rounded"
+                          className="flex justify-between items-center p-3 border border-border/50 rounded-xl bg-muted/10 hover:bg-muted/20 transition-all"
                         >
                           <div>
-                            <div className="font-medium">
+                            <div className="font-semibold text-foreground text-sm">
                               {student.full_name}
                             </div>
-                            <div className="text-sm text-gray-500 dark:text-gray-400">
+                            <div className="text-xs text-muted-foreground mt-0.5">
                               {student.email}
                             </div>
                           </div>
                           <Badge
-                            variant={
+                            className={`font-bold text-xs px-2.5 py-0.5 rounded-full ${
                               student.totalCredits === 0
-                                ? 'destructive'
-                                : 'secondary'
-                            }
+                                ? 'bg-red-50 text-red-700 border border-red-200/50 dark:bg-red-950/20 dark:text-red-400'
+                                : 'bg-amber-50 text-amber-700 border border-amber-200/50 dark:bg-amber-950/20 dark:text-amber-400'
+                            }`}
                           >
-                            {student.totalCredits} credits
+                            {student.totalCredits} crd
                           </Badge>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <p className="text-gray-500 dark:text-gray-400 text-center py-4">
-                      No students with low balance found
-                    </p>
+                    <div className="text-center py-12 px-4">
+                      <CheckCircle className="h-10 w-10 text-emerald-500 mx-auto mb-3 opacity-60" />
+                      <h4 className="text-sm font-semibold text-foreground">{t('teacher.emails.quick.emptyTitle')}</h4>
+                      <p className="text-xs text-muted-foreground mt-1 max-w-xs mx-auto">
+                        {t('teacher.emails.quick.emptyDesc', { total: lowCreditsThreshold })}
+                      </p>
+                    </div>
                   )}
                 </CardContent>
               </Card>
@@ -824,270 +852,275 @@ const EmailNotifications = () => {
           </TabsContent>
 
           <TabsContent value="custom">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Send className="h-5 w-5" />
-                  Send Custom Email
-                </CardTitle>
-                <CardDescription>
-                  Send personalized messages to specific groups of students
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <Label htmlFor="sender-name">Sender name:</Label>
-                  <Input
-                    id="sender-name"
-                    value={senderName}
-                    onChange={e => setSenderName(e.target.value)}
-                    placeholder="Ex: Teacher Ana, Instructor Maria"
-                  />
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="filter-type">Filter students by:</Label>
-                    <Select value={filterType} onValueChange={setFilterType}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a filter" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All students</SelectItem>
-                        <SelectItem value="low_credits">Low credits</SelectItem>
-                        <SelectItem value="zero_credits">
-                          Zero credits
-                        </SelectItem>
-                        <SelectItem value="class">Specific class</SelectItem>
-                        <SelectItem value="registration_day">
-                          Registration day
-                        </SelectItem>
-                        <SelectItem value="selected">
-                          Manual selection
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {filterType === 'class' && (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              {/* Coluna Esquerda: Filtros e Destinatárias */}
+              <div className="lg:col-span-5 space-y-6">
+                <Card className="rounded-2xl border border-border bg-card shadow-sm p-6 overflow-hidden">
+                  <div className="space-y-4">
                     <div>
-                      <Label htmlFor="class-select">Select class:</Label>
-                      <Select
-                        value={selectedClass}
-                        onValueChange={setSelectedClass}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a class" />
+                      <h3 className="text-base font-semibold text-foreground">{t('teacher.emails.customCard.filterTitle')}</h3>
+                      <p className="text-xs text-muted-foreground">{t('teacher.emails.customCard.filterDesc')}</p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="filter-type" className="text-xs font-semibold text-muted-foreground">{t('teacher.emails.customCard.filterLabel')}</Label>
+                      <Select value={filterType} onValueChange={setFilterType}>
+                        <SelectTrigger className="rounded-xl border-border bg-background focus-visible:ring-primary h-10 w-full">
+                          <SelectValue placeholder={t('teacher.emails.customCard.filterDesc')} />
                         </SelectTrigger>
-                        <SelectContent>
-                          {classes.map(cls => (
-                            <SelectItem key={cls.id} value={cls.id}>
-                              {cls.name} - {cls.day_of_week} at {cls.time}
-                            </SelectItem>
-                          ))}
+                        <SelectContent className="rounded-xl">
+                          <SelectItem value="all">{t('teacher.emails.customCard.filters.all')}</SelectItem>
+                          <SelectItem value="low_credits">{t('teacher.emails.customCard.filters.low_credits')}</SelectItem>
+                          <SelectItem value="zero_credits">{t('teacher.emails.customCard.filters.zero_credits')}</SelectItem>
+                          <SelectItem value="class">{t('teacher.emails.customCard.filters.class')}</SelectItem>
+                          <SelectItem value="registration_day">{t('teacher.emails.customCard.filters.registration_day')}</SelectItem>
+                          <SelectItem value="selected">{t('teacher.emails.customCard.filters.selected')}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
-                  )}
 
-                  {filterType === 'registration_day' && (
-                    <div>
-                      <Label htmlFor="day-select">
-                        Registration day of week:
-                      </Label>
-                      <Select
-                        value={selectedDay}
-                        onValueChange={setSelectedDay}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a day" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="0">Sunday</SelectItem>
-                          <SelectItem value="1">Monday</SelectItem>
-                          <SelectItem value="2">Tuesday</SelectItem>
-                          <SelectItem value="3">Wednesday</SelectItem>
-                          <SelectItem value="4">Thursday</SelectItem>
-                          <SelectItem value="5">Friday</SelectItem>
-                          <SelectItem value="6">Saturday</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
-
-                  {filterType === 'selected' && (
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <Label>Manually select students:</Label>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={selectAllFiltered}
-                        >
-                          {searchedStudents.every(s =>
-                            selectedStudents.includes(s.id)
-                          )
-                            ? 'Unselect All'
-                            : 'Select All'}
-                        </Button>
+                    {filterType === 'class' && (
+                      <div className="space-y-2">
+                        <Label htmlFor="class-select" className="text-xs font-semibold text-muted-foreground">{t('teacher.emails.customCard.selectClass')}</Label>
+                        <Select value={selectedClass} onValueChange={setSelectedClass}>
+                          <SelectTrigger className="rounded-xl border-border bg-background focus-visible:ring-primary h-10 w-full">
+                            <SelectValue placeholder={t('teacher.emails.customCard.selectClassPlaceholder')} />
+                          </SelectTrigger>
+                          <SelectContent className="rounded-xl">
+                            {classes.map(cls => (
+                              <SelectItem key={cls.id} value={cls.id}>
+                                {cls.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
-                      <div className="mb-4">
+                    )}
+
+                    {filterType === 'registration_day' && (
+                      <div className="space-y-2">
+                        <Label htmlFor="day-select" className="text-xs font-semibold text-muted-foreground">{t('teacher.emails.customCard.selectDay')}</Label>
+                        <Select value={selectedDay} onValueChange={setSelectedDay}>
+                          <SelectTrigger className="rounded-xl border-border bg-background focus-visible:ring-primary h-10 w-full">
+                            <SelectValue placeholder={t('teacher.emails.customCard.selectDayPlaceholder')} />
+                          </SelectTrigger>
+                          <SelectContent className="rounded-xl">
+                            <SelectItem value="0">{getDayName(0, i18n.language)}</SelectItem>
+                            <SelectItem value="1">{getDayName(1, i18n.language)}</SelectItem>
+                            <SelectItem value="2">{getDayName(2, i18n.language)}</SelectItem>
+                            <SelectItem value="3">{getDayName(3, i18n.language)}</SelectItem>
+                            <SelectItem value="4">{getDayName(4, i18n.language)}</SelectItem>
+                            <SelectItem value="5">{getDayName(5, i18n.language)}</SelectItem>
+                            <SelectItem value="6">{getDayName(6, i18n.language)}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+
+                    {filterType === 'selected' && (
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-xs font-semibold text-muted-foreground">{t('teacher.emails.customCard.selectManual')}</Label>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={selectAllFiltered}
+                            className="rounded-xl text-xs px-3 h-8 border-border hover:bg-muted"
+                          >
+                            {searchedStudents.every(s => selectedStudents.includes(s.id)) ? t('teacher.emails.customCard.clearAll') : t('teacher.emails.customCard.selectAll')}
+                          </Button>
+                        </div>
                         <div className="relative">
-                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 h-4 w-4" />
+                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                           <Input
-                            placeholder="Search students by name or email..."
+                            placeholder={t('teacher.emails.customCard.searchStudent')}
                             value={studentSearchTerm}
                             onChange={e => setStudentSearchTerm(e.target.value)}
-                            className="pl-10"
+                            className="pl-10 rounded-xl border-border bg-background focus-visible:ring-primary h-10 w-full"
+                          />
+                        </div>
+                        <div className="max-h-56 overflow-y-auto border border-border rounded-xl p-3 space-y-2.5 bg-background/50">
+                          {searchedStudents.map(student => (
+                            <div key={student.id} className="flex items-center space-x-2.5 hover:bg-muted/10 p-0.5 rounded transition-colors">
+                              <Checkbox
+                                id={`student-${student.id}`}
+                                checked={selectedStudents.includes(student.id)}
+                                onCheckedChange={() => toggleStudentSelection(student.id)}
+                                className="rounded border-border focus:ring-primary"
+                              />
+                              <Label
+                                htmlFor={`student-${student.id}`}
+                                className="text-xs font-semibold text-foreground flex-1 cursor-pointer text-ellipsis overflow-hidden whitespace-nowrap"
+                              >
+                                {student.full_name} <span className="text-[10px] text-muted-foreground">({t('teacher.emails.customCard.creditsCount', { count: student.totalCredits })})</span>
+                              </Label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </Card>
+
+                {/* Resumo da seleção */}
+                <div className="rounded-2xl border border-border bg-muted/20 p-5 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Filter className="h-4 w-4 text-primary" />
+                    <span className="text-sm font-bold text-foreground">
+                      {t('teacher.emails.customCard.selectedCount', { count: filteredStudents.length })}
+                    </span>
+                  </div>
+                  {filteredStudents.length > 0 ? (
+                    <div className="text-xs text-muted-foreground leading-relaxed">
+                      {filteredStudents
+                        .slice(0, 8)
+                        .map(s => s.full_name)
+                        .join(', ')}
+                      {filteredStudents.length > 8 &&
+                        t('teacher.emails.customCard.moreStudents', { count: filteredStudents.length - 8 })}
+                    </div>
+                  ) : (
+                    <p className="text-xs text-muted-foreground">{t('teacher.emails.customCard.emptySelection')}</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Coluna Direita: Formulário de Envio e Template */}
+              <div className="lg:col-span-7">
+                <Card className="rounded-2xl border border-border bg-card shadow-sm p-6 overflow-hidden">
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-base font-semibold text-foreground">{t('teacher.emails.customCard.contentTitle')}</h3>
+                      <p className="text-xs text-muted-foreground">{t('teacher.emails.customCard.contentDesc')}</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="sender-name" className="text-xs font-semibold text-muted-foreground">{t('teacher.emails.customCard.senderName')}</Label>
+                        <Input
+                          id="sender-name"
+                          value={senderName}
+                          onChange={e => setSenderName(e.target.value)}
+                          placeholder={t('teacher.emails.customCard.senderPlaceholder')}
+                          className="rounded-xl border-border bg-background focus-visible:ring-primary h-10 w-full"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="template-indicator" className="text-xs font-semibold text-muted-foreground">{t('teacher.emails.customCard.activeTemplate')}</Label>
+                        <Input
+                          id="template-indicator"
+                          value={selectedTemplateId ? t('teacher.emails.customCard.templateIndicator', { name: selectedTemplateId }) : t('teacher.emails.customCard.noTemplateIndicator')}
+                          disabled
+                          className="rounded-xl border-border bg-muted/50 text-muted-foreground h-10 w-full text-xs font-medium"
+                        />
+                      </div>
+                    </div>
+
+                    {selectedTemplateId !== 'consentForm' ? (
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="email-subject" className="text-xs font-semibold text-muted-foreground">{t('teacher.emails.customCard.subjectLabel')}</Label>
+                          <Input
+                            id="email-subject"
+                            value={emailSubject}
+                            onChange={e => setEmailSubject(e.target.value)}
+                            placeholder={t('teacher.emails.customCard.subjectPlaceholder')}
+                            className="rounded-xl border-border bg-background focus-visible:ring-primary h-10 w-full"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="email-message" className="text-xs font-semibold text-muted-foreground">{t('teacher.emails.customCard.messageLabel')}</Label>
+                          <Textarea
+                            id="email-message"
+                            value={emailMessage}
+                            onChange={e => setEmailMessage(e.target.value)}
+                            placeholder={t('teacher.emails.customCard.messagePlaceholder')}
+                            rows={8}
+                            className="rounded-xl border-border bg-background focus-visible:ring-primary w-full text-sm leading-relaxed"
                           />
                         </div>
                       </div>
-                      <div className="max-h-40 overflow-y-auto border rounded p-2 space-y-2">
-                        {searchedStudents.map(student => (
-                          <div
-                            key={student.id}
-                            className="flex items-center space-x-2"
-                          >
-                            <Checkbox
-                              id={`student-${student.id}`}
-                              checked={selectedStudents.includes(student.id)}
-                              onCheckedChange={() =>
-                                toggleStudentSelection(student.id)
-                              }
-                            />
-                            <Label
-                              htmlFor={`student-${student.id}`}
-                              className="text-sm flex-1"
-                            >
-                              {student.full_name} ({student.totalCredits}{' '}
-                              credits)
-                            </Label>
-                          </div>
-                        ))}
+                    ) : (
+                      <div className="rounded-2xl border border-blue-100 bg-blue-50/50 p-5 dark:border-blue-900/30 dark:bg-blue-950/10 space-y-3">
+                        <div className="flex items-center gap-2">
+                          <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                          <h4 className="text-sm font-bold text-blue-900 dark:text-blue-300">
+                            {t('teacher.emails.customCard.consentTitle')}
+                          </h4>
+                        </div>
+                        <p className="text-xs text-blue-800/80 dark:text-blue-300/80 leading-relaxed">
+                          {t('teacher.emails.customCard.consentDesc')}
+                        </p>
+                        <div className="text-[10px] font-semibold text-blue-700 dark:text-blue-400 flex items-center gap-1.5 bg-blue-100/50 dark:bg-blue-900/30 px-3 py-1 rounded-md w-fit">
+                          <span>{t('teacher.emails.customCard.attachment')}</span>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
+                    )}
 
-                <div className="bg-gray-50 dark:bg-slate-800 p-3 rounded border border-slate-200 dark:border-slate-700">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Filter className="h-4 w-4" />
-                    <span className="font-medium text-gray-900 dark:text-white">
-                      Selected students: {filteredStudents.length}
-                    </span>
+                    <Button
+                      onClick={sendCustomEmail}
+                      disabled={
+                        sending ||
+                        filteredStudents.length === 0 ||
+                        (selectedTemplateId !== 'consentForm' &&
+                          (!emailSubject.trim() || !emailMessage.trim()))
+                      }
+                      className="w-full rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-5 h-11 transition-all"
+                    >
+                      {sending ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          {t('teacher.emails.customCard.sendingCustom')}
+                        </>
+                      ) : (
+                        <>
+                          <Send className="mr-2 h-4 w-4" />
+                          {selectedTemplateId === 'consentForm'
+                            ? t('teacher.emails.customCard.sendConsentBtn', { count: filteredStudents.length })
+                            : t('teacher.emails.customCard.sendEmailBtn', { count: filteredStudents.length })}
+                        </>
+                      )}
+                    </Button>
                   </div>
-                  {filteredStudents.length > 0 && (
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
-                      {filteredStudents
-                        .slice(0, 5)
-                        .map(s => s.full_name)
-                        .join(', ')}
-                      {filteredStudents.length > 5 &&
-                        ` and ${filteredStudents.length - 5} more...`}
-                    </div>
-                  )}
-                </div>
-
-                {selectedTemplateId !== 'consentForm' && (
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="email-subject">Email subject:</Label>
-                      <Input
-                        id="email-subject"
-                        value={emailSubject}
-                        onChange={e => setEmailSubject(e.target.value)}
-                        placeholder="Enter email subject"
-                      />
-                    </div>
-
-                    <div>
-                      <Label htmlFor="email-message">Message:</Label>
-                      <Textarea
-                        id="email-message"
-                        value={emailMessage}
-                        onChange={e => setEmailMessage(e.target.value)}
-                        placeholder="Enter your message here..."
-                        rows={6}
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {selectedTemplateId === 'consentForm' && (
-                  <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
-                    <div className="flex items-center gap-2 mb-2">
-                      <FileText className="h-5 w-5 text-blue-600" />
-                      <h4 className="font-medium text-blue-900 dark:text-blue-100">
-                        Consent Form Template Selected
-                      </h4>
-                    </div>
-                    <p className="text-sm text-blue-800 dark:text-blue-200 mb-2">
-                      This will send the Pilates Lessons Policies consent form
-                      with the PDF attachment to selected students.
-                    </p>
-                    <p className="text-xs text-blue-700 dark:text-blue-300">
-                      📎 Attachment: PilatesLessonsPolicies.pdf
-                    </p>
-                  </div>
-                )}
-
-                <Button
-                  onClick={sendCustomEmail}
-                  disabled={
-                    sending ||
-                    filteredStudents.length === 0 ||
-                    (selectedTemplateId !== 'consentForm' &&
-                      (!emailSubject.trim() || !emailMessage.trim()))
-                  }
-                  className="w-full"
-                >
-                  {sending ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Sending...
-                    </>
-                  ) : (
-                    <>
-                      <Send className="mr-2 h-4 w-4" />
-                      {selectedTemplateId === 'consentForm'
-                        ? `Send Consent Form to ${filteredStudents.length} student(s)`
-                        : `Send Email to ${filteredStudents.length} student(s)`}
-                    </>
-                  )}
-                </Button>
-              </CardContent>
-            </Card>
+                </Card>
+              </div>
+            </div>
           </TabsContent>
 
           <TabsContent value="templates">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5" />
-                  Email Templates
-                </CardTitle>
-                <CardDescription>
-                  Choose a pre-defined template to speed up email sending
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="mb-4">
-                  <Label htmlFor="preview-language">Template language:</Label>
-                  <Select
-                    value={previewLanguage}
-                    onValueChange={setPreviewLanguage}
-                  >
-                    <SelectTrigger className="w-48">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="pt">🇧🇷 Portuguese</SelectItem>
-                      <SelectItem value="en">🇺🇸 English</SelectItem>
-                      <SelectItem value="fr">🇫🇷 French</SelectItem>
-                    </SelectContent>
-                  </Select>
+            <Card className="rounded-2xl border border-border bg-card shadow-sm p-6 overflow-hidden">
+              <CardHeader className="p-0 pb-4 border-b border-border/50">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <CardTitle className="text-lg font-bold text-foreground flex items-center gap-2">
+                      <FileText className="h-5 w-5 text-primary" />
+                      {t('teacher.emails.templates.title')}
+                    </CardTitle>
+                    <CardDescription className="text-xs">
+                      {t('teacher.emails.templates.desc')}
+                    </CardDescription>
+                  </div>
+                  <div className="space-y-1 w-full sm:w-48">
+                    <Label htmlFor="preview-language" className="text-xs font-semibold text-muted-foreground">{t('teacher.emails.templates.languageLabel')}</Label>
+                    <Select
+                      value={previewLanguage}
+                      onValueChange={setPreviewLanguage}
+                    >
+                      <SelectTrigger className="rounded-xl border-border bg-background focus-visible:ring-primary h-9 w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-xl">
+                        <SelectItem value="pt">🇧🇷 Português</SelectItem>
+                        <SelectItem value="en">🇺🇸 Inglês</SelectItem>
+                        <SelectItem value="fr">🇫🇷 Francês</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
+              </CardHeader>
+              <CardContent className="p-0 pt-6">
                 <EmailTemplates
                   onSelectTemplate={handleTemplateSelection}
                   selectedTemplateId={selectedTemplateId}
@@ -1098,65 +1131,75 @@ const EmailNotifications = () => {
           </TabsContent>
 
           <TabsContent value="history">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Clock className="h-5 w-5" />
-                  Email History
+            <Card className="rounded-2xl border border-border bg-card shadow-sm p-6 overflow-hidden">
+              <CardHeader className="p-0 pb-4 border-b border-border/50">
+                <CardTitle className="text-lg font-bold text-foreground flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-primary" />
+                  {t('teacher.emails.history.title')}
                 </CardTitle>
-                <CardDescription>Record of all sent emails</CardDescription>
+                <CardDescription className="text-xs">
+                  {t('teacher.emails.history.desc')}
+                </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-0 pt-6">
                 {emailHistory.length > 0 ? (
-                  <div className="space-y-4">
+                  <div className="space-y-4 max-h-[500px] overflow-y-auto pr-1">
                     {emailHistory.map(entry => (
-                      <div key={entry.id} className="border rounded p-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <div>
-                            <h4 className="font-medium">{entry.subject}</h4>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                      <div key={entry.id} className="border border-border/60 rounded-2xl p-5 hover:bg-muted/10 transition-colors space-y-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                          <div className="space-y-1">
+                            <h4 className="font-bold text-foreground text-sm">{entry.subject}</h4>
+                            <p className="text-xs text-muted-foreground">
                               {new Date(entry.timestamp).toLocaleString(
-                                'en-US'
+                                i18n.language === 'en' ? 'en-US' : i18n.language === 'fr' ? 'fr-CA' : 'pt-BR'
                               )}
                             </p>
                           </div>
-                          <div className="flex gap-2">
-                            <Badge variant="default">
-                              {entry.success} sent
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200/50 text-[10px] font-semibold px-2 py-0.5 rounded-full">
+                              {t('teacher.emails.history.sentBadge', { count: entry.success })}
                             </Badge>
                             {entry.failed > 0 && (
-                              <Badge variant="destructive">
-                                {entry.failed} failed
+                              <Badge variant="destructive" className="bg-red-50 text-red-700 border-red-200/50 text-[10px] font-semibold px-2 py-0.5 rounded-full hover:bg-red-50">
+                                {t('teacher.emails.history.failedBadge', { count: entry.failed })}
                               </Badge>
                             )}
                           </div>
                         </div>
-                        <div className="text-sm text-gray-600 dark:text-gray-400">
-                          <p>
-                            Type:{' '}
-                            {entry.type === 'low_credits'
-                              ? 'Low Balance'
-                              : 'Custom'}
-                          </p>
-                          <p>Recipients: {entry.recipients}</p>
-                          {entry.filterType && (
-                            <p>Filter: {entry.filterType}</p>
-                          )}
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-xs font-medium text-muted-foreground border-t border-border/30 pt-3">
+                          <div>
+                            <span className="text-[10px] text-muted-foreground uppercase block tracking-wider">{t('teacher.emails.history.emailType')}</span>
+                            <span className="text-foreground mt-0.5 block">
+                              {entry.type === 'low_credits'
+                                ? t('teacher.emails.history.types.low_credits')
+                                : entry.type === 'consent_form'
+                                ? t('teacher.emails.history.types.consent_form')
+                                : t('teacher.emails.history.types.free')}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-[10px] text-muted-foreground uppercase block tracking-wider">{t('teacher.emails.history.recipients')}</span>
+                            <span className="text-foreground mt-0.5 block">{t('teacher.emails.history.recipientsCount', { count: entry.recipients })}</span>
+                          </div>
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-500 dark:text-gray-400 text-center py-8">
-                    No emails sent yet
-                  </p>
+                  <div className="text-center py-16 px-4">
+                    <Mail className="h-10 w-10 text-muted-foreground mx-auto mb-3 opacity-50" />
+                    <h4 className="text-sm font-semibold text-foreground">{t('teacher.emails.history.emptyTitle')}</h4>
+                    <p className="text-xs text-muted-foreground mt-1 max-w-xs mx-auto">
+                      {t('teacher.emails.history.emptyDesc')}
+                    </p>
+                  </div>
                 )}
               </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
       </div>
-    </div>
+    </TeacherLayout>
   )
 }
 

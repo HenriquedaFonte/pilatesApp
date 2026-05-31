@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import { Button } from '@/components/ui/button'
@@ -23,12 +24,12 @@ import {
   User,
   MessageSquare
 } from 'lucide-react'
-import Logo from '../components/Logo'
-import { ThemeToggle } from '../components/ThemeToggle'
+import TeacherLayout from '../components/TeacherLayout'
 
 const TeacherDashboard = () => {
   const { profile, signOut } = useAuth()
   const navigate = useNavigate()
+  const { t, i18n } = useTranslation()
   const [stats, setStats] = useState({
     totalStudents: 0,
     studentsWithLowBalance: 0,
@@ -37,10 +38,29 @@ const TeacherDashboard = () => {
   })
   const [loading, setLoading] = useState(true)
 
+  const getGreeting = () => {
+    const hr = new Date().getHours()
+    if (hr < 12) return t('teacher.dashboard.greetingMorning')
+    if (hr < 18) return t('teacher.dashboard.greetingAfternoon')
+    return t('teacher.dashboard.greetingEvening')
+  }
+
+  const getFirstName = (name) => {
+    if (!name) return t('common.teacher', 'Professora')
+    return name.split(' ')[0]
+  }
+
+  const getFormattedDate = () => {
+    const locale = i18n.language === 'pt' ? 'pt-BR' : i18n.language === 'fr' ? 'fr-CA' : 'en-CA'
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
+    return new Intl.DateTimeFormat(locale, options).format(new Date())
+  }
+
   useEffect(() => {
     fetchDashboardStats()
   }, [])
 
+  // TODO Fase 2: migrar fetchDashboardStats para Supabase
   const fetchDashboardStats = async () => {
     try {
       const { data: students, error: studentsError } = await supabase
@@ -101,241 +121,88 @@ const TeacherDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      <header className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Logo className="h-8 w-8 mr-3" />
-              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
-                Pilates Studio
-              </h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <ThemeToggle />
-              <span
-                className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer hover:text-gray-900 dark:hover:text-white"
-                onClick={() => navigate('/teacher/profile')}
-              >
-                Welcome, {profile?.full_name}
-              </span>
-              <Button variant="outline" size="sm" onClick={handleSignOut}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Sign Out
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            Teacher Dashboard
+    <TeacherLayout>
+      <div className="space-y-8">
+        {/* Editorial Header */}
+        <div className="flex flex-col gap-1.5 pb-2">
+          <h2 className="text-4xl font-serif-display text-foreground tracking-tight">
+            {getGreeting()}, <span className="text-primary italic">{getFirstName(profile?.full_name)}</span>
           </h2>
-          <p className="text-gray-600 dark:text-gray-300">
-            Manage your pilates studio efficiently
+          <p className="text-sm font-medium text-muted-foreground capitalize">
+            {getFormattedDate()}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Total Students
-              </CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.totalStudents}</div>
-              <p className="text-xs text-muted-foreground">Active students</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Low Balance</CardTitle>
-              <AlertTriangle className="h-4 w-4 text-orange-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-orange-600">
-                {stats.studentsWithLowBalance}
+        {/* Proportional Stat Tiles */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <Card className="rounded-2xl border border-border bg-card shadow-sm transition-all duration-200">
+            <CardContent className="p-6 flex items-center gap-4">
+              <div className="h-12 w-12 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                <Users className="h-6 w-6" />
               </div>
-              <p className="text-xs text-muted-foreground">
-                Students with {'<='}2 credits
-              </p>
+              <div>
+                <p className="text-[13px] font-medium text-muted-foreground">{t('teacher.dashboard.activeStudents')}</p>
+                <h3 className="text-3xl font-bold font-serif-display text-foreground mt-0.5">{stats.totalStudents}</h3>
+              </div>
             </CardContent>
           </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Today's Classes
-              </CardTitle>
-              <Calendar className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.todayClasses}</div>
-              <p className="text-xs text-muted-foreground">
-                Scheduled for today
-              </p>
+          <Card className="rounded-2xl border border-border bg-card shadow-sm transition-all duration-200">
+            <CardContent className="p-6 flex items-center gap-4">
+              <div className="h-12 w-12 rounded-xl bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                <AlertTriangle className="h-6 w-6" />
+              </div>
+              <div>
+                <p className="text-[13px] font-medium text-muted-foreground">{t('teacher.dashboard.lowBalance')}</p>
+                <h3 className="text-3xl font-bold font-serif-display text-amber-600 dark:text-amber-400 mt-0.5">{stats.studentsWithLowBalance}</h3>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="rounded-2xl border border-border bg-card shadow-sm transition-all duration-200">
+            <CardContent className="p-6 flex items-center gap-4">
+              <div className="h-12 w-12 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                <Calendar className="h-6 w-6" />
+              </div>
+              <div>
+                <p className="text-[13px] font-medium text-muted-foreground">{t('teacher.dashboard.todayClasses')}</p>
+                <h3 className="text-3xl font-bold font-serif-display text-foreground mt-0.5">{stats.todayClasses}</h3>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="rounded-2xl border border-border bg-card shadow-sm transition-all duration-200">
+            <CardContent className="p-6 flex items-center gap-4">
+              <div className="h-12 w-12 rounded-xl bg-violet-50 dark:bg-violet-900/20 text-violet-600 dark:text-violet-400 flex items-center justify-center shrink-0">
+                <BookOpen className="h-6 w-6" />
+              </div>
+              <div>
+                <p className="text-[13px] font-medium text-muted-foreground">{t('teacher.dashboard.weeklyClasses')}</p>
+                <h3 className="text-3xl font-bold font-serif-display text-foreground mt-0.5">{stats.totalClasses}</h3>
+              </div>
             </CardContent>
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-            <Link to="/teacher/students">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Users className="h-5 w-5 mr-2 text-primary" />
-                  Manage Students
-                </CardTitle>
-                <CardDescription>
-                  View and manage student profiles, balances, and schedules
-                </CardDescription>
-              </CardHeader>
-            </Link>
+        {/* Content Section (Space for useful content) */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <Card className="lg:col-span-2 rounded-2xl border border-border bg-card shadow-sm p-6">
+            <h3 className="text-xl font-bold font-serif-display text-foreground mb-4">{t('teacher.dashboard.todayClassesTitle')}</h3>
+            <div className="border-2 border-dashed border-border rounded-xl p-8 text-center text-muted-foreground">
+              {/* TODO Fase 2: Implementar lista de aulas de hoje */}
+              <Calendar className="h-8 w-8 mx-auto mb-2 text-muted-foreground/60" />
+              <p className="text-sm font-medium">{t('teacher.dashboard.todayClassesDesc')}</p>
+              <p className="text-xs text-muted-foreground/80 mt-1">{t('teacher.dashboard.todayClassesDescSub')}</p>
+            </div>
           </Card>
-
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-            <Link to="/teacher/classes">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <BookOpen className="h-5 w-5 mr-2 text-primary" />
-                  Manage Classes
-                </CardTitle>
-                <CardDescription>
-                  Create and manage class types and schedules
-                </CardDescription>
-              </CardHeader>
-            </Link>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-            <Link to="/teacher/check-in">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <CheckCircle className="h-5 w-5 mr-2 text-primary" />
-                  Daily Check-in
-                </CardTitle>
-                <CardDescription>
-                  Mark attendance for today's classes
-                </CardDescription>
-              </CardHeader>
-            </Link>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-            <Link
-              to="/teacher/attendance-report"
-              className="flex flex-col h-full"
-            >
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <FileText className="h-5 w-5 mr-2 text-primary" />
-                  Attendance Report
-                </CardTitle>
-                <CardDescription>
-                  View attendance history and statistics
-                </CardDescription>
-              </CardHeader>
-            </Link>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-            <Link
-              to="/teacher/low-credits-report"
-              className="flex flex-col h-full"
-            >
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <CreditCard className="h-5 w-5 mr-2 text-primary" />
-                  Low Credits Report
-                </CardTitle>
-                <CardDescription>
-                  See students with low or zero credits
-                </CardDescription>
-              </CardHeader>
-            </Link>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-            <Link
-              to="/teacher/credit-history-report"
-              className="flex flex-col h-full"
-            >
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <CreditCard className="h-5 w-5 mr-2 text-primary" />
-                  Credit History Report
-                </CardTitle>
-                <CardDescription>
-                  See students credit history and transactions
-                </CardDescription>
-              </CardHeader>
-            </Link>
-          </Card>
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-            <Link
-              to="/teacher/financial-report"
-              className="flex flex-col h-full"
-            >
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <FileText className="h-5 w-5 mr-2 text-primary" />
-                  Financial Report
-                </CardTitle>
-                <CardDescription>
-                  View financial transactions for credit purchases
-                </CardDescription>
-              </CardHeader>
-            </Link>
-          </Card>
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-            <Link
-              to="/teacher/email-notifications"
-              className="flex flex-col h-full"
-            >
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Mail className="h-5 w-5 mr-2 text-primary" />
-                  Email Notifications
-                </CardTitle>
-                <CardDescription>
-                  Manage and send email notifications to students
-                </CardDescription>
-              </CardHeader>
-            </Link>
-          </Card>
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-            <Link to="/teacher/testimonials" className="flex flex-col h-full">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <MessageSquare className="h-5 w-5 mr-2 text-primary" />
-                  Testimonials
-                </CardTitle>
-                <CardDescription>
-                  Manage testimonials displayed on the homepage
-                </CardDescription>
-              </CardHeader>
-            </Link>
-          </Card>
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-            <Link to="/teacher/profile" className="flex flex-col h-full">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <User className="h-5 w-5 mr-2 text-primary" />
-                  My Profile
-                </CardTitle>
-                <CardDescription>
-                  Update your personal information and password
-                </CardDescription>
-              </CardHeader>
-            </Link>
+          <Card className="rounded-2xl border border-border bg-card shadow-sm p-6">
+            <h3 className="text-xl font-bold font-serif-display text-foreground mb-4">{t('teacher.dashboard.quickPanelTitle')}</h3>
+            <div className="border-2 border-dashed border-border rounded-xl p-8 text-center text-muted-foreground h-[200px] flex flex-col justify-center items-center">
+              {/* TODO Fase 2 */}
+              <Users className="h-8 w-8 mb-2 text-muted-foreground/60" />
+              <p className="text-sm font-medium">{t('teacher.dashboard.quickPanelDesc')}</p>
+            </div>
           </Card>
         </div>
       </div>
-    </div>
+    </TeacherLayout>
   )
 }
 

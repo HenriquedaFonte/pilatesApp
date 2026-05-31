@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Redesign StudioHome — Josi Pilates</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --brand:#01b48d; --brand-600:#019a7a; --brand-700:#017a6b; --brand-800:#0a5a50;
+    --brand-50:#e9f8f4; --brand-100:#cdeee6; --brand-200:#a3e0d3;
+    --sand:#f6f3ec; --sand-2:#efe9dd; --paper:#fff;
+    --ink:#1a2420; --ink-2:#4d5a54; --ink-3:#8a958f;
+    --line:#e7e9e3; --line-2:#eff1ea;
+    --gold:#c79a4b; --rose:#d2664f;
+    --font:'Hanken Grotesk',system-ui,sans-serif;
+    --serif:'Fraunces',Georgia,serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);color:var(--ink);background:#e7e4db;-webkit-font-smoothing:antialiased;line-height:1.6}
+  img{display:block;max-width:100%}
+
+  /* ====== SHOWCASE WRAPPER ====== */
+  .wrap{max-width:1340px;margin:0 auto;padding:0 36px 120px}
+  .intro{padding:72px 0 16px;max-width:780px}
+  .intro .kicker{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+  .intro .kicker img{width:42px;height:42px;border-radius:11px}
+  .intro .kicker span{font-size:14px;font-weight:800;letter-spacing:-.01em}
+  .intro .kicker span em{color:var(--brand-700);font-style:normal}
+  .intro h1{font-family:var(--serif);font-size:54px;line-height:1.04;font-weight:500;letter-spacing:-.015em;margin-bottom:20px}
+  .intro h1 em{font-style:italic;color:var(--brand-700)}
+  .intro p{font-size:17px;color:var(--ink-2);line-height:1.65}
+
+  .divider{display:flex;align-items:center;gap:14px;padding:54px 0 26px}
+  .divider .tag{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brand-700);background:var(--brand-50);padding:7px 15px;border-radius:30px;white-space:nowrap}
+  .divider .ln{flex:1;height:1px;background:#d6d3c9}
+
+  /* ====== DIAGNOSIS ====== */
+  .diag-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .diag{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 20px;display:flex;gap:14px;align-items:flex-start}
+  .diag .n{flex-shrink:0;width:30px;height:30px;border-radius:9px;background:#fbece7;color:var(--rose);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px}
+  .diag h4{font-size:14.5px;font-weight:700;margin-bottom:3px}
+  .diag p{font-size:13px;color:var(--ink-2);line-height:1.55}
+  .diag .fix{font-size:12.5px;color:var(--brand-700);font-weight:600;margin-top:6px;display:flex;gap:6px;align-items:flex-start}
+  .diag .fix svg{width:14px;height:14px;flex-shrink:0;margin-top:2px}
+
+  /* ====== BROWSER FRAME ====== */
+  .frame{border-radius:16px 16px 12px 12px;overflow:hidden;box-shadow:0 24px 70px rgba(20,30,26,.22);border:1px solid #d3d0c6;background:var(--paper)}
+  .frame-bar{display:flex;align-items:center;gap:7px;padding:12px 16px;background:#e4e1d8;border-bottom:1px solid #d3d0c6}
+  .frame-dot{width:11px;height:11px;border-radius:50%}
+  .frame-url{margin-left:14px;background:#fff;border-radius:8px;padding:6px 16px;font-size:12.5px;color:var(--ink-3);flex:1;max-width:380px;display:flex;align-items:center;gap:8px}
+  .frame-url svg{width:13px;height:13px;color:var(--brand)}
+  .cap{text-align:center;margin-top:18px;font-size:13px;color:var(--ink-3);font-weight:600}
+
+  /* ════════════ THE REDESIGNED PAGE ════════════ */
+  .site{background:var(--sand);color:var(--ink);font-size:16px}
+
+  /* nav */
+  .nav{position:sticky;top:0;z-index:40;background:rgba(246,243,236,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .nav-in{max-width:1180px;margin:0 auto;padding:0 34px;height:74px;display:flex;align-items:center;justify-content:space-between}
+  .nav-brand{display:flex;align-items:center;gap:11px}
+  .nav-brand img{width:38px;height:38px;border-radius:10px}
+  .nav-brand b{font-size:19px;font-weight:800;letter-spacing:-.02em}
+  .nav-links{display:flex;align-items:center;gap:30px}
+  .nav-links a{font-size:14.5px;color:var(--ink-2);text-decoration:none;font-weight:500}
+  .nav-links a:hover{color:var(--ink)}
+  .nav-right{display:flex;align-items:center;gap:14px}
+  .lang{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--ink-2);border:1px solid var(--line);border-radius:20px;padding:6px 12px;background:#fff}
+  .lang b{color:var(--brand-700)}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--font);font-weight:700;font-size:14.5px;border-radius:30px;border:none;cursor:pointer;text-decoration:none;transition:.15s;white-space:nowrap}
+  .btn svg{width:16px;height:16px}
+  .btn-primary{background:var(--brand);color:#fff;padding:12px 22px}
+  .btn-primary:hover{background:var(--brand-600)}
+  .btn-ghost{background:transparent;color:var(--ink);padding:11px 18px;border:1px solid #cfd3cb}
+  .btn-ghost:hover{border-color:var(--ink-3)}
+  .btn-white{background:#fff;color:var(--ink);padding:13px 24px}
+  .btn-lg{padding:15px 30px;font-size:16px}
+  .btn-link{background:transparent;color:var(--ink-2);font-weight:600;font-size:14px;padding:11px 10px;text-decoration:none;display:inline-flex;align-items:center;gap:7px}
+
+  /* hero */
+  .hero{position:relative;min-height:640px;display:flex;align-items:center;overflow:hidden}
+  .hero-bg{position:absolute;inset:0}
+  .hero-bg img{width:100%;height:100%;object-fit:cover}
+  .hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(100deg,rgba(10,30,26,.82) 0%,rgba(10,30,26,.55) 42%,rgba(10,30,26,.12) 100%)}
+  .hero-in{position:relative;max-width:1180px;margin:0 auto;padding:64px 34px;width:100%}
+  .hero-badges{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap}
+  .hero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.14);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.22);color:#fff;font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:30px}
+  .hero-badge svg{width:14px;height:14px;color:var(--brand-200)}
+  .hero h1{font-family:var(--serif);font-weight:500;font-size:58px;line-height:1.05;letter-spacing:-.02em;color:#fff;max-width:680px;margin-bottom:20px}
+  .hero h1 em{font-style:italic;color:var(--brand-200)}
+  .hero p{font-size:18px;color:rgba(255,255,255,.85);max-width:480px;margin-bottom:32px;line-height:1.6}
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+  .hero-note{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.7);font-size:13px;margin-top:22px}
+  .hero-note svg{width:15px;height:15px;color:var(--brand-200)}
+
+  /* trust strip */
+  .trust{background:var(--brand-800);color:#fff}
+  .trust-in{max-width:1180px;margin:0 auto;padding:20px 34px;display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
+  .trust-item{display:flex;align-items:center;gap:11px}
+  .trust-item svg{width:22px;height:22px;color:var(--brand-200);flex-shrink:0}
+  .trust-item .tt{font-size:15px;font-weight:700;line-height:1.1}
+  .trust-item .ts{font-size:12px;color:rgba(255,255,255,.6)}
+
+  /* section base */
+  .sec{max-width:1180px;margin:0 auto;padding:84px 34px}
+  .sec-head{max-width:620px;margin-bottom:46px}
+  .sec-head.center{margin-left:auto;margin-right:auto;text-align:center}
+  .eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--brand-700);margin-bottom:14px}
+  .sec h2{font-family:var(--serif);font-weight:500;font-size:40px;line-height:1.1;letter-spacing:-.015em;margin-bottom:14px}
+  .sec h2 em{font-style:italic;color:var(--brand-700)}
+  .sec-head p{font-size:16.5px;color:var(--ink-2);line-height:1.6}
+
+  /* about */
+  .about{display:grid;grid-template-columns:0.85fr 1.15fr;gap:56px;align-items:center}
+  .about-photo{position:relative}
+  .about-photo img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:20px;object-position:center top}
+  .about-photo .stamp{position:absolute;bottom:-22px;right:-18px;background:var(--paper);border-radius:16px;padding:16px 20px;box-shadow:0 12px 30px rgba(20,30,26,.14);text-align:center}
+  .about-photo .stamp .big{font-family:var(--serif);font-size:34px;color:var(--brand-700);line-height:1}
+  .about-photo .stamp .sm{font-size:11.5px;color:var(--ink-2);font-weight:600;margin-top:3px}
+  .about-body h2{font-family:var(--serif);font-weight:500;font-size:38px;line-height:1.12;letter-spacing:-.01em;margin-bottom:18px}
+  .about-body h2 em{font-style:italic;color:var(--brand-700)}
+  .about-body p{font-size:16px;color:var(--ink-2);margin-bottom:16px;line-height:1.7}
+  .creds{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+  .cred{display:inline-flex;align-items:center;gap:8px;background:var(--paper);border:1px solid var(--line);border-radius:30px;padding:9px 16px;font-size:13.5px;font-weight:600}
+  .cred svg{width:15px;height:15px;color:var(--brand)}
+
+  /* services */
+  .svc-sec{background:var(--paper)}
+  .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .svc{border:1px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;background:var(--sand);transition:.18s;position:relative}
+  .svc:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(20,30,26,.10)}
+  .svc.feat{border-color:var(--brand-200);box-shadow:0 12px 30px rgba(1,180,141,.12)}
+  .svc-tag{position:absolute;top:16px;right:16px;background:var(--brand);color:#fff;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:5px 12px;border-radius:20px;z-index:2}
+  .svc-top{padding:30px 26px 24px;text-align:center;border-bottom:1px solid var(--line)}
+  .svc-ico{width:54px;height:54px;border-radius:15px;background:var(--brand-50);color:var(--brand-700);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+  .svc-ico svg{width:26px;height:26px}
+  .svc.feat .svc-ico{background:var(--brand);color:#fff}
+  .svc-top h3{font-family:var(--serif);font-size:25px;font-weight:500;margin-bottom:6px}
+  .svc-top .desc{font-size:13.5px;color:var(--ink-2);min-height:38px}
+  .svc-price{display:flex;align-items:baseline;justify-content:center;gap:4px;margin-top:16px}
+  .svc-price .from{font-size:13px;color:var(--ink-3);font-weight:600}
+  .svc-price .amt{font-family:var(--serif);font-size:42px;color:var(--brand-700);line-height:1}
+  .svc-price .unit{font-size:13px;color:var(--ink-3);font-weight:600}
+  .svc-body{padding:24px 26px 28px;display:flex;flex-direction:column;flex:1}
+  .svc-body ul{list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:24px;flex:1}
+  .svc-body li{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--ink-2)}
+  .svc-body li svg{width:17px;height:17px;color:var(--brand);flex-shrink:0;margin-top:1px}
+  .svc-body li b{color:var(--ink);font-weight:700}
+
+  /* hours + location */
+  .hl-sec{background:linear-gradient(160deg,var(--brand-800),#0a4a42);color:#fff}
+  .hl{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+  .hl-info .eyebrow{color:var(--brand-200)}
+  .hl-info h2{font-family:var(--serif);font-weight:500;font-size:38px;line-height:1.12;margin-bottom:26px;color:#fff}
+  .hl-info h2 em{font-style:italic;color:var(--brand-200)}
+  .hours{display:flex;flex-direction:column;gap:2px;margin-bottom:28px}
+  .hours-row{display:flex;justify-content:space-between;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.13);font-size:15px}
+  .hours-row .d{font-weight:600}
+  .hours-row .h{color:rgba(255,255,255,.8)}
+  .hours-row .closed{color:var(--brand-200)}
+  .hl-contact{display:flex;flex-direction:column;gap:14px}
+  .hl-line{display:flex;align-items:center;gap:13px;font-size:15px}
+  .hl-line svg{width:19px;height:19px;color:var(--brand-200);flex-shrink:0}
+  .map{border-radius:20px;overflow:hidden;position:relative;min-height:380px;background:#dfe6e2;border:1px solid rgba(255,255,255,.15)}
+  .map-grid{position:absolute;inset:0;background-image:linear-gradient(#c5d2cc 1px,transparent 1px),linear-gradient(90deg,#c5d2cc 1px,transparent 1px);background-size:46px 46px;opacity:.7}
+  .map-road{position:absolute;background:#fff}
+  .map-road.r1{top:38%;left:0;right:0;height:14px;transform:rotate(-4deg)}
+  .map-road.r2{top:0;bottom:0;left:54%;width:12px}
+  .map-road.r3{top:64%;left:0;right:0;height:9px;transform:rotate(3deg)}
+  .map-block{position:absolute;background:#cdddd5;border-radius:4px}
+  .map-pin{position:absolute;top:42%;left:52%;transform:translate(-50%,-100%);z-index:3;display:flex;flex-direction:column;align-items:center}
+  .map-pin .bubble{background:var(--paper);color:var(--ink);border-radius:12px;padding:10px 15px;box-shadow:0 10px 24px rgba(0,0,0,.2);font-size:13px;font-weight:700;white-space:nowrap;margin-bottom:7px}
+  .map-pin .bubble span{display:block;font-size:11px;color:var(--ink-3);font-weight:500}
+  .map-pin .dot{width:24px;height:24px;border-radius:50% 50% 50% 0;background:var(--brand);transform:rotate(45deg);border:3px solid #fff;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+
+  /* testimonials */
+  .tst-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .tst{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:28px 26px;display:flex;flex-direction:column;gap:16px}
+  .stars{display:flex;gap:3px}
+  .stars svg{width:17px;height:17px;color:var(--gold)}
+  .tst p{font-size:15px;color:var(--ink-2);line-height:1.65;font-style:italic;flex:1}
+  .tst .who{display:flex;align-items:center;gap:12px}
+  .tst .av{width:40px;height:40px;border-radius:50%;background:var(--brand-100);color:var(--brand-700);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px}
+  .tst .who b{font-size:14px;display:block}
+  .tst .who span{font-size:12.5px;color:var(--ink-3)}
+
+  /* CTA band */
+  .cta-band{position:relative;overflow:hidden}
+  .cta-band-bg{position:absolute;inset:0}
+  .cta-band-bg img{width:100%;height:100%;object-fit:cover}
+  .cta-band-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(1,122,107,.95),rgba(1,122,107,.6))}
+  .cta-in{position:relative;max-width:1180px;margin:0 auto;padding:70px 34px;text-align:center}
+  .cta-in h2{font-family:var(--serif);font-weight:500;font-size:42px;color:#fff;line-height:1.1;margin-bottom:14px}
+  .cta-in p{font-size:17px;color:rgba(255,255,255,.85);max-width:480px;margin:0 auto 30px}
+  .cta-in .row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+  /* contact form */
+  .ct{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+  .ct-form{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:34px}
+  .ct-form h3{font-family:var(--serif);font-size:26px;font-weight:500;margin-bottom:6px}
+  .ct-form .sub{font-size:14px;color:var(--ink-2);margin-bottom:24px}
+  .fld{margin-bottom:16px}
+  .fld label{display:block;font-size:13px;font-weight:600;margin-bottom:7px}
+  .fld input,.fld textarea{width:100%;border:1px solid var(--line);border-radius:11px;padding:12px 14px;font-family:var(--font);font-size:14.5px;color:var(--ink);background:var(--sand);outline:none}
+  .fld input:focus,.fld textarea:focus{border-color:var(--brand);background:#fff}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .ct-side h2{font-family:var(--serif);font-weight:500;font-size:36px;line-height:1.12;margin-bottom:16px}
+  .ct-side h2 em{font-style:italic;color:var(--brand-700)}
+  .ct-side>p{font-size:16px;color:var(--ink-2);margin-bottom:26px;line-height:1.65}
+  .ct-photo{border-radius:18px;overflow:hidden;margin-bottom:24px}
+  .ct-photo img{width:100%;aspect-ratio:16/11;object-fit:cover;object-position:center 28%}
+  .ct-lines{display:flex;flex-direction:column;gap:14px}
+  .ct-line{display:flex;align-items:center;gap:13px}
+  .ct-line .ic{width:42px;height:42px;border-radius:12px;background:var(--brand-50);color:var(--brand-700);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .ct-line .ic svg{width:19px;height:19px}
+  .ct-line .tx b{font-size:14.5px;display:block}
+  .ct-line .tx span{font-size:13px;color:var(--ink-3)}
+
+  /* footer */
+  .ft{background:var(--ink);color:#fff}
+  .ft-in{max-width:1180px;margin:0 auto;padding:58px 34px 30px}
+  .ft-top{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:36px;padding-bottom:40px;border-bottom:1px solid rgba(255,255,255,.1)}
+  .ft-brand{display:flex;align-items:center;gap:11px;margin-bottom:16px}
+  .ft-brand img{width:36px;height:36px;border-radius:9px}
+  .ft-brand b{font-size:18px;font-weight:800}
+  .ft-col p{font-size:14px;color:rgba(255,255,255,.6);line-height:1.65;max-width:280px}
+  .ft-col h5{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:16px}
+  .ft-col a{display:block;font-size:14px;color:rgba(255,255,255,.78);text-decoration:none;margin-bottom:11px}
+  .ft-col a:hover{color:#fff}
+  .ft-social{display:flex;gap:10px;margin-top:16px}
+  .ft-social a{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center}
+  .ft-social svg{width:18px;height:18px;color:#fff}
+  .ft-bot{display:flex;justify-content:space-between;align-items:center;padding-top:24px;font-size:13px;color:rgba(255,255,255,.5);flex-wrap:wrap;gap:12px}
+  .ft-bot a{color:rgba(255,255,255,.5);text-decoration:none}
+
+  /* change summary */
+  .chg-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .chg{display:flex;gap:13px;align-items:flex-start;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+  .chg .ck{width:24px;height:24px;border-radius:8px;background:var(--brand-50);color:var(--brand-700);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+  .chg .ck svg{width:14px;height:14px}
+  .chg p{font-size:14px;color:var(--ink-2);line-height:1.5}
+  .chg p b{color:var(--ink)}
+
+  /* phone */
+  .stage-mobile{display:flex;justify-content:center;gap:40px;flex-wrap:wrap;align-items:flex-start}
+  .phone{width:380px;border-radius:42px;background:#15201c;padding:11px;box-shadow:0 30px 70px rgba(20,30,26,.28)}
+  .phone-screen{border-radius:32px;overflow:hidden;background:var(--sand);position:relative;height:760px;overflow-y:auto}
+  .phone-screen::-webkit-scrollbar{width:0}
+
+  @media(max-width:1080px){
+    .about,.hl,.ct{grid-template-columns:1fr}
+    .svc-grid,.tst-grid{grid-template-columns:1fr}
+    .ft-top{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:680px){
+    .wrap{padding:0 18px 80px}
+    .intro h1{font-size:38px}
+    .diag-grid,.chg-grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<!-- ICON SPRITE -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <g id="s-check"><path d="M5 12.5 10 17.5 19.5 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <g id="s-arrow"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <g id="s-cal"><rect x="3.5" y="5" width="17" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M3.5 9.5h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></g>
+  <g id="s-medal"><circle cx="12" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M8.5 14 7 22l5-3 5 3-1.5-8" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></g>
+  <g id="s-heart"><path d="M12 20s-7-4.4-9.3-9C1.2 8 2.6 4.5 6 4.5c2 0 3.2 1.2 4 2.3.8-1.1 2-2.3 4-2.3 3.4 0 4.8 3.5 3.3 6.5C19 15.6 12 20 12 20z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></g>
+  <g id="s-user"><circle cx="12" cy="8" r="3.6" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></g>
+  <g id="s-users"><circle cx="9" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M3 20c0-3.2 2.7-5.4 6-5.4S15 16.8 15 20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><path d="M16 5.4a3 3 0 0 1 0 5.7M17 20c0-2.4-.9-4-2-4.9" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></g>
+  <g id="s-duo"><circle cx="8" cy="8" r="3.4" fill="none" stroke="currentColor" stroke-width="1.9"/><circle cx="16" cy="8" r="3.4" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M2 20c0-3.2 2.7-5 6-5s6 1.8 6 5M14 15.2c2.4-.4 5 1.2 5 4.8" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></g>
+  <g id="s-pin"><path d="M12 22s7-6.4 7-12a7 7 0 1 0-14 0c0 5.6 7 12 7 12z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.6" fill="none" stroke="currentColor" stroke-width="1.9"/></g>
+  <g id="s-mail"><rect x="3" y="5" width="18" height="14" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="m4 7 8 6 8-6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></g>
+  <g id="s-phone"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L20 18l-1.5 2.5A2 2 0 0 1 16.7 21 16 16 0 0 1 3 7.3 2 2 0 0 1 5 4z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></g>
+  <g id="s-clock"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M12 7.5V12l3 2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></g>
+  <g id="s-star"><path d="M12 3l2.5 5.5L20 9.2l-4 4 1 6-5-2.8L7 19.2l1-6-4-4 5.5-.7z" fill="currentColor"/></g>
+  <g id="s-globe"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18" fill="none" stroke="currentColor" stroke-width="1.7"/></g>
+  <g id="s-lock"><rect x="5" y="10.5" width="14" height="10" rx="2.4" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" fill="none" stroke="currentColor" stroke-width="1.9"/></g>
+  <g id="s-spark"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></g>
+  <g id="s-ig"><rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17" cy="7" r="1.2" fill="currentColor"/></g>
+  <g id="s-fb"><path d="M14 8.5h2.5V5.5H14c-2 0-3.5 1.5-3.5 3.5v2H8v3h2.5V21h3v-7H16l.5-3h-3V9c0-.3.2-.5.5-.5z" fill="currentColor"/></g>
+  <g id="s-wa"><path d="M12 3a9 9 0 0 0-7.7 13.6L3 21l4.5-1.2A9 9 0 1 0 12 3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8.5 8.5c-.3 1.5.5 3.5 2 5s3.5 2.3 5 2c.6-.1 1-1 .8-1.5l-1.8-1-1 .8c-1-.4-2-1.4-2.4-2.4l.8-1-1-1.8c-.5-.2-1.3.1-1.4.6z" fill="currentColor"/></g>
+</defs></svg>
+
+<div class="wrap">
+
+  <!-- INTRO -->
+  <div class="intro">
+    <div class="kicker"><img src="img/logo.jpg" alt="" /><span>Josi <em>Pilates</em> · Studio Home · Análise + Redesign</span></div>
+    <h1>A porta de entrada do estúdio, <em>repensada</em>.</h1>
+    <p>Análise de UI/UX da página pública <code>josipilates.com</code> e uma proposta de redesenho completa — ancorada na cor real da marca, nas fotos reais do estúdio e no objetivo número um de uma landing de negócio local: <strong>fazer a visitante agendar uma aula</strong>.</p>
+  </div>
+
+  <!-- DIAGNOSIS -->
+  <div class="divider"><span class="tag">🔍 Diagnóstico — o que encontrei hoje</span><span class="ln"></span></div>
+  <div class="diag-grid">
+    <div class="diag"><div class="n">1</div><div><h4>Nenhum botão de "Agendar"</h4><p>O único CTA do topo é "Portal do Aluno" (login) e um botão que só rola até "Sobre". Uma visitante nova não tem como agendar uma aula experimental — precisa caçar o formulário lá embaixo.</p><div class="fix"><svg><use href="#s-check"/></svg>CTA "Réserver un cours d'essai" fixo no topo e no hero</div></div></div>
+    <div class="diag"><div class="n">2</div><div><h4>Hero fraco e invertido</h4><p>O título fica num cartão branco simples <em>abaixo</em> do carrossel, sem sobreposição, sem hierarquia. O diferencial (fisioterapeuta certificada, 15 anos) nem aparece acima da dobra.</p><div class="fix"><svg><use href="#s-check"/></svg>Hero imersivo com título sobreposto + selos de confiança</div></div></div>
+    <div class="diag"><div class="n">3</div><div><h4>Mistura de idiomas</h4><p>A página força francês, mas a seção de contato está em inglês ("First Name", "Send", "Message Sent!"). Confunde e passa descuido — ainda mais para um público de Montreal.</p><div class="fix"><svg><use href="#s-check"/></svg>Tudo em francês, consistente (FR/EN/PT no seletor)</div></div></div>
+    <div class="diag"><div class="n">4</div><div><h4>Cor da marca ausente</h4><p>O fundo usa o mesmo azul/índigo genérico dos portais. O verde-esmeralda da marca (#01b48d) — que aparece só nos e-mails — não está em lugar nenhum do site.</p><div class="fix"><svg><use href="#s-check"/></svg>Identidade verde aplicada de ponta a ponta</div></div></div>
+    <div class="diag"><div class="n">5</div><div><h4>Fotos das aulas são de arquivo antigo</h4><p>Os cards de Private/Duo/Group usam fotos históricas em P&B do Joseph Pilates. As fotos lindas do estúdio real da Josiane ficam escondidas no carrossel.</p><div class="fix"><svg><use href="#s-check"/></svg>Fotos reais do estúdio em destaque</div></div></div>
+    <div class="diag"><div class="n">6</div><div><h4>Sem horários nem mapa</h4><p>É um negócio local, mas a página não mostra horário de funcionamento e o mapa do Google está comentado no código. O endereço aparece só como "Montreal, H2C 2X1".</p><div class="fix"><svg><use href="#s-check"/></svg>Seção dedicada de horários + endereço + mapa</div></div></div>
+    <div class="diag"><div class="n">7</div><div><h4>Preços sem hierarquia</h4><p>Os valores são só linhas de texto em negrito empilhadas. Difícil comparar, sem opção "mais popular", e sem um botão de ação por plano.</p><div class="fix"><svg><use href="#s-check"/></svg>Cards de preço claros, com plano em destaque e CTA</div></div></div>
+    <div class="diag"><div class="n">8</div><div><h4>Detalhes que pesam</h4><p>Ícones de contato são emojis em bolinhas coloridas (@ 💬 📍), o carrossel de depoimentos passa rápido demais (3s) e trava ao clicar. Rodapé sem horários nem redes.</p><div class="fix"><svg><use href="#s-check"/></svg>Ícones reais, ritmo legível, rodapé completo</div></div></div>
+  </div>
+
+  <!-- ════════ DESKTOP REDESIGN ════════ -->
+  <div class="divider"><span class="tag">✦ Proposta — Desktop</span><span class="ln"></span></div>
+
+  <div class="frame">
+    <div class="frame-bar">
+      <div class="frame-dot" style="background:#f0685f"></div><div class="frame-dot" style="background:#f5bf4f"></div><div class="frame-dot" style="background:#62c554"></div>
+      <div class="frame-url"><svg><use href="#s-lock"/></svg>josipilates.com</div>
+    </div>
+
+    <!-- ===== THE SITE ===== -->
+    <div class="site">
+
+      <!-- NAV -->
+      <nav class="nav"><div class="nav-in">
+        <div class="nav-brand"><img src="img/logo.jpg" alt="Josi Pilates" /><b>Josi Pilates</b></div>
+        <div class="nav-links">
+          <a href="#">À propos</a><a href="#">Services</a><a href="#">Témoignages</a><a href="#">Contact</a>
+        </div>
+        <div class="nav-right">
+          <span class="lang"><svg style="width:14px;height:14px;color:var(--ink-3)"><use href="#s-globe"/></svg> <b>FR</b></span>
+          <a href="#" class="btn-link">Espace client</a>
+          <a href="#" class="btn btn-primary"><svg><use href="#s-cal"/></svg> Réserver un essai</a>
+        </div>
+      </div></nav>
+
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-bg"><img src="img/hero-studio.avif" alt="Studio de Pilates Josi à Montréal" /></div>
+        <div class="hero-in">
+          <div class="hero-badges">
+            <span class="hero-badge"><svg><use href="#s-medal"/></svg> Physiothérapeute certifiée</span>
+            <span class="hero-badge"><svg><use href="#s-spark"/></svg> 15 ans d'expérience</span>
+            <span class="hero-badge"><svg><use href="#s-pin"/></svg> Montréal, QC</span>
+          </div>
+          <h1>Le Pilates qui prend soin de <em>votre corps</em>, en petit comité.</h1>
+          <p>Cours privés, duos et petits groupes avec Josiane — physiothérapeute et instructrice certifiée. Attention personnalisée, posture et prévention des blessures.</p>
+          <div class="hero-cta">
+            <a href="#" class="btn btn-primary btn-lg"><svg><use href="#s-cal"/></svg> Réserver un cours d'essai</a>
+            <a href="#" class="btn btn-white btn-lg">Voir les services <svg><use href="#s-arrow"/></svg></a>
+          </div>
+          <div class="hero-note"><svg><use href="#s-heart"/></svg> Première séance privée d'introduction — idéale pour bien débuter.</div>
+        </div>
+      </section>
+
+      <!-- TRUST STRIP -->
+      <div class="trust"><div class="trust-in">
+        <div class="trust-item"><svg><use href="#s-medal"/></svg><div><div class="tt">Physiothérapeute</div><div class="ts">Approche clinique & sécuritaire</div></div></div>
+        <div class="trust-item"><svg><use href="#s-user"/></svg><div><div class="tt">Attention personnalisée</div><div class="ts">Privé, duo ou petit groupe</div></div></div>
+        <div class="trust-item"><svg><use href="#s-heart"/></svg><div><div class="tt">Tous les niveaux</div><div class="ts">Débutants bienvenus</div></div></div>
+        <div class="trust-item"><svg><use href="#s-globe"/></svg><div><div class="tt">FR · EN · PT</div><div class="ts">Cours dans votre langue</div></div></div>
+      </div></div>
+
+      <!-- ABOUT -->
+      <section class="sec">
+        <div class="about">
+          <div class="about-photo">
+            <img src="img/josi-portrait.avif" alt="Josiane, instructrice de Pilates" />
+            <div class="stamp"><div class="big">15+</div><div class="sm">ans d'expérience</div></div>
+          </div>
+          <div class="about-body">
+            <div class="eyebrow">À propos de Josiane</div>
+            <h2>Le mouvement avec <em>intention</em>, le progrès avec clarté.</h2>
+            <p>Josiane allie son expertise de physiothérapeute à une pratique approfondie du Pilates pour offrir un accompagnement unique à Montréal. Chaque séance est adaptée à votre corps, vos objectifs et votre rythme.</p>
+            <p>En petits groupes ou en privé, l'accent est mis sur la qualité du mouvement, la posture et la prévention des blessures — pour que vous repartiez plus fort, plus mobile et plus serein.</p>
+            <div class="creds">
+              <span class="cred"><svg><use href="#s-medal"/></svg> Physiothérapeute certifiée</span>
+              <span class="cred"><svg><use href="#s-spark"/></svg> Instructrice Pilates</span>
+              <span class="cred"><svg><use href="#s-heart"/></svg> Prévention des blessures</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SERVICES -->
+      <section class="svc-sec"><div class="sec">
+        <div class="sec-head center">
+          <div class="eyebrow">Nos services</div>
+          <h2>Trouvez la formule qui <em>vous convient</em></h2>
+          <p>Des forfaits flexibles qui vous font économiser sur plusieurs séances. Tous les niveaux sont les bienvenus.</p>
+        </div>
+        <div class="svc-grid">
+
+          <div class="svc">
+            <div class="svc-top">
+              <div class="svc-ico"><svg><use href="#s-user"/></svg></div>
+              <h3>Privé</h3>
+              <div class="desc">Séance individuelle, attention complète à votre posture.</div>
+              <div class="svc-price"><span class="from">dès</span><span class="amt">80</span><span class="unit">$ / séance</span></div>
+            </div>
+            <div class="svc-body">
+              <ul>
+                <li><svg><use href="#s-check"/></svg> Programme <b>100% personnalisé</b></li>
+                <li><svg><use href="#s-check"/></svg> Idéal pour débuter ou en rééducation</li>
+                <li><svg><use href="#s-check"/></svg> Forfaits 4 et 8 séances avantageux</li>
+              </ul>
+              <a href="#" class="btn btn-ghost" style="justify-content:center">Réserver un privé</a>
+            </div>
+          </div>
+
+          <div class="svc feat">
+            <div class="svc-tag">Le plus populaire</div>
+            <div class="svc-top">
+              <div class="svc-ico"><svg><use href="#s-duo"/></svg></div>
+              <h3>Duo</h3>
+              <div class="desc">À deux — entre amis ou en couple, motivation garantie.</div>
+              <div class="svc-price"><span class="from">dès</span><span class="amt">125</span><span class="unit">$ intro</span></div>
+            </div>
+            <div class="svc-body">
+              <ul>
+                <li><svg><use href="#s-check"/></svg> Séance d'introduction <b>pour deux</b></li>
+                <li><svg><use href="#s-check"/></svg> Attention rapprochée, ambiance conviviale</li>
+                <li><svg><use href="#s-check"/></svg> Forfaits 6 et 12 séances</li>
+              </ul>
+              <a href="#" class="btn btn-primary" style="justify-content:center">Réserver un duo</a>
+            </div>
+          </div>
+
+          <div class="svc">
+            <div class="svc-top">
+              <div class="svc-ico"><svg><use href="#s-users"/></svg></div>
+              <h3>Groupe</h3>
+              <div class="desc">Petit groupe — un entraînement social et stimulant.</div>
+              <div class="svc-price"><span class="from">dès</span><span class="amt">40</span><span class="unit">$ / séance</span></div>
+            </div>
+            <div class="svc-body">
+              <ul>
+                <li><svg><use href="#s-check"/></svg> Petits groupes, <b>jamais surchargés</b></li>
+                <li><svg><use href="#s-check"/></svg> L'option la plus accessible</li>
+                <li><svg><use href="#s-check"/></svg> Forfaits 6 et 12 séances</li>
+              </ul>
+              <a href="#" class="btn btn-ghost" style="justify-content:center">Voir l'horaire</a>
+            </div>
+          </div>
+
+        </div>
+      </div></section>
+
+      <!-- HOURS + LOCATION -->
+      <section class="hl-sec"><div class="sec"><div class="hl">
+        <div class="hl-info">
+          <div class="eyebrow">Horaires & emplacement</div>
+          <h2>Venez nous <em>rencontrer</em></h2>
+          <div class="hours">
+            <div class="hours-row"><span class="d">Lundi — Vendredi</span><span class="h">06:00 – 21:00</span></div>
+            <div class="hours-row"><span class="d">Samedi</span><span class="h">08:00 – 17:00</span></div>
+            <div class="hours-row"><span class="d">Dimanche</span><span class="closed">Fermé</span></div>
+          </div>
+          <div class="hl-contact">
+            <div class="hl-line"><svg><use href="#s-pin"/></svg> 10145 Av. Hamel, Montréal, QC H2C 2X1</div>
+            <div class="hl-line"><svg><use href="#s-phone"/></svg> +1 438 274 8396 · WhatsApp</div>
+            <div class="hl-line"><svg><use href="#s-mail"/></svg> josi@josipilates.com</div>
+          </div>
+        </div>
+        <div class="map">
+          <div class="map-grid"></div>
+          <div class="map-block" style="top:12%;left:14%;width:80px;height:60px"></div>
+          <div class="map-block" style="top:18%;left:64%;width:110px;height:70px"></div>
+          <div class="map-block" style="top:70%;left:20%;width:120px;height:55px"></div>
+          <div class="map-block" style="top:74%;left:62%;width:90px;height:50px"></div>
+          <div class="map-road r1"></div><div class="map-road r2"></div><div class="map-road r3"></div>
+          <div class="map-pin">
+            <div class="bubble">Josi Pilates Studio<span>10145 Av. Hamel</span></div>
+            <div class="dot"></div>
+          </div>
+        </div>
+      </div></div></section>
+
+      <!-- TESTIMONIALS -->
+      <section class="sec">
+        <div class="sec-head center">
+          <div class="eyebrow">Témoignages</div>
+          <h2>Ce que disent nos <em>élèves</em></h2>
+          <p>Des expériences réelles de notre communauté Pilates à Montréal.</p>
+        </div>
+        <div class="tst-grid">
+          <div class="tst">
+            <div class="stars"><svg><use href="#s-star"/></svg><svg><use href="#s-star"/></svg><svg><use href="#s-star"/></svg><svg><use href="#s-star"/></svg><svg><use href="#s-star"/></svg></div>
+            <p>"Josiane a complètement changé ma relation avec mon corps. Ses connaissances en physiothérapie font toute la différence — je n'ai plus de douleurs au dos."</p>
+            <div class="who"><div class="av">MC</div><div><b>Marie-Claude</b><span>Montréal, QC</span></div></div>
+          </div>
+          <div class="tst">
+            <div class="stars"><svg><use href="#s-star"/></svg><svg><use href="#s-star"/></svg><svg><use href="#s-star"/></svg><svg><use href="#s-star"/></svg><svg><use href="#s-star"/></svg></div>
+            <p>"Les cours en duo avec mon conjoint sont devenus notre rituel préféré. Attention personnalisée et ambiance toujours accueillante."</p>
+            <div class="who"><div class="av">SP</div><div><b>Sophie & Patrick</b><span>Rosemont</span></div></div>
+          </div>
+          <div class="tst">
+            <div class="stars"><svg><use href="#s-star"/></svg><svg><use href="#s-star"/></svg><svg><use href="#s-star"/></svg><svg><use href="#s-star"/></svg><svg><use href="#s-star"/></svg></div>
+            <p>"Débutante complète, je me suis sentie en confiance dès la première séance. Le petit groupe permet vraiment un suivi de qualité."</p>
+            <div class="who"><div class="av">AL</div><div><b>Amélie L.</b><span>Villeray</span></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA BAND -->
+      <section class="cta-band">
+        <div class="cta-band-bg"><img src="img/studio-2.avif" alt="" /></div>
+        <div class="cta-in">
+          <h2>Prête à commencer votre parcours ?</h2>
+          <p>Réservez votre cours d'essai et découvrez le Pilates encadré par une professionnelle de la santé.</p>
+          <div class="row">
+            <a href="#" class="btn btn-white btn-lg"><svg><use href="#s-cal"/></svg> Réserver un cours d'essai</a>
+            <a href="#" class="btn btn-ghost btn-lg" style="color:#fff;border-color:rgba(255,255,255,.5)">WhatsApp <svg><use href="#s-wa"/></svg></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTACT -->
+      <section class="sec"><div class="ct">
+        <div class="ct-side">
+          <div class="eyebrow">Contact</div>
+          <h2>Une question ? <em>Écrivez-nous</em></h2>
+          <p>Nous répondons rapidement. Dites-nous votre objectif et nous vous guiderons vers la meilleure formule.</p>
+          <div class="ct-photo"><img src="img/josi-contact.avif" alt="Josiane, Josi Pilates" /></div>
+          <div class="ct-lines">
+            <div class="ct-line"><div class="ic"><svg><use href="#s-mail"/></svg></div><div class="tx"><b>josi@josipilates.com</b><span>Réponse sous 24 h</span></div></div>
+            <div class="ct-line"><div class="ic"><svg><use href="#s-phone"/></svg></div><div class="tx"><b>+1 438 274 8396</b><span>WhatsApp · appels</span></div></div>
+            <div class="ct-line"><div class="ic"><svg><use href="#s-pin"/></svg></div><div class="tx"><b>10145 Av. Hamel</b><span>Montréal, QC H2C 2X1</span></div></div>
+          </div>
+        </div>
+        <div class="ct-form">
+          <h3>Envoyez un message</h3>
+          <div class="sub">Remplissez le formulaire et nous vous recontacterons.</div>
+          <div class="two">
+            <div class="fld"><label>Prénom</label><input type="text" placeholder="Votre prénom" /></div>
+            <div class="fld"><label>Nom</label><input type="text" placeholder="Votre nom" /></div>
+          </div>
+          <div class="fld"><label>Courriel</label><input type="email" placeholder="vous@courriel.com" /></div>
+          <div class="fld"><label>Message</label><textarea rows="4" placeholder="Parlez-nous de votre objectif…"></textarea></div>
+          <button class="btn btn-primary btn-block" style="width:100%;justify-content:center;padding:14px"><svg><use href="#s-mail"/></svg> Envoyer le message</button>
+        </div>
+      </div></section>
+
+      <!-- FOOTER -->
+      <footer class="ft"><div class="ft-in">
+        <div class="ft-top">
+          <div class="ft-col">
+            <div class="ft-brand"><img src="img/logo.jpg" alt="" /><b>Josi Pilates</b></div>
+            <p>Studio de Pilates à Montréal. Cours privés, duos et petits groupes avec une physiothérapeute certifiée.</p>
+            <div class="ft-social">
+              <a href="#"><svg><use href="#s-ig"/></svg></a>
+              <a href="#"><svg><use href="#s-fb"/></svg></a>
+              <a href="#"><svg><use href="#s-wa"/></svg></a>
+            </div>
+          </div>
+          <div class="ft-col"><h5>Navigation</h5><a href="#">À propos</a><a href="#">Services</a><a href="#">Témoignages</a><a href="#">Contact</a></div>
+          <div class="ft-col"><h5>Horaires</h5><a style="cursor:default">Lun – Ven · 06–21h</a><a style="cursor:default">Samedi · 08–17h</a><a style="cursor:default">Dimanche · Fermé</a></div>
+          <div class="ft-col"><h5>Contact</h5><a href="#">josi@josipilates.com</a><a href="#">+1 438 274 8396</a><a href="#">10145 Av. Hamel, MTL</a></div>
+        </div>
+        <div class="ft-bot">
+          <span>© 2026 Josi Pilates Studio. Tous droits réservés.</span>
+          <div style="display:flex;gap:20px"><a href="#">Politique de confidentialité</a><a href="#">Conditions d'utilisation</a></div>
+        </div>
+      </div></footer>
+
+    </div><!-- /site -->
+  </div><!-- /frame -->
+  <div class="cap">Página completa redesenhada — rolagem do topo ao rodapé</div>
+
+  <!-- ════════ MOBILE ════════ -->
+  <div class="divider"><span class="tag">✦ Proposta — Mobile</span><span class="ln"></span></div>
+  <div class="stage-mobile">
+    <div>
+      <div class="phone"><div class="phone-screen">
+        <div class="site">
+          <nav class="nav"><div class="nav-in" style="padding:0 18px;height:62px">
+            <div class="nav-brand"><img src="img/logo.jpg" style="width:32px;height:32px" alt="" /><b style="font-size:16px">Josi Pilates</b></div>
+            <a href="#" class="btn btn-primary" style="padding:8px 14px;font-size:12px"><svg><use href="#s-cal"/></svg> Essai</a>
+          </div></nav>
+          <section class="hero" style="min-height:520px">
+            <div class="hero-bg"><img src="img/hero-studio.avif" alt="" style="object-position:60% center" /></div>
+            <div class="hero-in" style="padding:40px 24px">
+              <div class="hero-badges" style="margin-bottom:18px"><span class="hero-badge" style="font-size:11px"><svg><use href="#s-medal"/></svg> Physio certifiée</span><span class="hero-badge" style="font-size:11px"><svg><use href="#s-pin"/></svg> Montréal</span></div>
+              <h1 style="font-size:36px">Le Pilates qui prend soin de <em>votre corps</em>.</h1>
+              <p style="font-size:15px;margin-bottom:24px">Privé, duo et petits groupes avec Josiane, physiothérapeute certifiée.</p>
+              <a href="#" class="btn btn-primary btn-block" style="width:100%;justify-content:center;padding:14px"><svg><use href="#s-cal"/></svg> Réserver un essai</a>
+            </div>
+          </section>
+          <div class="trust"><div class="trust-in" style="padding:18px 24px;flex-direction:column;gap:16px">
+            <div class="trust-item"><svg><use href="#s-medal"/></svg><div><div class="tt">Physiothérapeute</div><div class="ts">Approche sécuritaire</div></div></div>
+            <div class="trust-item"><svg><use href="#s-heart"/></svg><div><div class="tt">Tous les niveaux</div><div class="ts">Débutants bienvenus</div></div></div>
+          </div></div>
+          <section class="sec" style="padding:40px 24px">
+            <div class="eyebrow">Nos services</div>
+            <h2 style="font-family:var(--serif);font-weight:500;font-size:28px;margin-bottom:20px">Choisissez votre <em style="font-style:italic;color:var(--brand-700)">formule</em></h2>
+            <div class="svc feat" style="margin-bottom:16px">
+              <div class="svc-tag">Populaire</div>
+              <div class="svc-top" style="padding:24px 22px 20px"><div class="svc-ico"><svg><use href="#s-duo"/></svg></div><h3>Duo</h3><div class="desc">À deux, motivation garantie.</div><div class="svc-price"><span class="from">dès</span><span class="amt">125</span><span class="unit">$ intro</span></div></div>
+              <div class="svc-body" style="padding:20px 22px 24px"><ul><li><svg><use href="#s-check"/></svg> Séance d'intro pour deux</li><li><svg><use href="#s-check"/></svg> Forfaits 6 et 12 séances</li></ul><a href="#" class="btn btn-primary" style="justify-content:center">Réserver un duo</a></div>
+            </div>
+          </section>
+        </div>
+      </div></div>
+      <div class="cap">Hero & serviços no mobile</div>
+    </div>
+  </div>
+
+  <!-- ════════ CHANGE SUMMARY ════════ -->
+  <div class="divider"><span class="tag">✓ Resumo das melhorias</span><span class="ln"></span></div>
+  <div class="chg-grid">
+    <div class="chg"><div class="ck"><svg><use href="#s-check"/></svg></div><p><b>CTA de conversão claro</b> — "Réserver un cours d'essai" no topo, no hero e em uma faixa de chamada dedicada.</p></div>
+    <div class="chg"><div class="ck"><svg><use href="#s-check"/></svg></div><p><b>Hero imersivo</b> com foto real do estúdio, título sobreposto e selos de confiança acima da dobra.</p></div>
+    <div class="chg"><div class="ck"><svg><use href="#s-check"/></svg></div><p><b>Identidade da marca</b> — verde-esmeralda #01b48d, tipografia serifada editorial (Fraunces) e neutros quentes.</p></div>
+    <div class="chg"><div class="ck"><svg><use href="#s-check"/></svg></div><p><b>Idioma consistente</b> — tudo em francês, incluindo o formulário de contato, com seletor FR/EN/PT.</p></div>
+    <div class="chg"><div class="ck"><svg><use href="#s-check"/></svg></div><p><b>Preços comparáveis</b> — cards com valor em destaque, plano "mais popular" e botão por serviço.</p></div>
+    <div class="chg"><div class="ck"><svg><use href="#s-check"/></svg></div><p><b>Horários + mapa + endereço</b> em seção dedicada — essencial para um negócio local de Montreal.</p></div>
+    <div class="chg"><div class="ck"><svg><use href="#s-check"/></svg></div><p><b>Fotos reais do estúdio</b> no lugar das fotos históricas em P&B nos cards de serviço.</p></div>
+    <div class="chg"><div class="ck"><svg><use href="#s-check"/></svg></div><p><b>Acabamento</b> — ícones reais (sem emoji), depoimentos legíveis e rodapé completo com horários e redes.</p></div>
+  </div>
+
+  <p style="font-size:13px;color:var(--ink-3);margin-top:40px;text-align:center;line-height:1.6">As fotos dos cards de serviço (Privé/Duo/Groupe) ainda devem ser substituídas por fotos reais das aulas correspondentes.<br/>O mapa é uma ilustração — no site, entra o embed do Google Maps já presente (comentado) no código.</p>
+
+</div>
+</body>
+</html>

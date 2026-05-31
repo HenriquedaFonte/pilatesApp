@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -26,8 +27,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger
+  DialogTitle
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -50,12 +50,10 @@ import {
   Mail,
   Phone,
   Globe,
-  FileText,
   Loader2,
-  LogOut,
   Edit
 } from 'lucide-react'
-import { ThemeToggle } from '../components/ThemeToggle'
+import TeacherLayout from '../components/TeacherLayout'
 
 const profileSchema = z.object({
   full_name: z.string().min(1, 'Full name is required'),
@@ -66,7 +64,8 @@ const profileSchema = z.object({
 })
 
 const StudentSummary = () => {
-  const { profile, signOut } = useAuth()
+  const { t, i18n } = useTranslation()
+  const { profile } = useAuth()
   const navigate = useNavigate()
   const { studentId } = useParams()
   const [student, setStudent] = useState(null)
@@ -90,11 +89,6 @@ const StudentSummary = () => {
   useEffect(() => {
     fetchStudentData()
   }, [studentId])
-
-  const handleSignOut = async () => {
-    await signOut()
-    navigate('/')
-  }
 
   const handleEditProfile = () => {
     if (student) {
@@ -135,7 +129,7 @@ const StudentSummary = () => {
       await fetchStudentData()
       setIsEditDialogOpen(false)
     } catch (error) {
-      setError('Error updating profile: ' + error.message)
+      setError(t('teacher.studentSummary.editError', 'Error updating profile: ') + error.message)
     } finally {
       setUpdating(false)
     }
@@ -195,7 +189,7 @@ const StudentSummary = () => {
 
       setCreditHistory(combinedData)
     } catch (error) {
-      setError('Error fetching student data: ' + error.message)
+      setError(t('teacher.studentSummary.fetchError', 'Error fetching student data: ') + error.message)
     } finally {
       setLoading(false)
     }
@@ -206,13 +200,13 @@ const StudentSummary = () => {
       case 'individual':
         return (
           <Badge variant="outline" className="text-blue-700 border-blue-300">
-            Individual
+            {t('teacher.studentSummary.individual')}
           </Badge>
         )
       case 'duo':
         return (
           <Badge variant="outline" className="text-green-700 border-green-300">
-            Duo
+            {t('teacher.studentSummary.duo')}
           </Badge>
         )
       case 'group':
@@ -221,7 +215,7 @@ const StudentSummary = () => {
             variant="outline"
             className="text-purple-700 border-purple-300"
           >
-            Group
+            {t('teacher.studentSummary.group')}
           </Badge>
         )
       default:
@@ -250,70 +244,34 @@ const StudentSummary = () => {
 
   if (!student) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-        <header className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              <div className="flex items-center">
-                <Link to="/teacher/students" className="mr-4">
-                  <ArrowLeft className="h-6 w-6 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" />
-                </Link>
-                <FileText className="h-8 w-8 text-primary mr-3" />
-                <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  Student Summary
-                </h1>
-              </div>
-              <div className="flex items-center space-x-4">
-                <ThemeToggle />
-                <span className="text-sm text-gray-700 dark:text-gray-300">
-                  Welcome, {profile?.full_name}
-                </span>
-                <Button variant="outline" size="sm" onClick={handleSignOut}>
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Sign Out
-                </Button>
-              </div>
-            </div>
-          </div>
-        </header>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <TeacherLayout>
+        <div className="space-y-6">
           <Alert variant="destructive">
-            <AlertDescription>Student not found.</AlertDescription>
+            <AlertDescription>{t('teacher.studentSummary.notFound', 'Student not found.')}</AlertDescription>
           </Alert>
         </div>
-      </div>
+      </TeacherLayout>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      <header className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Link to="/teacher/students" className="mr-4">
-                <ArrowLeft className="h-6 w-6 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" />
-              </Link>
-              <FileText className="h-8 w-8 text-primary mr-3" />
-              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
-                Student Summary
-              </h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <ThemeToggle />
-              <span className="text-sm text-gray-700 dark:text-gray-300">
-                Welcome, {profile?.full_name}
-              </span>
-              <Button variant="outline" size="sm" onClick={handleSignOut}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Sign Out
-              </Button>
-            </div>
+    <TeacherLayout>
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <Link to="/teacher/students">
+            <Button variant="outline" size="icon" className="rounded-xl h-9 w-9">
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+          </Link>
+          <div className="flex flex-col">
+            <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
+              {t('teacher.studentSummary.title', 'Resumo do Aluno')}
+            </h1>
+            <p className="text-muted-foreground text-sm">
+              {t('teacher.studentSummary.subtitle', { name: student?.full_name })}
+            </p>
           </div>
         </div>
-      </header>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {error && (
           <Alert variant="destructive" className="mb-6">
             <AlertDescription>{error}</AlertDescription>
@@ -327,16 +285,16 @@ const StudentSummary = () => {
               <div>
                 <CardTitle className="flex items-center">
                   <User className="h-5 w-5 mr-2" />
-                  Student Information
+                  {t('teacher.studentSummary.infoTitle')}
                 </CardTitle>
                 <CardDescription>
-                  Basic details and current credit balances
+                  {t('teacher.studentSummary.infoDesc')}
                 </CardDescription>
               </div>
               {profile?.role === 'teacher' && (
                 <Button variant="outline" size="sm" onClick={handleEditProfile}>
                   <Edit className="h-4 w-4 mr-2" />
-                  Edit Profile
+                  {t('teacher.studentSummary.editProfile')}
                 </Button>
               )}
             </div>
@@ -346,13 +304,13 @@ const StudentSummary = () => {
               <div className="space-y-4">
                 <div>
                   <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                    Full Name
+                    {t('teacher.studentSummary.fullName')}
                   </h4>
                   <p className="text-lg font-semibold">{student.full_name}</p>
                 </div>
                 <div>
                   <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                    Email
+                    {t('teacher.studentSummary.email')}
                   </h4>
                   <p className="flex items-center">
                     <Mail className="h-4 w-4 mr-2 text-gray-400" />
@@ -362,7 +320,7 @@ const StudentSummary = () => {
                 {student.phone && (
                   <div>
                     <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                      Phone
+                      {t('teacher.studentSummary.phone')}
                     </h4>
                     <p className="flex items-center">
                       <Phone className="h-4 w-4 mr-2 text-gray-400" />
@@ -372,28 +330,32 @@ const StudentSummary = () => {
                 )}
                 <div>
                   <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                    Preferred Language
+                    {t('teacher.studentSummary.language')}
                   </h4>
                   <p className="flex items-center">
                     <Globe className="h-4 w-4 mr-2 text-gray-400" />
                     {student.preferred_language === 'pt'
-                      ? 'Portuguese'
+                      ? t('teacher.studentSummary.languages.pt')
                       : student.preferred_language === 'en'
-                      ? 'English'
+                      ? t('teacher.studentSummary.languages.en')
                       : student.preferred_language === 'fr'
-                      ? 'French'
+                      ? t('teacher.studentSummary.languages.fr')
                       : student.preferred_language}
                   </p>
                 </div>
                 <div>
                   <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                    Date of Birth
+                    {t('teacher.studentSummary.dob')}
                   </h4>
                   <p className="flex items-center">
                     <Calendar className="h-4 w-4 mr-2 text-gray-400" />
                     {student.date_of_birth
-                      ? (() => { const [y, m, d] = student.date_of_birth.split('-'); return new Date(y, m-1, d).toLocaleDateString(); })()
-                      : 'Not set'}
+                      ? (() => {
+                          const [y, m, d] = student.date_of_birth.split('-');
+                          const locale = i18n.language === 'en' ? 'en-US' : i18n.language === 'fr' ? 'fr-CA' : 'pt-BR';
+                          return new Date(y, m-1, d).toLocaleDateString(locale);
+                        })()
+                      : t('teacher.studentSummary.notSet')}
                   </p>
                 </div>
               </div>
@@ -401,17 +363,19 @@ const StudentSummary = () => {
               <div className="space-y-4">
                 <div>
                   <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                    Member Since
+                    {t('teacher.studentSummary.memberSince')}
                   </h4>
                   <p className="flex items-center">
                     <Calendar className="h-4 w-4 mr-2 text-gray-400" />
-                    {new Date(student.created_at).toLocaleDateString()}
+                    {new Date(student.created_at).toLocaleDateString(
+                      i18n.language === 'en' ? 'en-US' : i18n.language === 'fr' ? 'fr-CA' : 'pt-BR'
+                    )}
                   </p>
                 </div>
                 {student.observations && (
                   <div>
                     <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                      Observations
+                      {t('teacher.studentSummary.observations')}
                     </h4>
                     <p className="text-sm bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
                       {student.observations}
@@ -423,29 +387,29 @@ const StudentSummary = () => {
               <div className="space-y-4">
                 <div>
                   <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                    Current Credit Balances
+                    {t('teacher.studentSummary.currentBalances')}
                   </h4>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                      <span className="text-sm font-medium">Individual</span>
+                      <span className="text-sm font-medium">{t('teacher.studentSummary.individual')}</span>
                       <span className="font-bold text-blue-600 dark:text-blue-400">
                         {student.individual_credits || 0}
                       </span>
                     </div>
                     <div className="flex items-center justify-between p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                      <span className="text-sm font-medium">Duo</span>
+                      <span className="text-sm font-medium">{t('teacher.studentSummary.duo')}</span>
                       <span className="font-bold text-green-600 dark:text-green-400">
                         {student.duo_credits || 0}
                       </span>
                     </div>
                     <div className="flex items-center justify-between p-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                      <span className="text-sm font-medium">Group</span>
+                      <span className="text-sm font-medium">{t('teacher.studentSummary.group')}</span>
                       <span className="font-bold text-purple-600 dark:text-purple-400">
                         {student.group_credits || 0}
                       </span>
                     </div>
                     <div className="flex items-center justify-between p-2 bg-gray-100 dark:bg-gray-800 rounded-lg border-t border-gray-200 dark:border-gray-600">
-                      <span className="text-sm font-bold">Total</span>
+                      <span className="text-sm font-bold">{t('teacher.studentSummary.total')}</span>
                       <span className="font-bold">
                         {(student.individual_credits || 0) +
                           (student.duo_credits || 0) +
@@ -463,9 +427,9 @@ const StudentSummary = () => {
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Edit Student Profile</DialogTitle>
+              <DialogTitle>{t('teacher.studentSummary.editTitle')}</DialogTitle>
               <DialogDescription>
-                Update the student's profile information.
+                {t('teacher.studentSummary.editDesc')}
               </DialogDescription>
             </DialogHeader>
             <form
@@ -474,7 +438,7 @@ const StudentSummary = () => {
             >
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="full_name" className="text-right">
-                  Full Name
+                  {t('teacher.studentSummary.fullName')}
                 </Label>
                 <Input
                   id="full_name"
@@ -484,7 +448,7 @@ const StudentSummary = () => {
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="phone" className="text-right">
-                  Phone
+                  {t('teacher.studentSummary.phone')}
                 </Label>
                 <Input
                   id="phone"
@@ -494,7 +458,7 @@ const StudentSummary = () => {
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="preferred_language" className="text-right">
-                  Language
+                  {t('teacher.studentSummary.language')}
                 </Label>
                 <Select
                   value={form.watch('preferred_language')}
@@ -506,15 +470,15 @@ const StudentSummary = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="pt">Portuguese</SelectItem>
-                    <SelectItem value="en">English</SelectItem>
-                    <SelectItem value="fr">French</SelectItem>
+                    <SelectItem value="pt">{t('teacher.studentSummary.languages.pt')}</SelectItem>
+                    <SelectItem value="en">{t('teacher.studentSummary.languages.en')}</SelectItem>
+                    <SelectItem value="fr">{t('teacher.studentSummary.languages.fr')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="date_of_birth" className="text-right">
-                  Date of Birth
+                  {t('teacher.studentSummary.dob')}
                 </Label>
                 <Input
                   id="date_of_birth"
@@ -525,7 +489,7 @@ const StudentSummary = () => {
               </div>
               <div className="grid grid-cols-4 items-start gap-4">
                 <Label htmlFor="observations" className="text-right pt-2">
-                  Observations
+                  {t('teacher.studentSummary.observations')}
                 </Label>
                 <Textarea
                   id="observations"
@@ -540,13 +504,13 @@ const StudentSummary = () => {
                   variant="outline"
                   onClick={() => setIsEditDialogOpen(false)}
                 >
-                  Cancel
+                  {t('teacher.studentSummary.cancel')}
                 </Button>
                 <Button type="submit" disabled={updating}>
                   {updating && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}
-                  Save Changes
+                  {t('teacher.studentSummary.saveChanges')}
                 </Button>
               </DialogFooter>
             </form>
@@ -558,28 +522,28 @@ const StudentSummary = () => {
           <CardHeader>
             <CardTitle className="flex items-center">
               <CreditCard className="h-5 w-5 mr-2" />
-              Credit History
+              {t('teacher.studentSummary.creditHistoryTitle')}
             </CardTitle>
             <CardDescription>
-              Complete history of credit changes and transactions
+              {t('teacher.studentSummary.creditHistoryDesc')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             {creditHistory.length === 0 ? (
               <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                No credit history found for this student.
+                {t('teacher.studentSummary.noHistory')}
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Change</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Description</TableHead>
-                      <TableHead>Payment Method</TableHead>
-                      <TableHead>Amount Paid</TableHead>
+                      <TableHead>{t('teacher.studentSummary.table.type')}</TableHead>
+                      <TableHead>{t('teacher.studentSummary.table.change')}</TableHead>
+                      <TableHead>{t('teacher.studentSummary.table.date')}</TableHead>
+                      <TableHead>{t('teacher.studentSummary.table.description')}</TableHead>
+                      <TableHead>{t('teacher.studentSummary.table.paymentMethod')}</TableHead>
+                      <TableHead>{t('teacher.studentSummary.table.amountPaid')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -591,24 +555,32 @@ const StudentSummary = () => {
                         </TableCell>
                         <TableCell>
                           {row.created_at
-                            ? new Date(row.created_at).toLocaleString()
+                            ? new Date(row.created_at).toLocaleString(
+                                i18n.language === 'en' ? 'en-US' : i18n.language === 'fr' ? 'fr-CA' : 'pt-BR'
+                              )
                             : ''}
                         </TableCell>
                         <TableCell>
                           <span className="text-sm">
-                            {row.description || '-'}
+                            {row.description === 'Notified absence'
+                              ? t('teacher.reports.creditHistory.notifiedAbsence', 'Falta justificada')
+                              : row.description || '-'}
                           </span>
                         </TableCell>
                         <TableCell>
                           <span className="capitalize">
                             {row.payment_method
-                              ? row.payment_method.replace('_', ' ')
+                              ? t(`teacher.students.balance.${row.payment_method}`, row.payment_method.replace('_', ' '))
                               : '-'}
                           </span>
                         </TableCell>
                         <TableCell>
                           {row.amount_paid
-                            ? `$${row.amount_paid.toFixed(2)}`
+                            ? i18n.language === 'fr'
+                              ? `${row.amount_paid.toFixed(2)} €`
+                              : i18n.language === 'en'
+                              ? `$${row.amount_paid.toFixed(2)}`
+                              : `R$ ${row.amount_paid.toFixed(2)}`
                             : '-'}
                         </TableCell>
                       </TableRow>
@@ -620,7 +592,7 @@ const StudentSummary = () => {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </TeacherLayout>
   )
 }
 

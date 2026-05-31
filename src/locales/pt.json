@@ -10,7 +10,10 @@
     "subtitle": "Acompanhe sua jornada de pilates",
     "balanceTitle": "Saldo de Aulas",
     "balanceLow": "Saldo baixo - Considere comprar mais aulas",
+    "balanceLowMsg": "Seus créditos estão acabando. Converse com a professora para renovar seu plano.",
     "balanceOk": "Aulas restantes",
+    "balanceOkMsg": "Seu saldo está excelente! Aproveite as suas sessões de pilates.",
+    "nextClass": "Sua Próxima Aula",
     "weeklySchedule": "Meu Horário Semanal",
     "weeklyScheduleDesc": "Seu horário semanal de aulas",
     "recentActivity": "Atividade Recente",
@@ -22,6 +25,14 @@
   },
   "history": {
     "title": "Meu Histórico",
+    "titlePrefix": "Seu",
+    "titleSuffix": "Histórico",
+    "subtitle": "Acompanhe o registro de suas presenças e movimentações de créditos",
+    "classesThisMonth": "Aulas no Mês",
+    "attendanceRate": "Aproveitamento",
+    "newBalance": "Novo Saldo",
+    "defaultClassName": "Aula de Pilates",
+    "errorLoading": "Erro ao carregar o histórico: ",
     "attendanceHistory": "Histórico de Presença",
     "attendanceHistoryDesc": "Seu registro de aulas frequentadas ou perdidas",
     "balanceHistory": "Histórico de Saldo",
@@ -59,7 +70,8 @@
   "status": {
     "present": "Presente",
     "absent_unnotified": "Ausente",
-    "absent_notified": "Ausência Justificada"
+    "absent_notified": "Ausência Justificada",
+    "pending": "Pendente"
   },
   "common": {
     "welcome": "Bem-vindo",
@@ -76,12 +88,16 @@
     "wednesday": "Quarta-feira",
     "thursday": "Quinta-feira",
     "friday": "Sexta-feira",
-    "saturday": "Sábado"
+    "saturday": "Sábado",
+    "from": "das",
+    "to": "às",
+    "student": "Aluno"
   },
   "attendance": {
     "used": "Usado",
     "notUsed": "Crédito não usado",
-    "balance": "Saldo"
+    "balance": "Saldo",
+    "creditSaved": "Crédito Poupat."
   },
   "rules": {
     "title": "Regras do Studio Josi Pilates",
@@ -116,6 +132,36 @@
     "backToDashboard": "Voltar ao Painel"
   },
   "teacher": {
+    "dashboard": {
+      "greetingMorning": "Bom dia",
+      "greetingAfternoon": "Boa tarde",
+      "greetingEvening": "Boa noite",
+      "activeStudents": "Alunos ativos",
+      "lowBalance": "Saldo baixo",
+      "todayClasses": "Aulas hoje",
+      "weeklyClasses": "Turmas na semana",
+      "todayClassesTitle": "Aulas de Hoje",
+      "todayClassesDesc": "As aulas agendadas para o dia de hoje aparecerão aqui.",
+      "todayClassesDescSub": "Fase 2: Integração com calendário dinâmico e presenças.",
+      "quickPanelTitle": "Painel Rápido",
+      "quickPanelDesc": "Informações de aniversariantes e notificações rápidas aparecerão aqui."
+    },
+    "sidebar": {
+      "overview": "Visão geral",
+      "students": "Alunos",
+      "classes": "Turmas",
+      "checkIn": "Check-in",
+      "reports": "Relatórios",
+      "attendance": "Frequência",
+      "lowCredits": "Créditos baixos",
+      "creditHistory": "Histórico de créditos",
+      "emails": "E-mails",
+      "financial": "Financeiro",
+      "testimonials": "Depoimentos",
+      "controls": "Controles",
+      "teacher": "Professora",
+      "signOut": "Sair"
+    },
     "students": {
       "title": "Gerenciamento de Alunos",
       "welcome": "Bem-vindo",
@@ -205,6 +251,397 @@
         "total": "Total"
       },
       "lastCheckIn": "Último check-in:"
+    },
+    "classes": {
+      "title": "Turmas e",
+      "titleAccent": "Agendamentos",
+      "subtitle": "Gerencie suas turmas de pilates, horários semanais e agendamentos",
+      "addClass": "Cadastrar Turma",
+      "createClass": {
+        "title": "Cadastrar Nova Turma",
+        "description": "Adicione uma nova modalidade de aula de pilates ao seu estúdio.",
+        "nameLabel": "Nome da Turma",
+        "namePlaceholder": "Ex: Pilates Solo Avançado",
+        "descLabel": "Descrição (Opcional)",
+        "descPlaceholder": "Breve descrição dos objetivos ou pré-requisitos",
+        "typeLabel": "Tipo de Turma",
+        "typePlaceholder": "Selecione o tipo",
+        "individual": "Individual",
+        "duo": "Duo",
+        "group": "Grupo",
+        "cancel": "Cancelar",
+        "create": "Cadastrar"
+      },
+      "weeklySchedule": "Horários Semanais",
+      "noSchedule": "Nenhum horário configurado para esta turma.",
+      "noClasses": "Nenhuma turma cadastrada",
+      "noClassesDesc": "Crie sua primeira turma de pilates para começar a definir horários e gerenciar alunos.",
+      "createFirst": "Criar Primeira Turma",
+      "addSchedule": {
+        "title": "Adicionar Horário para",
+        "description": "Defina o dia da semana e os horários de início e término desta aula.",
+        "dayLabel": "Dia da Semana",
+        "dayPlaceholder": "Selecione o dia",
+        "days": {
+          "0": "Domingo",
+          "1": "Segunda-feira",
+          "2": "Terça-feira",
+          "3": "Quarta-feira",
+          "4": "Quinta-feira",
+          "5": "Sexta-feira",
+          "6": "Sábado"
+        },
+        "startTime": "Hora de Início",
+        "endTime": "Hora de Término",
+        "cancel": "Cancelar",
+        "add": "Adicionar Horário"
+      },
+      "deleteClassConfirm": "Tem certeza que deseja excluir esta turma? Isso também excluirá todos os horários associados.",
+      "deleteScheduleConfirm": "Tem certeza que deseja excluir este horário?",
+      "success": {
+        "classCreated": "Turma criada com sucesso!",
+        "scheduleCreated": "Horário criado com sucesso!",
+        "classDeleted": "Turma excluída com sucesso!",
+        "scheduleDeleted": "Horário excluído com sucesso!"
+      },
+      "errors": {
+        "fetchClasses": "Erro ao buscar turmas: ",
+        "createClass": "Erro ao criar turma: ",
+        "createSchedule": "Erro ao criar horário: ",
+        "deleteClass": "Erro ao excluir turma: ",
+        "deleteSchedule": "Erro ao excluir horário: "
+      }
+    },
+    "profile": {
+      "title": "Meu",
+      "titleAccent": "Perfil",
+      "subtitle": "Gerencie suas informações pessoais e credenciais de acesso",
+      "tabs": {
+        "personal": "Informações Pessoais",
+        "security": "Segurança"
+      },
+      "personal": {
+        "title": "Informações Pessoais",
+        "description": "Atualize seus detalhes cadastrais e preferências de idioma.",
+        "fullName": "Nome Completo",
+        "fullNamePlaceholder": "Seu nome completo",
+        "email": "Endereço de E-mail",
+        "emailPlaceholder": "seu.email@exemplo.com",
+        "phone": "Número de Telefone",
+        "phonePlaceholder": "(11) 99999-9999",
+        "language": "Idioma Preferencial",
+        "languagePlaceholder": "Selecione o idioma",
+        "portuguese": "🇧🇷 Português",
+        "english": "🇺🇸 Inglês",
+        "french": "🇫🇷 Francês",
+        "updating": "Atualizando Perfil...",
+        "update": "Atualizar Cadastro"
+      },
+      "security": {
+        "title": "Alterar Senha",
+        "description": "Atualize sua senha de acesso para manter sua conta segura.",
+        "currentPassword": "Senha Atual",
+        "currentPasswordPlaceholder": "Digite sua senha atual",
+        "newPassword": "Nova Senha",
+        "newPasswordPlaceholder": "Digite a nova senha (mín. 6 caracteres)",
+        "confirmPassword": "Confirmar Nova Senha",
+        "confirmPasswordPlaceholder": "Confirme a nova senha",
+        "updating": "Alterando Senha...",
+        "update": "Alterar Senha"
+      }
+    },
+    "reports": {
+      "attendance": {
+        "title": "Relatório de Frequência",
+        "titleAccent": "Frequência",
+        "subtitle": "Monitore a presença, faltas justificadas e injustificadas de cada aluno",
+        "filtersTitle": "Filtros do Relatório",
+        "filtersSubtitle": "Selecione o intervalo de datas e o aluno para obter a análise detalhada de frequência",
+        "startDate": "Data Inicial",
+        "endDate": "Data Final",
+        "studentLabel": "Aluno (Opcional)",
+        "allStudents": "Todos os Alunos",
+        "generate": "Gerar Relatório",
+        "generating": "Gerando...",
+        "students": "Alunos",
+        "averageAttendance": "Frequência Média",
+        "totalClasses": "Total de Aulas",
+        "lostClasses": "Aulas Perdidas",
+        "searchPlaceholder": "Buscar por aluno ou email...",
+        "exportCsv": "Exportar CSV",
+        "detailedReport": "Relatório Detalhado",
+        "detailedReportDesc": "Período de {{start}} até {{end}} — Analisando {{count}} aluno(s)",
+        "table": {
+          "student": "Aluno",
+          "balances": "Saldos de Créditos",
+          "present": "Presenças",
+          "absentUnjustified": "Faltas Injustificadas",
+          "absentJustified": "Faltas Justificadas",
+          "totalClasses": "Total de Aulas",
+          "attendanceRate": "Aproveitamento"
+        },
+        "emptyStateTitle": "Nenhum relatório gerado",
+        "emptyStateDesc": "Clique no botão \"Gerar Relatório\" acima para carregar as estatísticas e informações de frequência."
+      },
+      "lowCredits": {
+        "title": "Relatório de Créditos Baixos",
+        "titleAccent": "Créditos Baixos",
+        "subtitle": "Acompanhe e notifique alunos com saldos zerados ou próximos do limite definido",
+        "limitConfig": "Configuração de Limite",
+        "limitConfigDesc": "Defina o valor máximo de créditos para considerar o saldo de um aluno como \"baixo\" (atualmente: ≤ {{total}} créditos)",
+        "limitLabel": "Limite de Créditos",
+        "updateReport": "Atualizar Relatório",
+        "updating": "Atualizando...",
+        "criticalCases": "Casos Críticos",
+        "highPriority": "Prioridade Alta",
+        "lowBalance": "Saldo Baixo",
+        "zeroBalance": "Saldo Zerado",
+        "searchPlaceholder": "Buscar por aluno ou email...",
+        "lowCreditsTab": "Saldo Baixo ({{count}})",
+        "zeroCreditsTab": "Saldo Zerado/Negativo ({{count}})",
+        "lowCreditsTitle": "Alunos com Saldo Baixo",
+        "lowCreditsDesc": "Lista de alunos com créditos totais iguais ou inferiores a {{total}}",
+        "zeroCreditsTitle": "Alunos com Saldo Zerado",
+        "zeroCreditsDesc": "Casos críticos — alunos sem nenhum saldo restante ou com valores negativos",
+        "exportCsv": "Exportar CSV",
+        "table": {
+          "student": "Aluno",
+          "balances": "Saldos de Créditos",
+          "balancesShort": "Saldos",
+          "status": "Status",
+          "priority": "Prioridade",
+          "classDays": "Dias de Aula",
+          "lastAttendance": "Última Presença",
+          "action": "Ação Requerida"
+        },
+        "statusType": {
+          "lowCredits": "Saldo Baixo",
+          "noCredits": "Sem Créditos",
+          "negative": "Negativo"
+        },
+        "priorityType": {
+          "critical": "Crítica",
+          "high": "Alta",
+          "medium": "Média",
+          "low": "Baixa"
+        },
+        "daysAgo": "há {{count}} dias",
+        "notifyEmail": "Notificar por E-mail",
+        "allCaughtUp": "Tudo em dia!",
+        "allCaughtUpDesc": "Excelente! Nenhum aluno possui saldo zerado ou negativo no momento.",
+        "noStudents": "Nenhum aluno encontrado",
+        "noStudentsDesc": "Não há alunos com créditos iguais ou abaixo do limite com base na busca atual.",
+        "never": "Nunca compareceu"
+      },
+      "creditHistory": {
+        "title": "Histórico de Créditos",
+        "titleAccent": "Créditos",
+        "subtitle": "Visualize as transações de compra e consumo de créditos de todos os alunos",
+        "filtersTitle": "Filtros de Pesquisa",
+        "filtersSubtitle": "Selecione o intervalo de datas para buscar o histórico de transações",
+        "startDate": "Data Inicial",
+        "endDate": "Data Final",
+        "search": "Buscar",
+        "searching": "Buscando...",
+        "searchPlaceholder": "Buscar por aluno, motivo ou pagamento...",
+        "exportCsv": "Exportar CSV",
+        "detailsTitle": "Detalhamento das Transações",
+        "detailsDesc": "Lista das últimas compras, check-ins e ausências notificadas",
+        "loading": "Carregando registros...",
+        "unknownStudent": "Aluno Desconhecido",
+        "notifiedAbsence": "Falta justificada",
+        "table": {
+          "student": "Aluno",
+          "type": "Tipo",
+          "change": "Alteração",
+          "date": "Data",
+          "reason": "Observação / Motivo",
+          "paymentMethod": "Método de Pagamento"
+        },
+        "emptyStateTitle": "Nenhuma busca realizada",
+        "emptyStateDesc": "Selecione um intervalo de datas acima e clique em \"Buscar\" para carregar as transações.",
+        "noTransactionsTitle": "Nenhuma transação encontrada",
+        "noTransactionsDesc": "Não encontramos registros de histórico de créditos para o período selecionado.",
+        "summaryTitle": "Resumo por Método de Pagamento",
+        "summaryDesc": "Valores totais arrecadados e contagem de transações no período",
+        "summaryTable": {
+          "method": "Método de Pagamento",
+          "count": "Quantidade de Transações",
+          "total": "Total Recebido"
+        },
+        "notInformed": "Não Informado"
+      },
+      "financial": {
+        "title": "Relatório Financeiro",
+        "titleAccent": "Financeiro",
+        "subtitle": "Acompanhe o faturamento de vendas de créditos e formas de pagamento",
+        "transactionsTitle": "Transações Financeiras",
+        "transactionsDesc": "Visualize as transações financeiras para compras de créditos. Selecione um intervalo de datas e clique em \"Buscar\" para ver os resultados.",
+        "exportSimpleCsv": "Exportar CSV Simples",
+        "exportDetailedCsv": "Exportar CSV Detalhado",
+        "startDate": "Data Inicial",
+        "endDate": "Data Final",
+        "search": "Buscar",
+        "searching": "Buscando...",
+        "searchPlaceholder": "Buscar por aluno, descrição ou forma de pagamento...",
+        "loading": "Carregando registros...",
+        "emptyStateTitle": "Nenhuma busca realizada",
+        "emptyStateDesc": "Selecione um intervalo de datas acima e clique em \"Buscar\" para carregar as transações financeiras.",
+        "noTransactionsTitle": "Nenhuma transação encontrada",
+        "noTransactionsDesc": "Não encontramos registros de transações financeiras para o período selecionado.",
+        "table": {
+          "student": "Aluno",
+          "type": "Tipo",
+          "creditsAdded": "Créditos Adicionados",
+          "date": "Data",
+          "description": "Descrição",
+          "amountPaid": "Valor Pago",
+          "paymentMethod": "Método de Pagamento"
+        },
+        "summaryTitle": "Resumo por Método de Pagamento",
+        "summaryDesc": "Valores totais e quantidade de transações agrupados por método de pagamento",
+        "summaryTable": {
+          "method": "Método de Pagamento",
+          "count": "Quantidade de Transações",
+          "credits": "Total de Créditos",
+          "amount": "Total Recebido"
+        },
+        "total": "Total",
+        "chartsTitle": "Gráficos Financeiros",
+        "chartsDesc": "Representação visual dos dados financeiros",
+        "revenueByMethod": "Faturamento por Método de Pagamento",
+        "creditsAndRevenue": "Créditos e Faturamento por Tipo",
+        "credits": "Créditos",
+        "revenue": "Faturamento",
+        "unknown": "Não Informado"
+      }
+    },
+    "emails": {
+      "title": "Painel de E-mails",
+      "subtitle": "Envie notificações e alertas diretamente para as caixas de entrada dos alunos",
+      "tabs": {
+        "notifications": "Disparo Rápido",
+        "custom": "E-mail Customizado",
+        "templates": "Modelos",
+        "history": "Histórico"
+      },
+      "quick": {
+        "title": "Notificação de Saldo Baixo",
+        "desc": "Envie alertas automáticos rápidos com base no limite de créditos",
+        "thresholdLabel": "Definir limite de aviso:",
+        "totalCredits": "créditos totais",
+        "qualifiedBadge": "{{count}} aluno(s) qualificados",
+        "sending": "Disparando E-mails...",
+        "notify": "Notificar {{count}} Alunos",
+        "qualifiedTitle": "Alunos Qualificados",
+        "qualifiedDesc": "Quem receberá o aviso de saldo baixo com as configurações atuais",
+        "emptyTitle": "Nenhum aluno qualificado",
+        "emptyDesc": "Tudo limpo! Nenhum aluno possui créditos abaixo de {{total}}."
+      },
+      "customCard": {
+        "filterTitle": "Filtro de Destinatárias",
+        "filterDesc": "Escolha quem receberá o e-mail",
+        "filterLabel": "Filtrar alunos por:",
+        "filters": {
+          "all": "Todos os alunos",
+          "low_credits": "Créditos baixos",
+          "zero_credits": "Saldo zerado",
+          "class": "Turma específica",
+          "registration_day": "Dia de matrícula",
+          "selected": "Seleção manual"
+        },
+        "selectClass": "Selecionar turma:",
+        "selectClassPlaceholder": "Selecione a turma",
+        "selectDay": "Dia da semana de matrícula:",
+        "selectDayPlaceholder": "Selecione o dia",
+        "selectManual": "Selecionar manualmente:",
+        "clearAll": "Limpar Tudo",
+        "selectAll": "Selecionar Tudo",
+        "searchStudent": "Buscar aluno...",
+        "creditsCount": "{{count}} créditos",
+        "selectedCount": "Destinatários Selecionados: {{count}}",
+        "emptySelection": "Nenhum aluno selecionado pelo filtro atual.",
+        "moreStudents": " e mais {{count}} aluno(s)...",
+        "contentTitle": "Conteúdo da Notificação",
+        "contentDesc": "Escreva o e-mail ou utilize um template da aba correspondente",
+        "senderName": "Nome do Remetente",
+        "senderPlaceholder": "Ex: Professora Josi, Estúdio Josi Pilates",
+        "activeTemplate": "Template Ativo",
+        "templateIndicator": "Template: {{name}}",
+        "noTemplateIndicator": "Sem Template (E-mail Livre)",
+        "subjectLabel": "Assunto do E-mail",
+        "subjectPlaceholder": "Assunto da notificação",
+        "messageLabel": "Mensagem",
+        "messagePlaceholder": "Escreva a mensagem aqui...",
+        "consentTitle": "Modelo: Formulário de Consentimento",
+        "consentDesc": "Este modelo enviará o documento de políticas e termos de aulas de Pilates diretamente com um anexo em formato PDF para os alunos selecionados.",
+        "attachment": "📎 Anexo: PilatesLessonsPolicies.pdf",
+        "sendingCustom": "Enviando E-mails...",
+        "sendConsentBtn": "Enviar Termo para {{count}} aluno(s)",
+        "sendEmailBtn": "Enviar E-mail para {{count}} aluno(s)"
+      },
+      "templates": {
+        "title": "Modelos de E-mail",
+        "desc": "Escolha um modelo predefinido para agilizar o envio dos avisos",
+        "languageLabel": "Idioma do Modelo:"
+      },
+      "history": {
+        "title": "Histórico de Notificações",
+        "desc": "Registro consolidado de todos os e-mails enviados pelo painel administrativo",
+        "sentBadge": "{{count}} enviados",
+        "failedBadge": "{{count}} falhas",
+        "emailType": "Tipo do E-mail",
+        "types": {
+          "low_credits": "Aviso de Saldo",
+          "consent_form": "Termo de Consentimento",
+          "free": "E-mail Livre"
+        },
+        "recipients": "Destinatários",
+        "recipientsCount": "{{count}} aluno(s)",
+        "emptyTitle": "Nenhum e-mail enviado",
+        "emptyDesc": "Não há registro de notificações enviadas até o momento no estúdio."
+      }
+    },
+    "studentSummary": {
+      "title": "Resumo do Aluno",
+      "subtitle": "Visualize dados pessoais, histórico de créditos e observações de {{name}}",
+      "notFound": "Aluno não encontrado.",
+      "infoTitle": "Informações do Aluno",
+      "infoDesc": "Detalhes básicos e saldos atuais de créditos",
+      "editProfile": "Editar Perfil",
+      "fullName": "Nome Completo",
+      "email": "E-mail",
+      "phone": "Telefone",
+      "language": "Idioma Preferido",
+      "dob": "Data de Nascimento",
+      "memberSince": "Membro Desde",
+      "observations": "Observações",
+      "currentBalances": "Saldos de Créditos Atuais",
+      "individual": "Individual",
+      "duo": "Duo",
+      "group": "Grupo",
+      "total": "Total",
+      "editTitle": "Editar Perfil do Aluno",
+      "editDesc": "Atualize as informações do perfil do aluno.",
+      "cancel": "Cancelar",
+      "saveChanges": "Salvar Alterações",
+      "creditHistoryTitle": "Histórico de Créditos",
+      "creditHistoryDesc": "Histórico completo de alterações de créditos e transações",
+      "noHistory": "Nenhum histórico de créditos encontrado para este aluno.",
+      "table": {
+        "type": "Tipo",
+        "change": "Alteração",
+        "date": "Data",
+        "description": "Descrição",
+        "paymentMethod": "Método de Pagamento",
+        "amountPaid": "Valor Pago"
+      },
+      "notSet": "Não definido",
+      "languages": {
+        "pt": "Português",
+        "en": "Inglês",
+        "fr": "Francês"
+      }
     }
   },
   "privacyPolicy": {
@@ -401,21 +838,7 @@
     "governingLaw": {
       "title": "13. Lei Aplicável",
       "content": "Estes termos são regidos pelas leis de Quebec, Canadá. Qualquer disputa será resolvida nos tribunais competentes de Montreal."
-    },
-    "termsChanges": {
-      "title": "14. Alterações aos Termos",
-      "content": "Podemos modificar estes termos a qualquer momento. Continuar usando o aplicativo após alterações constitui aceitação dos novos termos."
-    },
-    "contact": {
-      "title": "15. Contato",
-      "content": "Para dúvidas sobre estes Termos de Serviço, entre em contato:",
-      "items": [
-        "E-mail: josipilatesmontreal@gmail.com",
-        "Telefone: +1(438)274-8396",
-        "Endereço: Studio Josi Pilates, Montreal"
-      ]
-    },
-    "backToHome": "Voltar ao Início"
+    }
   },
   "studioHome": {
     "nav": {
@@ -423,99 +846,163 @@
       "testimonials": "Depoimentos",
       "services": "Serviços",
       "contact": "Contato",
-      "studentPortal": "Portal do Aluno"
+      "studentPortal": "Área do cliente",
+      "bookTrial": "Agendar aula experimental"
     },
     "hero": {
-      "greeting": "Bonjour!",
-      "intro": "Quem sou eu:",
-      "description": "Fisioterapeuta e instrutora do Método Pilates desde 2005. Apaixonada pelo movimento humano e pelo desenvolvimento da consciência corporal.",
-      "aboutButton": "Sobre Mim"
+      "greeting": "Olá!",
+      "intro": "Prazer em conhecer, eu sou a Josi!",
+      "description": "Aulas privadas, duos e pequenos grupos com Josiane — fisioterapeuta e instrutora certificada. Atenção personalizada, postura e prevenção de lesões.",
+      "title": "O Pilates que cuida do seu corpo, em pequenos grupos.",
+      "titleHighlight": "seu corpo",
+      "badgePhysio": "Fisioterapeuta certificada",
+      "badgeExperience": "15 anos de experiência",
+      "badgeLocation": "Montréal, QC",
+      "ctaTrial": "Agendar uma aula experimental",
+      "ctaServices": "Ver serviços",
+      "note": "Primeira sessão privada de introdução — ideal para começar bem."
+    },
+    "trust": {
+      "physioTitle": "Fisioterapeuta",
+      "physioDesc": "Abordagem clínica e segura",
+      "attentionTitle": "Atenção personalizada",
+      "attentionDesc": "Privado, duo ou pequeno grupo",
+      "levelsTitle": "Todos os níveis",
+      "levelsDesc": "Iniciantes bem-vindos",
+      "languagesTitle": "FR · EN · PT",
+      "languagesDesc": "Aulas no seu idioma"
     },
     "about": {
-      "title": "Sobre Mim",
-      "greeting": "Salut!!",
-      "description": "Fisioterapeuta e instrutora do Método Pilates desde 2005. Apaixonada pelo movimento humano e pelo desenvolvimento da consciência corporal.",
+      "title": "Sobre Josiane",
+      "eyebrow": "Sobre Josiane",
+      "subtitle": "Movimento com intenção, progresso com clareza.",
+      "subtitleHighlight": "intenção",
+      "greeting": "Olá!!",
+      "description": "Josiane alia sua expertise de fisioterapeuta a uma prática profunda de Pilates para oferecer um acompanhamento único em Montreal. Cada sessão é adaptada ao seu corpo, objetivos e ritmo.",
       "extendedTitle": "Um pouco mais sobre mim",
-      "extended": "Josiane recebeu sua primeira certificação em método Pilates (PhysicalMind Institute–NYC) em 2005, inicialmente atraída pelo método como complemento à sua carreira de fisioterapeuta no Brasil.\n\nEm 2010, ela se mudou para Montreal para aprofundar seus conhecimentos em Educação Somática na UQÀM e foi convidada a dar palestras e workshops sobre avaliação postural, técnicas de prevenção de lesões e práticas somáticas (incluindo Pilates) para estudantes de graduação em música e dança da universidade.\n\nGraças à sua experiência, Josiane é capaz de oferecer um treinamento seguro, equilibrado e variado. Ela está acostumada a trabalhar com uma ampla variedade de pessoas, incluindo atletas, artistas de circo, dançarinos, músicos, mulheres grávidas e idosos.\n\nTrabalhar com Josiane, convida você a se mover conscientemente e com alegria, fortalecendo seu corpo e melhorando seu alinhamento e mobilidade."
+      "extended": "Em pequenos grupos ou individualmente, o foco é na qualidade do movimento, postura e prevenção de lesões — para que você saia mais forte, móvel e sereno.",
+      "badgePhysio": "Fisioterapeuta certificada",
+      "badgePilates": "Instrutora de Pilates",
+      "badgePrevention": "Prevenção de lesões",
+      "yearsExperience": "15+",
+      "yearsLabel": "anos de experiência"
     },
-    "testimonialsTitle": "O que Nossos Alunos Dizem",
-    "testimonialsSubtitle": "Experiências reais da nossa comunidade de Pilates",
+    "testimonialsTitle": "O que dizem os nossos alunos",
+    "testimonialsSubtitle": "Experiências reais da nossa comunidade de Pilates em Montreal.",
+    "testimonialsReadMore": "Ler mais",
+    "testimonialsReadLess": "Ler menos",
     "services": {
-      "title": "Serviços",
-      "subtitle": "Instrução profissional de Pilates adaptada às suas necessidades.",
+      "title": "Nossos serviços",
+      "subtitle": "Encontre a melhor fórmula para você",
+      "subtitleDesc": "Pacotes flexíveis que economizam nas sessões. Todos os níveis são bem-vindos.",
+      "mostPopular": "O mais popular",
       "private": {
-        "title": "Aulas Privadas (55 min)",
-        "intro": "Aula introdutória: $80",
+        "title": "Privado",
+        "intro": "Sessão individual, atenção completa à sua postura.",
         "single": "1 aula: $80",
         "four": "4 aulas: $286",
         "eight": "8 aulas: $520",
-        "note": "Os pacotes são válidos por 4 meses. Qualquer cancelamento deve ser feito com pelo menos 24 horas de antecedência. Os pacotes não são reembolsáveis nem transferíveis."
+        "note": "Os pacotes são válidos por 4 meses. Qualquer cancelamento deve ser feito com pelo menos 24 horas de antecedência. Os pacotes não são reembolsáveis nem transferíveis.",
+        "cta": "Reservar um privado",
+        "feature1": "Programa <b>100% personalizado</b>",
+        "feature2": "Ideal para começar ou reabilitação",
+        "feature3": "Pacotes vantajosos de 4 e 8 sessões"
       },
       "duos": {
-        "title": "Aulas Duplas (55 min)",
-        "intro": "Aula introdutória: $125",
+        "title": "Duo",
+        "intro": "A dois — entre amigos ou casal, motivação garantida.",
+        "introClass": "Aula de introdução: $125",
         "single": "1 aula: $115",
         "six": "6 aulas: $545",
         "twelve": "12 aulas: $1028",
-        "note": "Valor para duas pessoas. Os pacotes são válidos por 4 meses. Qualquer cancelamento deve ser feito com pelo menos 24 horas de antecedência. Os pacotes não são reembolsáveis nem transferíveis."
+        "note": "Preço para duas pessoas. Os pacotes são válidos por 4 meses. Qualquer cancelamento deve ser feito com pelo menos 24 horas de antecedência. Os pacotes não são reembolsáveis nem transferíveis.",
+        "cta": "Reservar um duo",
+        "feature1": "Sessão de introdução <b>para dois</b>",
+        "feature2": "Atenção próxima, ambiente agradável",
+        "feature3": "Pacotes de 6 e 12 sessões"
       },
       "group": {
-        "title": "Aulas em Grupo (55 min)",
-        "intro": "Aula introdutória: $80",
+        "title": "Grupo",
+        "intro": "Pequeno grupo — treino social e estimulante.",
         "single": "1 aula: $40",
         "six": "6 aulas: $202",
         "twelve": "12 aulas: $360",
-        "note": "Valor por pessoa. Os pacotes são válidos por 4 meses. Qualquer cancelamento deve ser feito com pelo menos 24 horas de antecedência. Os pacotes não são reembolsáveis nem transferíveis."
+        "note": "Preço por pessoa. Os pacotes são válidos por 4 meses. Qualquer cancelamento deve ser feito com pelo menos 24 horas de antecedência. Os pacotes não são reembolsáveis nem transferíveis.",
+        "cta": "Ver horários",
+        "feature1": "Pequenos grupos, <b>nunca lotados</b>",
+        "feature2": "A opção mais acessível",
+        "feature3": "Pacotes de 6 e 12 sessões"
       }
+    },
+    "location": {
+      "title": "Horários & localização",
+      "subtitle": "Venha nos conhecer",
+      "address": "10145 Av. Hamel, Montreal, QC H2C 2X1",
+      "phone": "+1 438 274 8396 · WhatsApp",
+      "email": "josi@josipilates.com",
+      "lundiVendredi": "Segunda — Sexta",
+      "samedi": "Sábado",
+      "dimanche": "Domingo",
+      "closed": "Fechado"
+    },
+    "ctaBand": {
+      "title": "Pronto para começar sua jornada?",
+      "subtitle": "Reserve sua aula experimental e descubra o Pilates orientado por uma profissional da saúde.",
+      "ctaTrial": "Reservar aula experimental",
+      "ctaWhatsapp": "WhatsApp"
     },
     "testimonials": [
       {
-        "text": "Josi é sem dúvida a melhor professora de Pilates em Montreal! Ela tem conhecimentos incríveis e explica todos os movimentos de forma muito clara, ao mesmo tempo em que está atenta ao que cada aluno está fazendo. Eu a adoro e a recomendo 100%!",
-        "author_name": "Thaissa Duarte",
-        "city": "Montréal",
-        "state": "QC"
-      },
-      {
-        "text": "Josi é simplesmente incrível. Cada aula com ela é leve, divertida e ao mesmo tempo extremamente bem feita. Ela tem aquele olhar atento que corrige sem pressionar, explica tudo de uma forma que faz sentido, e cria uma atmosfera tão agradável que você sempre sai se sentindo melhor do que quando chegou. Verdadeiramente: em Montreal, não há ninguém como ela. Josi é a professora de Pilates. Quem faz aula com ela entende imediatamente.",
-        "author_name": "Henrique da Fonte",
+        "text": "Josiane mudou completamente minha relação com meu corpo. Seus conhecimentos em fisioterapia fazem toda a diferença — não tenho mais dores nas costas.",
+        "author_name": "Marie-Claude",
         "city": "Montreal",
         "state": "QC"
       },
       {
-        "text": "Uma excelente profissional. Ela é atenta às particularidades de seus alunos.",
-        "author_name": "Lia Crippa",
-        "city": "Montréal",
+        "text": "As aulas em duo com meu parceiro se tornaram nosso ritual favorito. Atenção personalizada e ambiente sempre acolhedor.",
+        "author_name": "Sophie & Patrick",
+        "city": "Rosemont",
         "state": "QC"
       },
       {
-        "text": "Não tenho palavras para expressar minha gratidão e reconhecimento pelo trabalho excepcional de Josi. Após enfrentar dias de dores intensas e diagnósticos imprecisos, iniciar as aulas de Pilates com ela me deu a certeza de que estava recebendo exatamente o apoio que precisava. Sua abordagem humanizada, aliada à escuta ativa e aulas personalizadas, faz toda a diferença. Em poucas semanas, recuperei minha autonomia e mobilidade, e me livrei da dor que sentia no início. Para quem busca resultados reais e cuidado genuíno, Josi é a escolha certa.",
-        "author_name": "Danilo Paixão",
-        "city": "Montreal",
-        "state": "QC"
-      },
-      {
-        "text": "Retornei ao Pilates após muito tempo porque estava sentindo muitas dores no pescoço, ombros, parte superior das costas e omoplatas. Convivi com essa dor, que só piorava, por dois anos. Tentei várias coisas. Finalmente, em setembro de 2025, uma fisioterapeuta me aconselhou a voltar ao Pilates. Após três meses, a dor desapareceu. Me sinto tão bem. Às vezes nem acredito que estou sem dor. Josi é uma profissional dedicada, paciente e muito competente. Só posso agradecê-la por tudo!",
-        "author_name": "Lila de Paula",
-        "city": "Montreal",
-        "state": "QC"
-      },
-      {
-        "text": "Após uma crise intensa de dor no nervo ciático que durou aproximadamente cinco meses, iniciei aulas de Pilates para auxiliar na minha recuperação e prevenir novos episódios. No início, tinha medo de sentir a dor novamente, mas com orientação cuidadosa e exercícios bem direcionados, consegui aliviar a dor e fortalecer meu corpo de forma segura. Já faz mais de um ano sem crises, e sou muito grata a Josi pela atenção, profissionalismo e orientação durante todo esse processo.",
-        "author_name": "Fernanda Guerreiro",
-        "city": "Montreal",
+        "text": "Iniciante completa, me senti confiante desde a primeira sessão. O pequeno grupo realmente permite um acompanhamento de qualidade.",
+        "author_name": "Amélie L.",
+        "city": "Villeray",
         "state": "QC"
       }
     ],
     "contact": {
-      "title": "Fale conosco",
-      "subtitle": "Pilates com Josi",
-      "address": "Montreal, QC, H2C2X1",
-      "phone": "Tel: +1 438 274 8396",
-      "email": "E-mail: josi@josipilates.com",
-      "portalButton": "Portal do Aluno"
+      "title": "Uma dúvida? Escreva para nós",
+      "subtitle": "Respondemos rapidamente. Diga-nos o seu objetivo e nós guiaremos você até a melhor fórmula.",
+      "address": "10145 Av. Hamel, Montreal, QC H2C 2X1",
+      "phone": "+1 438 274 8396",
+      "email": "josi@josipilates.com",
+      "portalButton": "Área do cliente",
+      "firstName": "Nome",
+      "lastName": "Sobrenome",
+      "emailField": "E-mail",
+      "message": "Mensagem",
+      "firstNamePlaceholder": "Seu nome",
+      "lastNamePlaceholder": "Seu sobrenome",
+      "emailPlaceholder": "voce@email.com",
+      "messagePlaceholder": "Conte-nos sobre o seu objetivo...",
+      "send": "Enviar mensagem",
+      "sending": "Enviando...",
+      "successTitle": "Mensagem enviada!",
+      "successText": "Obrigado pela sua mensagem. Entraremos em contato em breve.",
+      "responseNotice": "Resposta em 24h",
+      "whatsappNotice": "WhatsApp · ligações",
+      "formTitle": "Envie uma mensagem",
+      "formSubtitle": "Preencha o formulário e entraremos em contato."
     },
     "footer": {
-      "copyright": "© 2025 Josi Pilates. Todos os direitos reservados."
+      "copyright": "© 2026 Josi Pilates Studio. Todos os direitos reservados.",
+      "privacy": "Política de privacidade",
+      "terms": "Termos de uso",
+      "navigation": "Navegação",
+      "horaires": "Horários",
+      "contact": "Contato",
+      "tagline": "Studio de Pilates em Montreal. Aulas privadas, duos e pequenos grupos com fisioterapeuta certificada."
     }
   }
 }

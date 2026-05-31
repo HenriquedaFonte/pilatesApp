@@ -17,6 +17,16 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from '@/components/ui/alert-dialog'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -34,6 +44,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ThemeToggle } from '../components/ThemeToggle'
 import { translateTestimonialFields } from '../lib/translationService'
+import TeacherLayout from '../components/TeacherLayout'
 import {
   Select,
   SelectContent,
@@ -57,6 +68,7 @@ const TeacherTestimonials = () => {
   const [testimonials, setTestimonials] = useState([])
   const [loading, setLoading] = useState(true)
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
+  const [testimonialToDelete, setTestimonialToDelete] = useState(null) // 2.1 FIX: replaces confirm()
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [selectedTestimonial, setSelectedTestimonial] = useState(null)
   const [error, setError] = useState('')
@@ -80,6 +92,10 @@ const TeacherTestimonials = () => {
     await signOut()
     navigate('/')
   }
+
+  // 2.5 FIX: auto-dismiss helpers
+  const showSuccess = msg => { setSuccess(msg); setTimeout(() => setSuccess(''), 5000) }
+  const showError = msg => { setError(msg); setTimeout(() => setError(''), 5000) }
 
   const fetchTestimonials = async () => {
     try {
@@ -132,7 +148,7 @@ const TeacherTestimonials = () => {
 
       if (error) throw error
 
-      setSuccess('Testimonial created successfully!')
+      showSuccess('Depoimento criado com sucesso!')
       setIsCreateDialogOpen(false)
       setFormData({
         text: JSON.stringify({ fr: '', en: '', pt: '' }),
@@ -143,7 +159,7 @@ const TeacherTestimonials = () => {
       })
       fetchTestimonials()
     } catch (error) {
-      setError('Error creating testimonial: ' + error.message)
+      showError('Erro ao criar depoimento: ' + error.message)
     } finally {
       setTranslating(false)
     }
@@ -187,7 +203,7 @@ const TeacherTestimonials = () => {
 
       if (error) throw error
 
-      setSuccess('Testimonial updated successfully!')
+      showSuccess('Depoimento atualizado com sucesso!')
       setIsEditDialogOpen(false)
       setSelectedTestimonial(null)
       setFormData({
@@ -199,15 +215,21 @@ const TeacherTestimonials = () => {
       })
       fetchTestimonials()
     } catch (error) {
-      setError('Error updating testimonial: ' + error.message)
+      showError('Erro ao atualizar depoimento: ' + error.message)
     } finally {
       setTranslating(false)
     }
   }
 
   const handleDelete = async testimonial => {
-    if (!confirm('Are you sure you want to delete this testimonial?')) return
+    // 2.1 FIX: open AlertDialog instead of blocking confirm()
+    setTestimonialToDelete(testimonial)
+  }
 
+  const handleConfirmDelete = async () => {
+    if (!testimonialToDelete) return
+    const testimonial = testimonialToDelete
+    setTestimonialToDelete(null)
     try {
       const { error } = await supabase
         .from('testimonials')
@@ -216,10 +238,10 @@ const TeacherTestimonials = () => {
 
       if (error) throw error
 
-      setSuccess('Testimonial deleted successfully!')
+      showSuccess('Depoimento excluído com sucesso!')
       fetchTestimonials()
     } catch (error) {
-      setError('Error deleting testimonial: ' + error.message)
+      showError('Erro ao excluir depoimento: ' + error.message)
     }
   }
 
@@ -234,7 +256,7 @@ const TeacherTestimonials = () => {
 
       fetchTestimonials()
     } catch (error) {
-      setError('Error updating testimonial: ' + error.message)
+      showError('Erro ao atualizar depoimento: ' + error.message)
     }
   }
 
@@ -294,52 +316,28 @@ const TeacherTestimonials = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      <header className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Link to="/teacher/dashboard" className="mr-4">
-                <ArrowLeft className="h-6 w-6 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" />
-              </Link>
-              <Activity className="h-8 w-8 text-primary mr-3" />
-              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
-                Testimonial Manager
-              </h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <ThemeToggle />
-              <span className="text-sm text-gray-700 dark:text-gray-300">
-                Welcome, {profile?.full_name}
-              </span>
-              <Button variant="outline" size="sm" onClick={handleSignOut}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Sign Out
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <>
+    <TeacherLayout>
+      <div className="space-y-8 animate-in fade-in duration-300">
         {error && (
-          <Alert variant="destructive" className="mb-6">
-            <AlertDescription>{error}</AlertDescription>
+          <Alert variant="destructive" className="rounded-2xl border-destructive/30 bg-destructive/5 text-destructive animate-in fade-in duration-200">
+            <AlertDescription className="font-medium">{error}</AlertDescription>
           </Alert>
         )}
         {success && (
-          <Alert className="mb-6">
-            <AlertDescription>{success}</AlertDescription>
+          <Alert className="rounded-2xl border-emerald-200/50 bg-emerald-50/50 text-emerald-800 dark:bg-emerald-950/20 dark:text-emerald-400 animate-in fade-in duration-200">
+            <AlertDescription className="font-medium">{success}</AlertDescription>
           </Alert>
         )}
 
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-              Testimonials
-            </h2>
-            <p className="text-gray-600 dark:text-gray-300">
-              Manage testimonials displayed on the homepage
+        {/* Cabeçalho Editorial */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <h1 className="font-serif-display text-3xl tracking-tight text-foreground">
+              Depoimentos e <span className="text-primary italic">Avaliações</span>
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Gerencie os depoimentos e testemunhos que aparecem na página principal do estúdio.
             </p>
           </div>
           <Dialog
@@ -347,19 +345,19 @@ const TeacherTestimonials = () => {
             onOpenChange={setIsCreateDialogOpen}
           >
             <DialogTrigger asChild>
-              <Button>
+              <Button className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-5 h-10 transition-all w-fit">
                 <Plus className="h-4 w-4 mr-2" />
-                Add Testimonial
+                Novo Depoimento
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="rounded-2xl">
               <DialogHeader>
-                <DialogTitle>Add New Testimonial</DialogTitle>
-                <DialogDescription>
-                  Add a testimonial from a client to display on the homepage.
+                <DialogTitle className="text-lg font-bold text-foreground">Adicionar Novo Depoimento</DialogTitle>
+                <DialogDescription className="text-xs">
+                  Adicione um depoimento de cliente para ser exibido de forma premium na página inicial.
                 </DialogDescription>
               </DialogHeader>
-              <form onSubmit={handleCreate} className="space-y-4">
+              <form onSubmit={handleCreate} className="space-y-4 pt-2">
                 <div className="space-y-2">
                   <Label htmlFor="input-language">Write testimonial in</Label>
                   <Select
@@ -852,7 +850,29 @@ const TeacherTestimonials = () => {
           </DialogContent>
         </Dialog>
       </div>
-    </div>
+    </TeacherLayout>
+
+    {/* 2.1 FIX: AlertDialog replaces confirm() for deletion */}
+    <AlertDialog open={!!testimonialToDelete} onOpenChange={open => !open && setTestimonialToDelete(null)}>
+      <AlertDialogContent className="rounded-2xl">
+        <AlertDialogHeader>
+          <AlertDialogTitle className="text-base font-bold">Excluir depoimento?</AlertDialogTitle>
+          <AlertDialogDescription className="text-xs text-muted-foreground">
+            Esta ação não pode ser desfeita. O depoimento será removido permanentemente.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel className="rounded-xl">Cancelar</AlertDialogCancel>
+          <AlertDialogAction
+            className="rounded-xl bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+            onClick={handleConfirmDelete}
+          >
+            Excluir
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+    </>
   )
 }
 

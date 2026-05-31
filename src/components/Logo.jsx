@@ -1,10 +1,8 @@
-import logo from '../assets/logo.jpg'
-
-const Logo = ({ className = "h-8 w-8" }) => {
+const Logo = ({ className = "h-9 w-9" }) => {
   return (
     <img
-      src={logo}
-      alt="Pilates Studio Logo"
+      src="/logo.jpg"
+      alt="Josi Pilates Logo"
       className={className}
       style={{ objectFit: 'contain' }}
     />
@@ -12,4 +10,3 @@ const Logo = ({ className = "h-8 w-8" }) => {
 }
 
 export default Logo
-

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../hooks/useAuth'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { Button } from '@/components/ui/button'
 import {
@@ -26,15 +25,12 @@ import {
   CreditCard,
   Search,
   Download,
-  CalendarDays,
-  User2,
-  FileText
+  CalendarDays
 } from 'lucide-react'
-import { ThemeToggle } from '../components/ThemeToggle'
+import TeacherLayout from '../components/TeacherLayout'
 
 const CreditHistoryReport = () => {
-  const { profile, signOut } = useAuth()
-  const navigate = useNavigate()
+  const { t, i18n } = useTranslation()
   const [history, setHistory] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -62,10 +58,6 @@ const CreditHistoryReport = () => {
     fetchStudents()
   }, [])
 
-  const handleSignOut = async () => {
-    await signOut()
-    navigate('/')
-  }
 
   function getUTCDateRangeForLocalDay(dateStr) {
     const [year, month, day] = dateStr.split('-').map(Number)
@@ -172,14 +164,14 @@ const CreditHistoryReport = () => {
   const exportToCSV = () => {
     if (filteredHistory.length === 0) return
     const headers = [
-      'Student Name',
-      'Student ID',
-      'Type',
-      'Change',
-      'Date',
-      'Reason',
-      'Payment Method',
-      'Amount Paid'
+      t('teacher.reports.creditHistory.table.student'),
+      t('teacher.studentSummary.email', 'Student ID'),
+      t('teacher.reports.creditHistory.table.type'),
+      t('teacher.reports.creditHistory.table.change'),
+      t('teacher.reports.creditHistory.table.date'),
+      t('teacher.reports.creditHistory.table.reason'),
+      t('teacher.reports.creditHistory.table.paymentMethod'),
+      t('teacher.reports.creditHistory.notInformed', 'Amount Paid')
     ]
     const csvContent = [
       headers.join(','),
@@ -190,8 +182,8 @@ const CreditHistoryReport = () => {
           `"${row.type}"`,
           row.change_amount,
           `"${row.created_at}"`,
-          `"${row.description || ''}"`,
-          `"${row.payment_method || ''}"`,
+          `"${row.description === 'Notified absence' ? t('teacher.reports.creditHistory.notifiedAbsence') : (row.description || '')}"`,
+          `"${row.payment_method ? row.payment_method.replace('_', ' ') : t('teacher.reports.creditHistory.notInformed')}"`,
           row.amount_paid || 0
         ].join(',')
       )
@@ -210,205 +202,218 @@ const CreditHistoryReport = () => {
     switch (type) {
       case 'individual':
         return (
-          <Badge variant="outline" className="text-blue-700 border-blue-300">
-            Individual
+          <Badge variant="outline" className="bg-blue-50/50 text-blue-700 border-blue-200/50 text-xs px-2.5 py-0.5 rounded-full dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800/30 font-semibold">
+            {t('teacher.studentSummary.individual')}
           </Badge>
         )
       case 'duo':
         return (
-          <Badge variant="outline" className="text-green-700 border-green-300">
-            Duo
+          <Badge variant="outline" className="bg-emerald-50/50 text-emerald-700 border-emerald-200/50 text-xs px-2.5 py-0.5 rounded-full dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800/30 font-semibold">
+            {t('teacher.studentSummary.duo')}
           </Badge>
         )
       case 'group':
         return (
-          <Badge
-            variant="outline"
-            className="text-purple-700 border-purple-300"
-          >
-            Group
+          <Badge variant="outline" className="bg-violet-50/50 text-violet-700 border-violet-200/50 text-xs px-2.5 py-0.5 rounded-full dark:bg-violet-900/20 dark:text-violet-400 dark:border-violet-800/30 font-semibold">
+            {t('teacher.studentSummary.group')}
           </Badge>
         )
       default:
-        return <Badge variant="secondary">{type}</Badge>
+        return <Badge variant="secondary" className="rounded-full px-2.5 py-0.5 text-xs font-semibold">{type}</Badge>
     }
   }
 
   const getChangeBadge = change => {
     if (change > 0)
       return (
-        <Badge variant="outline" className="text-green-700 border-green-300">
+        <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200/50 font-bold rounded-full px-2.5 py-0.5 text-xs">
           +{change}
         </Badge>
       )
-    if (change < 0) return <Badge variant="destructive">{change}</Badge>
-    return <Badge variant="secondary">{change}</Badge>
+    if (change < 0) 
+      return (
+        <Badge variant="destructive" className="bg-red-50 text-red-700 border-red-200/50 dark:bg-red-950/20 dark:text-red-400 hover:bg-red-50 font-bold rounded-full px-2.5 py-0.5 text-xs">
+          {change}
+        </Badge>
+      )
+    return <Badge variant="secondary" className="rounded-full px-2.5 py-0.5 text-xs font-bold">{change}</Badge>
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      <header className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Link to="/teacher/dashboard" className="mr-4">
-                <ArrowLeft className="h-6 w-6 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" />
-              </Link>
-              <FileText className="h-8 w-8 text-primary mr-3" />
-              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
-                Credit History Report
-              </h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <ThemeToggle />
-              <span className="text-sm text-gray-700 dark:text-gray-300">
-                Welcome, {profile?.full_name}
-              </span>
-              <Button variant="outline" size="sm" onClick={handleSignOut}>
-                <CreditCard className="h-4 w-4 mr-2" />
-                Sign Out
-              </Button>
-            </div>
+    <TeacherLayout>
+      <div className="space-y-8 animate-in fade-in duration-300">
+        {/* Cabeçalho Editorial */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <h1 className="font-serif-display text-3xl tracking-tight text-foreground">
+              {t('teacher.reports.creditHistory.title').split(' ').slice(0, -1).join(' ')} <span className="text-primary italic">{t('teacher.reports.creditHistory.titleAccent')}</span>
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              {t('teacher.reports.creditHistory.subtitle')}
+            </p>
           </div>
         </div>
-      </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {error && (
-          <Alert variant="destructive" className="mb-6">
-            <AlertDescription>{error}</AlertDescription>
+          <Alert variant="destructive" className="rounded-2xl border-destructive/30 bg-destructive/5 text-destructive">
+            <AlertDescription className="font-medium">{error}</AlertDescription>
           </Alert>
         )}
 
-        <Card className="mb-6">
-          <CardHeader>
-            <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+        {/* Card de Filtros Premium */}
+        <Card className="rounded-2xl border border-border bg-card shadow-sm p-6 overflow-hidden">
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/50 pb-4">
               <div>
-                <CardTitle>Credit History</CardTitle>
-                <CardDescription>
-                  Select a date range and click "Search" to view credit
-                  transactions.
-                </CardDescription>
+                <h3 className="text-base font-semibold text-foreground">{t('teacher.reports.creditHistory.filtersTitle')}</h3>
+                <p className="text-xs text-muted-foreground">
+                  {t('teacher.reports.creditHistory.filtersSubtitle')}
+                </p>
               </div>
               <Button
                 onClick={exportToCSV}
                 variant="outline"
+                size="sm"
                 disabled={filteredHistory.length === 0}
+                className="rounded-xl border-border hover:bg-muted text-xs font-semibold h-9 align-self-start md:align-self-auto"
               >
-                <Download className="h-4 w-4 mr-2" />
-                Export CSV
+                <Download className="h-3.5 w-3.5 mr-1.5" />
+                {t('teacher.reports.creditHistory.exportCsv')}
               </Button>
             </div>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col md:flex-row gap-4 mb-6 items-end">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Start Date
-                </label>
-                <Input
-                  type="date"
-                  value={dateStart}
-                  onChange={e => setDateStart(e.target.value)}
-                  className="w-44"
-                />
+
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+              <div className="flex flex-wrap items-end gap-4">
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-muted-foreground">
+                    {t('teacher.reports.creditHistory.startDate', 'Data Inicial')}
+                  </label>
+                  <Input
+                    type="date"
+                    value={dateStart}
+                    onChange={e => setDateStart(e.target.value)}
+                    className="w-full sm:w-44 rounded-xl border-border bg-background focus-visible:ring-primary h-10"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-muted-foreground">
+                    {t('teacher.reports.creditHistory.endDate', 'Data Final')}
+                  </label>
+                  <Input
+                    type="date"
+                    value={dateEnd}
+                    onChange={e => setDateEnd(e.target.value)}
+                    className="w-full sm:w-44 rounded-xl border-border bg-background focus-visible:ring-primary h-10"
+                  />
+                </div>
+                <Button 
+                  onClick={fetchHistory} 
+                  disabled={loading}
+                  className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium px-5 h-10 transition-colors w-full sm:w-auto"
+                >
+                  <Search className="h-4 w-4 mr-2" />
+                  {loading ? t('teacher.reports.creditHistory.searching') : t('teacher.reports.creditHistory.search')}
+                </Button>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  End Date
-                </label>
-                <Input
-                  type="date"
-                  value={dateEnd}
-                  onChange={e => setDateEnd(e.target.value)}
-                  className="w-44"
-                />
-              </div>
-              <Button onClick={fetchHistory} className="h-10">
-                <Search className="h-4 w-4 mr-2" />
-                Search
-              </Button>
-              <div className="flex-1" />
-              <div className="relative">
-                <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+
+              <div className="relative w-full lg:w-80">
+                <Search className="h-4 w-4 absolute left-3.5 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                 <Input
                   type="text"
-                  placeholder="Search by student, Description or Payment Type..."
+                  placeholder={t('teacher.reports.creditHistory.searchPlaceholder')}
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
-                  className="pl-10 w-64"
+                  className="pl-10 rounded-xl border-border bg-background focus-visible:ring-primary h-10 w-full"
                   disabled={!hasSearched}
                 />
               </div>
             </div>
+          </div>
+        </Card>
+
+        {/* Resultados */}
+        <Card className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+          <CardHeader className="border-b border-border/50 bg-muted/10 p-6">
+            <CardTitle className="text-lg font-bold text-foreground">{t('teacher.reports.creditHistory.detailsTitle')}</CardTitle>
+            <CardDescription className="text-xs">
+              {t('teacher.reports.creditHistory.detailsDesc')}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-0">
             {!hasSearched ? (
-              <div className="py-8 text-center text-gray-500 dark:text-gray-400">
-                Select a date range and click "Search" to view results.
+              <div className="py-16 text-center text-muted-foreground flex flex-col items-center justify-center px-4">
+                <CalendarDays className="h-10 w-10 text-muted-foreground mb-3 opacity-50" />
+                <h3 className="text-sm font-semibold text-foreground">{t('teacher.reports.creditHistory.emptyStateTitle')}</h3>
+                <p className="text-xs text-muted-foreground mt-1 max-w-xs mx-auto">
+                  {t('teacher.reports.creditHistory.emptyStateDesc')}
+                </p>
               </div>
             ) : loading ? (
-              <div className="py-8 text-center">Loading...</div>
+              <div className="py-16 text-center text-muted-foreground font-medium">
+                {t('teacher.reports.creditHistory.loading')}
+              </div>
             ) : (
               <div className="overflow-x-auto">
                 <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>
-                        <User2 className="inline h-4 w-4 mr-1" />
-                        Student
-                      </TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Change</TableHead>
-                      <TableHead>
-                        <CalendarDays className="inline h-4 w-4 mr-1" />
-                        Date
-                      </TableHead>
-                      <TableHead>Observation</TableHead>
-                      <TableHead>Payment Method</TableHead>
+                  <TableHeader className="bg-muted/20">
+                    <TableRow className="hover:bg-transparent border-b border-border/50">
+                      <TableHead className="py-4 pl-6 font-semibold">{t('teacher.reports.creditHistory.table.student')}</TableHead>
+                      <TableHead className="py-4 font-semibold">{t('teacher.reports.creditHistory.table.type')}</TableHead>
+                      <TableHead className="py-4 font-semibold">{t('teacher.reports.creditHistory.table.change')}</TableHead>
+                      <TableHead className="py-4 font-semibold">{t('teacher.reports.creditHistory.table.date')}</TableHead>
+                      <TableHead className="py-4 font-semibold">{t('teacher.reports.creditHistory.table.reason')}</TableHead>
+                      <TableHead className="py-4 pr-6 font-semibold">{t('teacher.reports.creditHistory.table.paymentMethod')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {filteredHistory.length === 0 ? (
                       <TableRow>
                         <TableCell
-                          colSpan={5}
-                          className="text-center text-gray-500 dark:text-gray-400 py-8"
+                          colSpan={6}
+                          className="text-center text-muted-foreground py-16"
                         >
-                          No credit history found for this period.
+                          <CreditCard className="h-10 w-10 text-muted-foreground mx-auto mb-3 opacity-50" />
+                          <h3 className="text-sm font-semibold text-foreground">{t('teacher.reports.creditHistory.noTransactionsTitle')}</h3>
+                          <p className="text-xs text-muted-foreground mt-1 max-w-xs mx-auto">
+                            {t('teacher.reports.creditHistory.noTransactionsDesc')}
+                          </p>
                         </TableCell>
                       </TableRow>
                     ) : (
                       filteredHistory.map(row => (
-                        <TableRow key={row.id}>
-                          <TableCell>
+                        <TableRow key={row.id} className="hover:bg-muted/30 border-b border-border/50 transition-colors">
+                          <TableCell className="py-4 pl-6">
                             <div>
-                              <div className="font-medium">
-                                {students[row.student_id] || row.student_id}
+                              <div className="font-semibold text-foreground">
+                                {students[row.student_id] || t('teacher.reports.creditHistory.unknownStudent')}
                               </div>
-                              <div className="text-xs text-gray-500 dark:text-gray-400">
-                                {row.student_id}
+                              <div className="text-[10px] text-muted-foreground font-mono mt-0.5">
+                                ID: {row.student_id.slice(0, 8)}...
                               </div>
                             </div>
                           </TableCell>
-                          <TableCell>{getTypeBadge(row.type)}</TableCell>
-                          <TableCell>
+                          <TableCell className="py-4">{getTypeBadge(row.type)}</TableCell>
+                          <TableCell className="py-4">
                             {getChangeBadge(row.change_amount)}
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="py-4 text-xs font-medium text-foreground">
                             {row.created_at
-                              ? new Date(row.created_at).toLocaleString()
+                              ? new Date(row.created_at).toLocaleString(i18n.language === 'en' ? 'en-US' : i18n.language === 'fr' ? 'fr-FR' : 'pt-BR')
                               : ''}
                           </TableCell>
-                          <TableCell>
-                            <span className="text-xs">
-                              {row.description || '-'}
+                          <TableCell className="py-4">
+                            <span className="text-xs font-medium text-foreground">
+                              {row.description === 'Notified absence' ? t('teacher.reports.creditHistory.notifiedAbsence') : (row.description || '-')}
                             </span>
                           </TableCell>
-                          <TableCell>
-                            <span className="capitalize">
-                              {row.payment_method
-                                ? row.payment_method.replace('_', ' ')
-                                : '-'}
-                            </span>
+                          <TableCell className="py-4 pr-6">
+                            {row.payment_method ? (
+                              <Badge variant="outline" className="bg-muted text-foreground border-border text-xs px-2 py-0.5 rounded font-medium capitalize">
+                                {row.payment_method.replace('_', ' ')}
+                              </Badge>
+                            ) : (
+                              <span className="text-xs text-muted-foreground">-</span>
+                            )}
                           </TableCell>
                         </TableRow>
                       ))
@@ -420,35 +425,37 @@ const CreditHistoryReport = () => {
           </CardContent>
         </Card>
 
-        {/* Summary by Payment Method */}
+        {/* Resumo por Meio de Pagamento */}
         {hasSearched && Object.keys(summary).length > 0 && (
-          <Card className="mt-6">
-            <CardHeader>
-              <CardTitle>Summary by Payment Method</CardTitle>
-              <CardDescription>
-                Total amounts and transaction counts grouped by payment method
+          <Card className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+            <CardHeader className="border-b border-border/50 bg-muted/10 p-6">
+              <CardTitle className="text-lg font-bold text-foreground">{t('teacher.reports.creditHistory.summaryTitle')}</CardTitle>
+              <CardDescription className="text-xs">
+                {t('teacher.reports.creditHistory.summaryDesc')}
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-0">
               <div className="overflow-x-auto">
                 <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Payment Method</TableHead>
-                      <TableHead>Transaction Count</TableHead>
-                      <TableHead>Total Amount</TableHead>
+                  <TableHeader className="bg-muted/20">
+                    <TableRow className="hover:bg-transparent border-b border-border/50">
+                      <TableHead className="py-4 pl-6 font-semibold">{t('teacher.reports.creditHistory.summaryTable.method')}</TableHead>
+                      <TableHead className="py-4 font-semibold">{t('teacher.reports.creditHistory.summaryTable.count')}</TableHead>
+                      <TableHead className="py-4 pr-6 font-semibold text-right">{t('teacher.reports.creditHistory.summaryTable.total')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {Object.entries(summary).map(([method, data]) => (
-                      <TableRow key={method}>
-                        <TableCell>
-                          <span className="capitalize">
-                            {method === 'unknown' ? 'Unknown' : method.replace('_', ' ')}
-                          </span>
+                      <TableRow key={method} className="hover:bg-muted/30 border-b border-border/50 transition-colors">
+                        <TableCell className="py-4 pl-6 font-semibold text-foreground capitalize">
+                          {method === 'unknown' ? t('teacher.reports.creditHistory.notInformed') : method.replace('_', ' ')}
                         </TableCell>
-                        <TableCell>{data.transactionCount}</TableCell>
-                        <TableCell>${data.totalAmount.toFixed(2)}</TableCell>
+                        <TableCell className="py-4 font-medium text-foreground">
+                          {data.transactionCount}
+                        </TableCell>
+                        <TableCell className="py-4 pr-6 font-bold text-right text-emerald-700 dark:text-emerald-400">
+                          {i18n.language === 'en' ? '$' : i18n.language === 'fr' ? '€' : 'R$'} {data.totalAmount.toLocaleString(i18n.language === 'en' ? 'en-US' : i18n.language === 'fr' ? 'fr-FR' : 'pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -458,7 +465,7 @@ const CreditHistoryReport = () => {
           </Card>
         )}
       </div>
-    </div>
+    </TeacherLayout>
   )
 }
 

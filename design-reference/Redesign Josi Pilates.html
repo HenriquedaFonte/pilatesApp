@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Redesign — Josi Pilates</title>
+<link rel="stylesheet" href="styles.css" />
+<style>
+  body { background: #ece9e1; }
+  .showcase { max-width: 1320px; margin: 0 auto; padding: 0 40px 120px; }
+
+  /* intro */
+  .intro { padding: 80px 0 56px; max-width: 760px; }
+  .intro .eyebrow { display:flex; align-items:center; gap:12px; margin-bottom: 26px; }
+  .intro .eyebrow img { width: 44px; height: 44px; border-radius: 12px; }
+  .intro .eyebrow span { font-size: 15px; font-weight: 800; letter-spacing: -.02em; }
+  .intro .eyebrow span em { color: var(--brand); font-style: normal; }
+  .intro h1 { font-family: var(--serif); font-size: 60px; line-height: 1.02; font-weight: 400; letter-spacing: -.015em; margin-bottom: 22px; }
+  .intro h1 em { font-style: italic; color: var(--brand); }
+  .intro p { font-size: 17px; color: var(--ink-2); line-height: 1.65; }
+
+  .block { padding: 40px 0; border-top: 1px solid #d9d6cc; }
+  .block-head { margin-bottom: 30px; }
+  .block-head h2 { font-family: var(--serif); font-size: 32px; font-weight: 400; letter-spacing: -.01em; margin: 16px 0 8px; }
+  .block-head p { font-size: 15px; color: var(--ink-2); max-width: 640px; line-height: 1.6; }
+
+  .stage { display: flex; justify-content: center; padding: 16px 0; }
+  .stage-row { display: flex; gap: 36px; justify-content: center; flex-wrap: wrap; align-items: flex-start; }
+
+  .cap { text-align: center; margin-top: 18px; font-size: 13px; color: var(--ink-3); font-weight: 600; }
+
+  /* foundations */
+  .found-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .swatch-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .sw { border-radius: 12px; overflow: hidden; border: 1px solid var(--line); }
+  .sw-color { height: 64px; }
+  .sw-meta { padding: 9px 11px; background: var(--paper); }
+  .sw-name { font-size: 12.5px; font-weight: 700; }
+  .sw-hex { font-size: 11px; color: var(--ink-3); font-family: ui-monospace, monospace; }
+  .type-row { padding: 14px 0; border-bottom: 1px solid var(--line-2); }
+  .type-row:last-child { border-bottom: none; }
+  .type-label { font-size: 11px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 6px; }
+
+  .feat-list { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+  .feat { display: flex; gap: 12px; align-items: flex-start; }
+  .feat-check { width: 22px; height: 22px; border-radius: 7px; background: var(--brand-50); color: var(--brand-700); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .feat-check svg { width: 13px; height: 13px; }
+  .feat p { font-size: 14px; color: var(--ink-2); line-height: 1.5; }
+  .feat p strong { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ ICON SPRITE ═══════════ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <g id="i-home"><path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></g>
+    <g id="i-users"><circle cx="9" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 20c0-3 2.5-5 5.5-5s5.5 2 5.5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M16 5.5a3 3 0 0 1 0 5.8M17.5 20c0-2.4-1-3.8-2-4.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></g>
+    <g id="i-book"><path d="M5 4h11a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M5 17h13" stroke="currentColor" stroke-width="1.8"/></g>
+    <g id="i-check"><path d="M5 12.5 10 17.5 19.5 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <g id="i-check-circle"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 12.2l2.6 2.6L16 9.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <g id="i-file"><path d="M6 3h8l4 4v14H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4M9 13h6M9 16.5h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></g>
+    <g id="i-card"><rect x="3" y="6" width="18" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18" stroke="currentColor" stroke-width="1.8"/></g>
+    <g id="i-mail"><rect x="3" y="5" width="18" height="14" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m4 7 8 6 8-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></g>
+    <g id="i-calendar"><rect x="3.5" y="5" width="17" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 9.5h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></g>
+    <g id="i-clock"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5V12l3 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></g>
+    <g id="i-history"><path d="M3 12a9 9 0 1 1 3 6.7L3 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 7.5V12l3.2 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></g>
+    <g id="i-alert"><path d="M12 3 22 20H2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 9.5v4.5M12 17.2v.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></g>
+    <g id="i-logout"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9 12h11M16 8l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <g id="i-search"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></g>
+    <g id="i-download"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 19h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></g>
+    <g id="i-plus"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></g>
+    <g id="i-edit"><path d="M5 19h4l9-9-4-4-9 9z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m13 6 4 4" stroke="currentColor" stroke-width="1.8"/></g>
+    <g id="i-chevron"><path d="m9 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <g id="i-bell"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 20a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></g>
+    <g id="i-settings"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></g>
+    <g id="i-trend"><path d="M3 17 9 11l4 4 8-8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 7h5v5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <g id="i-dumbbell"><path d="M6.5 6.5v11M4 8.5v7M17.5 6.5v11M20 8.5v7M6.5 12h11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></g>
+    <g id="i-send"><path d="M21 4 3 11l6 2 2 6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M21 4 11 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></g>
+    <g id="i-eye"><path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="1.8"/></g>
+    <g id="i-wifi"><path d="M5 12.5a10 10 0 0 1 14 0M8 15.5a6 6 0 0 1 8 0M11 18.2a2 2 0 0 1 2 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></g>
+    <g id="i-battery"><rect x="3" y="8" width="16" height="9" rx="2.5" fill="currentColor"/><rect x="20" y="11" width="2" height="3" rx="1" fill="currentColor"/></g>
+    <g id="i-signal"><rect x="3" y="13" width="3" height="5" rx="1" fill="currentColor"/><rect x="8" y="10" width="3" height="8" rx="1" fill="currentColor"/><rect x="13" y="6" width="3" height="12" rx="1" fill="currentColor"/></g>
+  </defs>
+</svg>
+
+<div class="showcase">
+
+  <!-- ═══════════ INTRO ═══════════ -->
+  <div class="intro">
+    <div class="eyebrow">
+      <img src="logo.jpg" alt="Josi Pilates" />
+      <span>Josi <em>Pilates</em> · Proposta de Redesign</span>
+    </div>
+    <h1>Um portal mais <em>leve</em>, claro e profissional.</h1>
+    <p>Redesenho completo do portal da professora e da aluna — nova identidade visual baseada na marca, navegação persistente, hierarquia clara e correção dos problemas de UX identificados na análise. Role para ver cada tela.</p>
+  </div>
+
+  <!-- ═══════════ FOUNDATIONS ═══════════ -->
+  <div class="block">
+    <div class="block-head">
+      <span class="section-tag"><span class="dot" style="background:var(--brand)"></span> Fundação</span>
+      <h2>Identidade visual</h2>
+      <p>Paleta extraída da própria logo — o verde-esmeralda da marca como cor primária, neutros quentes (creme) no lugar do cinza frio, e acentos suaves para estados. Tipografia que combina uma sans humanista com uma serifada editorial para momentos de destaque.</p>
+    </div>
+    <div class="found-grid">
+      <div class="card card-pad">
+        <div class="type-label">Paleta</div>
+        <div class="swatch-grid" style="margin-top:12px">
+          <div class="sw"><div class="sw-color" style="background:var(--brand)"></div><div class="sw-meta"><div class="sw-name">Brand</div><div class="sw-hex">#15A47E</div></div></div>
+          <div class="sw"><div class="sw-color" style="background:var(--brand-700)"></div><div class="sw-meta"><div class="sw-name">Deep</div><div class="sw-hex">#0D7257</div></div></div>
+          <div class="sw"><div class="sw-color" style="background:var(--cream)"></div><div class="sw-meta"><div class="sw-name">Creme</div><div class="sw-hex">#F7F5EF</div></div></div>
+          <div class="sw"><div class="sw-color" style="background:var(--ink)"></div><div class="sw-meta"><div class="sw-name">Ink</div><div class="sw-hex">#16221D</div></div></div>
+          <div class="sw"><div class="sw-color" style="background:var(--clay)"></div><div class="sw-meta"><div class="sw-name">Clay</div><div class="sw-hex">#C9745A</div></div></div>
+          <div class="sw"><div class="sw-color" style="background:var(--amber)"></div><div class="sw-meta"><div class="sw-name">Amber</div><div class="sw-hex">#D4901F</div></div></div>
+          <div class="sw"><div class="sw-color" style="background:var(--blue)"></div><div class="sw-meta"><div class="sw-name">Blue</div><div class="sw-hex">#3F76C9</div></div></div>
+          <div class="sw"><div class="sw-color" style="background:var(--violet)"></div><div class="sw-meta"><div class="sw-name">Violet</div><div class="sw-hex">#8466C4</div></div></div>
+        </div>
+      </div>
+      <div class="card card-pad">
+        <div class="type-row">
+          <div class="type-label">Display · Instrument Serif</div>
+          <div style="font-family:var(--serif); font-size:38px; line-height:1">Bem-vinda, Josiane</div>
+        </div>
+        <div class="type-row">
+          <div class="type-label">Títulos · Hanken Grotesk Bold</div>
+          <div style="font-size:24px; font-weight:800; letter-spacing:-.02em">Gestão de Alunos</div>
+        </div>
+        <div class="type-row">
+          <div class="type-label">Corpo · Hanken Grotesk</div>
+          <div style="font-size:15px; color:var(--ink-2)">Marque a presença das alunas e gerencie créditos com clareza.</div>
+        </div>
+        <div class="type-row">
+          <div class="type-label">Labels · Hanken Grotesk 700 · uppercase</div>
+          <div style="font-size:12px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-3)">Créditos Individuais</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ LOGIN ═══════════ -->
+  <div class="block">
+    <div class="block-head">
+      <span class="section-tag"><span class="dot" style="background:var(--clay)"></span> Acesso</span>
+      <h2>Tela de login</h2>
+      <p>Painel duplo: a marca ganha presença à esquerda sobre o verde da identidade; o formulário fica limpo e focado à direita. Substitui o gradiente azul genérico que não tinha relação com a marca.</p>
+    </div>
+    <div class="stage">
+      <div class="frame" style="width:980px">
+        <div class="frame-bar">
+          <div class="frame-dot" style="background:#f0685f"></div><div class="frame-dot" style="background:#f5bf4f"></div><div class="frame-dot" style="background:#62c554"></div>
+          <div class="frame-url">app.josipilates.com.br/entrar</div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; height:540px">
+          <!-- brand side -->
+          <div style="background:linear-gradient(150deg,var(--brand) 0%,var(--brand-800) 100%); padding:46px; display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden">
+            <div style="position:absolute; width:340px; height:340px; border-radius:50%; background:rgba(255,255,255,.06); right:-120px; bottom:-120px"></div>
+            <div style="display:flex; align-items:center; gap:12px; position:relative">
+              <img src="logo.jpg" style="width:46px;height:46px;border-radius:13px" />
+              <span style="color:#fff; font-size:19px; font-weight:800; letter-spacing:-.02em">Josi Pilates</span>
+            </div>
+            <div style="position:relative">
+              <div style="font-family:var(--serif); font-size:34px; color:#fff; line-height:1.12; font-style:italic">"Movimento com intenção, progresso com clareza."</div>
+              <p style="color:var(--brand-100); font-size:14px; margin-top:16px; line-height:1.6">Acompanhe seus créditos, sua agenda e sua evolução em um só lugar.</p>
+            </div>
+          </div>
+          <!-- form side -->
+          <div style="padding:46px 48px; display:flex; flex-direction:column; justify-content:center; background:var(--paper)">
+            <div style="font-family:var(--serif); font-size:30px; line-height:1.1; margin-bottom:6px">Que bom te ver de novo</div>
+            <p style="font-size:14px; color:var(--ink-3); margin-bottom:28px">Entre na sua conta para continuar</p>
+            <div style="font-size:12.5px; font-weight:700; margin-bottom:7px">E-mail</div>
+            <div style="border:1px solid var(--line); border-radius:11px; padding:13px 15px; font-size:14px; color:var(--ink-3); margin-bottom:18px; background:var(--cream)">voce@email.com</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:7px">
+              <span style="font-size:12.5px; font-weight:700">Senha</span>
+              <span style="font-size:12.5px; color:var(--brand-700); font-weight:600">Esqueceu a senha?</span>
+            </div>
+            <div style="border:1px solid var(--line); border-radius:11px; padding:13px 15px; font-size:14px; color:var(--ink-3); margin-bottom:24px; background:var(--cream); display:flex; justify-content:space-between; align-items:center">
+              <span>••••••••</span><svg style="width:17px;height:17px;color:var(--ink-3)"><use href="#i-eye"/></svg>
+            </div>
+            <button class="btn btn-primary btn-block" style="padding:13px">Entrar</button>
+            <div style="display:flex; align-items:center; gap:12px; margin:22px 0">
+              <div style="flex:1; height:1px; background:var(--line)"></div>
+              <span style="font-size:11.5px; color:var(--ink-3); text-transform:uppercase; letter-spacing:.06em; font-weight:600">ou</span>
+              <div style="flex:1; height:1px; background:var(--line)"></div>
+            </div>
+            <button class="btn btn-outline btn-block" style="padding:12px">
+              <svg width="17" height="17" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.5 12.2c0-.8-.1-1.5-.2-2.2H12v4.3h5.9c-.3 1.4-1 2.5-2.2 3.3v2.8h3.6c2-1.9 3.2-4.7 3.2-8z"/><path fill="#34A853" d="M12 23c2.9 0 5.4-1 7.2-2.7l-3.6-2.8c-1 .7-2.2 1-3.6 1-2.8 0-5.2-1.9-6.1-4.5H2.2v2.8C4 20.5 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.9 14.1c-.2-.7-.4-1.4-.4-2.1s.1-1.4.4-2.1V7.1H2.2A11 11 0 0 0 1 12c0 1.8.4 3.5 1.2 4.9z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3 .6 4.2 1.6l3.1-3.1C17.4 2.1 14.9 1 12 1 7.7 1 4 3.5 2.2 7.1l3.7 2.8C6.8 7.3 9.2 5.4 12 5.4z"/></svg>
+              Continuar com Google
+            </button>
+            <p style="text-align:center; font-size:13px; color:var(--ink-3); margin-top:22px">Não tem conta? <span style="color:var(--brand-700); font-weight:600">Cadastre-se</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ STUDENT PORTAL ═══════════ -->
+  <div class="block">
+    <div class="block-head">
+      <span class="section-tag"><span class="dot" style="background:var(--blue)"></span> Portal da Aluna</span>
+      <h2>Experiência da aluna — mobile first</h2>
+      <p>As alunas acessam pelo celular. O destaque agora é o <strong>saldo dividido por tipo de crédito</strong> (Individual / Duo / Grupo) — corrigindo o bug do saldo único — além de progresso do mês, próxima aula e navegação inferior fixa.</p>
+    </div>
+    <div class="stage">
+      <div class="stage-row">
+
+        <!-- STUDENT DASHBOARD -->
+        <div>
+          <div class="phone">
+            <div class="notch"></div>
+            <div class="phone-screen">
+              <div class="status-bar">
+                <span>9:41</span>
+                <div class="r"><svg style="width:16px;height:16px"><use href="#i-signal"/></svg><svg style="width:16px;height:16px"><use href="#i-wifi"/></svg><svg style="width:22px;height:14px"><use href="#i-battery"/></svg></div>
+              </div>
+              <div class="s-header">
+                <div style="display:flex; justify-content:space-between; align-items:center">
+                  <div>
+                    <div class="s-greet-label">Segunda, 29 de maio</div>
+                    <div class="s-greet">Olá, <em>Marina</em> 🌿</div>
+                  </div>
+                  <div class="avatar avatar-lg">MR</div>
+                </div>
+              </div>
+              <div class="s-body">
+                <!-- balance -->
+                <div class="s-balance-card">
+                  <div style="display:flex; justify-content:space-between; align-items:flex-start; position:relative">
+                    <div>
+                      <div style="font-size:13px; opacity:.85; font-weight:500">Saldo total de créditos</div>
+                      <div style="font-family:var(--serif); font-size:52px; line-height:1; margin-top:4px">18</div>
+                    </div>
+                    <div class="badge" style="background:rgba(255,255,255,.18); color:#fff">aulas restantes</div>
+                  </div>
+                </div>
+                <div class="credit-row" style="margin-top:14px">
+                  <div class="credit-chip cc-indiv"><div class="n">6</div><div class="l">Individual</div></div>
+                  <div class="credit-chip cc-duo"><div class="n">4</div><div class="l">Duo</div></div>
+                  <div class="credit-chip cc-group"><div class="n">8</div><div class="l">Grupo</div></div>
+                </div>
+
+                <!-- next class -->
+                <div class="card" style="margin-top:18px; border-color:var(--brand-200); background:var(--brand-50)">
+                  <div class="card-pad" style="padding:16px 18px; display:flex; align-items:center; gap:14px">
+                    <div class="li-ico" style="background:var(--brand); color:#fff"><svg><use href="#i-calendar"/></svg></div>
+                    <div style="flex:1">
+                      <div style="font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--brand-700)">Próxima aula</div>
+                      <div style="font-weight:700; font-size:15px; margin-top:2px">Pilates Solo · Grupo</div>
+                      <div style="font-size:12.5px; color:var(--ink-2)">Amanhã · 08:00 – 09:00</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- weekly schedule -->
+                <div style="display:flex; justify-content:space-between; align-items:center; margin:22px 4px 10px">
+                  <div style="font-size:15px; font-weight:800; letter-spacing:-.01em">Minha semana</div>
+                  <span style="font-size:12.5px; color:var(--brand-700); font-weight:600">Ver tudo</span>
+                </div>
+                <div class="card card-pad" style="padding:6px 16px">
+                  <div class="list-item">
+                    <div class="li-ico" style="background:var(--blue-50); color:var(--blue)"><svg><use href="#i-dumbbell"/></svg></div>
+                    <div class="li-main"><div class="li-title">Pilates Solo</div><div class="li-sub">Terça · 08:00</div></div>
+                    <svg style="width:18px;height:18px;color:var(--ink-3)"><use href="#i-chevron"/></svg>
+                  </div>
+                  <div class="list-item">
+                    <div class="li-ico" style="background:var(--violet-50); color:var(--violet)"><svg><use href="#i-users"/></svg></div>
+                    <div class="li-main"><div class="li-title">Mat em Grupo</div><div class="li-sub">Quinta · 18:30</div></div>
+                    <svg style="width:18px;height:18px;color:var(--ink-3)"><use href="#i-chevron"/></svg>
+                  </div>
+                </div>
+              </div>
+              <!-- bottom nav -->
+              <div class="bottom-nav">
+                <div class="bn-item active"><svg><use href="#i-home"/></svg>Início</div>
+                <div class="bn-item"><svg><use href="#i-calendar"/></svg>Agenda</div>
+                <div class="bn-item"><svg><use href="#i-history"/></svg>Histórico</div>
+                <div class="bn-item"><svg><use href="#i-settings"/></svg>Perfil</div>
+              </div>
+            </div>
+          </div>
+          <div class="cap">Dashboard da Aluna</div>
+        </div>
+
+        <!-- STUDENT HISTORY -->
+        <div>
+          <div class="phone">
+            <div class="notch"></div>
+            <div class="phone-screen">
+              <div class="status-bar">
+                <span>9:41</span>
+                <div class="r"><svg style="width:16px;height:16px"><use href="#i-signal"/></svg><svg style="width:16px;height:16px"><use href="#i-wifi"/></svg><svg style="width:22px;height:14px"><use href="#i-battery"/></svg></div>
+              </div>
+              <div class="s-header" style="padding-top:14px">
+                <div class="s-greet-label">Meu histórico</div>
+                <div class="s-greet">Presenças &amp; <em>créditos</em></div>
+              </div>
+              <div class="s-body">
+                <!-- month stat -->
+                <div class="card card-pad" style="padding:16px; display:flex; gap:12px">
+                  <div style="flex:1; text-align:center">
+                    <div style="font-family:var(--serif); font-size:30px; color:var(--brand)">12</div>
+                    <div style="font-size:11px; color:var(--ink-3); font-weight:600">Aulas no mês</div>
+                  </div>
+                  <div style="width:1px; background:var(--line)"></div>
+                  <div style="flex:1; text-align:center">
+                    <div style="font-family:var(--serif); font-size:30px; color:var(--ink)">92%</div>
+                    <div style="font-size:11px; color:var(--ink-3); font-weight:600">Presença</div>
+                  </div>
+                </div>
+
+                <div style="font-size:13px; font-weight:800; margin:20px 4px 8px; letter-spacing:-.01em">Frequência recente</div>
+                <div class="card card-pad" style="padding:6px 16px">
+                  <div class="list-item">
+                    <div class="li-ico" style="background:var(--brand-50); color:var(--brand)"><svg><use href="#i-check"/></svg></div>
+                    <div class="li-main"><div class="li-title">Pilates Solo</div><div class="li-sub">27 mai · 08:00</div></div>
+                    <span class="badge badge-brand">Presente</span>
+                  </div>
+                  <div class="list-item">
+                    <div class="li-ico" style="background:var(--brand-50); color:var(--brand)"><svg><use href="#i-check"/></svg></div>
+                    <div class="li-main"><div class="li-title">Mat em Grupo</div><div class="li-sub">23 mai · 18:30</div></div>
+                    <span class="badge badge-brand">Presente</span>
+                  </div>
+                  <div class="list-item">
+                    <div class="li-ico" style="background:var(--amber-50); color:var(--amber)"><svg><use href="#i-alert"/></svg></div>
+                    <div class="li-main"><div class="li-title">Pilates Solo</div><div class="li-sub">20 mai · 08:00</div></div>
+                    <span class="badge badge-amber">Falta avisada</span>
+                  </div>
+                </div>
+
+                <div style="font-size:13px; font-weight:800; margin:20px 4px 8px; letter-spacing:-.01em">Movimentação de créditos</div>
+                <div class="card card-pad" style="padding:6px 16px">
+                  <div class="list-item">
+                    <div class="li-main"><div class="li-title">Recarga · Pacote 10</div><div class="li-sub">15 mai · Pix</div></div>
+                    <span class="li-amt" style="color:var(--brand-700)">+10</span>
+                  </div>
+                  <div class="list-item">
+                    <div class="li-main"><div class="li-title">Aula individual</div><div class="li-sub">14 mai</div></div>
+                    <span class="li-amt" style="color:var(--rose)">−1</span>
+                  </div>
+                </div>
+              </div>
+              <div class="bottom-nav">
+                <div class="bn-item"><svg><use href="#i-home"/></svg>Início</div>
+                <div class="bn-item"><svg><use href="#i-calendar"/></svg>Agenda</div>
+                <div class="bn-item active"><svg><use href="#i-history"/></svg>Histórico</div>
+                <div class="bn-item"><svg><use href="#i-settings"/></svg>Perfil</div>
+              </div>
+            </div>
+          </div>
+          <div class="cap">Histórico da Aluna</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ TEACHER DASHBOARD ═══════════ -->
+  <div class="block">
+    <div class="block-head">
+      <span class="section-tag"><span class="dot" style="background:var(--brand)"></span> Portal da Professora</span>
+      <h2>Dashboard com navegação persistente</h2>
+      <p>A maior mudança estrutural: uma <strong>sidebar fixa</strong> com todas as seções, eliminando o vai-e-volta pelo dashboard. Os números agora vêm do Supabase (corrigindo o bug do Firebase) e ganham contexto visual com mini-gráficos.</p>
+    </div>
+    <div class="stage">
+      <div class="frame" style="width:1200px">
+        <div class="frame-bar">
+          <div class="frame-dot" style="background:#f0685f"></div><div class="frame-dot" style="background:#f5bf4f"></div><div class="frame-dot" style="background:#62c554"></div>
+          <div class="frame-url">app.josipilates.com.br/professora</div>
+        </div>
+        <div class="app" style="height:720px">
+          <!-- SIDEBAR -->
+          <aside class="sidebar">
+            <div class="brand-row">
+              <img src="logo.jpg" class="brand-mark" />
+              <div class="brand-name">Josi <span>Pilates</span></div>
+            </div>
+            <a class="nav-item active"><svg><use href="#i-home"/></svg> Visão geral</a>
+            <a class="nav-item"><svg><use href="#i-users"/></svg> Alunos</a>
+            <a class="nav-item"><svg><use href="#i-book"/></svg> Turmas</a>
+            <a class="nav-item"><svg><use href="#i-check-circle"/></svg> Check-in</a>
+            <div class="nav-group-label">Relatórios</div>
+            <a class="nav-item"><svg><use href="#i-file"/></svg> Frequência</a>
+            <a class="nav-item"><svg><use href="#i-card"/></svg> Créditos baixos</a>
+            <a class="nav-item"><svg><use href="#i-history"/></svg> Histórico de créditos</a>
+            <a class="nav-item"><svg><use href="#i-mail"/></svg> E-mails</a>
+            <div class="nav-spacer"></div>
+            <div class="nav-user">
+              <div class="avatar">JS</div>
+              <div style="flex:1; min-width:0"><div style="font-size:13px; font-weight:700">Josiane Silva</div><div style="font-size:11.5px; color:var(--ink-3)">Professora</div></div>
+              <svg style="width:17px;height:17px;color:var(--ink-3)"><use href="#i-logout"/></svg>
+            </div>
+          </aside>
+          <!-- MAIN -->
+          <div class="main">
+            <div class="topbar">
+              <div>
+                <div class="page-title">Quinta, 29 de maio de 2026</div>
+                <div class="page-h1">Bom dia, <em>Josiane</em></div>
+              </div>
+              <div style="display:flex; gap:10px; align-items:center">
+                <button class="btn btn-outline btn-icon"><svg><use href="#i-bell"/></svg></button>
+                <button class="btn btn-primary"><svg><use href="#i-check-circle"/></svg> Iniciar check-in</button>
+              </div>
+            </div>
+            <div class="content">
+              <div class="stat-grid" style="grid-template-columns:repeat(4,1fr); margin-bottom:20px">
+                <div class="stat">
+                  <div class="stat-ico" style="background:var(--brand-50); color:var(--brand-700)"><svg><use href="#i-users"/></svg></div>
+                  <div class="stat-num">48</div>
+                  <div class="stat-label">Alunas ativas</div>
+                  <div class="stat-trend" style="color:var(--brand-700)"><svg style="width:13px;height:13px"><use href="#i-trend"/></svg> +3 este mês</div>
+                </div>
+                <div class="stat">
+                  <div class="stat-ico" style="background:var(--amber-50); color:var(--amber)"><svg><use href="#i-alert"/></svg></div>
+                  <div class="stat-num" style="color:var(--amber)">7</div>
+                  <div class="stat-label">Com saldo baixo</div>
+                  <div class="stat-trend" style="color:var(--ink-3)">menos de 4 créditos</div>
+                </div>
+                <div class="stat">
+                  <div class="stat-ico" style="background:var(--blue-50); color:var(--blue)"><svg><use href="#i-calendar"/></svg></div>
+                  <div class="stat-num">6</div>
+                  <div class="stat-label">Aulas hoje</div>
+                  <div class="stat-trend" style="color:var(--ink-3)">próxima às 08:00</div>
+                </div>
+                <div class="stat">
+                  <div class="stat-ico" style="background:var(--violet-50); color:var(--violet)"><svg><use href="#i-book"/></svg></div>
+                  <div class="stat-num">12</div>
+                  <div class="stat-label">Turmas na semana</div>
+                  <div class="stat-trend" style="color:var(--ink-3)">3 modalidades</div>
+                </div>
+              </div>
+
+              <div style="display:grid; grid-template-columns:1.5fr 1fr; gap:20px">
+                <!-- attendance chart -->
+                <div class="card">
+                  <div class="card-head">
+                    <div><div class="card-title"><svg><use href="#i-trend"/></svg> Presenças na semana</div></div>
+                    <span class="badge badge-gray">Últimos 7 dias</span>
+                  </div>
+                  <div class="card-pad">
+                    <div style="display:flex; align-items:flex-end; gap:16px; height:150px; padding:0 6px">
+                      <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:8px"><div style="width:100%; height:62%; background:var(--brand-100); border-radius:8px 8px 0 0"></div><span class="muted" style="font-size:11px">Seg</span></div>
+                      <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:8px"><div style="width:100%; height:88%; background:var(--brand); border-radius:8px 8px 0 0"></div><span class="muted" style="font-size:11px">Ter</span></div>
+                      <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:8px"><div style="width:100%; height:54%; background:var(--brand-100); border-radius:8px 8px 0 0"></div><span class="muted" style="font-size:11px">Qua</span></div>
+                      <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:8px"><div style="width:100%; height:76%; background:var(--brand-200); border-radius:8px 8px 0 0"></div><span class="muted" style="font-size:11px">Qui</span></div>
+                      <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:8px"><div style="width:100%; height:48%; background:var(--brand-100); border-radius:8px 8px 0 0"></div><span class="muted" style="font-size:11px">Sex</span></div>
+                      <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:8px"><div style="width:100%; height:34%; background:var(--brand-100); border-radius:8px 8px 0 0"></div><span class="muted" style="font-size:11px">Sáb</span></div>
+                    </div>
+                  </div>
+                </div>
+                <!-- credit mix -->
+                <div class="card">
+                  <div class="card-head"><div class="card-title"><svg><use href="#i-card"/></svg> Mix de créditos</div></div>
+                  <div class="card-pad">
+                    <div class="credit-row" style="flex-direction:column; gap:10px">
+                      <div style="display:flex; align-items:center; gap:12px">
+                        <span class="dot" style="background:var(--blue); width:10px;height:10px"></span>
+                        <span style="font-size:13.5px; flex:1">Individual</span>
+                        <strong style="font-size:14px">42%</strong>
+                      </div>
+                      <div style="height:8px; background:var(--cream-2); border-radius:6px; overflow:hidden"><div style="width:42%; height:100%; background:var(--blue)"></div></div>
+                      <div style="display:flex; align-items:center; gap:12px; margin-top:6px">
+                        <span class="dot" style="background:var(--brand); width:10px;height:10px"></span>
+                        <span style="font-size:13.5px; flex:1">Duo</span>
+                        <strong style="font-size:14px">23%</strong>
+                      </div>
+                      <div style="height:8px; background:var(--cream-2); border-radius:6px; overflow:hidden"><div style="width:23%; height:100%; background:var(--brand)"></div></div>
+                      <div style="display:flex; align-items:center; gap:12px; margin-top:6px">
+                        <span class="dot" style="background:var(--violet); width:10px;height:10px"></span>
+                        <span style="font-size:13.5px; flex:1">Grupo</span>
+                        <strong style="font-size:14px">35%</strong>
+                      </div>
+                      <div style="height:8px; background:var(--cream-2); border-radius:6px; overflow:hidden"><div style="width:35%; height:100%; background:var(--violet)"></div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cap">Visão geral — Portal da Professora</div>
+  </div>
+
+  <!-- ═══════════ MANAGE STUDENTS ═══════════ -->
+  <div class="block">
+    <div class="block-head">
+      <span class="section-tag"><span class="dot" style="background:var(--brand)"></span> Portal da Professora</span>
+      <h2>Gestão de alunos</h2>
+      <p>Tabela limpa com busca, saldo por tipo em chips coloridos e ações com rótulo claro (não mais ícones soltos sem tooltip). Cada linha mostra o estado do saldo de relance.</p>
+    </div>
+    <div class="stage">
+      <div class="frame" style="width:1200px">
+        <div class="frame-bar">
+          <div class="frame-dot" style="background:#f0685f"></div><div class="frame-dot" style="background:#f5bf4f"></div><div class="frame-dot" style="background:#62c554"></div>
+          <div class="frame-url">app.josipilates.com.br/professora/alunos</div>
+        </div>
+        <div class="app" style="height:680px">
+          <aside class="sidebar">
+            <div class="brand-row"><img src="logo.jpg" class="brand-mark" /><div class="brand-name">Josi <span>Pilates</span></div></div>
+            <a class="nav-item"><svg><use href="#i-home"/></svg> Visão geral</a>
+            <a class="nav-item active"><svg><use href="#i-users"/></svg> Alunos</a>
+            <a class="nav-item"><svg><use href="#i-book"/></svg> Turmas</a>
+            <a class="nav-item"><svg><use href="#i-check-circle"/></svg> Check-in</a>
+            <div class="nav-group-label">Relatórios</div>
+            <a class="nav-item"><svg><use href="#i-file"/></svg> Frequência</a>
+            <a class="nav-item"><svg><use href="#i-card"/></svg> Créditos baixos</a>
+            <a class="nav-item"><svg><use href="#i-history"/></svg> Histórico de créditos</a>
+            <a class="nav-item"><svg><use href="#i-mail"/></svg> E-mails</a>
+            <div class="nav-spacer"></div>
+            <div class="nav-user"><div class="avatar">JS</div><div style="flex:1; min-width:0"><div style="font-size:13px; font-weight:700">Josiane Silva</div><div style="font-size:11.5px; color:var(--ink-3)">Professora</div></div><svg style="width:17px;height:17px;color:var(--ink-3)"><use href="#i-logout"/></svg></div>
+          </aside>
+          <div class="main">
+            <div class="topbar">
+              <div><div class="page-title">Portal da Professora</div><div class="page-h1">Gestão de <em>alunos</em></div></div>
+              <div style="display:flex; gap:10px; align-items:center">
+                <div class="search-box"><svg><use href="#i-search"/></svg><input placeholder="Buscar aluna..." /></div>
+                <button class="btn btn-primary"><svg><use href="#i-plus"/></svg> Nova aluna</button>
+              </div>
+            </div>
+            <div class="content">
+              <div class="card" style="overflow:hidden">
+                <table class="tbl">
+                  <thead>
+                    <tr><th>Aluna</th><th>Saldo por tipo</th><th>Total</th><th>Status</th><th style="text-align:right">Ações</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><div style="display:flex; align-items:center; gap:11px"><div class="avatar">MR</div><div><div class="name">Marina Rocha</div><div class="muted">marina@email.com</div></div></div></td>
+                      <td><div style="display:flex; gap:6px"><span class="badge badge-blue">6 Ind</span><span class="badge badge-brand">4 Duo</span><span class="badge badge-violet">8 Grp</span></div></td>
+                      <td><strong>18</strong></td>
+                      <td><span class="badge badge-brand"><span class="dot" style="background:var(--brand)"></span> Em dia</span></td>
+                      <td><div style="display:flex; gap:6px; justify-content:flex-end"><button class="btn btn-outline btn-sm"><svg style="width:14px;height:14px"><use href="#i-edit"/></svg> Saldo</button><button class="btn btn-outline btn-sm"><svg style="width:14px;height:14px"><use href="#i-calendar"/></svg> Turmas</button></div></td>
+                    </tr>
+                    <tr>
+                      <td><div style="display:flex; align-items:center; gap:11px"><div class="avatar" style="background:var(--clay-50); color:var(--clay)">BL</div><div><div class="name">Beatriz Lima</div><div class="muted">bia.lima@email.com</div></div></div></td>
+                      <td><div style="display:flex; gap:6px"><span class="badge badge-blue">1 Ind</span><span class="badge badge-gray">0 Duo</span><span class="badge badge-violet">2 Grp</span></div></td>
+                      <td><strong>3</strong></td>
+                      <td><span class="badge badge-amber"><span class="dot" style="background:var(--amber)"></span> Saldo baixo</span></td>
+                      <td><div style="display:flex; gap:6px; justify-content:flex-end"><button class="btn btn-outline btn-sm"><svg style="width:14px;height:14px"><use href="#i-edit"/></svg> Saldo</button><button class="btn btn-outline btn-sm"><svg style="width:14px;height:14px"><use href="#i-calendar"/></svg> Turmas</button></div></td>
+                    </tr>
+                    <tr>
+                      <td><div style="display:flex; align-items:center; gap:11px"><div class="avatar" style="background:var(--violet-50); color:var(--violet)">CF</div><div><div class="name">Carla Ferraz</div><div class="muted">carla.f@email.com</div></div></div></td>
+                      <td><div style="display:flex; gap:6px"><span class="badge badge-blue">10 Ind</span><span class="badge badge-brand">6 Duo</span><span class="badge badge-gray">0 Grp</span></div></td>
+                      <td><strong>16</strong></td>
+                      <td><span class="badge badge-brand"><span class="dot" style="background:var(--brand)"></span> Em dia</span></td>
+                      <td><div style="display:flex; gap:6px; justify-content:flex-end"><button class="btn btn-outline btn-sm"><svg style="width:14px;height:14px"><use href="#i-edit"/></svg> Saldo</button><button class="btn btn-outline btn-sm"><svg style="width:14px;height:14px"><use href="#i-calendar"/></svg> Turmas</button></div></td>
+                    </tr>
+                    <tr>
+                      <td><div style="display:flex; align-items:center; gap:11px"><div class="avatar" style="background:var(--amber-50); color:var(--amber)">PS</div><div><div class="name">Patrícia Souza</div><div class="muted">pati.souza@email.com</div></div></div></td>
+                      <td><div style="display:flex; gap:6px"><span class="badge badge-gray">0 Ind</span><span class="badge badge-gray">0 Duo</span><span class="badge badge-gray">0 Grp</span></div></td>
+                      <td><strong>0</strong></td>
+                      <td><span class="badge badge-rose"><span class="dot" style="background:var(--rose)"></span> Sem créditos</span></td>
+                      <td><div style="display:flex; gap:6px; justify-content:flex-end"><button class="btn btn-outline btn-sm"><svg style="width:14px;height:14px"><use href="#i-edit"/></svg> Saldo</button><button class="btn btn-outline btn-sm"><svg style="width:14px;height:14px"><use href="#i-calendar"/></svg> Turmas</button></div></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cap">Gestão de Alunos</div>
+  </div>
+
+  <!-- ═══════════ CHECK-IN ═══════════ -->
+  <div class="block">
+    <div class="block-head">
+      <span class="section-tag"><span class="dot" style="background:var(--brand)"></span> Portal da Professora</span>
+      <h2>Check-in diário</h2>
+      <p>Cada aluna tem <strong>seu próprio seletor de tipo de crédito</strong> — corrigindo o bug crítico em que mudar um afetava todos. A turma do dia fica no topo e o estado de presença é visível por cor.</p>
+    </div>
+    <div class="stage">
+      <div class="frame" style="width:1200px">
+        <div class="frame-bar">
+          <div class="frame-dot" style="background:#f0685f"></div><div class="frame-dot" style="background:#f5bf4f"></div><div class="frame-dot" style="background:#62c554"></div>
+          <div class="frame-url">app.josipilates.com.br/professora/check-in</div>
+        </div>
+        <div class="app" style="height:680px">
+          <aside class="sidebar">
+            <div class="brand-row"><img src="logo.jpg" class="brand-mark" /><div class="brand-name">Josi <span>Pilates</span></div></div>
+            <a class="nav-item"><svg><use href="#i-home"/></svg> Visão geral</a>
+            <a class="nav-item"><svg><use href="#i-users"/></svg> Alunos</a>
+            <a class="nav-item"><svg><use href="#i-book"/></svg> Turmas</a>
+            <a class="nav-item active"><svg><use href="#i-check-circle"/></svg> Check-in</a>
+            <div class="nav-group-label">Relatórios</div>
+            <a class="nav-item"><svg><use href="#i-file"/></svg> Frequência</a>
+            <a class="nav-item"><svg><use href="#i-card"/></svg> Créditos baixos</a>
+            <a class="nav-item"><svg><use href="#i-history"/></svg> Histórico de créditos</a>
+            <a class="nav-item"><svg><use href="#i-mail"/></svg> E-mails</a>
+            <div class="nav-spacer"></div>
+            <div class="nav-user"><div class="avatar">JS</div><div style="flex:1; min-width:0"><div style="font-size:13px; font-weight:700">Josiane Silva</div><div style="font-size:11.5px; color:var(--ink-3)">Professora</div></div><svg style="width:17px;height:17px;color:var(--ink-3)"><use href="#i-logout"/></svg></div>
+          </aside>
+          <div class="main">
+            <div class="topbar">
+              <div><div class="page-title">Quinta, 29 de maio · 08:00 – 09:00</div><div class="page-h1">Check-in · <em>Pilates Solo</em></div></div>
+              <span class="badge badge-brand" style="font-size:13px; padding:8px 14px"><span class="dot" style="background:var(--brand)"></span> 3 de 5 presentes</span>
+            </div>
+            <div class="content">
+              <div class="card card-pad" style="display:flex; flex-direction:column; gap:12px">
+
+                <!-- row present -->
+                <div style="display:flex; align-items:center; gap:16px; padding:14px; border:1px solid var(--brand-200); background:var(--brand-50); border-radius:14px">
+                  <div class="avatar avatar-lg">MR</div>
+                  <div style="flex:1"><div style="font-weight:700; font-size:15px">Marina Rocha</div><div class="muted" style="font-size:12.5px">18 créditos · em dia</div></div>
+                  <div style="display:flex; align-items:center; gap:9px; background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:5px">
+                    <span class="badge badge-blue" style="margin:0 2px">Individual ▾</span>
+                  </div>
+                  <button class="btn btn-primary btn-sm"><svg style="width:15px;height:15px"><use href="#i-check"/></svg> Presente</button>
+                </div>
+
+                <!-- row pending -->
+                <div style="display:flex; align-items:center; gap:16px; padding:14px; border:1px solid var(--line); border-radius:14px">
+                  <div class="avatar avatar-lg" style="background:var(--violet-50); color:var(--violet)">CF</div>
+                  <div style="flex:1"><div style="font-weight:700; font-size:15px">Carla Ferraz</div><div class="muted" style="font-size:12.5px">16 créditos · em dia</div></div>
+                  <div style="display:flex; align-items:center; gap:9px; background:var(--cream); border:1px solid var(--line); border-radius:10px; padding:5px">
+                    <span class="badge badge-violet" style="margin:0 2px">Grupo ▾</span>
+                  </div>
+                  <button class="btn btn-outline btn-sm">Marcar presença</button>
+                </div>
+
+                <!-- row low balance -->
+                <div style="display:flex; align-items:center; gap:16px; padding:14px; border:1px solid var(--line); border-radius:14px">
+                  <div class="avatar avatar-lg" style="background:var(--clay-50); color:var(--clay)">BL</div>
+                  <div style="flex:1"><div style="font-weight:700; font-size:15px; display:flex; align-items:center; gap:8px">Beatriz Lima <span class="badge badge-amber">saldo baixo</span></div><div class="muted" style="font-size:12.5px">3 créditos restantes</div></div>
+                  <div style="display:flex; align-items:center; gap:9px; background:var(--cream); border:1px solid var(--line); border-radius:10px; padding:5px">
+                    <span class="badge badge-blue" style="margin:0 2px">Individual ▾</span>
+                  </div>
+                  <button class="btn btn-outline btn-sm">Marcar presença</button>
+                </div>
+
+                <!-- row absent -->
+                <div style="display:flex; align-items:center; gap:16px; padding:14px; border:1px solid var(--line); border-radius:14px; opacity:.7">
+                  <div class="avatar avatar-lg" style="background:var(--cream-2); color:var(--ink-3)">PS</div>
+                  <div style="flex:1"><div style="font-weight:700; font-size:15px">Patrícia Souza</div><div class="muted" style="font-size:12.5px">Falta avisada</div></div>
+                  <span class="badge badge-amber" style="padding:6px 12px">Falta avisada</span>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cap">Check-in Diário</div>
+  </div>
+
+  <!-- ═══════════ REPORT ═══════════ -->
+  <div class="block">
+    <div class="block-head">
+      <span class="section-tag"><span class="dot" style="background:var(--brand)"></span> Portal da Professora</span>
+      <h2>Relatórios</h2>
+      <p>Layout unificado para todos os relatórios: filtros no topo, dados que <strong>carregam automaticamente</strong> com o período padrão, tabela com paginação e exportação CSV. Mesma linguagem visual em frequência, créditos baixos e histórico.</p>
+    </div>
+    <div class="stage">
+      <div class="frame" style="width:1200px">
+        <div class="frame-bar">
+          <div class="frame-dot" style="background:#f0685f"></div><div class="frame-dot" style="background:#f5bf4f"></div><div class="frame-dot" style="background:#62c554"></div>
+          <div class="frame-url">app.josipilates.com.br/professora/historico-creditos</div>
+        </div>
+        <div class="app" style="height:680px">
+          <aside class="sidebar">
+            <div class="brand-row"><img src="logo.jpg" class="brand-mark" /><div class="brand-name">Josi <span>Pilates</span></div></div>
+            <a class="nav-item"><svg><use href="#i-home"/></svg> Visão geral</a>
+            <a class="nav-item"><svg><use href="#i-users"/></svg> Alunos</a>
+            <a class="nav-item"><svg><use href="#i-book"/></svg> Turmas</a>
+            <a class="nav-item"><svg><use href="#i-check-circle"/></svg> Check-in</a>
+            <div class="nav-group-label">Relatórios</div>
+            <a class="nav-item"><svg><use href="#i-file"/></svg> Frequência</a>
+            <a class="nav-item"><svg><use href="#i-card"/></svg> Créditos baixos</a>
+            <a class="nav-item active"><svg><use href="#i-history"/></svg> Histórico de créditos</a>
+            <a class="nav-item"><svg><use href="#i-mail"/></svg> E-mails</a>
+            <div class="nav-spacer"></div>
+            <div class="nav-user"><div class="avatar">JS</div><div style="flex:1; min-width:0"><div style="font-size:13px; font-weight:700">Josiane Silva</div><div style="font-size:11.5px; color:var(--ink-3)">Professora</div></div><svg style="width:17px;height:17px;color:var(--ink-3)"><use href="#i-logout"/></svg></div>
+          </aside>
+          <div class="main">
+            <div class="topbar">
+              <div><div class="page-title">Relatórios</div><div class="page-h1">Histórico de <em>créditos</em></div></div>
+              <button class="btn btn-outline"><svg><use href="#i-download"/></svg> Exportar CSV</button>
+            </div>
+            <div class="content">
+              <!-- filters -->
+              <div class="card card-pad" style="display:flex; gap:14px; align-items:flex-end; margin-bottom:18px">
+                <div><div style="font-size:11px; font-weight:700; color:var(--ink-3); text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px">De</div><div style="border:1px solid var(--line); border-radius:9px; padding:9px 13px; font-size:13.5px; color:var(--ink-2)">01/05/2026</div></div>
+                <div><div style="font-size:11px; font-weight:700; color:var(--ink-3); text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px">Até</div><div style="border:1px solid var(--line); border-radius:9px; padding:9px 13px; font-size:13.5px; color:var(--ink-2)">29/05/2026</div></div>
+                <button class="btn btn-primary"><svg><use href="#i-search"/></svg> Buscar</button>
+                <div style="flex:1"></div>
+                <div class="search-box"><svg><use href="#i-search"/></svg><input placeholder="Aluna, descrição ou pagamento..." /></div>
+              </div>
+              <!-- table -->
+              <div class="card" style="overflow:hidden">
+                <table class="tbl">
+                  <thead><tr><th>Aluna</th><th>Tipo</th><th>Alteração</th><th>Data</th><th>Observação</th><th>Pagamento</th></tr></thead>
+                  <tbody>
+                    <tr><td class="name">Marina Rocha</td><td><span class="badge badge-blue">Individual</span></td><td><span class="badge badge-brand">+10</span></td><td>15/05/2026 14:32</td><td class="muted">Pacote 10 aulas</td><td>Pix</td></tr>
+                    <tr><td class="name">Carla Ferraz</td><td><span class="badge badge-violet">Grupo</span></td><td><span class="badge badge-rose">−1</span></td><td>14/05/2026 08:05</td><td class="muted">Aula em grupo</td><td class="muted">—</td></tr>
+                    <tr><td class="name">Beatriz Lima</td><td><span class="badge badge-blue">Individual</span></td><td><span class="badge badge-brand">+8</span></td><td>12/05/2026 19:20</td><td class="muted">Pacote 8 aulas</td><td>Cartão</td></tr>
+                    <tr><td class="name">Patrícia Souza</td><td><span class="badge badge-brand">Duo</span></td><td><span class="badge badge-rose">−1</span></td><td>11/05/2026 17:00</td><td class="muted">Aula duo</td><td class="muted">—</td></tr>
+                    <tr><td class="name">Marina Rocha</td><td><span class="badge badge-blue">Individual</span></td><td><span class="badge badge-rose">−1</span></td><td>10/05/2026 08:02</td><td class="muted">Aula individual</td><td class="muted">—</td></tr>
+                  </tbody>
+                </table>
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 20px; border-top:1px solid var(--line-2)">
+                  <span class="muted">Mostrando 1–5 de 134</span>
+                  <div style="display:flex; gap:6px">
+                    <button class="btn btn-outline btn-sm">Anterior</button>
+                    <button class="btn btn-primary btn-sm">1</button>
+                    <button class="btn btn-outline btn-sm">2</button>
+                    <button class="btn btn-outline btn-sm">3</button>
+                    <button class="btn btn-outline btn-sm">Próxima</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cap">Relatório de Histórico de Créditos</div>
+  </div>
+
+  <!-- ═══════════ EMAIL ═══════════ -->
+  <div class="block">
+    <div class="block-head">
+      <span class="section-tag"><span class="dot" style="background:var(--brand)"></span> Portal da Professora</span>
+      <h2>Notificações por e-mail</h2>
+      <p>Lista de alunas com saldo baixo já selecionável para um envio em lote, com prévia do e-mail. O ideal a seguir: <strong>disparo automático</strong> quando o saldo cruza o limite, sem ação manual.</p>
+    </div>
+    <div class="stage">
+      <div class="frame" style="width:1200px">
+        <div class="frame-bar">
+          <div class="frame-dot" style="background:#f0685f"></div><div class="frame-dot" style="background:#f5bf4f"></div><div class="frame-dot" style="background:#62c554"></div>
+          <div class="frame-url">app.josipilates.com.br/professora/emails</div>
+        </div>
+        <div class="app" style="height:660px">
+          <aside class="sidebar">
+            <div class="brand-row"><img src="logo.jpg" class="brand-mark" /><div class="brand-name">Josi <span>Pilates</span></div></div>
+            <a class="nav-item"><svg><use href="#i-home"/></svg> Visão geral</a>
+            <a class="nav-item"><svg><use href="#i-users"/></svg> Alunos</a>
+            <a class="nav-item"><svg><use href="#i-book"/></svg> Turmas</a>
+            <a class="nav-item"><svg><use href="#i-check-circle"/></svg> Check-in</a>
+            <div class="nav-group-label">Relatórios</div>
+            <a class="nav-item"><svg><use href="#i-file"/></svg> Frequência</a>
+            <a class="nav-item"><svg><use href="#i-card"/></svg> Créditos baixos</a>
+            <a class="nav-item"><svg><use href="#i-history"/></svg> Histórico de créditos</a>
+            <a class="nav-item active"><svg><use href="#i-mail"/></svg> E-mails</a>
+            <div class="nav-spacer"></div>
+            <div class="nav-user"><div class="avatar">JS</div><div style="flex:1; min-width:0"><div style="font-size:13px; font-weight:700">Josiane Silva</div><div style="font-size:11.5px; color:var(--ink-3)">Professora</div></div><svg style="width:17px;height:17px;color:var(--ink-3)"><use href="#i-logout"/></svg></div>
+          </aside>
+          <div class="main">
+            <div class="topbar">
+              <div><div class="page-title">Comunicação</div><div class="page-h1">Notificações por <em>e-mail</em></div></div>
+              <button class="btn btn-primary"><svg><use href="#i-send"/></svg> Enviar para 3 selecionadas</button>
+            </div>
+            <div class="content" style="display:grid; grid-template-columns:1.4fr 1fr; gap:20px">
+              <!-- recipients -->
+              <div class="card">
+                <div class="card-head"><div class="card-title"><svg><use href="#i-alert"/></svg> Alunas com saldo baixo</div><span class="badge badge-amber">7 alunas</span></div>
+                <div class="card-pad" style="padding:8px 16px">
+                  <div class="list-item"><div style="width:20px;height:20px;border-radius:6px;background:var(--brand);display:flex;align-items:center;justify-content:center"><svg style="width:13px;height:13px;color:#fff"><use href="#i-check"/></svg></div><div class="li-main"><div class="li-title">Beatriz Lima</div><div class="li-sub">3 créditos · bia.lima@email.com</div></div><span class="badge badge-amber">baixo</span></div>
+                  <div class="list-item"><div style="width:20px;height:20px;border-radius:6px;background:var(--brand);display:flex;align-items:center;justify-content:center"><svg style="width:13px;height:13px;color:#fff"><use href="#i-check"/></svg></div><div class="li-main"><div class="li-title">Patrícia Souza</div><div class="li-sub">0 créditos · pati.souza@email.com</div></div><span class="badge badge-rose">zerado</span></div>
+                  <div class="list-item"><div style="width:20px;height:20px;border-radius:6px;background:var(--brand);display:flex;align-items:center;justify-content:center"><svg style="width:13px;height:13px;color:#fff"><use href="#i-check"/></svg></div><div class="li-main"><div class="li-title">Renata Dias</div><div class="li-sub">2 créditos · renata@email.com</div></div><span class="badge badge-amber">baixo</span></div>
+                  <div class="list-item"><div style="width:20px;height:20px;border-radius:6px;border:1.5px solid var(--line)"></div><div class="li-main"><div class="li-title">Aline Costa</div><div class="li-sub">3 créditos · aline@email.com</div></div><span class="badge badge-amber">baixo</span></div>
+                </div>
+              </div>
+              <!-- preview -->
+              <div class="card">
+                <div class="card-head"><div class="card-title"><svg><use href="#i-eye"/></svg> Prévia do e-mail</div></div>
+                <div class="card-pad">
+                  <div style="border:1px solid var(--line); border-radius:12px; overflow:hidden">
+                    <div style="background:var(--brand); padding:18px; text-align:center"><img src="logo.jpg" style="width:36px;height:36px;border-radius:9px" /></div>
+                    <div style="padding:20px">
+                      <div style="font-family:var(--serif); font-size:20px; margin-bottom:10px">Olá, Beatriz 🌿</div>
+                      <p style="font-size:13px; color:var(--ink-2); line-height:1.6; margin-bottom:14px">Notamos que seu saldo está baixo: restam <strong>3 créditos</strong>. Que tal renovar para não perder o ritmo das suas aulas?</p>
+                      <div style="background:var(--brand-50); border-radius:10px; padding:12px; text-align:center; margin-bottom:14px"><div style="font-size:11px; color:var(--brand-700); font-weight:700; text-transform:uppercase; letter-spacing:.05em">Saldo atual</div><div style="font-family:var(--serif); font-size:28px; color:var(--brand-700)">3 créditos</div></div>
+                      <div class="btn btn-primary btn-block" style="font-size:13px">Renovar meus créditos</div>
+                      <p style="font-size:11px; color:var(--ink-3); text-align:center; margin-top:14px">Josi Pilates · Movimento com intenção</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cap">Notificações por E-mail</div>
+  </div>
+
+  <!-- ═══════════ WHAT CHANGED ═══════════ -->
+  <div class="block">
+    <div class="block-head">
+      <span class="section-tag"><span class="dot" style="background:var(--clay)"></span> Resumo</span>
+      <h2>O que muda neste redesign</h2>
+    </div>
+    <div class="found-grid">
+      <div class="card card-pad">
+        <div class="type-label" style="margin-bottom:14px">Estrutura &amp; navegação</div>
+        <div class="feat-list">
+          <div class="feat"><div class="feat-check"><svg><use href="#i-check"/></svg></div><p><strong>Sidebar persistente</strong> no portal da professora — acaba o vai-e-volta pelo dashboard.</p></div>
+          <div class="feat"><div class="feat-check"><svg><use href="#i-check"/></svg></div><p><strong>Bottom nav</strong> no portal da aluna, pensado para uso no celular.</p></div>
+          <div class="feat"><div class="feat-check"><svg><use href="#i-check"/></svg></div><p>Ações com <strong>rótulo</strong> em vez de ícones soltos sem tooltip.</p></div>
+          <div class="feat"><div class="feat-check"><svg><use href="#i-check"/></svg></div><p>Relatórios com <strong>paginação</strong> e carregamento automático.</p></div>
+        </div>
+      </div>
+      <div class="card card-pad">
+        <div class="type-label" style="margin-bottom:14px">Marca &amp; correções de UX</div>
+        <div class="feat-list">
+          <div class="feat"><div class="feat-check"><svg><use href="#i-check"/></svg></div><p>Identidade <strong>"Josi Pilates"</strong> com o verde da logo, no lugar do azul genérico.</p></div>
+          <div class="feat"><div class="feat-check"><svg><use href="#i-check"/></svg></div><p>Saldo da aluna <strong>dividido por tipo</strong> (Individual/Duo/Grupo) — corrige o bug do saldo único.</p></div>
+          <div class="feat"><div class="feat-check"><svg><use href="#i-check"/></svg></div><p>Seletor de crédito <strong>por aluna</strong> no check-in — corrige o estado compartilhado.</p></div>
+          <div class="feat"><div class="feat-check"><svg><use href="#i-check"/></svg></div><p>Interface <strong>100% em português</strong>, horários em formato 24h.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -11,6 +11,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import { ThemeProvider } from './components/ThemeProvider'
 import { CardSkeleton } from './components/ui/skeleton'
 import { queryClient } from './lib/queryClient'
+import { Toaster } from 'sonner'
 import './App.css'
 
 // Lazy load all pages for better performance
@@ -47,6 +48,7 @@ function App() {
         <Router>
           <AuthProvider>
             <AppRoutes />
+            <Toaster richColors position="top-right" />
           </AuthProvider>
         </Router>
       </ThemeProvider>
