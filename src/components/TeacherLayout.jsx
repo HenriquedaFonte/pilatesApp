@@ -89,7 +89,7 @@ const TeacherLayout = ({ children }) => {
     <div className="flex flex-col h-full bg-card py-6 px-4 border-r border-border md:w-[248px] w-full shrink-0">
       {/* Brand row */}
       <div className="flex items-center gap-3 px-2 pb-6 border-b border-border/50 mb-4">
-        <Logo className="h-[38px] w-[38px] rounded-xl object-contain" />
+        <Logo className="h-[38px] w-[38px] object-contain" />
         <span className="text-[17px] font-extrabold tracking-tight text-foreground">
           Josi <span className="text-primary font-extrabold">Pilates</span>
         </span>

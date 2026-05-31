@@ -48,7 +48,10 @@ import {
   Loader2,
   Hash,
   Info,
-  Cake
+  Cake,
+  UserX,
+  UserCheck,
+  Trash2
 } from 'lucide-react'
 import TeacherLayout from '../components/TeacherLayout'
 import {
@@ -59,6 +62,16 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from '@/components/ui/alert-dialog'
 
 const TeacherStudents = () => {
   const { profile, signOut } = useAuth()
@@ -88,6 +101,10 @@ const TeacherStudents = () => {
   const [passwordResetLoading, setPasswordResetLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [statusFilter, setStatusFilter] = useState('active')
+  const [isActiveConfirmOpen, setIsActiveConfirmOpen] = useState(false)
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false)
+  const [deleteLoading, setDeleteLoading] = useState(false)
 
   const showSuccess = msg => {
     setSuccess(msg)
@@ -148,7 +165,7 @@ const TeacherStudents = () => {
       const { data: studentsData, error: studentsError } = await supabase
         .from('profiles')
         .select(
-          'id, email, full_name, role, individual_credits, duo_credits, group_credits, created_at, observations, date_of_birth'
+          'id, email, full_name, role, individual_credits, duo_credits, group_credits, created_at, observations, date_of_birth, is_active'
         )
         .eq('role', 'student')
         .order('full_name')
@@ -463,6 +480,56 @@ const TeacherStudents = () => {
     }
   }
 
+  const handleToggleActiveStatus = async () => {
+    setError('')
+    setSuccess('')
+    try {
+      const newStatus = selectedStudent.is_active !== false ? false : true
+      const { error } = await supabase
+        .from('profiles')
+        .update({ is_active: newStatus })
+        .eq('id', selectedStudent.id)
+
+      if (error) throw error
+
+      showSuccess(
+        newStatus 
+          ? `Status do(a) aluno(a) ${selectedStudent.full_name} alterado para ATIVO com sucesso!`
+          : `Status do(a) aluno(a) ${selectedStudent.full_name} alterado para INATIVO com sucesso!`
+      )
+      await fetchData()
+    } catch (err) {
+      showError('Erro ao atualizar status do aluno: ' + err.message)
+    } finally {
+      setIsActiveConfirmOpen(false)
+      setSelectedStudent(null)
+    }
+  }
+
+  const handleDeleteStudent = async () => {
+    setError('')
+    setSuccess('')
+    setDeleteLoading(true)
+    try {
+      const { data, error } = await supabase.functions.invoke('manage-student', {
+        body: { action: 'delete', studentId: selectedStudent.id }
+      })
+
+      if (error) {
+        throw new Error(data?.error || error.message || 'Falha ao excluir aluno')
+      }
+
+      showSuccess(`Aluno(a) ${selectedStudent.full_name} excluído(a) com sucesso!`)
+      await fetchData()
+    } catch (err) {
+      showError('Erro ao excluir aluno: ' + err.message)
+    } finally {
+      setIsDeleteConfirmOpen(false)
+      setSelectedStudent(null)
+      setDeleteLoading(false)
+    }
+  }
+
   const getTotalBalance = student => {
     return (
       (student.individual_credits || 0) +
@@ -508,11 +575,22 @@ const TeacherStudents = () => {
   }
 
   const filteredStudents = students
-    .filter(
-      student =>
+    .filter(student => {
+      const matchesSearch =
         student.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         student.email.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+
+      if (!matchesSearch) return false
+
+      const isStudentActive = student.is_active !== false
+
+      if (statusFilter === 'active') {
+        return isStudentActive
+      } else if (statusFilter === 'inactive') {
+        return !isStudentActive
+      }
+      return true
+    })
     .sort((a, b) => {
       const aBirthday = upcomingBirthdays.some(birth => birth.id === a.id)
       const bBirthday = upcomingBirthdays.some(birth => birth.id === b.id)
@@ -666,15 +744,27 @@ const TeacherStudents = () => {
           </Alert>
         )}
 
-        <div className="mb-6">
-          <div className="relative">
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
+          <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
               placeholder="Search students by name or email..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="pl-10"
+              className="pl-10 rounded-xl h-10 border-border bg-background focus-visible:ring-primary"
             />
+          </div>
+          <div className="w-full sm:w-48">
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="rounded-xl border-border bg-background focus-visible:ring-primary h-10 w-full">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent className="rounded-xl">
+                <SelectItem value="active">Ativos</SelectItem>
+                <SelectItem value="inactive">Inativos</SelectItem>
+                <SelectItem value="all">Todos</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
@@ -705,7 +795,13 @@ const TeacherStudents = () => {
                         Em dia
                       </Badge>
                     )
-                    if (totalBalance === 0) {
+                    if (student.is_active === false) {
+                      statusBadge = (
+                        <Badge variant="outline" className="bg-gray-100 text-gray-700 dark:bg-gray-900/20 dark:text-gray-400 border-gray-300/50">
+                          Inativo
+                        </Badge>
+                      )
+                    } else if (totalBalance === 0) {
                       statusBadge = (
                         <Badge variant="outline" className="bg-rose-50 text-rose-700 dark:bg-rose-950/20 dark:text-rose-400 border-rose-200/50">
                           Sem créditos
@@ -830,6 +926,34 @@ const TeacherStudents = () => {
                               title="Resetar Senha"
                             >
                               <Hash className="h-3.5 w-3.5" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => {
+                                setSelectedStudent(student)
+                                setIsActiveConfirmOpen(true)
+                              }}
+                              className={`rounded-lg h-7 w-7 p-0 ${student.is_active !== false ? 'hover:bg-amber-100 text-amber-600 hover:text-amber-700' : 'hover:bg-emerald-100 text-emerald-600 hover:text-emerald-700'}`}
+                              title={student.is_active !== false ? "Inativar Aluno" : "Ativar Aluno"}
+                            >
+                              {student.is_active !== false ? (
+                                <UserX className="h-3.5 w-3.5" />
+                              ) : (
+                                <UserCheck className="h-3.5 w-3.5" />
+                              )}
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => {
+                                setSelectedStudent(student)
+                                setIsDeleteConfirmOpen(true)
+                              }}
+                              className="rounded-lg h-7 w-7 p-0 hover:bg-red-100 text-red-600 hover:text-red-700"
+                              title="Excluir Aluno"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
                             </Button>
                           </div>
                         </TableCell>
@@ -1286,6 +1410,64 @@ const TeacherStudents = () => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        <AlertDialog open={isActiveConfirmOpen} onOpenChange={setIsActiveConfirmOpen}>
+          <AlertDialogContent className="rounded-2xl">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-base font-bold">
+                {selectedStudent?.is_active !== false ? 'Inativar Aluno?' : 'Ativar Aluno?'}
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-xs text-muted-foreground">
+                {selectedStudent?.is_active !== false
+                  ? `Tem certeza que deseja inativar o(a) aluno(a) ${selectedStudent?.full_name}? Ele(a) continuará no sistema, mas não aparecerá na lista de ativos por padrão.`
+                  : `Deseja ativar o(a) aluno(a) ${selectedStudent?.full_name}? Ele(a) voltará a aparecer na lista de ativos.`}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="rounded-xl" onClick={() => {
+                setIsActiveConfirmOpen(false)
+                setSelectedStudent(null)
+              }}>
+                Cancelar
+              </AlertDialogCancel>
+              <AlertDialogAction
+                className={`rounded-xl ${selectedStudent?.is_active !== false ? 'bg-amber-600 hover:bg-amber-700 text-white' : 'bg-emerald-600 hover:bg-emerald-700 text-white'}`}
+                onClick={handleToggleActiveStatus}
+              >
+                Confirmar
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <AlertDialog open={isDeleteConfirmOpen} onOpenChange={setIsDeleteConfirmOpen}>
+          <AlertDialogContent className="rounded-2xl">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-base font-bold text-destructive">
+                Excluir Aluno Permanentemente?
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-xs text-muted-foreground">
+                Tem certeza que deseja excluir o(a) aluno(a) <strong>{selectedStudent?.full_name}</strong>? 
+                Esta ação é <strong>irreversível</strong> e removerá permanentemente a conta de login, perfil, créditos e históricos associados.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="rounded-xl" onClick={() => {
+                setIsDeleteConfirmOpen(false)
+                setSelectedStudent(null)
+              }}>
+                Cancelar
+              </AlertDialogCancel>
+              <AlertDialogAction
+                className="rounded-xl bg-destructive hover:bg-destructive/90 text-white"
+                onClick={handleDeleteStudent}
+                disabled={deleteLoading}
+              >
+                {deleteLoading ? 'Excluindo...' : 'Excluir Permanentemente'}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </TeacherLayout>
   )
