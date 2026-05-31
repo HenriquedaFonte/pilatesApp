@@ -393,13 +393,13 @@ Sent from Josi Pilates website contact form.
             <Logo className="h-[38px] w-[38px]" />
             <b>Josi Pilates</b>
           </div>
-          <div className="nav-links hidden md:flex">
+          <div className="nav-links hidden lg:flex">
             <a href="#about">{t('studioHome.nav.about')}</a>
             <a href="#services">{t('studioHome.nav.services')}</a>
             <a href="#testimonials">{t('studioHome.nav.testimonials')}</a>
             <a href="#contact">{t('studioHome.nav.contact')}</a>
           </div>
-          <div className="nav-right hidden md:flex">
+          <div className="nav-right hidden lg:flex">
             <Select onValueChange={changeLanguage} value={i18n.language}>
               <SelectTrigger className="w-[84px] bg-white border border-[#e7e9e3] text-[#1a2420] rounded-full py-1.5 px-3 flex items-center gap-1.5 font-bold text-xs h-[38px] shadow-none outline-none focus:ring-0">
                 <Globe className="w-3.5 h-3.5 text-[#8a958f]" />
@@ -421,7 +421,7 @@ Sent from Josi Pilates website contact form.
           </div>
 
           {/* Mobile navigation controls */}
-          <div className="md:hidden flex items-center gap-3">
+          <div className="lg:hidden flex items-center gap-3">
             <a href="#contact" className="btn btn-primary text-xs px-4 py-2 font-bold">
               <Calendar className="w-3.5 h-3.5" /> Essai
             </a>
@@ -436,7 +436,7 @@ Sent from Josi Pilates website contact form.
 
         {/* Mobile slide-down menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-[#e7e9e3] bg-[#f6f3ec] px-4 py-4 flex flex-col gap-4 shadow-lg text-left">
+          <div className="lg:hidden border-t border-[#e7e9e3] bg-[#f6f3ec] px-4 py-4 flex flex-col gap-4 shadow-lg text-left">
             <div className="flex justify-between items-center px-2">
               <span className="lang">
                 <Globe className="w-4 h-4 text-gray-400" />
@@ -612,6 +612,162 @@ Sent from Josi Pilates website contact form.
         </div>
       </section>
 
+      {/* TESTIMONIALS SECTION */}
+      <section id="testimonials" className="sec">
+        <div className="sec-head center">
+          <div className="eyebrow">{t('studioHome.nav.testimonials')}</div>
+          <h2>
+            {renderHeadingWithItalic(
+              t('studioHome.testimonialsTitle'),
+              'élèves',
+              'text-[#017a6b] font-serif not-italic'
+            )}
+          </h2>
+          <p>{t('studioHome.testimonialsSubtitle')}</p>
+        </div>
+
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Carousel
+            opts={{
+              align: 'start',
+              loop: true
+            }}
+            setApi={setTestimonialsApi}
+            className="w-full"
+          >
+            <CarouselContent>
+              {testimonials.map((testimonial, index) => {
+                const parseFieldRender = field => {
+                  if (!field) return ''
+                  if (typeof field === 'object') {
+                    const val = field[i18n.language] !== undefined ? field[i18n.language] : (
+                      field.fr !== undefined ? field.fr : (
+                        field.en !== undefined ? field.en : (
+                          field.pt !== undefined ? field.pt : ''
+                        )
+                      )
+                    )
+                    return val || ''
+                  }
+                  if (typeof field !== 'string') return field
+                  try {
+                    let current = field.trim()
+                    if (current.startsWith('"') && current.endsWith('"')) {
+                      try {
+                        current = JSON.parse(current)
+                      } catch {}
+                    }
+                    if (current && typeof current === 'object') {
+                      const val = current[i18n.language] !== undefined ? current[i18n.language] : (
+                        current.fr !== undefined ? current.fr : (
+                          current.en !== undefined ? current.en : (
+                            current.pt !== undefined ? current.pt : ''
+                          )
+                        )
+                      )
+                      return val || ''
+                    }
+                    if (typeof current === 'string' && current.startsWith('{')) {
+                      const parsed = JSON.parse(current)
+                      if (parsed && typeof parsed === 'object') {
+                        const val = parsed[i18n.language] !== undefined ? parsed[i18n.language] : (
+                          parsed.fr !== undefined ? parsed.fr : (
+                            parsed.en !== undefined ? parsed.en : (
+                              parsed.pt !== undefined ? parsed.pt : ''
+                            )
+                          )
+                        )
+                        return val || ''
+                      }
+                    }
+                    return field
+                  } catch {
+                    return field
+                  }
+                }
+
+                const rawAuthor = testimonial.author_name || testimonial.author || ''
+                const cleanAuthor = parseFieldRender(rawAuthor)
+                const cleanCity = parseFieldRender(testimonial.city)
+                const cleanState = parseFieldRender(testimonial.state)
+                const cleanText = parseFieldRender(testimonial.text)
+
+                const cityState = cleanCity && cleanState
+                  ? `${cleanCity}, ${cleanState}`
+                  : cleanCity || cleanState || ''
+
+                const testimonialId = testimonial.id || index
+                const isExpanded = expandedTestimonials[testimonialId] || false
+                const textLimit = 160
+                const isLongText = cleanText && cleanText.length > textLimit
+                const displayText = isLongText && !isExpanded
+                  ? `${cleanText.substring(0, textLimit)}...`
+                  : cleanText
+
+                return (
+                  <CarouselItem
+                    key={testimonialId}
+                    className="md:basis-1/2 lg:basis-1/3"
+                  >
+                    <div className="p-1 h-full">
+                      <Card
+                        className="tst h-full flex flex-col justify-between cursor-pointer hover:shadow-md transition-shadow"
+                        onClick={handleTestimonialInteraction}
+                      >
+                        <CardContent className="flex flex-col justify-between p-6 h-full text-left">
+                          <div>
+                            <div className="stars mb-4">
+                              {[...Array(5)].map((_, i) => (
+                                <Star key={i} className="w-[17px] h-[17px] fill-[#c79a4b] text-[#c79a4b]" />
+                              ))}
+                            </div>
+                            <p className="text-[#4d5a54] italic mb-4 leading-relaxed text-sm">
+                              "{displayText}"
+                            </p>
+                            {isLongText && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation() // Prevent card click
+                                  toggleTestimonialExpand(testimonialId)
+                                }}
+                                className="text-[#01b48d] hover:text-[#017a6b] font-bold text-xs flex items-center gap-1 mb-6 focus:outline-none"
+                              >
+                                {isExpanded ? (
+                                  <>
+                                    {t('studioHome.testimonialsReadLess') || 'Lire moins'} <ChevronUp className="w-3.5 h-3.5" />
+                                  </>
+                                ) : (
+                                  <>
+                                    {t('studioHome.testimonialsReadMore') || 'Lire plus'} <ChevronDown className="w-3.5 h-3.5" />
+                                  </>
+                                )}
+                              </button>
+                            )}
+                          </div>
+                          <div className="who">
+                            <div className="av">{getInitials(cleanAuthor)}</div>
+                            <div>
+                              <b>{cleanAuthor}</b>
+                              <span>{cityState || 'Client'}</span>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </CarouselItem>
+                )
+              })}
+            </CarouselContent>
+            <div onClick={handleTestimonialInteraction}>
+              <CarouselPrevious className="hidden md:flex" />
+            </div>
+            <div onClick={handleTestimonialInteraction}>
+              <CarouselNext className="hidden md:flex" />
+            </div>
+          </Carousel>
+        </div>
+      </section>
+
       {/* SERVICES SECTION */}
       <section id="services" className="svc-sec">
         <div className="sec">
@@ -773,162 +929,6 @@ Sent from Josi Pilates website contact form.
               ></iframe>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* TESTIMONIALS SECTION */}
-      <section id="testimonials" className="sec">
-        <div className="sec-head center">
-          <div className="eyebrow">{t('studioHome.nav.testimonials')}</div>
-          <h2>
-            {renderHeadingWithItalic(
-              t('studioHome.testimonialsTitle'),
-              'élèves',
-              'text-[#017a6b] font-serif not-italic'
-            )}
-          </h2>
-          <p>{t('studioHome.testimonialsSubtitle')}</p>
-        </div>
-
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Carousel
-            opts={{
-              align: 'start',
-              loop: true
-            }}
-            setApi={setTestimonialsApi}
-            className="w-full"
-          >
-            <CarouselContent>
-              {testimonials.map((testimonial, index) => {
-                const parseFieldRender = field => {
-                  if (!field) return ''
-                  if (typeof field === 'object') {
-                    const val = field[i18n.language] !== undefined ? field[i18n.language] : (
-                      field.fr !== undefined ? field.fr : (
-                        field.en !== undefined ? field.en : (
-                          field.pt !== undefined ? field.pt : ''
-                        )
-                      )
-                    )
-                    return val || ''
-                  }
-                  if (typeof field !== 'string') return field
-                  try {
-                    let current = field.trim()
-                    if (current.startsWith('"') && current.endsWith('"')) {
-                      try {
-                        current = JSON.parse(current)
-                      } catch {}
-                    }
-                    if (current && typeof current === 'object') {
-                      const val = current[i18n.language] !== undefined ? current[i18n.language] : (
-                        current.fr !== undefined ? current.fr : (
-                          current.en !== undefined ? current.en : (
-                            current.pt !== undefined ? current.pt : ''
-                          )
-                        )
-                      )
-                      return val || ''
-                    }
-                    if (typeof current === 'string' && current.startsWith('{')) {
-                      const parsed = JSON.parse(current)
-                      if (parsed && typeof parsed === 'object') {
-                        const val = parsed[i18n.language] !== undefined ? parsed[i18n.language] : (
-                          parsed.fr !== undefined ? parsed.fr : (
-                            parsed.en !== undefined ? parsed.en : (
-                              parsed.pt !== undefined ? parsed.pt : ''
-                            )
-                          )
-                        )
-                        return val || ''
-                      }
-                    }
-                    return field
-                  } catch {
-                    return field
-                  }
-                }
-
-                const rawAuthor = testimonial.author_name || testimonial.author || ''
-                const cleanAuthor = parseFieldRender(rawAuthor)
-                const cleanCity = parseFieldRender(testimonial.city)
-                const cleanState = parseFieldRender(testimonial.state)
-                const cleanText = parseFieldRender(testimonial.text)
-
-                const cityState = cleanCity && cleanState
-                  ? `${cleanCity}, ${cleanState}`
-                  : cleanCity || cleanState || ''
-
-                const testimonialId = testimonial.id || index
-                const isExpanded = expandedTestimonials[testimonialId] || false
-                const textLimit = 160
-                const isLongText = cleanText && cleanText.length > textLimit
-                const displayText = isLongText && !isExpanded
-                  ? `${cleanText.substring(0, textLimit)}...`
-                  : cleanText
-
-                return (
-                  <CarouselItem
-                    key={testimonialId}
-                    className="md:basis-1/2 lg:basis-1/3"
-                  >
-                    <div className="p-1 h-full">
-                      <Card
-                        className="tst h-full flex flex-col justify-between cursor-pointer hover:shadow-md transition-shadow"
-                        onClick={handleTestimonialInteraction}
-                      >
-                        <CardContent className="flex flex-col justify-between p-6 h-full text-left">
-                          <div>
-                            <div className="stars mb-4">
-                              {[...Array(5)].map((_, i) => (
-                                <Star key={i} className="w-[17px] h-[17px] fill-[#c79a4b] text-[#c79a4b]" />
-                              ))}
-                            </div>
-                            <p className="text-[#4d5a54] italic mb-4 leading-relaxed text-sm">
-                              "{displayText}"
-                            </p>
-                            {isLongText && (
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation() // Prevent card click
-                                  toggleTestimonialExpand(testimonialId)
-                                }}
-                                className="text-[#01b48d] hover:text-[#017a6b] font-bold text-xs flex items-center gap-1 mb-6 focus:outline-none"
-                              >
-                                {isExpanded ? (
-                                  <>
-                                    {t('studioHome.testimonialsReadLess') || 'Lire moins'} <ChevronUp className="w-3.5 h-3.5" />
-                                  </>
-                                ) : (
-                                  <>
-                                    {t('studioHome.testimonialsReadMore') || 'Lire plus'} <ChevronDown className="w-3.5 h-3.5" />
-                                  </>
-                                )}
-                              </button>
-                            )}
-                          </div>
-                          <div className="who">
-                            <div className="av">{getInitials(cleanAuthor)}</div>
-                            <div>
-                              <b>{cleanAuthor}</b>
-                              <span>{cityState || 'Client'}</span>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </CarouselItem>
-                )
-              })}
-            </CarouselContent>
-            <div onClick={handleTestimonialInteraction}>
-              <CarouselPrevious className="hidden md:flex" />
-            </div>
-            <div onClick={handleTestimonialInteraction}>
-              <CarouselNext className="hidden md:flex" />
-            </div>
-          </Carousel>
         </div>
       </section>
 

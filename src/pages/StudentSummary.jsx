@@ -57,10 +57,11 @@ import TeacherLayout from '../components/TeacherLayout'
 
 const profileSchema = z.object({
   full_name: z.string().min(1, 'Full name is required'),
-  phone: z.string().optional(),
+  email: z.string().email('Invalid email address'),
+  phone: z.string().optional().nullable(),
   preferred_language: z.enum(['pt', 'en', 'fr']),
-  date_of_birth: z.string().optional(),
-  observations: z.string().optional()
+  date_of_birth: z.string().optional().nullable(),
+  observations: z.string().optional().nullable()
 })
 
 const StudentSummary = () => {
@@ -79,6 +80,7 @@ const StudentSummary = () => {
     resolver: zodResolver(profileSchema),
     defaultValues: {
       full_name: '',
+      email: '',
       phone: '',
       preferred_language: 'pt',
       date_of_birth: '',
@@ -94,6 +96,7 @@ const StudentSummary = () => {
     if (student) {
       form.reset({
         full_name: student.full_name || '',
+        email: student.email || '',
         phone: student.phone || '',
         preferred_language: student.preferred_language || 'pt',
         date_of_birth: student.date_of_birth
@@ -108,6 +111,33 @@ const StudentSummary = () => {
   const onSubmitProfile = async data => {
     try {
       setUpdating(true)
+      setError('')
+
+      const emailChanged = data.email !== student.email
+
+      if (emailChanged) {
+        const { data: edgeData, error: edgeError } = await supabase.functions.invoke('manage-student', {
+          body: { action: 'update-email', studentId: studentId, email: data.email }
+        })
+
+        if (edgeError) {
+          let errMsg = 'Falha ao atualizar e-mail no servidor';
+          if (edgeError.context) {
+            try {
+              const body = await edgeError.context.json();
+              errMsg = body.error || body.message || errMsg;
+            } catch {
+              try {
+                errMsg = await edgeError.context.text() || errMsg;
+              } catch {}
+            }
+          } else {
+            errMsg = edgeError.message || errMsg;
+          }
+          throw new Error(errMsg);
+        }
+      }
+
       const updateData = {
         full_name: data.full_name,
         phone: data.phone || null,
@@ -443,6 +473,17 @@ const StudentSummary = () => {
                 <Input
                   id="full_name"
                   {...form.register('full_name')}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="email" className="text-right">
+                  {t('teacher.studentSummary.email', 'E-mail')}
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  {...form.register('email')}
                   className="col-span-3"
                 />
               </div>

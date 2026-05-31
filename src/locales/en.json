@@ -348,26 +348,26 @@
       "services": "Services",
       "contact": "Contact",
       "studentPortal": "Client area",
-      "bookTrial": "Book a trial"
+      "bookTrial": "Book intro session"
     },
     "hero": {
       "greeting": "Hello!",
       "intro": "Nice to meet you, I'm Josi!",
-      "description": "Private classes, duos, and small groups with Josiane — certified physiotherapist and Pilates instructor. Personalized attention, posture, and injury prevention.",
+      "description": "Particular classes, duos, and small groups with Josiane — certified Pilates instructor and movement specialist. Personalized attention, improving your posture, and injury prevention.",
       "title": "Pilates that takes care of your body, in small groups.",
       "titleHighlight": "your body",
-      "badgePhysio": "Certified Physiotherapist",
-      "badgeExperience": "15 years of experience",
+      "badgePhysio": "Movement Specialist",
+      "badgeExperience": "21 years of experience",
       "badgeLocation": "Montreal, QC",
-      "ctaTrial": "Book a Trial Class",
+      "ctaTrial": "Book an Introductory Session",
       "ctaServices": "See Services",
-      "note": "First private introductory session — ideal for starting out."
+      "note": "First introductory session — ideal for starting out."
     },
     "trust": {
-      "physioTitle": "Physiotherapist",
-      "physioDesc": "Clinical & safe approach",
+      "physioTitle": "Posture Specialist",
+      "physioDesc": "Safe & structured approach",
       "attentionTitle": "Personalized Attention",
-      "attentionDesc": "Private, duo, or small group",
+      "attentionDesc": "Particular, duo, or small group",
       "levelsTitle": "All Levels",
       "levelsDesc": "Beginners welcome",
       "languagesTitle": "FR · EN · PT",
@@ -379,13 +379,13 @@
       "subtitle": "Movement with intention, progress with clarity.",
       "subtitleHighlight": "intention",
       "greeting": "Hi!!",
-      "description": "Josiane combines her expertise as a physiotherapist with a deep practice of Pilates to offer a unique guidance in Montreal. Each session is adapted to your body, your goals, and your rhythm.",
+      "description": "Josiane combines her deep knowledge of movement and anatomy with a dedicated practice of Pilates to offer a unique guidance in Montreal. Each session is adapted to your body, your goals, and your rhythm.",
       "extendedTitle": "A little more about me",
-      "extended": "In small groups or privately, the focus is on the quality of movement, posture, and injury prevention — so you leave stronger, more mobile, and more peaceful.",
-      "badgePhysio": "Certified Physiotherapist",
+      "extended": "In small groups or privately, the focus is on the quality of movement, improving your posture, and injury prevention — so you leave stronger, more mobile, and more peaceful.",
+      "badgePhysio": "Movement Specialist",
       "badgePilates": "Pilates Instructor",
       "badgePrevention": "Injury Prevention",
-      "yearsExperience": "15+",
+      "yearsExperience": "21+",
       "yearsLabel": "years of experience"
     },
     "testimonialsTitle": "What our students say",
@@ -438,7 +438,7 @@
     "location": {
       "title": "Hours & Location",
       "subtitle": "Come meet us",
-      "address": "10145 Av. Hamel, Montreal, QC H2C 2X1",
+      "address": "Montréal, QC H2C 2X1",
       "phone": "+1 438 274 8396 · WhatsApp",
       "email": "josi@josipilates.com",
       "lundiVendredi": "Monday — Friday",
@@ -448,13 +448,13 @@
     },
     "ctaBand": {
       "title": "Ready to start your journey?",
-      "subtitle": "Book your trial class and discover Pilates guided by a health professional.",
-      "ctaTrial": "Book a Trial Class",
+      "subtitle": "Book your introductory session and discover Pilates guided by a certified movement expert.",
+      "ctaTrial": "Book an Introductory Session",
       "ctaWhatsapp": "WhatsApp"
     },
     "testimonials": [
       {
-        "text": "Josi completely changed my relationship with my body. Her knowledge in physiotherapy makes all the difference — I no longer have back pain.",
+        "text": "Josi completely changed my relationship with my body. Her knowledge in anatomy and posture makes all the difference — I no longer have back pain.",
         "author_name": "Marie-Claude",
         "city": "Montreal",
         "state": "QC"
@@ -475,7 +475,7 @@
     "contact": {
       "title": "Have a question? Write to us",
       "subtitle": "We reply quickly. Tell us your goal and we will guide you to the best option.",
-      "address": "10145 Av. Hamel, Montreal, QC H2C 2X1",
+      "address": "Montréal, QC H2C 2X1",
       "phone": "+1 438 274 8396",
       "email": "josi@josipilates.com",
       "portalButton": "Client area",
@@ -503,7 +503,7 @@
       "navigation": "Navigation",
       "horaires": "Hours",
       "contact": "Contact",
-      "tagline": "Pilates studio in Montreal. Private, duo, and small group classes with a certified physiotherapist."
+      "tagline": "Pilates studio in Montreal. Particular, duo, and small group classes with a certified instructor."
     }
   },
   "teacher": {
