@@ -59,12 +59,31 @@ serve(async (req) => {
     if (action === 'delete') {
       console.log(`Starting secure cascade deletion of student: ${studentId}`)
 
-      // Delete child records sequentially to avoid foreign key violation blocks
-      await supabaseClient.from('student_class_link').delete().eq('student_id', studentId)
-      await supabaseClient.from('check_ins').delete().eq('student_id', studentId)
-      await supabaseClient.from('balance_history').delete().eq('student_id', studentId)
-      await supabaseClient.from('email_notifications').delete().eq('student_id', studentId)
-      await supabaseClient.from('profiles').delete().eq('id', studentId)
+      // Delete child records sequentially with explicit error checking to pinpoint failures
+      const { error: linkErr } = await supabaseClient.from('student_class_link').delete().eq('student_id', studentId)
+      if (linkErr) {
+        throw new Error(`Failed to delete student class links: ${linkErr.message}`)
+      }
+
+      const { error: checkinErr } = await supabaseClient.from('check_ins').delete().eq('student_id', studentId)
+      if (checkinErr) {
+        throw new Error(`Failed to delete student check-in history: ${checkinErr.message}`)
+      }
+
+      const { error: balanceErr } = await supabaseClient.from('balance_history').delete().eq('student_id', studentId)
+      if (balanceErr) {
+        throw new Error(`Failed to delete student balance history: ${balanceErr.message}`)
+      }
+
+      const { error: emailErr } = await supabaseClient.from('email_notifications').delete().eq('student_id', studentId)
+      if (emailErr) {
+        throw new Error(`Failed to delete student email notifications: ${emailErr.message}`)
+      }
+
+      const { error: profileErr } = await supabaseClient.from('profiles').delete().eq('id', studentId)
+      if (profileErr) {
+        throw new Error(`Failed to delete student public profile: ${profileErr.message}`)
+      }
 
       // Delete the login account from Supabase Auth
       const { error: authDeleteError } = await supabaseClient.auth.admin.deleteUser(studentId)
