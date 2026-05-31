@@ -516,7 +516,20 @@ const TeacherStudents = () => {
       })
 
       if (error) {
-        throw new Error(data?.error || error.message || 'Falha ao excluir aluno')
+        let errMsg = 'Falha ao excluir aluno';
+        if (error.context) {
+          try {
+            const body = await error.context.json();
+            errMsg = body.error || body.message || errMsg;
+          } catch {
+            try {
+              errMsg = await error.context.text() || errMsg;
+            } catch {}
+          }
+        } else {
+          errMsg = error.message || errMsg;
+        }
+        throw new Error(errMsg);
       }
 
       showSuccess(`Aluno(a) ${selectedStudent.full_name} excluído(a) com sucesso!`)

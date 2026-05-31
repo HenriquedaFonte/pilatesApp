@@ -121,7 +121,20 @@ const StudentSummary = () => {
         })
 
         if (edgeError) {
-          throw new Error(edgeData?.error || edgeError.message || 'Falha ao atualizar e-mail no servidor')
+          let errMsg = 'Falha ao atualizar e-mail no servidor';
+          if (edgeError.context) {
+            try {
+              const body = await edgeError.context.json();
+              errMsg = body.error || body.message || errMsg;
+            } catch {
+              try {
+                errMsg = await edgeError.context.text() || errMsg;
+              } catch {}
+            }
+          } else {
+            errMsg = edgeError.message || errMsg;
+          }
+          throw new Error(errMsg);
         }
       }
 
