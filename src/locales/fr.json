@@ -522,6 +522,11 @@
       "quickPanelTitle": "Panneau Rapide",
       "quickPanelDesc": "Les informations sur les anniversaires et les notifications rapides apparaîtront ici."
     },
+    "checkin": {
+      "excuseBtn": "Dispenser du Cours",
+      "dismissedStatus": "Dispensé du Cours",
+      "restoreBtn": "Annuler"
+    },
     "sidebar": {
       "overview": "Vue d'ensemble",
       "students": "Élèves",

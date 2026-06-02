@@ -147,6 +147,11 @@
       "quickPanelTitle": "Painel Rápido",
       "quickPanelDesc": "Informações de aniversariantes e notificações rápidas aparecerão aqui."
     },
+    "checkin": {
+      "excuseBtn": "Dispensar da Aula",
+      "dismissedStatus": "Dispensado da Aula",
+      "restoreBtn": "Desfazer"
+    },
     "sidebar": {
       "overview": "Visão geral",
       "students": "Alunos",
