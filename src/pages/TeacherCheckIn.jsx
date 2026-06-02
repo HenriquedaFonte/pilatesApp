@@ -45,7 +45,7 @@ import TeacherLayout from '../components/TeacherLayout'
 const TeacherCheckIn = () => {
   const { profile, signOut } = useAuth()
   const navigate = useNavigate()
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [selectedDate, setSelectedDate] = useState(() => {
     const today = new Date()
     const year = today.getFullYear()
