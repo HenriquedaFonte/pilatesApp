@@ -128,7 +128,7 @@ const TeacherCheckIn = () => {
 
 const { data: attendanceRecords, error: attendanceError } = await supabase
   .from('check_ins')
-  .select('student_id, schedule_id, status, credit_type, profiles(id, full_name, individual_credits, duo_credits, group_credits)')
+  .select('student_id, schedule_id, status, credit_type, attendance, profiles(id, full_name, individual_credits, duo_credits, group_credits)')
   .eq('check_in_date', date)
 
       if (attendanceError) throw attendanceError
@@ -155,6 +155,7 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
           end_time: schedule.end_time,
           attendance_status: attendance ? attendance.status : 'pending',
           credit_type_used: attendance ? attendance.credit_type : null,
+          attendance: attendance ? attendance.attendance : 'pending',
           source: 'enrolled'
         })
       })
@@ -176,6 +177,7 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
               end_time: schedule.end_time,
               attendance_status: att.status,
               credit_type_used: att.credit_type,
+              attendance: att.attendance || 'pending',
               source: 'manual'
             })
           }
@@ -275,6 +277,62 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
       showSuccess('Attendance marked successfully!')
     } catch (error) {
       showError('Error marking attendance: ' + error.message)
+    }
+  }
+
+  const handleExcuseAttendance = async (
+    studentId,
+    scheduleId,
+    creditType = 'individual'
+  ) => {
+    setError('')
+    setSuccess('')
+
+    try {
+      const { data: schedule, error: scheduleError } = await supabase
+        .from('class_schedules')
+        .select('class_id')
+        .eq('id', scheduleId)
+        .single()
+
+      if (scheduleError) throw scheduleError
+
+      const { error: rpcError } = await supabase.rpc('mark_attendance', {
+        student_uuid: studentId,
+        class_uuid: schedule.class_id,
+        schedule_uuid: scheduleId,
+        attendance_date: selectedDate,
+        attendance_status: 'absent_notified',
+        credit_type_used: creditType
+      })
+
+      if (rpcError) throw rpcError
+
+      const { error: updateError } = await supabase
+        .from('check_ins')
+        .update({ attendance: 'dismissed' })
+        .eq('student_id', studentId)
+        .eq('schedule_id', scheduleId)
+        .eq('check_in_date', selectedDate)
+
+      if (updateError) throw updateError
+
+      setScheduledStudents(prevStudents =>
+        prevStudents.map(student =>
+          student.student_id === studentId && student.schedule_id === scheduleId
+            ? {
+                ...student,
+                attendance_status: 'absent_notified',
+                credit_type_used: creditType,
+                attendance: 'dismissed'
+              }
+            : student
+        )
+      )
+
+      showSuccess('Aluno dispensado da aula com sucesso!')
+    } catch (error) {
+      showError('Erro ao dispensar aluno: ' + error.message)
     }
   }
 
@@ -453,8 +511,9 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
             ) : (
               <div className="space-y-4">
                 {scheduledStudents.map(student => {
+                  const isDismissed = student.attendance_status === 'absent_notified' && student.attendance === 'dismissed'
                   const isPresent = student.attendance_status === 'present'
-                  const isAbsentNotified = student.attendance_status === 'absent_notified'
+                  const isAbsentNotified = student.attendance_status === 'absent_notified' && !isDismissed
                   const isAbsentUnnotified = student.attendance_status === 'absent_unnotified'
                   const isPending = student.attendance_status === 'pending'
                   const totalBalance = getTotalCredits(student)
@@ -466,6 +525,8 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
                     cardStyle = 'bg-orange-50/70 border-orange-300/80 shadow-xs dark:bg-orange-950/20 dark:border-orange-900/50'
                   } else if (isAbsentUnnotified) {
                     cardStyle = 'bg-rose-50/70 border-rose-300/80 shadow-xs dark:bg-rose-950/20 dark:border-rose-900/50'
+                  } else if (isDismissed) {
+                    cardStyle = 'bg-slate-50/70 border-slate-300/60 shadow-xs dark:bg-slate-900/10 dark:border-slate-800/50 opacity-80'
                   }
 
                   return (
@@ -544,10 +605,12 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
                                 ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-900/50'
                                 : isAbsentNotified
                                 ? 'bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-950/30 dark:text-orange-400 dark:border-orange-900/50'
+                                : isDismissed
+                                ? 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800/30 dark:text-slate-400 dark:border-slate-800/50'
                                 : 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/30 dark:text-rose-400 dark:border-rose-900/50'
                             }`}
                           >
-                            {student.attendance_status === 'present' ? 'Presente' : student.attendance_status === 'absent_unnotified' ? 'Falta' : 'Falta Justificada'}
+                            {isPresent ? 'Presente' : isAbsentUnnotified ? 'Falta' : isDismissed ? (t('teacher.checkin.dismissedStatus') || 'Dispensado da Aula') : 'Falta Justificada'}
                           </span>
                         )}
 
@@ -619,6 +682,22 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
                                 <XCircle className="h-4 w-4 mr-1.5" />
                                 Justificar
                               </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="flex-1 sm:flex-initial h-9 rounded-xl px-3 text-xs text-slate-600 hover:text-slate-700 hover:bg-slate-50/50 border-slate-200 hover:border-slate-300 font-semibold"
+                                onClick={() => {
+                                  setConfirmAction({
+                                    student,
+                                    status: 'dismissed',
+                                    creditType: getCreditType(student.student_id, student.schedule_id)
+                                  })
+                                  setIsConfirmDialogOpen(true)
+                                }}
+                              >
+                                <XCircle className="h-4 w-4 mr-1.5" />
+                                {t('teacher.checkin.excuseBtn') || 'Dispensar'}
+                              </Button>
                             </div>
                           </div>
                         )}
@@ -636,7 +715,7 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
                               )
                             }
                           >
-                            Desfazer
+                            {t('teacher.checkin.restoreBtn') || 'Desfazer'}
                           </Button>
                         )}
                       </div>
@@ -688,13 +767,15 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
                 <div className="space-y-2 text-xs font-semibold">
                   <div className="flex justify-between items-center">
                     <span className="text-muted-foreground">Ação de Presença:</span>
-                    <span className={`font-bold ${confirmAction.status === 'present' ? 'text-green-600' : confirmAction.status === 'absent_unnotified' ? 'text-red-600' : 'text-orange-600'}`}>
-                      {confirmAction.status === 'present' ? 'Presente' : confirmAction.status === 'absent_unnotified' ? 'Falta' : 'Falta Justificada'}
+                    <span className={`font-bold ${confirmAction.status === 'present' ? 'text-green-600' : confirmAction.status === 'absent_unnotified' ? 'text-red-600' : confirmAction.status === 'dismissed' ? 'text-slate-600' : 'text-orange-600'}`}>
+                      {confirmAction.status === 'present' ? 'Presente' : confirmAction.status === 'absent_unnotified' ? 'Falta' : confirmAction.status === 'dismissed' ? (t('teacher.checkin.dismissedStatus') || 'Dispensado da Aula') : 'Falta Justificada'}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-muted-foreground">Crédito a Deduzir:</span>
-                    <span className="font-bold text-foreground capitalize">{confirmAction.creditType === 'group' ? 'Grupo' : confirmAction.creditType}</span>
+                    <span className="font-bold text-foreground capitalize">
+                      {confirmAction.status === 'dismissed' ? 'Nenhum (0)' : confirmAction.creditType === 'group' ? 'Grupo' : confirmAction.creditType}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -711,12 +792,20 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
                 </Button>
                 <Button
                   onClick={() => {
-                    handleMarkAttendance(
-                      confirmAction.student.student_id,
-                      confirmAction.student.schedule_id,
-                      confirmAction.status,
-                      confirmAction.creditType
-                    )
+                    if (confirmAction.status === 'dismissed') {
+                      handleExcuseAttendance(
+                        confirmAction.student.student_id,
+                        confirmAction.student.schedule_id,
+                        confirmAction.creditType
+                      )
+                    } else {
+                      handleMarkAttendance(
+                        confirmAction.student.student_id,
+                        confirmAction.student.schedule_id,
+                        confirmAction.status,
+                        confirmAction.creditType
+                      )
+                    }
                     setIsConfirmDialogOpen(false)
                     setConfirmAction(null)
                   }}

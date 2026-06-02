@@ -522,6 +522,11 @@
       "quickPanelTitle": "Quick Panel",
       "quickPanelDesc": "Birthday information and quick notifications will appear here."
     },
+    "checkin": {
+      "excuseBtn": "Excuse from Class",
+      "dismissedStatus": "Excused from Class",
+      "restoreBtn": "Undo"
+    },
     "sidebar": {
       "overview": "Overview",
       "students": "Students",
