@@ -62,7 +62,7 @@ const StudentHistory = () => {
       const { data: attendanceData, error: attendanceError } = await supabase
         .from('check_ins')
         .select(
-          'id, student_id, check_in_date, status, credit_type, schedule_id'
+          'id, student_id, check_in_date, status, credit_type, attendance, schedule_id'
         )
         .eq('student_id', studentId)
         .order('check_in_date', { ascending: false })
@@ -138,7 +138,14 @@ const StudentHistory = () => {
 
   const { classesThisMonth, attendanceRate } = getAttendanceSummary()
 
-  const getStatusDetails = status => {
+  const getStatusDetails = (status, attendance) => {
+    if (status === 'absent_notified' && attendance === 'dismissed') {
+      return {
+        label: t('teacher.checkin.dismissedStatus', 'Dispensado da Aula'),
+        badgeClass: 'bg-slate-50 dark:bg-slate-950/30 text-slate-600 dark:text-slate-400 border border-slate-100 dark:border-slate-900/30',
+        icon: <Clock className="h-3.5 w-3.5" />
+      }
+    }
     switch (status) {
       case 'present':
         return {
@@ -295,7 +302,7 @@ const StudentHistory = () => {
             ) : (
               <div className="space-y-3">
                 {attendanceHistory.map(record => {
-                  const status = getStatusDetails(record.status)
+                  const status = getStatusDetails(record.status, record.attendance)
                   return (
                     <div
                       key={record.id}

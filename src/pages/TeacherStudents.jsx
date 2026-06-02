@@ -580,14 +580,17 @@ const TeacherStudents = () => {
     return getDayNameLocale(dayOfWeek, i18n.language)
   }
 
-  const formatCheckInStatus = status => {
+  const formatCheckInStatus = (status, attendance) => {
+    if (status === 'absent_notified' && attendance === 'dismissed') {
+      return t('teacher.checkin.dismissedStatus', 'Dispensado da Aula')
+    }
     switch (status) {
       case 'present':
-        return 'Present'
+        return t('status.present', 'Presente')
       case 'absent_unnotified':
-        return 'Absent (Unnotified)'
+        return t('status.absent_unnotified', 'Ausente')
       case 'absent_notified':
-        return 'Absent (Notified)'
+        return t('status.absent_notified', 'Ausência Justificada')
       default:
         return status
     }
@@ -887,7 +890,7 @@ const TeacherStudents = () => {
                             Último check-in: {lastCheckIns[student.id].class_schedules?.classes?.name}
                           </div>
                           <div className="mt-0.5 text-[10px] opacity-90 truncate">
-                            {formatCheckInDate(lastCheckIns[student.id].check_in_date)} - {formatCheckInStatus(lastCheckIns[student.id].status)}
+                            {formatCheckInDate(lastCheckIns[student.id].check_in_date)} - {formatCheckInStatus(lastCheckIns[student.id].status, lastCheckIns[student.id].attendance)}
                           </div>
                         </div>
                       ) : (

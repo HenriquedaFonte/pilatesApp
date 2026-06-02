@@ -99,7 +99,7 @@ const CreditHistoryReport = () => {
     // Fetch absent_notified check-ins
     let checkInQuery = supabase
       .from('check_ins')
-      .select('id, student_id, check_in_date, status, credit_type, created_at')
+      .select('id, student_id, check_in_date, status, credit_type, attendance, created_at')
       .eq('status', 'absent_notified')
       .order('created_at', { ascending: false })
       .limit(500)
@@ -122,17 +122,21 @@ const CreditHistoryReport = () => {
     // Combine balance history and absent_notified entries
     const combinedData = [
       ...(balanceData || []),
-      ...(absentNotifiedData || []).map(checkIn => ({
-        id: `absent-${checkIn.id}`,
-        student_id: checkIn.student_id,
-        type: checkIn.credit_type,
-        change_amount: 0,
-        created_at: checkIn.created_at,
-        description: 'Notified absence',
-        payment_method: null,
-        amount_paid: null,
-        new_balance: null
-      }))
+      ...(absentNotifiedData || []).map(checkIn => {
+        const [y, m, d] = checkIn.check_in_date.split('-').map(Number)
+        const classDate = new Date(y, m - 1, d, 12, 0, 0)
+        return {
+          id: `absent-${checkIn.id}`,
+          student_id: checkIn.student_id,
+          type: checkIn.credit_type,
+          change_amount: 0,
+          created_at: classDate.toISOString(),
+          description: checkIn.attendance === 'dismissed' ? 'Dismissed class' : 'Notified absence',
+          payment_method: null,
+          amount_paid: null,
+          new_balance: null
+        }
+      })
     ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
 
     setHistory(combinedData)
@@ -182,7 +186,7 @@ const CreditHistoryReport = () => {
           `"${row.type}"`,
           row.change_amount,
           `"${row.created_at}"`,
-          `"${row.description === 'Notified absence' ? t('teacher.reports.creditHistory.notifiedAbsence') : (row.description || '')}"`,
+          `"${row.description === 'Dismissed class' ? t('teacher.checkin.dismissedStatus', 'Dispensado da Aula') : row.description === 'Notified absence' ? t('teacher.reports.creditHistory.notifiedAbsence') : (row.description || '')}"`,
           `"${row.payment_method ? row.payment_method.replace('_', ' ') : t('teacher.reports.creditHistory.notInformed')}"`,
           row.amount_paid || 0
         ].join(',')
@@ -396,14 +400,21 @@ const CreditHistoryReport = () => {
                           <TableCell className="py-4">
                             {getChangeBadge(row.change_amount)}
                           </TableCell>
-                          <TableCell className="py-4 text-xs font-medium text-foreground">
+                           <TableCell className="py-4 text-xs font-medium text-foreground">
                             {row.created_at
-                              ? new Date(row.created_at).toLocaleString(i18n.language === 'en' ? 'en-US' : i18n.language === 'fr' ? 'fr-FR' : 'pt-BR')
+                              ? row.id.toString().startsWith('absent-')
+                                ? (() => {
+                                    const datePart = row.created_at.split('T')[0]
+                                    const [y, m, d] = datePart.split('-').map(Number)
+                                    const locale = i18n.language === 'en' ? 'en-US' : i18n.language === 'fr' ? 'fr-FR' : 'pt-BR'
+                                    return new Date(y, m - 1, d).toLocaleDateString(locale)
+                                  })()
+                                : new Date(row.created_at).toLocaleString(i18n.language === 'en' ? 'en-US' : i18n.language === 'fr' ? 'fr-FR' : 'pt-BR')
                               : ''}
                           </TableCell>
                           <TableCell className="py-4">
                             <span className="text-xs font-medium text-foreground">
-                              {row.description === 'Notified absence' ? t('teacher.reports.creditHistory.notifiedAbsence') : (row.description || '-')}
+                              {row.description === 'Dismissed class' ? t('teacher.checkin.dismissedStatus', 'Dispensado da Aula') : row.description === 'Notified absence' ? t('teacher.reports.creditHistory.notifiedAbsence') : (row.description || '-')}
                             </span>
                           </TableCell>
                           <TableCell className="py-4 pr-6">
