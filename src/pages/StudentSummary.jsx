@@ -193,7 +193,7 @@ const StudentSummary = () => {
       const { data: absentNotifiedData, error: checkInError } = await supabase
         .from('check_ins')
         .select(
-          'id, student_id, check_in_date, status, credit_type, created_at'
+          'id, student_id, check_in_date, status, credit_type, attendance, created_at'
         )
         .eq('student_id', studentId)
         .eq('status', 'absent_notified')
@@ -210,7 +210,7 @@ const StudentSummary = () => {
           type: checkIn.credit_type,
           change_amount: 0,
           created_at: checkIn.created_at,
-          description: 'Notified absence',
+          description: checkIn.attendance === 'dismissed' ? 'Dismissed class' : 'Notified absence',
           payment_method: null,
           amount_paid: null,
           new_balance: null
@@ -603,7 +603,9 @@ const StudentSummary = () => {
                         </TableCell>
                         <TableCell>
                           <span className="text-sm">
-                            {row.description === 'Notified absence'
+                            {row.description === 'Dismissed class'
+                              ? t('teacher.checkin.dismissedStatus', 'Dispensado da Aula')
+                              : row.description === 'Notified absence'
                               ? t('teacher.reports.creditHistory.notifiedAbsence', 'Falta justificada')
                               : row.description || '-'}
                           </span>

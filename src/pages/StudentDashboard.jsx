@@ -95,7 +95,8 @@ const StudentDashboard = () => {
           status,
           credit_type,
           created_at,
-          schedule_id
+          schedule_id,
+          attendance
         `
         )
         .eq('student_id', profile.id)
@@ -228,6 +229,7 @@ const StudentDashboard = () => {
         type: 'attendance',
         date: record.created_at,
         status: record.status,
+        attendance: record.attendance,
         class_name: record.class_schedules?.classes?.name || 'Unknown Class',
         credit_type: record.credit_type,
         check_in_date: record.check_in_date,
@@ -241,7 +243,10 @@ const StudentDashboard = () => {
       .slice(0, 4)
   }
 
-  const getAttendanceStatusColor = status => {
+  const getAttendanceStatusColor = (status, attendance) => {
+    if (status === 'absent_notified' && attendance === 'dismissed') {
+      return 'text-slate-500 dark:text-slate-400'
+    }
     switch (status) {
       case 'present':
         return 'text-green-600'
@@ -254,7 +259,10 @@ const StudentDashboard = () => {
     }
   }
 
-  const getAttendanceIcon = status => {
+  const getAttendanceIcon = (status, attendance) => {
+    if (status === 'absent_notified' && attendance === 'dismissed') {
+      return <Clock className="h-4 w-4 text-slate-500 dark:text-slate-400" />
+    }
     switch (status) {
       case 'present':
         return <CheckCircle className="h-4 w-4 text-green-600" />
@@ -497,7 +505,7 @@ const StudentDashboard = () => {
                     >
                       <div className="flex items-center space-x-3 min-w-0">
                         <div className="shrink-0">
-                          {activity.type === 'attendance' && getAttendanceIcon(activity.status)}
+                          {activity.type === 'attendance' && getAttendanceIcon(activity.status, activity.attendance)}
                           {activity.type === 'balance' && (
                             <div
                               className={`w-3.5 h-3.5 rounded-full ${
@@ -514,8 +522,10 @@ const StudentDashboard = () => {
                               <p className="font-bold text-foreground truncate text-sm">
                                 {activity.class_name}
                               </p>
-                              <p className={`text-xs font-semibold ${getAttendanceStatusColor(activity.status)} mt-0.5`}>
-                                {t(`status.${activity.status}`)}
+                              <p className={`text-xs font-semibold ${getAttendanceStatusColor(activity.status, activity.attendance)} mt-0.5`}>
+                                {activity.status === 'absent_notified' && activity.attendance === 'dismissed'
+                                  ? t('teacher.checkin.dismissedStatus', 'Dispensado da Aula')
+                                  : t(`status.${activity.status}`)}
                               </p>
                               <p className="text-xs text-muted-foreground mt-0.5">
                                 {(() => {
