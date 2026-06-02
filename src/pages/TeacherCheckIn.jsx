@@ -128,7 +128,7 @@ const TeacherCheckIn = () => {
 
 const { data: attendanceRecords, error: attendanceError } = await supabase
   .from('check_ins')
-  .select('student_id, schedule_id, status, credit_type')
+  .select('student_id, schedule_id, status, credit_type, profiles(id, full_name, individual_credits, duo_credits, group_credits)')
   .eq('check_in_date', date)
 
       if (attendanceError) throw attendanceError
@@ -157,6 +157,29 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
           credit_type_used: attendance ? attendance.credit_type : null,
           source: 'enrolled'
         })
+      })
+
+      attendanceRecords.forEach(att => {
+        const key = `${att.student_id}-${att.schedule_id}`
+        if (!allStudentsForDay.has(key)) {
+          const schedule = schedules.find(s => s.id === att.schedule_id)
+          if (schedule && att.profiles) {
+            allStudentsForDay.set(key, {
+              student_id: att.student_id,
+              full_name: att.profiles.full_name,
+              individual_credits: att.profiles.individual_credits || 0,
+              duo_credits: att.profiles.duo_credits || 0,
+              group_credits: att.profiles.group_credits || 0,
+              schedule_id: att.schedule_id,
+              class_name: schedule.classes.name,
+              start_time: schedule.start_time,
+              end_time: schedule.end_time,
+              attendance_status: att.status,
+              credit_type_used: att.credit_type,
+              source: 'manual'
+            })
+          }
+        }
       })
 
 
@@ -246,16 +269,6 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
                     : student.group_credits
               }
             : student
-        )
-      )
-
-      setScheduledStudents(prevStudents =>
-        prevStudents.filter(
-          student =>
-            !(
-              student.student_id === studentId &&
-              student.schedule_id === scheduleId
-            )
         )
       )
 
@@ -441,17 +454,24 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
               <div className="space-y-4">
                 {scheduledStudents.map(student => {
                   const isPresent = student.attendance_status === 'present'
+                  const isAbsentNotified = student.attendance_status === 'absent_notified'
+                  const isAbsentUnnotified = student.attendance_status === 'absent_unnotified'
                   const isPending = student.attendance_status === 'pending'
                   const totalBalance = getTotalCredits(student)
+
+                  let cardStyle = 'bg-card border-border shadow-sm hover:shadow-md'
+                  if (isPresent) {
+                    cardStyle = 'bg-emerald-50/70 border-emerald-300/80 shadow-xs dark:bg-emerald-950/20 dark:border-emerald-900/50'
+                  } else if (isAbsentNotified) {
+                    cardStyle = 'bg-orange-50/70 border-orange-300/80 shadow-xs dark:bg-orange-950/20 dark:border-orange-900/50'
+                  } else if (isAbsentUnnotified) {
+                    cardStyle = 'bg-rose-50/70 border-rose-300/80 shadow-xs dark:bg-rose-950/20 dark:border-rose-900/50'
+                  }
 
                   return (
                     <div
                       key={`${student.student_id}-${student.schedule_id}`}
-                      className={`flex flex-col lg:flex-row lg:items-center justify-between p-5 border rounded-2xl transition-all duration-200 gap-4 ${
-                        isPresent
-                          ? 'bg-primary/5 border-primary/30 shadow-xs'
-                          : 'bg-card border-border shadow-sm hover:shadow-md'
-                      }`}
+                      className={`flex flex-col lg:flex-row lg:items-center justify-between p-5 border rounded-2xl transition-all duration-200 gap-4 ${cardStyle}`}
                     >
                       <div className="flex items-center gap-4 flex-1">
                         {/* Avatar com Iniciais */}
@@ -522,6 +542,8 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
                             className={`font-bold text-xs rounded-xl px-3 py-1.5 text-center capitalize shrink-0 border ${
                               isPresent 
                                 ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-900/50'
+                                : isAbsentNotified
+                                ? 'bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-950/30 dark:text-orange-400 dark:border-orange-900/50'
                                 : 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/30 dark:text-rose-400 dark:border-rose-900/50'
                             }`}
                           >
@@ -739,9 +761,9 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
                 filteredStudents.map(student => (
                   <div
                     key={student.id}
-                    className="flex items-center justify-between py-2 border-b border-border/50 last:border-b-0 gap-3"
+                    className="flex flex-col sm:flex-row sm:items-center justify-between py-2 border-b border-border/50 last:border-b-0 gap-2"
                   >
-                    <span className="text-sm font-bold text-foreground truncate max-w-[180px]">
+                    <span className="text-sm font-bold text-foreground truncate sm:max-w-[180px] w-full sm:w-auto">
                       {student.full_name} <span className="text-[10px] text-muted-foreground font-normal">({getTotalCredits(student)} crd)</span>
                     </span>
                     <Select
@@ -749,7 +771,7 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
                         handleAddStudentToClass(student.id, value)
                       }
                     >
-                      <SelectTrigger className="w-[160px] rounded-lg h-8 text-xs border-border bg-background">
+                      <SelectTrigger className="w-full sm:w-[160px] rounded-lg h-8 text-xs border-border bg-background">
                         <SelectValue placeholder="Adicionar à turma" />
                       </SelectTrigger>
                       <SelectContent className="rounded-lg">
