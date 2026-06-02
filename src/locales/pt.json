@@ -140,6 +140,7 @@
       "lowBalance": "Saldo baixo",
       "todayClasses": "Aulas hoje",
       "weeklyClasses": "Turmas na semana",
+      "totalStudentsLabel": "Total de alunos",
       "todayClassesTitle": "Aulas de Hoje",
       "todayClassesDesc": "As aulas agendadas para o dia de hoje aparecerão aqui.",
       "todayClassesDescSub": "Fase 2: Integração com calendário dinâmico e presenças.",

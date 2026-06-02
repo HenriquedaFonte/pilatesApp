@@ -515,6 +515,7 @@
       "lowBalance": "Low balance",
       "todayClasses": "Classes today",
       "weeklyClasses": "Classes this week",
+      "totalStudentsLabel": "Total students",
       "todayClassesTitle": "Today's Classes",
       "todayClassesDesc": "Scheduled classes for today will appear here.",
       "todayClassesDescSub": "Phase 2: Dynamic calendar integration and attendance.",

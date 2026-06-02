@@ -115,6 +115,13 @@ const TeacherStudents = () => {
     if (msg) setTimeout(() => setError(''), 5000)
   }
 
+  const formatCheckInDate = dateStr => {
+    if (!dateStr) return ''
+    const [year, month, day] = dateStr.split('-').map(Number)
+    const localDate = new Date(year, month - 1, day)
+    return localDate.toLocaleDateString()
+  }
+
   const [upcomingBirthdays, setUpcomingBirthdays] = useState([])
   const [showBirthdayNotification, setShowBirthdayNotification] =
     useState(false)
@@ -880,7 +887,7 @@ const TeacherStudents = () => {
                             Último check-in: {lastCheckIns[student.id].class_schedules?.classes?.name}
                           </div>
                           <div className="mt-0.5 text-[10px] opacity-90 truncate">
-                            {new Date(lastCheckIns[student.id].check_in_date).toLocaleDateString()} - {formatCheckInStatus(lastCheckIns[student.id].status)}
+                            {formatCheckInDate(lastCheckIns[student.id].check_in_date)} - {formatCheckInStatus(lastCheckIns[student.id].status)}
                           </div>
                         </div>
                       ) : (

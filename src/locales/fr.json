@@ -515,6 +515,7 @@
       "lowBalance": "Solde faible",
       "todayClasses": "Cours aujourd'hui",
       "weeklyClasses": "Cours cette semaine",
+      "totalStudentsLabel": "Total d'élèves",
       "todayClassesTitle": "Cours d'aujourd'hui",
       "todayClassesDesc": "Les cours planifiés pour aujourd'hui apparaîtront ici.",
       "todayClassesDescSub": "Phase 2 : Intégration du calendrier dynamique et des présences.",

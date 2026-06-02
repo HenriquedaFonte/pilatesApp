@@ -34,10 +34,10 @@ const TeacherDashboard = () => {
   const navigate = useNavigate()
   const { t, i18n } = useTranslation()
   const [stats, setStats] = useState({
-    totalStudents: 0,
+    activeStudents: 0,
     studentsWithLowBalance: 0,
     todayClasses: 0,
-    totalClasses: 0
+    grandTotalStudents: 0
   })
   const [todayClassesList, setTodayClassesList] = useState([])
   const [loading, setLoading] = useState(true)
@@ -73,12 +73,6 @@ const TeacherDashboard = () => {
         .eq('role', 'student')
 
       if (studentsError) throw studentsError
-
-      const { data: weeklySchedules, error: weeklySchedulesError } = await supabase
-        .from('class_schedules')
-        .select('id')
-
-      if (weeklySchedulesError) throw weeklySchedulesError
 
       const today = new Date()
       const dayOfWeek = today.getDay()
@@ -141,10 +135,10 @@ const TeacherDashboard = () => {
       ).length
 
       setStats({
-        totalStudents: activeStudents.length,
+        activeStudents: activeStudents.length,
         studentsWithLowBalance,
         todayClasses: todaySchedules.length,
-        totalClasses: (weeklySchedules || []).length
+        grandTotalStudents: (students || []).length
       })
       setTodayClassesList(formattedTodayClasses)
     } catch (error) {
@@ -189,7 +183,7 @@ const TeacherDashboard = () => {
               </div>
               <div>
                 <p className="text-[13px] font-medium text-muted-foreground">{t('teacher.dashboard.activeStudents')}</p>
-                <h3 className="text-3xl font-bold font-serif-display text-foreground mt-0.5">{stats.totalStudents}</h3>
+                <h3 className="text-3xl font-bold font-serif-display text-foreground mt-0.5">{stats.activeStudents}</h3>
               </div>
             </CardContent>
           </Card>
@@ -221,8 +215,8 @@ const TeacherDashboard = () => {
                 <BookOpen className="h-6 w-6" />
               </div>
               <div>
-                <p className="text-[13px] font-medium text-muted-foreground">{t('teacher.dashboard.weeklyClasses')}</p>
-                <h3 className="text-3xl font-bold font-serif-display text-foreground mt-0.5">{stats.totalClasses}</h3>
+                <p className="text-[13px] font-medium text-muted-foreground">{t('teacher.dashboard.totalStudentsLabel')}</p>
+                <h3 className="text-3xl font-bold font-serif-display text-foreground mt-0.5">{stats.grandTotalStudents}</h3>
               </div>
             </CardContent>
           </Card>
