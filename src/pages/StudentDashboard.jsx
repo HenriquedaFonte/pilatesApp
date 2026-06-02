@@ -4,7 +4,7 @@ import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
-import { getDayName, formatTime } from '../lib/format'
+import { getDayName, formatTime, formatDate } from '../lib/format'
 import {
   Card,
   CardContent,
@@ -528,11 +528,7 @@ const StudentDashboard = () => {
                                   : t(`status.${activity.status}`)}
                               </p>
                               <p className="text-xs text-muted-foreground mt-0.5">
-                                {(() => {
-                                  const currentLang = i18n.language || 'pt'
-                                  const locale = currentLang.substring(0, 2).toLowerCase() === 'en' ? 'en-US' : currentLang.substring(0, 2).toLowerCase() === 'fr' ? 'fr-CA' : 'pt-BR'
-                                  return new Date(activity.check_in_date).toLocaleDateString(locale)
-                                })()}
+                                {formatDate(activity.check_in_date, i18n.language)}
                               </p>
                             </>
                           ) : (

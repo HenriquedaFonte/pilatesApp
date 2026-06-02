@@ -24,6 +24,14 @@ export const formatDate = (d, lang = 'pt') => {
   if (!d) return ''
   const cleanLang = lang?.substring(0, 2).toLowerCase()
   const locale = cleanLang === 'en' ? 'en-US' : cleanLang === 'fr' ? 'fr-CA' : 'pt-BR'
+  if (typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d)) {
+    const [y, m, dPart] = d.split('-').map(Number)
+    return new Date(y, m - 1, dPart).toLocaleDateString(locale, {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    })
+  }
   return new Date(d).toLocaleDateString(locale, {
     day: 'numeric',
     month: 'long',

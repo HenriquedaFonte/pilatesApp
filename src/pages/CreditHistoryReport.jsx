@@ -122,17 +122,21 @@ const CreditHistoryReport = () => {
     // Combine balance history and absent_notified entries
     const combinedData = [
       ...(balanceData || []),
-      ...(absentNotifiedData || []).map(checkIn => ({
-        id: `absent-${checkIn.id}`,
-        student_id: checkIn.student_id,
-        type: checkIn.credit_type,
-        change_amount: 0,
-        created_at: checkIn.created_at,
-        description: checkIn.attendance === 'dismissed' ? 'Dismissed class' : 'Notified absence',
-        payment_method: null,
-        amount_paid: null,
-        new_balance: null
-      }))
+      ...(absentNotifiedData || []).map(checkIn => {
+        const [y, m, d] = checkIn.check_in_date.split('-').map(Number)
+        const classDate = new Date(y, m - 1, d, 12, 0, 0)
+        return {
+          id: `absent-${checkIn.id}`,
+          student_id: checkIn.student_id,
+          type: checkIn.credit_type,
+          change_amount: 0,
+          created_at: classDate.toISOString(),
+          description: checkIn.attendance === 'dismissed' ? 'Dismissed class' : 'Notified absence',
+          payment_method: null,
+          amount_paid: null,
+          new_balance: null
+        }
+      })
     ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
 
     setHistory(combinedData)
@@ -396,9 +400,16 @@ const CreditHistoryReport = () => {
                           <TableCell className="py-4">
                             {getChangeBadge(row.change_amount)}
                           </TableCell>
-                          <TableCell className="py-4 text-xs font-medium text-foreground">
+                           <TableCell className="py-4 text-xs font-medium text-foreground">
                             {row.created_at
-                              ? new Date(row.created_at).toLocaleString(i18n.language === 'en' ? 'en-US' : i18n.language === 'fr' ? 'fr-FR' : 'pt-BR')
+                              ? row.id.toString().startsWith('absent-')
+                                ? (() => {
+                                    const datePart = row.created_at.split('T')[0]
+                                    const [y, m, d] = datePart.split('-').map(Number)
+                                    const locale = i18n.language === 'en' ? 'en-US' : i18n.language === 'fr' ? 'fr-FR' : 'pt-BR'
+                                    return new Date(y, m - 1, d).toLocaleDateString(locale)
+                                  })()
+                                : new Date(row.created_at).toLocaleString(i18n.language === 'en' ? 'en-US' : i18n.language === 'fr' ? 'fr-FR' : 'pt-BR')
                               : ''}
                           </TableCell>
                           <TableCell className="py-4">
