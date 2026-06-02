@@ -526,7 +526,7 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
                   } else if (isAbsentUnnotified) {
                     cardStyle = 'bg-rose-50/70 border-rose-300/80 shadow-xs dark:bg-rose-950/20 dark:border-rose-900/50'
                   } else if (isDismissed) {
-                    cardStyle = 'bg-slate-50/70 border-slate-300/60 shadow-xs dark:bg-slate-900/10 dark:border-slate-800/50 opacity-80'
+                    cardStyle = 'bg-slate-100 border-slate-300 shadow-xs dark:bg-slate-800/40 dark:border-slate-700 opacity-90'
                   }
 
                   return (
