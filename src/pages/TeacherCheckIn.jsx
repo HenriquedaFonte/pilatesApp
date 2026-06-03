@@ -597,7 +597,7 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
                         </div>
                       </div>
 
-                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 lg:gap-2 shrink-0">
+                      <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 lg:gap-2">
                         {!isPending && (
                           <span
                             className={`font-bold text-xs rounded-xl px-3 py-1.5 text-center capitalize shrink-0 border ${
@@ -615,7 +615,7 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
                         )}
 
                         {isPending && (
-                          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
+                          <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2 w-full sm:w-auto">
                             {/* BUG-01 FIX: each student has its own credit type selector */}
                             <Select
                               value={getCreditType(student.student_id, student.schedule_id)}
@@ -633,7 +633,7 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
                               </SelectContent>
                             </Select>
 
-                            <div className="flex gap-2">
+                            <div className="flex flex-wrap gap-2">
                               <Button
                                 variant="outline"
                                 size="sm"
