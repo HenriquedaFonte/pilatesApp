@@ -427,7 +427,7 @@ Sent from Josi Pilates website contact form.
             </a>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-1 rounded-md text-[#1a2420] focus:outline-none"
+              className="p-1 rounded-md text-[var(--ink)] focus:outline-none"
             >
               {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -436,7 +436,7 @@ Sent from Josi Pilates website contact form.
 
         {/* Mobile slide-down menu */}
         {mobileMenuOpen && (
-          <div className="nav-mobile-menu lg:hidden border-t border-[#e7e9e3] bg-[#f6f3ec] px-4 py-4 flex flex-col gap-4 shadow-lg text-left">
+          <div className="nav-mobile-menu lg:hidden border-t border-[var(--line)] bg-[var(--sand)] px-4 py-4 flex flex-col gap-4 shadow-lg text-left">
             <div className="flex justify-between items-center px-2">
               <span className="lang">
                 <Globe className="w-4 h-4 text-gray-400" />
@@ -460,31 +460,31 @@ Sent from Josi Pilates website contact form.
                 {t('studioHome.nav.studentPortal')}
               </Link>
             </div>
-            <nav className="flex flex-col space-y-1 px-2 border-t border-[#e7e9e3] pt-3">
+            <nav className="flex flex-col space-y-1 px-2 border-t border-[var(--line)] pt-3">
               <a
                 href="#about"
-                className="text-[#4d5a54] hover:text-[#1a2420] py-2 block font-semibold text-sm"
+                className="text-[var(--ink-2)] hover:text-[var(--ink)] py-2 block font-semibold text-sm"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {t('studioHome.nav.about')}
               </a>
               <a
                 href="#services"
-                className="text-[#4d5a54] hover:text-[#1a2420] py-2 block font-semibold text-sm"
+                className="text-[var(--ink-2)] hover:text-[var(--ink)] py-2 block font-semibold text-sm"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {t('studioHome.nav.services')}
               </a>
               <a
                 href="#testimonials"
-                className="text-[#4d5a54] hover:text-[#1a2420] py-2 block font-semibold text-sm"
+                className="text-[var(--ink-2)] hover:text-[var(--ink)] py-2 block font-semibold text-sm"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {t('studioHome.nav.testimonials')}
               </a>
               <a
                 href="#contact"
-                className="text-[#4d5a54] hover:text-[#1a2420] py-2 block font-semibold text-sm"
+                className="text-[var(--ink-2)] hover:text-[var(--ink)] py-2 block font-semibold text-sm"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {t('studioHome.nav.contact')}
