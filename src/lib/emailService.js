@@ -34,7 +34,28 @@ class EmailService {
     }
   }
 
-  async sendEmail({ to, subject, htmlContent, textContent, attachments = [] }) {
+  _getPortalCta(language = 'pt') {
+    const labels = {
+      pt: 'Acessar Portal do Aluno',
+      en: 'Access Student Portal',
+      fr: 'Accéder au Portail Étudiant'
+    };
+    const label = labels[language] || labels.pt;
+    const url = `${this.getBaseUrl()}/login`;
+    return `
+          <div style="text-align: center; margin: 25px 0; padding: 18px; background-color: #f0fdf4; border-radius: 8px; border: 1px solid #bbf7d0;">
+            <a href="${url}"
+               style="background: linear-gradient(135deg, #01b48d 0%, #017a6b 100%); color: white; padding: 12px 28px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold; font-size: 15px;">
+              ${label}
+            </a>
+          </div>`;
+  }
+
+  async sendEmail({ to, subject, htmlContent, textContent, attachments = [], language = 'pt' }) {
+    const hr = '<hr style="margin: 30px 0; border: none; border-top: 1px solid #e2e8f0;">';
+    if (htmlContent.includes(hr)) {
+      htmlContent = htmlContent.replace(hr, `${this._getPortalCta(language)}\n          ${hr}`);
+    }
     try {
       const payload = {
         from: `${this.fromName} <${this.fromEmail}>`,
@@ -174,7 +195,8 @@ ${processedTemplate.footer}
       to: { email: userEmail, name: '' },
       subject,
       htmlContent,
-      textContent
+      textContent,
+      language: userLanguage
     });
   }
 
@@ -303,7 +325,8 @@ ${processedTemplate.tagline}
       to: { email: student.email, name: student.name || student.full_name },
       subject,
       htmlContent,
-      textContent
+      textContent,
+      language
     });
   }
 
@@ -322,6 +345,7 @@ ${processedTemplate.tagline}
       return {
         to: { email: student.email, name: student.name || student.full_name },
         subject,
+        language,
         htmlContent: `
           <!DOCTYPE html>
           <html>
@@ -480,7 +504,8 @@ ${processedTemplate.tagline}
       to: { email: student.email, name: student.name || student.full_name },
       subject,
       htmlContent,
-      textContent
+      textContent,
+      language
     });
   }
 
@@ -595,7 +620,8 @@ ${processedTemplate.teamName}
       to: { email: student.email, name: student.name || student.full_name },
       subject,
       htmlContent,
-      textContent
+      textContent,
+      language
     });
   }
 
@@ -761,7 +787,8 @@ ${processedTemplate.tagline}
       to: { email: email, name: fullName },
       subject,
       htmlContent,
-      textContent
+      textContent,
+      language: preferredLanguage
     });
   }
 
@@ -885,7 +912,8 @@ ${processedTemplate.tagline}
       subject,
       htmlContent,
       textContent,
-      attachments
+      attachments,
+      language
     });
   }
 
@@ -1070,7 +1098,8 @@ ${processedTemplate.tagline}
       to: { email: email, name: fullName },
       subject,
       htmlContent,
-      textContent
+      textContent,
+      language: preferredLanguage
     });
   }
 }
