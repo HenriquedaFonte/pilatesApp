@@ -635,7 +635,7 @@ export const emailTemplates = {
       classDuration: 'As aulas têm duração de 55 minutos.',
       arrivalRule: 'Pedimos gentilmente que chegue pelo menos 5 minutos antes do início da sua aula. Este tempo extra permite uma transição tranquila entre as aulas.',
       cancellationRule: 'Além disso, gostaríamos de lembrá-lo da nossa política de cancelamento de 24 horas para todas as aulas. Se precisar cancelar ou reagendar sua sessão, certifique-se de nos informar pelo menos 24 horas antes. O não cumprimento desta política resultará na perda da aula.',
-      excitement: 'Mal podemos esperar para vê-lo no studio!',
+      excitement: 'Até a próxima aula!',
       signature: 'Atenciosamente,',
       teamName: 'Equipe Josi Pilates'
     },
@@ -653,7 +653,7 @@ export const emailTemplates = {
       classDuration: 'Classes have a duration of 55 minutes.',
       arrivalRule: 'We kindly ask that you arrive at least 5 minutes before the start of your class. This extra time allows for a smooth setup in the studio.',
       cancellationRule: 'Additionally, we\'d like to remind you of our 24-hour cancellation policy for all classes. If you need to cancel or reschedule your session, please make sure to inform us at least 24 hours in advance. Failure to comply with this policy will result in the loss of the class.',
-      excitement: 'We look forward to seeing you in the studio!',
+      excitement: 'See you at the next class!',
       signature: 'Best regards,',
       teamName: 'Josi Pilates Team'
     },
@@ -671,7 +671,7 @@ export const emailTemplates = {
       classDuration: 'Les cours ont une durée de 55 minutes.',
       arrivalRule: 'Nous vous demandons gentiment d\'arriver au moins 5 minutes avant le début de votre cours. Ce temps supplémentaire permet une configuration fluide dans le studio.',
       cancellationRule: 'De plus, nous aimerions vous rappeler notre politique d\'annulation de 24 heures pour tous les cours. Si vous devez annuler ou reprogrammer votre séance, veuillez nous en informer au moins 24 heures à l\'avance. Le non-respect de cette politique entraînera la perte du cours.',
-      excitement: 'Nous avons hâte de vous voir au studio!',
+      excitement: 'À la prochaine cours!',
       signature: 'Cordialement,',
       teamName: 'Équipe Josi Pilates'
     }
