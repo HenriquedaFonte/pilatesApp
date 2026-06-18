@@ -853,7 +853,8 @@
       "services": "Serviços",
       "contact": "Contato",
       "studentPortal": "Área do cliente",
-      "bookTrial": "Agendar aula introdutória"
+      "bookTrial": "Agendar aula introdutória",
+      "bookTrialMobile": "Agende"
     },
     "hero": {
       "greeting": "Olá!",

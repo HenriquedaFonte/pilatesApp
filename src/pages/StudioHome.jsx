@@ -423,7 +423,7 @@ Sent from Josi Pilates website contact form.
           {/* Mobile navigation controls */}
           <div className="nav-mobile lg:hidden flex items-center gap-3">
             <a href="#contact" className="btn btn-primary text-xs px-4 py-2 font-bold">
-              <Calendar className="w-3.5 h-3.5" /> {t('studioHome.nav.bookTrial')}
+              <Calendar className="w-3.5 h-3.5" /> {t('studioHome.nav.bookTrialMobile')}
             </a>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
