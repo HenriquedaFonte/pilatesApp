@@ -1,0 +1,55 @@
+name: 🗄️ Backup Diário do Banco
+
+on:
+  schedule:
+    # Roda todo dia às 03:00 UTC (meia-noite em Montréal no horário de verão)
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+    # Permite disparar manualmente pelo GitHub (botão "Run workflow")
+
+jobs:
+  backup:
+    name: Exportar banco de dados
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Executar backup
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          NODE_TLS_REJECT_UNAUTHORIZED: '0'
+        run: node scripts/backup.js
+
+      - name: Compactar backup
+        run: |
+          TIMESTAMP=$(ls backups/ | sort | tail -1)
+          cd backups
+          zip -r "../backup-${TIMESTAMP}.zip" "${TIMESTAMP}/"
+          echo "BACKUP_FILE=backup-${TIMESTAMP}.zip" >> $GITHUB_ENV
+          echo "BACKUP_TIMESTAMP=${TIMESTAMP}" >> $GITHUB_ENV
+
+      - name: Salvar backup como artefato (90 dias)
+        uses: actions/upload-artifact@v4
+        with:
+          name: backup-${{ env.BACKUP_TIMESTAMP }}
+          path: ${{ env.BACKUP_FILE }}
+          retention-days: 90
+          if-no-files-found: error
+
+      - name: Resumo do backup
+        run: |
+          echo "### ✅ Backup concluído" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Arquivo:** \`${{ env.BACKUP_FILE }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Retenção:** 90 dias" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Para baixar: Actions → Este workflow → Artifacts" >> $GITHUB_STEP_SUMMARY
