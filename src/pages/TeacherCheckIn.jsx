@@ -209,6 +209,7 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
         .from('profiles')
         .select('id, full_name, individual_credits, duo_credits, group_credits')
         .eq('role', 'student')
+        .is('deleted_at', null)
         .order('full_name')
 
       if (error) throw error

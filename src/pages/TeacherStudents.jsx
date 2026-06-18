@@ -52,7 +52,9 @@ import {
   UserX,
   UserCheck,
   Trash2,
-  MoreVertical
+  MoreVertical,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react'
 import TeacherLayout from '../components/TeacherLayout'
 import {
@@ -105,6 +107,15 @@ const TeacherStudents = () => {
   const [isActiveConfirmOpen, setIsActiveConfirmOpen] = useState(false)
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false)
   const [deleteLoading, setDeleteLoading] = useState(false)
+  // Story 2.1 — Trash / restore
+  const [deletedStudents, setDeletedStudents] = useState([])
+  const [showDeletedSection, setShowDeletedSection] = useState(false)
+  const [isRestoreConfirmOpen, setIsRestoreConfirmOpen] = useState(false)
+  // Story 2.2 — Hard delete with friction
+  const [isHardDeleteConfirmOpen, setIsHardDeleteConfirmOpen] = useState(false)
+  const [hardDeleteConfirmText, setHardDeleteConfirmText] = useState('')
+  const [hardDeleteLoading, setHardDeleteLoading] = useState(false)
+  const HARD_DELETE_PHRASE = 'EXCLUIR PERMANENTEMENTE'
 
   const showSuccess = msg => {
     setSuccess(msg)
@@ -142,7 +153,62 @@ const TeacherStudents = () => {
 
   useEffect(() => {
     fetchData()
+    fetchDeletedStudents()
   }, [])
+
+  const fetchDeletedStudents = async () => {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('id, email, full_name, deleted_at, deleted_by')
+      .eq('role', 'student')
+      .not('deleted_at', 'is', null)
+      .order('deleted_at', { ascending: false })
+    if (!error) setDeletedStudents(data || [])
+  }
+
+  const getDaysUntilHardDelete = (deletedAt) => {
+    const hardDeleteDate = new Date(deletedAt)
+    hardDeleteDate.setDate(hardDeleteDate.getDate() + 90)
+    const diffMs = hardDeleteDate - new Date()
+    return Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)))
+  }
+
+  const handleRestoreStudent = async () => {
+    try {
+      const { error } = await supabase.functions.invoke('manage-student', {
+        body: { action: 'restore', studentId: selectedStudent.id }
+      })
+      if (error) throw new Error(error.message)
+      showSuccess(`Aluno(a) ${selectedStudent.full_name} restaurado(a) com sucesso!`)
+      await fetchData()
+      await fetchDeletedStudents()
+    } catch (err) {
+      showError('Erro ao restaurar aluno: ' + err.message)
+    } finally {
+      setIsRestoreConfirmOpen(false)
+      setSelectedStudent(null)
+    }
+  }
+
+  const handleHardDeleteStudent = async () => {
+    if (hardDeleteConfirmText !== HARD_DELETE_PHRASE) return
+    setHardDeleteLoading(true)
+    try {
+      const { error } = await supabase.functions.invoke('manage-student', {
+        body: { action: 'hard-delete', studentId: selectedStudent.id }
+      })
+      if (error) throw new Error(error.message)
+      showSuccess(`Aluno(a) ${selectedStudent.full_name} excluído(a) permanentemente.`)
+      await fetchDeletedStudents()
+    } catch (err) {
+      showError('Erro ao excluir permanentemente: ' + err.message)
+    } finally {
+      setIsHardDeleteConfirmOpen(false)
+      setHardDeleteConfirmText('')
+      setSelectedStudent(null)
+      setHardDeleteLoading(false)
+    }
+  }
 
   const handleSignOut = async () => {
     await signOut()
@@ -175,6 +241,7 @@ const TeacherStudents = () => {
           'id, email, full_name, role, individual_credits, duo_credits, group_credits, created_at, observations, date_of_birth, is_active'
         )
         .eq('role', 'student')
+        .is('deleted_at', null)
         .order('full_name')
 
       if (studentsError) throw studentsError
@@ -539,8 +606,9 @@ const TeacherStudents = () => {
         throw new Error(errMsg);
       }
 
-      showSuccess(`Aluno(a) ${selectedStudent.full_name} excluído(a) com sucesso!`)
+      showSuccess(`Aluno(a) ${selectedStudent.full_name} movido(a) para a lixeira com sucesso!`)
       await fetchData()
+      await fetchDeletedStudents()
     } catch (err) {
       console.error('--- DETAILED STUDENT DELETE ERROR ---')
       console.error(err)
@@ -997,7 +1065,7 @@ const TeacherStudents = () => {
                           className="cursor-pointer flex items-center gap-2 hover:bg-red-50 focus:bg-red-50 text-red-600 focus:text-red-600 py-2 px-3 rounded-lg text-sm"
                         >
                           <Trash2 className="h-4 w-4" />
-                          <span>Excluir Aluno</span>
+                          <span>Mover para Lixeira</span>
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -1023,6 +1091,62 @@ const TeacherStudents = () => {
             </CardContent>
           </Card>
         )}
+
+        {/* Seção Lixeira — Story 2.1 */}
+        <div className="mt-8 border-t border-border/50 pt-6">
+          <button
+            onClick={() => setShowDeletedSection(!showDeletedSection)}
+            className="flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <Trash2 className="h-4 w-4" />
+            Lixeira ({deletedStudents.length})
+            {showDeletedSection ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          </button>
+
+          {showDeletedSection && (
+            <div className="mt-4 space-y-3">
+              {deletedStudents.length === 0 ? (
+                <p className="text-sm text-muted-foreground italic">Nenhum aluno na lixeira.</p>
+              ) : (
+                deletedStudents.map(student => (
+                  <div
+                    key={student.id}
+                    className="flex items-center justify-between p-3 bg-muted/20 rounded-xl border border-border/40"
+                  >
+                    <div>
+                      <p className="text-sm font-semibold">{student.full_name}</p>
+                      <p className="text-xs text-muted-foreground">{student.email}</p>
+                      <p className="text-xs text-amber-600 mt-0.5">
+                        Excluído em {new Date(student.deleted_at).toLocaleDateString('pt-BR')} •{' '}
+                        {getDaysUntilHardDelete(student.deleted_at)} dias restantes
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => { setSelectedStudent(student); setIsRestoreConfirmOpen(true) }}
+                        className="rounded-lg h-8 px-3 text-xs text-emerald-600 border-emerald-200 hover:bg-emerald-50"
+                      >
+                        <UserCheck className="h-3.5 w-3.5 mr-1" />
+                        Restaurar
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => { setSelectedStudent(student); setIsHardDeleteConfirmOpen(true) }}
+                        className="rounded-lg h-8 px-3 text-xs text-destructive border-destructive/30 hover:bg-destructive/5"
+                      >
+                        <Trash2 className="h-3.5 w-3.5 mr-1" />
+                        Excluir Para Sempre
+                      </Button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+        </div>
 
         <Dialog
           open={isBalanceDialogOpen}
@@ -1485,12 +1609,13 @@ const TeacherStudents = () => {
         <AlertDialog open={isDeleteConfirmOpen} onOpenChange={setIsDeleteConfirmOpen}>
           <AlertDialogContent className="rounded-2xl">
             <AlertDialogHeader>
-              <AlertDialogTitle className="text-base font-bold text-destructive">
-                Excluir Aluno Permanentemente?
+              <AlertDialogTitle className="text-base font-bold text-amber-600">
+                Mover Aluno para a Lixeira?
               </AlertDialogTitle>
               <AlertDialogDescription className="text-xs text-muted-foreground">
-                Tem certeza que deseja excluir o(a) aluno(a) <strong>{selectedStudent?.full_name}</strong>? 
-                Esta ação é <strong>irreversível</strong> e removerá permanentemente a conta de login, perfil, créditos e históricos associados.
+                Tem certeza que deseja mover o(a) aluno(a) <strong>{selectedStudent?.full_name}</strong> para a lixeira?
+                O perfil ficará inativo, mas o histórico de aulas e créditos será preservado.
+                <strong> Esta ação pode ser revertida em até 90 dias.</strong>
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -1501,11 +1626,98 @@ const TeacherStudents = () => {
                 Cancelar
               </AlertDialogCancel>
               <AlertDialogAction
-                className="rounded-xl bg-destructive hover:bg-destructive/90 text-white"
+                className="rounded-xl bg-amber-600 hover:bg-amber-700 text-white"
                 onClick={handleDeleteStudent}
                 disabled={deleteLoading}
               >
-                {deleteLoading ? 'Excluindo...' : 'Excluir Permanentemente'}
+                {deleteLoading ? 'Movendo...' : 'Mover para Lixeira'}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        {/* AlertDialog de Restauração — Story 2.1 */}
+        <AlertDialog open={isRestoreConfirmOpen} onOpenChange={setIsRestoreConfirmOpen}>
+          <AlertDialogContent className="rounded-2xl">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-base font-bold text-emerald-700">
+                Restaurar Aluno?
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-xs text-muted-foreground">
+                Deseja restaurar o(a) aluno(a) <strong>{selectedStudent?.full_name}</strong>?
+                O perfil voltará a aparecer na lista de alunos ativos. As turmas precisarão ser rematriculadas manualmente.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="rounded-xl" onClick={() => {
+                setIsRestoreConfirmOpen(false)
+                setSelectedStudent(null)
+              }}>
+                Cancelar
+              </AlertDialogCancel>
+              <AlertDialogAction
+                className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white"
+                onClick={handleRestoreStudent}
+              >
+                Restaurar
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        {/* AlertDialog de Hard Delete com Fricção — Story 2.2 */}
+        <AlertDialog open={isHardDeleteConfirmOpen} onOpenChange={(open) => {
+          setIsHardDeleteConfirmOpen(open)
+          if (!open) setHardDeleteConfirmText('')
+        }}>
+          <AlertDialogContent className="rounded-2xl">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-base font-bold text-destructive">
+                ⚠️ Exclusão Permanente
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-xs text-muted-foreground space-y-2" asChild>
+                <div>
+                  <p>
+                    Você está prestes a excluir permanentemente o(a) aluno(a){' '}
+                    <strong>{selectedStudent?.full_name}</strong>.
+                  </p>
+                  <p className="text-destructive font-semibold mt-1">
+                    Esta ação é irreversível. Histórico de aulas, créditos e dados do aluno serão perdidos para sempre.
+                  </p>
+                  <p className="mt-1">
+                    Digite{' '}
+                    <code className="bg-muted px-1 rounded text-foreground font-mono">EXCLUIR PERMANENTEMENTE</code>
+                    {' '}para confirmar:
+                  </p>
+                </div>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <div className="px-1 pb-2">
+              <input
+                value={hardDeleteConfirmText}
+                onChange={e => setHardDeleteConfirmText(e.target.value)}
+                placeholder="Digite EXCLUIR PERMANENTEMENTE para confirmar"
+                className="w-full rounded-xl border border-destructive/50 focus:outline-none focus:ring-2 focus:ring-destructive/30 h-10 px-3 font-mono text-sm bg-background text-foreground"
+                autoFocus
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+              />
+            </div>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="rounded-xl" onClick={() => {
+                setIsHardDeleteConfirmOpen(false)
+                setHardDeleteConfirmText('')
+                setSelectedStudent(null)
+              }}>
+                Cancelar
+              </AlertDialogCancel>
+              <AlertDialogAction
+                className="rounded-xl bg-destructive hover:bg-destructive/90 text-white disabled:opacity-40"
+                onClick={handleHardDeleteStudent}
+                disabled={hardDeleteConfirmText !== HARD_DELETE_PHRASE || hardDeleteLoading}
+              >
+                {hardDeleteLoading ? 'Excluindo...' : 'Excluir Permanentemente'}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
