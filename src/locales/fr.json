@@ -348,7 +348,8 @@
       "services": "Services",
       "contact": "Contact",
       "studentPortal": "Espace client",
-      "bookTrial": "Séance d'introduction"
+      "bookTrial": "Séance d'introduction",
+      "bookTrialMobile": "Essai"
     },
     "hero": {
       "greeting": "Bonjour!",
