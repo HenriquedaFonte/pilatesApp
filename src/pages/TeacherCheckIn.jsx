@@ -544,7 +544,12 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
                         <div className="flex-1 min-w-0">
                           <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
                             <h3 className="font-bold text-base text-foreground truncate">
-                              {student.full_name}
+                              <Link
+                                to={`/teacher/students?search=${encodeURIComponent(student.full_name)}`}
+                                className="hover:text-primary hover:underline transition-colors"
+                              >
+                                {student.full_name}
+                              </Link>
                             </h3>
                             <Badge
                               variant={

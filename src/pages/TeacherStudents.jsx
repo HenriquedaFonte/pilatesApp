@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
@@ -79,12 +79,13 @@ const TeacherStudents = () => {
   const { profile, signOut } = useAuth()
   const navigate = useNavigate()
   const { t, i18n } = useTranslation()
+  const [searchParams] = useSearchParams()
   const [students, setStudents] = useState([])
   // const [classes, setClasses] = useState([])
   const [schedules, setSchedules] = useState([])
   const [lastCheckIns, setLastCheckIns] = useState({})
   const [loading, setLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState(() => searchParams.get('search') ?? '')
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [selectedObservations, setSelectedObservations] = useState('')
   const [isBalanceDialogOpen, setIsBalanceDialogOpen] = useState(false)
