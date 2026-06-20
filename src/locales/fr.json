@@ -652,6 +652,16 @@
       "noStudentsYet": "Aucun élève encore",
       "studentsWillAppear": "Les élèves apparaîtront ici lorsqu'ils s'inscriront",
       "lastCheckIn": "Dernier pointage :",
+      "noCheckIn": "Aucun pointage enregistré",
+      "card": {
+        "view": "Voir",
+        "balance": "Solde",
+        "classes": "Cours",
+        "observations": "Observations",
+        "resetPassword": "Réinitialiser le mot de passe",
+        "deactivate": "Désactiver l'élève",
+        "activate": "Activer l'élève"
+      },
       "statusBadge": {
         "upToDate": "À jour",
         "inactive": "Inactif",

@@ -524,6 +524,17 @@
       "quickPanelDesc": "Birthday information and quick notifications will appear here."
     },
     "students": {
+      "lastCheckIn": "Last check-in:",
+      "noCheckIn": "No check-in registered",
+      "card": {
+        "view": "View",
+        "balance": "Balance",
+        "classes": "Classes",
+        "observations": "Observations",
+        "resetPassword": "Reset Password",
+        "deactivate": "Deactivate Student",
+        "activate": "Activate Student"
+      },
       "statusBadge": {
         "upToDate": "Up to date",
         "inactive": "Inactive",

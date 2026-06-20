@@ -931,19 +931,19 @@ const TeacherStudents = () => {
                     {/* Credit Balances Grid */}
                     <div className="grid grid-cols-3 gap-2">
                       <div className="flex flex-col items-center justify-center p-1.5 bg-blue-50/40 dark:bg-blue-950/10 rounded-xl border border-blue-200/10 text-center">
-                        <span className="text-[10px] font-bold text-blue-700 dark:text-blue-400">Individual</span>
+                        <span className="text-[10px] font-bold text-blue-700 dark:text-blue-400">{t('teacher.students.balanceLevels.individual', 'Individual')}</span>
                         <span className="text-sm font-extrabold text-blue-700 dark:text-blue-400 mt-0.5">
                           {student.individual_credits || 0}
                         </span>
                       </div>
                       <div className="flex flex-col items-center justify-center p-1.5 bg-emerald-50/40 dark:bg-emerald-950/10 rounded-xl border border-emerald-200/10 text-center">
-                        <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400">Duo</span>
+                        <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400">{t('teacher.students.balanceLevels.duo', 'Duo')}</span>
                         <span className="text-sm font-extrabold text-emerald-700 dark:text-emerald-400 mt-0.5">
                           {student.duo_credits || 0}
                         </span>
                       </div>
                       <div className="flex flex-col items-center justify-center p-1.5 bg-purple-50/40 dark:bg-purple-950/10 rounded-xl border border-purple-200/10 text-center">
-                        <span className="text-[10px] font-bold text-purple-700 dark:text-purple-400">Grupo</span>
+                        <span className="text-[10px] font-bold text-purple-700 dark:text-purple-400">{t('teacher.students.balanceLevels.group', 'Grupo')}</span>
                         <span className="text-sm font-extrabold text-purple-700 dark:text-purple-400 mt-0.5">
                           {student.group_credits || 0}
                         </span>
@@ -955,7 +955,7 @@ const TeacherStudents = () => {
                       {lastCheckIns[student.id] ? (
                         <div className="text-xs text-muted-foreground bg-muted/30 p-2.5 rounded-xl border border-border/40 text-left w-full h-[52px] flex flex-col justify-center">
                           <div className="font-semibold text-foreground truncate">
-                            Último check-in: {lastCheckIns[student.id].class_schedules?.classes?.name}
+                            {t('teacher.students.lastCheckIn', 'Último check-in:')} {lastCheckIns[student.id].class_schedules?.classes?.name}
                           </div>
                           <div className="mt-0.5 text-[10px] opacity-90 truncate">
                             {formatCheckInDate(lastCheckIns[student.id].check_in_date)} - {formatCheckInStatus(lastCheckIns[student.id].status, lastCheckIns[student.id].attendance)}
@@ -963,7 +963,7 @@ const TeacherStudents = () => {
                         </div>
                       ) : (
                         <div className="text-xs text-muted-foreground/60 italic p-2 bg-muted/10 rounded-xl text-center border border-dashed border-border/40 w-full h-[52px] flex items-center justify-center">
-                          Nenhum check-in registrado
+                          {t('teacher.students.noCheckIn', 'Nenhum check-in registrado')}
                         </div>
                       )}
                     </div>
@@ -979,7 +979,7 @@ const TeacherStudents = () => {
                         className="rounded-lg h-8 px-2.5 text-xs"
                       >
                         <Info className="h-3.5 w-3.5 mr-1 text-muted-foreground" />
-                        Ver
+                        {t('teacher.students.card.view', 'Ver')}
                       </Button>
                       <Button
                         size="sm"
@@ -990,7 +990,7 @@ const TeacherStudents = () => {
                         }}
                         className="rounded-lg h-8 px-2.5 text-xs text-primary hover:text-primary font-medium"
                       >
-                        Saldo
+                        {t('teacher.students.card.balance', 'Saldo')}
                       </Button>
                       <Button
                         size="sm"
@@ -1001,7 +1001,7 @@ const TeacherStudents = () => {
                         }}
                         className="rounded-lg h-8 px-2.5 text-xs text-foreground font-medium"
                       >
-                        Turmas
+                        {t('teacher.students.card.classes', 'Turmas')}
                       </Button>
                     </div>
 
@@ -1025,7 +1025,7 @@ const TeacherStudents = () => {
                           className="cursor-pointer flex items-center gap-2 hover:bg-muted py-2 px-3 rounded-lg text-sm"
                         >
                           <MessageSquare className="h-4 w-4 text-muted-foreground" />
-                          <span>Observações</span>
+                          <span>{t('teacher.students.card.observations', 'Observações')}</span>
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => {
@@ -1035,7 +1035,7 @@ const TeacherStudents = () => {
                           className="cursor-pointer flex items-center gap-2 hover:bg-muted py-2 px-3 rounded-lg text-sm"
                         >
                           <Hash className="h-4 w-4 text-muted-foreground" />
-                          <span>Resetar Senha</span>
+                          <span>{t('teacher.students.card.resetPassword', 'Resetar Senha')}</span>
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => {
@@ -1047,12 +1047,12 @@ const TeacherStudents = () => {
                           {student.is_active !== false ? (
                             <>
                               <UserX className="h-4 w-4 text-amber-600" />
-                              <span className="text-amber-600">Inativar Aluno</span>
+                              <span className="text-amber-600">{t('teacher.students.card.deactivate', 'Inativar Aluno')}</span>
                             </>
                           ) : (
                             <>
                               <UserCheck className="h-4 w-4 text-emerald-600" />
-                              <span className="text-emerald-600">Ativar Aluno</span>
+                              <span className="text-emerald-600">{t('teacher.students.card.activate', 'Ativar Aluno')}</span>
                             </>
                           )}
                         </DropdownMenuItem>

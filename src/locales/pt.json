@@ -257,6 +257,16 @@
         "total": "Total"
       },
       "lastCheckIn": "Último check-in:",
+      "noCheckIn": "Nenhum check-in registrado",
+      "card": {
+        "view": "Ver",
+        "balance": "Saldo",
+        "classes": "Turmas",
+        "observations": "Observações",
+        "resetPassword": "Resetar Senha",
+        "deactivate": "Inativar Aluno",
+        "activate": "Ativar Aluno"
+      },
       "statusBadge": {
         "upToDate": "Em dia",
         "inactive": "Inativo",
