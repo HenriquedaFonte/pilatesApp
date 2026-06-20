@@ -256,7 +256,48 @@
         "group": "Grupo",
         "total": "Total"
       },
-      "lastCheckIn": "Último check-in:"
+      "lastCheckIn": "Último check-in:",
+      "statusBadge": {
+        "upToDate": "Em dia",
+        "inactive": "Inativo",
+        "noCredits": "Sem créditos",
+        "lowBalance": "Saldo baixo"
+      },
+      "trash": {
+        "title": "Lixeira",
+        "empty": "Nenhum aluno na lixeira.",
+        "deletedOn": "Excluído em",
+        "daysRemaining": "dias restantes",
+        "restore": "Restaurar",
+        "deleteForever": "Excluir Para Sempre",
+        "moveToTrash": "Mover para Lixeira"
+      },
+      "deleteDialog": {
+        "title": "Mover Aluno para a Lixeira?",
+        "description": "Tem certeza que deseja mover o(a) aluno(a) {{name}} para a lixeira?",
+        "warning": "O perfil ficará inativo, mas o histórico de aulas e créditos será preservado.",
+        "reversible": "Esta ação pode ser revertida em até 90 dias.",
+        "confirm": "Mover para Lixeira",
+        "moving": "Movendo..."
+      },
+      "restoreDialog": {
+        "title": "Restaurar Aluno?",
+        "description": "Deseja restaurar o(a) aluno(a) {{name}}?",
+        "warning": "O perfil voltará a aparecer na lista de alunos ativos. As turmas precisarão ser rematriculadas manualmente.",
+        "confirm": "Restaurar"
+      },
+      "hardDeleteDialog": {
+        "title": "⚠️ Exclusão Permanente",
+        "about": "Você está prestes a excluir permanentemente o(a) aluno(a) {{name}}.",
+        "warning": "Esta ação é irreversível. Histórico de aulas, créditos e dados do aluno serão perdidos para sempre.",
+        "typeToConfirm": "Digite EXCLUIR PERMANENTEMENTE para confirmar:",
+        "placeholder": "Digite EXCLUIR PERMANENTEMENTE para confirmar",
+        "confirm": "Excluir Permanentemente",
+        "deleting": "Excluindo..."
+      },
+      "dialogCommon": {
+        "confirm": "Confirmar"
+      }
     },
     "classes": {
       "title": "Turmas e",

@@ -807,7 +807,7 @@ const TeacherStudents = () => {
                     disabled={creatingUser}
                     className="rounded-xl border-border hover:bg-muted text-xs font-semibold h-10 px-4"
                   >
-                    Cancelar
+                    {t('common.cancel', 'Cancelar')}
                   </Button>
                   <Button 
                     type="submit" 
@@ -873,25 +873,25 @@ const TeacherStudents = () => {
             // Status Badge Logic
             let statusBadge = (
               <Badge variant="outline" className="bg-emerald-50 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-400 border-emerald-200/50">
-                Em dia
+                {t('teacher.students.statusBadge.upToDate', 'Em dia')}
               </Badge>
             )
             if (student.is_active === false) {
               statusBadge = (
                 <Badge variant="outline" className="bg-gray-100 text-gray-700 dark:bg-gray-900/20 dark:text-gray-400 border-gray-300/50">
-                  Inativo
+                  {t('teacher.students.statusBadge.inactive', 'Inativo')}
                 </Badge>
               )
             } else if (totalBalance === 0) {
               statusBadge = (
                 <Badge variant="outline" className="bg-rose-50 text-rose-700 dark:bg-rose-950/20 dark:text-rose-400 border-rose-200/50">
-                  Sem créditos
+                  {t('teacher.students.statusBadge.noCredits', 'Sem créditos')}
                 </Badge>
               )
             } else if (totalBalance <= 2) {
               statusBadge = (
                 <Badge variant="outline" className="bg-amber-50 text-amber-700 dark:bg-amber-950/20 dark:text-amber-400 border-amber-200/50">
-                  Saldo baixo
+                  {t('teacher.students.statusBadge.lowBalance', 'Saldo baixo')}
                 </Badge>
               )
             }
@@ -1065,7 +1065,7 @@ const TeacherStudents = () => {
                           className="cursor-pointer flex items-center gap-2 hover:bg-red-50 focus:bg-red-50 text-red-600 focus:text-red-600 py-2 px-3 rounded-lg text-sm"
                         >
                           <Trash2 className="h-4 w-4" />
-                          <span>Mover para Lixeira</span>
+                          <span>{t('teacher.students.trash.moveToTrash', 'Mover para Lixeira')}</span>
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -1099,14 +1099,14 @@ const TeacherStudents = () => {
             className="flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
           >
             <Trash2 className="h-4 w-4" />
-            Lixeira ({deletedStudents.length})
+            {t('teacher.students.trash.title', 'Lixeira')} ({deletedStudents.length})
             {showDeletedSection ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </button>
 
           {showDeletedSection && (
             <div className="mt-4 space-y-3">
               {deletedStudents.length === 0 ? (
-                <p className="text-sm text-muted-foreground italic">Nenhum aluno na lixeira.</p>
+                <p className="text-sm text-muted-foreground italic">{t('teacher.students.trash.empty', 'Nenhum aluno na lixeira.')}</p>
               ) : (
                 deletedStudents.map(student => (
                   <div
@@ -1117,8 +1117,8 @@ const TeacherStudents = () => {
                       <p className="text-sm font-semibold">{student.full_name}</p>
                       <p className="text-xs text-muted-foreground">{student.email}</p>
                       <p className="text-xs text-amber-600 mt-0.5">
-                        Excluído em {new Date(student.deleted_at).toLocaleDateString('pt-BR')} •{' '}
-                        {getDaysUntilHardDelete(student.deleted_at)} dias restantes
+                        {t('teacher.students.trash.deletedOn', 'Excluído em')} {new Date(student.deleted_at).toLocaleDateString(i18n.language === 'pt' ? 'pt-BR' : i18n.language === 'fr' ? 'fr-CA' : 'en-CA')} •{' '}
+                        {getDaysUntilHardDelete(student.deleted_at)} {t('teacher.students.trash.daysRemaining', 'dias restantes')}
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
@@ -1129,7 +1129,7 @@ const TeacherStudents = () => {
                         className="rounded-lg h-8 px-3 text-xs text-emerald-600 border-emerald-200 hover:bg-emerald-50"
                       >
                         <UserCheck className="h-3.5 w-3.5 mr-1" />
-                        Restaurar
+                        {t('teacher.students.trash.restore', 'Restaurar')}
                       </Button>
                       <Button
                         size="sm"
@@ -1138,7 +1138,7 @@ const TeacherStudents = () => {
                         className="rounded-lg h-8 px-3 text-xs text-destructive border-destructive/30 hover:bg-destructive/5"
                       >
                         <Trash2 className="h-3.5 w-3.5 mr-1" />
-                        Excluir Para Sempre
+                        {t('teacher.students.trash.deleteForever', 'Excluir Para Sempre')}
                       </Button>
                     </div>
                   </div>
@@ -1594,13 +1594,13 @@ const TeacherStudents = () => {
                 setIsActiveConfirmOpen(false)
                 setSelectedStudent(null)
               }}>
-                Cancelar
+                {t('common.cancel', 'Cancelar')}
               </AlertDialogCancel>
               <AlertDialogAction
                 className={`rounded-xl ${selectedStudent?.is_active !== false ? 'bg-amber-600 hover:bg-amber-700 text-white' : 'bg-emerald-600 hover:bg-emerald-700 text-white'}`}
                 onClick={handleToggleActiveStatus}
               >
-                Confirmar
+                {t('teacher.students.dialogCommon.confirm', 'Confirmar')}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -1610,12 +1610,12 @@ const TeacherStudents = () => {
           <AlertDialogContent className="rounded-2xl">
             <AlertDialogHeader>
               <AlertDialogTitle className="text-base font-bold text-amber-600">
-                Mover Aluno para a Lixeira?
+                {t('teacher.students.deleteDialog.title', 'Mover Aluno para a Lixeira?')}
               </AlertDialogTitle>
               <AlertDialogDescription className="text-xs text-muted-foreground">
-                Tem certeza que deseja mover o(a) aluno(a) <strong>{selectedStudent?.full_name}</strong> para a lixeira?
-                O perfil ficará inativo, mas o histórico de aulas e créditos será preservado.
-                <strong> Esta ação pode ser revertida em até 90 dias.</strong>
+                {t('teacher.students.deleteDialog.description', 'Tem certeza que deseja mover o(a) aluno(a) {{name}} para a lixeira?', { name: selectedStudent?.full_name })}
+                {' '}{t('teacher.students.deleteDialog.warning', 'O perfil ficará inativo, mas o histórico de aulas e créditos será preservado.')}
+                <strong> {t('teacher.students.deleteDialog.reversible', 'Esta ação pode ser revertida em até 90 dias.')}</strong>
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -1623,14 +1623,14 @@ const TeacherStudents = () => {
                 setIsDeleteConfirmOpen(false)
                 setSelectedStudent(null)
               }}>
-                Cancelar
+                {t('common.cancel', 'Cancelar')}
               </AlertDialogCancel>
               <AlertDialogAction
                 className="rounded-xl bg-amber-600 hover:bg-amber-700 text-white"
                 onClick={handleDeleteStudent}
                 disabled={deleteLoading}
               >
-                {deleteLoading ? 'Movendo...' : 'Mover para Lixeira'}
+                {deleteLoading ? t('teacher.students.deleteDialog.moving', 'Movendo...') : t('teacher.students.deleteDialog.confirm', 'Mover para Lixeira')}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -1641,11 +1641,11 @@ const TeacherStudents = () => {
           <AlertDialogContent className="rounded-2xl">
             <AlertDialogHeader>
               <AlertDialogTitle className="text-base font-bold text-emerald-700">
-                Restaurar Aluno?
+                {t('teacher.students.restoreDialog.title', 'Restaurar Aluno?')}
               </AlertDialogTitle>
               <AlertDialogDescription className="text-xs text-muted-foreground">
-                Deseja restaurar o(a) aluno(a) <strong>{selectedStudent?.full_name}</strong>?
-                O perfil voltará a aparecer na lista de alunos ativos. As turmas precisarão ser rematriculadas manualmente.
+                {t('teacher.students.restoreDialog.description', 'Deseja restaurar o(a) aluno(a) {{name}}?', { name: selectedStudent?.full_name })}
+                {' '}{t('teacher.students.restoreDialog.warning', 'O perfil voltará a aparecer na lista de alunos ativos. As turmas precisarão ser rematriculadas manualmente.')}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -1653,13 +1653,13 @@ const TeacherStudents = () => {
                 setIsRestoreConfirmOpen(false)
                 setSelectedStudent(null)
               }}>
-                Cancelar
+                {t('common.cancel', 'Cancelar')}
               </AlertDialogCancel>
               <AlertDialogAction
                 className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white"
                 onClick={handleRestoreStudent}
               >
-                Restaurar
+                {t('teacher.students.restoreDialog.confirm', 'Restaurar')}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -1673,21 +1673,18 @@ const TeacherStudents = () => {
           <AlertDialogContent className="rounded-2xl">
             <AlertDialogHeader>
               <AlertDialogTitle className="text-base font-bold text-destructive">
-                ⚠️ Exclusão Permanente
+                {t('teacher.students.hardDeleteDialog.title', '⚠️ Exclusão Permanente')}
               </AlertDialogTitle>
               <AlertDialogDescription className="text-xs text-muted-foreground space-y-2" asChild>
                 <div>
                   <p>
-                    Você está prestes a excluir permanentemente o(a) aluno(a){' '}
-                    <strong>{selectedStudent?.full_name}</strong>.
+                    {t('teacher.students.hardDeleteDialog.about', 'Você está prestes a excluir permanentemente o(a) aluno(a) {{name}}.', { name: selectedStudent?.full_name })}
                   </p>
                   <p className="text-destructive font-semibold mt-1">
-                    Esta ação é irreversível. Histórico de aulas, créditos e dados do aluno serão perdidos para sempre.
+                    {t('teacher.students.hardDeleteDialog.warning', 'Esta ação é irreversível. Histórico de aulas, créditos e dados do aluno serão perdidos para sempre.')}
                   </p>
                   <p className="mt-1">
-                    Digite{' '}
-                    <code className="bg-muted px-1 rounded text-foreground font-mono">EXCLUIR PERMANENTEMENTE</code>
-                    {' '}para confirmar:
+                    {t('teacher.students.hardDeleteDialog.typeToConfirm', 'Digite EXCLUIR PERMANENTEMENTE para confirmar:')}
                   </p>
                 </div>
               </AlertDialogDescription>
@@ -1696,7 +1693,7 @@ const TeacherStudents = () => {
               <input
                 value={hardDeleteConfirmText}
                 onChange={e => setHardDeleteConfirmText(e.target.value)}
-                placeholder="Digite EXCLUIR PERMANENTEMENTE para confirmar"
+                placeholder={t('teacher.students.hardDeleteDialog.placeholder', 'Digite EXCLUIR PERMANENTEMENTE para confirmar')}
                 className="w-full rounded-xl border border-destructive/50 focus:outline-none focus:ring-2 focus:ring-destructive/30 h-10 px-3 font-mono text-sm bg-background text-foreground"
                 autoFocus
                 autoCapitalize="none"
@@ -1710,14 +1707,14 @@ const TeacherStudents = () => {
                 setHardDeleteConfirmText('')
                 setSelectedStudent(null)
               }}>
-                Cancelar
+                {t('common.cancel', 'Cancelar')}
               </AlertDialogCancel>
               <AlertDialogAction
                 className="rounded-xl bg-destructive hover:bg-destructive/90 text-white disabled:opacity-40"
                 onClick={handleHardDeleteStudent}
                 disabled={hardDeleteConfirmText !== HARD_DELETE_PHRASE || hardDeleteLoading}
               >
-                {hardDeleteLoading ? 'Excluindo...' : 'Excluir Permanentemente'}
+                {hardDeleteLoading ? t('teacher.students.hardDeleteDialog.deleting', 'Excluindo...') : t('teacher.students.hardDeleteDialog.confirm', 'Excluir Permanentemente')}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

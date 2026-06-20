@@ -652,6 +652,47 @@
       "noStudentsYet": "Aucun élève encore",
       "studentsWillAppear": "Les élèves apparaîtront ici lorsqu'ils s'inscriront",
       "lastCheckIn": "Dernier pointage :",
+      "statusBadge": {
+        "upToDate": "À jour",
+        "inactive": "Inactif",
+        "noCredits": "Sans crédits",
+        "lowBalance": "Solde bas"
+      },
+      "trash": {
+        "title": "Corbeille",
+        "empty": "Aucun élève dans la corbeille.",
+        "deletedOn": "Supprimé le",
+        "daysRemaining": "jours restants",
+        "restore": "Restaurer",
+        "deleteForever": "Supprimer définitivement",
+        "moveToTrash": "Mettre à la corbeille"
+      },
+      "deleteDialog": {
+        "title": "Mettre l'élève à la corbeille ?",
+        "description": "Êtes-vous sûr(e) de vouloir mettre {{name}} à la corbeille ?",
+        "warning": "Le profil deviendra inactif, mais l'historique des cours et les crédits seront conservés.",
+        "reversible": "Cette action peut être annulée dans un délai de 90 jours.",
+        "confirm": "Mettre à la corbeille",
+        "moving": "Déplacement..."
+      },
+      "restoreDialog": {
+        "title": "Restaurer l'élève ?",
+        "description": "Souhaitez-vous restaurer {{name}} ?",
+        "warning": "Le profil réapparaîtra dans la liste des élèves actifs. Les cours devront être réinscrits manuellement.",
+        "confirm": "Restaurer"
+      },
+      "hardDeleteDialog": {
+        "title": "⚠️ Suppression permanente",
+        "about": "Vous êtes sur le point de supprimer définitivement l'élève {{name}}.",
+        "warning": "Cette action est irréversible. L'historique des cours, les crédits et les données de l'élève seront perdus à jamais.",
+        "typeToConfirm": "Tapez EXCLUIR PERMANENTEMENTE pour confirmer :",
+        "placeholder": "Tapez EXCLUIR PERMANENTEMENTE pour confirmer",
+        "confirm": "Supprimer définitivement",
+        "deleting": "Suppression..."
+      },
+      "dialogCommon": {
+        "confirm": "Confirmer"
+      },
       "createUser": {
         "title": "Créer un nouvel utilisateur",
         "description": "Ajoutez un nouvel élève ou une nouvelle professeure au système.",

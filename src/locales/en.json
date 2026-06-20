@@ -523,6 +523,49 @@
       "quickPanelTitle": "Quick Panel",
       "quickPanelDesc": "Birthday information and quick notifications will appear here."
     },
+    "students": {
+      "statusBadge": {
+        "upToDate": "Up to date",
+        "inactive": "Inactive",
+        "noCredits": "No credits",
+        "lowBalance": "Low balance"
+      },
+      "trash": {
+        "title": "Trash",
+        "empty": "No students in trash.",
+        "deletedOn": "Deleted on",
+        "daysRemaining": "days remaining",
+        "restore": "Restore",
+        "deleteForever": "Delete Forever",
+        "moveToTrash": "Move to Trash"
+      },
+      "deleteDialog": {
+        "title": "Move Student to Trash?",
+        "description": "Are you sure you want to move {{name}} to the trash?",
+        "warning": "The profile will become inactive, but class history and credits will be preserved.",
+        "reversible": "This action can be undone within 90 days.",
+        "confirm": "Move to Trash",
+        "moving": "Moving..."
+      },
+      "restoreDialog": {
+        "title": "Restore Student?",
+        "description": "Do you want to restore {{name}}?",
+        "warning": "The profile will reappear in the active students list. Classes will need to be re-enrolled manually.",
+        "confirm": "Restore"
+      },
+      "hardDeleteDialog": {
+        "title": "⚠️ Permanent Deletion",
+        "about": "You are about to permanently delete the student {{name}}.",
+        "warning": "This action is irreversible. Class history, credits and student data will be lost forever.",
+        "typeToConfirm": "Type EXCLUIR PERMANENTEMENTE to confirm:",
+        "placeholder": "Type EXCLUIR PERMANENTEMENTE to confirm",
+        "confirm": "Delete Permanently",
+        "deleting": "Deleting..."
+      },
+      "dialogCommon": {
+        "confirm": "Confirm"
+      }
+    },
     "checkin": {
       "excuseBtn": "Excuse from Class",
       "dismissedStatus": "Excused from Class",
