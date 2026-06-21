@@ -78,6 +78,20 @@ serve(async (req) => {
       throw authError
     }
 
+    // If the requested role is not 'student', update the profile directly.
+    // handle_new_user always inserts 'student' (security hardening); we
+    // use service_role here to set the actual role after profile creation.
+    if (role && role !== 'student') {
+      const { error: roleError } = await supabaseClient
+        .from('profiles')
+        .update({ role })
+        .eq('id', authData.user.id)
+
+      if (roleError) {
+        throw new Error(`User created but role update failed: ${roleError.message}`)
+      }
+    }
+
     // Generate password reset link
     const { data: resetData, error: resetError } = await supabaseClient.auth.admin.generateLink({
       type: 'recovery',
