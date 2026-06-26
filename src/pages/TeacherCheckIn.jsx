@@ -356,6 +356,22 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
         return
       }
 
+      // Persiste o aluno avulso no banco para sobreviver ao reload.
+      // status='pending' não deduz créditos; o professor define presença depois.
+      const { error: checkInError } = await supabase
+        .from('check_ins')
+        .insert({
+          student_id: studentId,
+          schedule_id: scheduleId,
+          class_id: schedule.class_id,
+          check_in_date: selectedDate,
+          status: 'pending',
+          credit_type: null,
+          attendance: 'pending'
+        })
+
+      if (checkInError && checkInError.code !== '23505') throw checkInError
+
       const newStudent = {
         student_id: studentId,
         full_name: student.full_name,
