@@ -63,6 +63,10 @@ const CSS = `
     border-color: #f0dfb8;
     background: #fffdf7;
   }
+  .dark .sched-card.sched-hl {
+    border-color: #3a4830;
+    background: #1e2b22;
+  }
 
   /* ── CARD ROWS ── */
   .sched-top {
@@ -110,7 +114,7 @@ const CSS = `
     font-weight: 700;
     padding: 3px 10px;
     border-radius: 8px;
-    background: var(--cream-2, #efe9dd);
+    background: var(--sand-2, #efe9dd);
     color: var(--ink-2, #4d5a54);
   }
   .sched-note {
@@ -143,11 +147,18 @@ const CSS = `
   }
   .sched-btn-primary:hover { background: #019a7a; }
   .sched-btn-outline {
-    background: var(--cream-2, #efe9dd);
+    background: var(--sand-2, #efe9dd);
     color: var(--ink-2, #4d5a54);
-    border: 1px solid #ddd8ce;
+    border: 1px solid var(--line-2, #ddd8ce);
   }
-  .sched-btn-outline:hover { background: #e4ddd2; }
+  .sched-btn-outline:hover { background: var(--sand-2, #efe9dd); filter: brightness(.93); }
+  .dark .sched-btn-outline {
+    background: #192320;
+    color: #c6ceca;
+    border-color: #2b3b34;
+    transition: none;
+  }
+  .dark .sched-btn-outline:hover { background: #192320; filter: brightness(1.12); }
 
   /* ── DAY TABS ── */
   .sched-days {
