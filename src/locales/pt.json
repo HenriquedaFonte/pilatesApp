@@ -166,7 +166,62 @@
       "testimonials": "Depoimentos",
       "controls": "Controles",
       "teacher": "Professora",
-      "signOut": "Sair"
+      "signOut": "Sair",
+      "agenda": "Agenda"
+    },
+    "schedule": {
+      "title": "Agenda de",
+      "titleAccent": "Aulas",
+      "subtitle": "Confira os horários disponíveis e entre em contato pelo WhatsApp para reservar.",
+      "errorLoad": "Não foi possível carregar os horários.",
+      "addSlot": "Nova aula",
+      "empty": "Nenhum horário cadastrado ainda. Clique em Nova aula para começar.",
+      "successCreate": "Horário criado com sucesso!",
+      "successUpdate": "Horário atualizado com sucesso!",
+      "successDelete": "Horário excluído.",
+      "editSlot": "Editar horário",
+      "published": "Publicada",
+      "draft": "Rascunho",
+      "capacity": "Vagas",
+      "deleteTitle": "Excluir horário",
+      "deleteDesc": "Tem certeza que deseja excluir o horário {{slot}}? Esta ação não pode ser desfeita.",
+      "deleteConfirm": "Excluir",
+      "weekdays": {
+        "mon": "Segunda",
+        "tue": "Terça",
+        "wed": "Quarta",
+        "thu": "Quinta",
+        "fri": "Sexta",
+        "sat": "Sábado",
+        "sun": "Domingo"
+      },
+      "status": {
+        "aberta": "Vaga aberta",
+        "ultima_vaga": "Última vaga",
+        "lotada": "Lotada"
+      },
+      "modality": {
+        "privado": "Privado",
+        "duo": "Duo",
+        "grupo": "Grupo"
+      },
+      "modal": {
+        "title": "Nova aula",
+        "titleEdit": "Editar aula",
+        "weekday": "Dia da semana",
+        "weekdayPlaceholder": "Selecione o dia",
+        "startTime": "Horário",
+        "duration": "Duração (min)",
+        "modality": "Modalidade",
+        "modalityPlaceholder": "Selecione",
+        "capacity": "Capacidade",
+        "note": "Nota",
+        "notePlaceholder": "Ex: turma avançada, trazer meias",
+        "optional": "opcional",
+        "cancel": "Cancelar",
+        "save": "Salvar",
+        "saving": "Salvando..."
+      }
     },
     "students": {
       "title": "Gerenciamento de Alunos",
@@ -898,11 +953,44 @@
     }
   },
   "studioHome": {
+    "schedule": {
+      "eyebrow": "Horários",
+      "title": "Agenda de",
+      "titleAccent": "Aulas",
+      "subtitle": "Confira os horários disponíveis e agende pelo WhatsApp — é rápido!",
+      "emptyDay": "Sem horários cadastrados neste dia.",
+      "days": {
+        "mon": "Seg",
+        "tue": "Ter",
+        "wed": "Qua",
+        "thu": "Qui",
+        "fri": "Sex",
+        "sat": "Sáb",
+        "sun": "Dom"
+      },
+      "status": {
+        "aberta": "Vaga aberta",
+        "ultima_vaga": "Última vaga",
+        "lotada": "Turma cheia"
+      },
+      "modality": {
+        "privado": "Privado",
+        "duo": "Duo",
+        "grupo": "Grupo"
+      },
+      "cta": {
+        "book": "Agendar pelo WhatsApp",
+        "ask": "Perguntar sobre vaga",
+        "lotadaNote": "Sem vagas no momento — fale com a gente, às vezes dá pra encaixar.",
+        "waMessage": "Olá! Tenho interesse em agendar uma aula de {{modality}} na {{day}} às {{time}}. Poderia me ajudar?"
+      }
+    },
     "nav": {
       "about": "Sobre",
       "testimonials": "Depoimentos",
       "services": "Serviços",
       "contact": "Contato",
+      "schedule": "Agenda",
       "studentPortal": "Área do cliente",
       "bookTrial": "Agendar aula introdutória",
       "bookTrialMobile": "Agende"
@@ -918,7 +1006,8 @@
       "badgeLocation": "Montréal, QC",
       "ctaTrial": "Agendar uma aula introdutória",
       "ctaServices": "Ver serviços",
-      "note": "Primeira sessão de introdução — ideal para começar bem."
+      "note": "Primeira sessão de introdução — ideal para começar bem.",
+      "viewSchedule": "Ver agenda de aulas"
     },
     "trust": {
       "physioTitle": "Especialista em postura",

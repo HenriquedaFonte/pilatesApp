@@ -342,11 +342,44 @@
     "backToHome": "Retour à l'Accueil"
   },
   "studioHome": {
+    "schedule": {
+      "eyebrow": "Horaires",
+      "title": "Agenda des",
+      "titleAccent": "Cours",
+      "subtitle": "Consultez les créneaux disponibles et réservez rapidement via WhatsApp.",
+      "emptyDay": "Aucun cours prévu ce jour-là.",
+      "days": {
+        "mon": "Lun",
+        "tue": "Mar",
+        "wed": "Mer",
+        "thu": "Jeu",
+        "fri": "Ven",
+        "sat": "Sam",
+        "sun": "Dim"
+      },
+      "status": {
+        "aberta": "Place disponible",
+        "ultima_vaga": "Dernière place",
+        "lotada": "Complet"
+      },
+      "modality": {
+        "privado": "Privé",
+        "duo": "Duo",
+        "grupo": "Groupe"
+      },
+      "cta": {
+        "book": "Réserver via WhatsApp",
+        "ask": "Demander une place",
+        "lotadaNote": "Plus de places disponibles — contactez-nous, on peut parfois vous intégrer.",
+        "waMessage": "Bonjour ! Je suis intéressé(e) par un cours de {{modality}} le {{day}} à {{time}}. Pourriez-vous m'aider ?"
+      }
+    },
     "nav": {
       "about": "À propos",
       "testimonials": "Témoignages",
       "services": "Services",
       "contact": "Contact",
+      "schedule": "Agenda",
       "studentPortal": "Espace client",
       "bookTrial": "Séance d'introduction",
       "bookTrialMobile": "Essai"
@@ -362,7 +395,8 @@
       "badgeLocation": "Montréal, QC",
       "ctaTrial": "Réserver une séance d'introduction",
       "ctaServices": "Voir les services",
-      "note": "Première séance d'introduction — idéale pour bien débuter."
+      "note": "Première séance d'introduction — idéale pour bien débuter.",
+      "viewSchedule": "Voir l'agenda"
     },
     "trust": {
       "physioTitle": "Spécialiste posture",
@@ -542,7 +576,62 @@
       "testimonials": "Témoignages",
       "controls": "Contrôles",
       "teacher": "Professeure",
-      "signOut": "Se déconnecter"
+      "signOut": "Se déconnecter",
+      "agenda": "Agenda"
+    },
+    "schedule": {
+      "title": "Agenda des",
+      "titleAccent": "Cours",
+      "subtitle": "Consultez les horaires disponibles et contactez-nous par WhatsApp pour réserver.",
+      "errorLoad": "Impossible de charger l'agenda.",
+      "addSlot": "Nouveau cours",
+      "empty": "Aucun horaire enregistré. Cliquez sur \"+ Nouveau cours\" pour commencer.",
+      "successCreate": "Horaire créé avec succès!",
+      "successUpdate": "Horaire mis à jour avec succès!",
+      "successDelete": "Horaire supprimé.",
+      "editSlot": "Modifier le créneau",
+      "published": "Publié",
+      "draft": "Brouillon",
+      "capacity": "Places",
+      "deleteTitle": "Supprimer le créneau",
+      "deleteDesc": "Êtes-vous sûr de vouloir supprimer le créneau {{slot}} ? Cette action est irréversible.",
+      "deleteConfirm": "Supprimer",
+      "weekdays": {
+        "mon": "Lundi",
+        "tue": "Mardi",
+        "wed": "Mercredi",
+        "thu": "Jeudi",
+        "fri": "Vendredi",
+        "sat": "Samedi",
+        "sun": "Dimanche"
+      },
+      "status": {
+        "aberta": "Place disponible",
+        "ultima_vaga": "Dernière place",
+        "lotada": "Complet"
+      },
+      "modality": {
+        "privado": "Privé",
+        "duo": "Duo",
+        "grupo": "Groupe"
+      },
+      "modal": {
+        "title": "Nouveau cours",
+        "titleEdit": "Modifier le cours",
+        "weekday": "Jour de la semaine",
+        "weekdayPlaceholder": "Sélectionnez un jour",
+        "startTime": "Heure",
+        "duration": "Durée (min)",
+        "modality": "Modalité",
+        "modalityPlaceholder": "Sélectionnez",
+        "capacity": "Capacité",
+        "note": "Note",
+        "notePlaceholder": "Ex. : cours avancé, chaussettes antidérapantes",
+        "optional": "facultatif",
+        "cancel": "Annuler",
+        "save": "Enregistrer",
+        "saving": "Enregistrement..."
+      }
     },
     "classes": {
       "title": "Cours et",

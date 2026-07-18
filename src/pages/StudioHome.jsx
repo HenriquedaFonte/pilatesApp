@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import ScheduleSection from '../components/ScheduleSection'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
@@ -396,6 +397,7 @@ Sent from Josi Pilates website contact form.
           <div className="nav-links hidden lg:flex">
             <a href="#about">{t('studioHome.nav.about')}</a>
             <a href="#services">{t('studioHome.nav.services')}</a>
+            <a href="#schedule">{t('studioHome.nav.schedule')}</a>
             <a href="#testimonials">{t('studioHome.nav.testimonials')}</a>
             <a href="#contact">{t('studioHome.nav.contact')}</a>
           </div>
@@ -476,6 +478,13 @@ Sent from Josi Pilates website contact form.
                 {t('studioHome.nav.services')}
               </a>
               <a
+                href="#schedule"
+                className="text-[var(--ink-2)] hover:text-[var(--ink)] py-2 block font-semibold text-sm"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {t('studioHome.nav.schedule')}
+              </a>
+              <a
                 href="#testimonials"
                 className="text-[var(--ink-2)] hover:text-[var(--ink)] py-2 block font-semibold text-sm"
                 onClick={() => setMobileMenuOpen(false)}
@@ -535,6 +544,16 @@ Sent from Josi Pilates website contact form.
             <a href="#services" className="btn btn-white btn-lg">
               {t('studioHome.hero.ctaServices')} <ArrowRight className="w-4 h-4" />
             </a>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 16 }}>
+            <Calendar className="w-3.5 h-3.5 text-[#a3e0d3]" />
+            <a
+              href="#schedule"
+              style={{ color: 'rgba(255,255,255,0.75)', fontSize: 13, fontWeight: 500, textDecoration: 'underline', textDecorationColor: 'rgba(255,255,255,0.28)', textUnderlineOffset: 2 }}
+            >
+              {t('studioHome.hero.viewSchedule')}
+            </a>
+            <ArrowRight className="w-3 h-3" style={{ color: 'rgba(255,255,255,0.35)' }} />
           </div>
           <div className="hero-note">
             <Heart className="w-3.5 h-3.5 text-[#a3e0d3] fill-current" /> {t('studioHome.hero.note')}
@@ -886,6 +905,9 @@ Sent from Josi Pilates website contact form.
       </section>
 
       {/* HOURS & LOCATION SECTION */}
+      {/* SCHEDULE SECTION */}
+      <ScheduleSection />
+
       <section className="hl-sec">
         <div className="sec">
           <div className="hl">

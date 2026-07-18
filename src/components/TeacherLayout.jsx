@@ -19,7 +19,8 @@ import {
   Menu,
   X,
   TrendingUp,
-  MessageSquare
+  MessageSquare,
+  CalendarDays
 } from 'lucide-react'
 
 const TeacherLayout = ({ children }) => {
@@ -50,6 +51,7 @@ const TeacherLayout = ({ children }) => {
     { labelKey: 'teacher.sidebar.students', path: '/teacher/students', icon: Users },
     { labelKey: 'teacher.sidebar.classes', path: '/teacher/classes', icon: BookOpen },
     { labelKey: 'teacher.sidebar.checkIn', path: '/teacher/check-in', icon: CircleCheck },
+    { labelKey: 'teacher.sidebar.agenda', path: '/teacher/agenda', icon: CalendarDays },
   ]
 
   const reportItems = [

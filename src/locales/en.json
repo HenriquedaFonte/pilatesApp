@@ -342,11 +342,44 @@
     "backToHome": "Back to Home"
   },
   "studioHome": {
+    "schedule": {
+      "eyebrow": "Schedule",
+      "title": "Class",
+      "titleAccent": "Timetable",
+      "subtitle": "Check available slots and book quickly via WhatsApp.",
+      "emptyDay": "No classes scheduled on this day.",
+      "days": {
+        "mon": "Mon",
+        "tue": "Tue",
+        "wed": "Wed",
+        "thu": "Thu",
+        "fri": "Fri",
+        "sat": "Sat",
+        "sun": "Sun"
+      },
+      "status": {
+        "aberta": "Open",
+        "ultima_vaga": "Last spot",
+        "lotada": "Full"
+      },
+      "modality": {
+        "privado": "Private",
+        "duo": "Duo",
+        "grupo": "Group"
+      },
+      "cta": {
+        "book": "Book via WhatsApp",
+        "ask": "Ask about a spot",
+        "lotadaNote": "No spots right now — reach out, we sometimes fit people in.",
+        "waMessage": "Hello! I'm interested in booking a {{modality}} class on {{day}} at {{time}}. Could you help me?"
+      }
+    },
     "nav": {
       "about": "About",
       "testimonials": "Testimonials",
       "services": "Services",
       "contact": "Contact",
+      "schedule": "Schedule",
       "studentPortal": "Client area",
       "bookTrial": "Book intro session",
       "bookTrialMobile": "Book"
@@ -362,7 +395,8 @@
       "badgeLocation": "Montreal, QC",
       "ctaTrial": "Book an Introductory Session",
       "ctaServices": "See Services",
-      "note": "First introductory session — ideal for starting out."
+      "note": "First introductory session — ideal for starting out.",
+      "viewSchedule": "View class schedule"
     },
     "trust": {
       "physioTitle": "Posture Specialist",
@@ -596,7 +630,62 @@
       "testimonials": "Testimonials",
       "controls": "Controls",
       "teacher": "Teacher",
-      "signOut": "Sign out"
+      "signOut": "Sign out",
+      "agenda": "Schedule"
+    },
+    "schedule": {
+      "title": "Class",
+      "titleAccent": "Schedule",
+      "subtitle": "Check available slots and contact us via WhatsApp to book.",
+      "errorLoad": "Unable to load schedule.",
+      "addSlot": "New class",
+      "empty": "No schedule entries yet. Click \"+ New class\" to get started.",
+      "successCreate": "Class slot created!",
+      "successUpdate": "Class slot updated!",
+      "successDelete": "Class slot deleted.",
+      "editSlot": "Edit slot",
+      "published": "Published",
+      "draft": "Draft",
+      "capacity": "Spots",
+      "deleteTitle": "Delete slot",
+      "deleteDesc": "Are you sure you want to delete the slot {{slot}}? This cannot be undone.",
+      "deleteConfirm": "Delete",
+      "weekdays": {
+        "mon": "Monday",
+        "tue": "Tuesday",
+        "wed": "Wednesday",
+        "thu": "Thursday",
+        "fri": "Friday",
+        "sat": "Saturday",
+        "sun": "Sunday"
+      },
+      "status": {
+        "aberta": "Open",
+        "ultima_vaga": "Last spot",
+        "lotada": "Full"
+      },
+      "modality": {
+        "privado": "Private",
+        "duo": "Duo",
+        "grupo": "Group"
+      },
+      "modal": {
+        "title": "New class",
+        "titleEdit": "Edit class",
+        "weekday": "Day of the week",
+        "weekdayPlaceholder": "Select a day",
+        "startTime": "Time",
+        "duration": "Duration (min)",
+        "modality": "Modality",
+        "modalityPlaceholder": "Select",
+        "capacity": "Capacity",
+        "note": "Note",
+        "notePlaceholder": "E.g. advanced group, bring grip socks",
+        "optional": "optional",
+        "cancel": "Cancel",
+        "save": "Save",
+        "saving": "Saving..."
+      }
     },
     "classes": {
       "title": "Classes &",
