@@ -92,6 +92,11 @@ body {
   --nav-bg: rgba(18, 26, 23, 0.82);
 }
 
+/* Seções sempre escuras precisam do --brand-200 claro independente do tema */
+.dark .studio-home-site .hl-sec {
+  --brand-200: #a3e0d3;
+}
+
 .studio-home-site {
   /* Site container background & typography */
   background: var(--sand);
