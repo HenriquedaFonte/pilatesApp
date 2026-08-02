@@ -1000,9 +1000,9 @@ body {
     color: var(--ink-3);
   }
 
-  /* footer */
+  /* footer — sempre escuro, independente do tema */
   .ft {
-    background: var(--ink);
+    background: #16221d;
     color: #fff;
   }
   .ft-in {
