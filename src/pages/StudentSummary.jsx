@@ -381,15 +381,32 @@ const StudentSummary = () => {
                   <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
                     {t('teacher.studentSummary.dob')}
                   </h4>
-                  <p className="flex items-center">
-                    <Calendar className="h-4 w-4 mr-2 text-gray-400" />
-                    {student.date_of_birth
-                      ? (() => {
-                          const [y, m, d] = student.date_of_birth.split('-');
-                          const locale = i18n.language === 'en' ? 'en-US' : i18n.language === 'fr' ? 'fr-CA' : 'pt-BR';
-                          return new Date(y, m-1, d).toLocaleDateString(locale);
-                        })()
-                      : t('teacher.studentSummary.notSet')}
+                  <p className="flex items-center gap-2 flex-wrap">
+                    <span className="flex items-center">
+                      <Calendar className="h-4 w-4 mr-2 text-gray-400" />
+                      {student.date_of_birth
+                        ? (() => {
+                            const [y, m, d] = student.date_of_birth.split('-');
+                            const locale = i18n.language === 'en' ? 'en-US' : i18n.language === 'fr' ? 'fr-CA' : 'pt-BR';
+                            return new Date(y, m-1, d).toLocaleDateString(locale);
+                          })()
+                        : t('teacher.studentSummary.notSet')}
+                    </span>
+                    {student.date_of_birth && (() => {
+                      const [y, m, d] = student.date_of_birth.split('-');
+                      const today = new Date();
+                      const birth = new Date(+y, +m - 1, +d);
+                      let age = today.getFullYear() - birth.getFullYear();
+                      const beforeBirthday =
+                        today.getMonth() < birth.getMonth() ||
+                        (today.getMonth() === birth.getMonth() && today.getDate() < birth.getDate());
+                      if (beforeBirthday) age--;
+                      return (
+                        <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                          {age} {t('teacher.studentSummary.years')}
+                        </span>
+                      );
+                    })()}
                   </p>
                 </div>
               </div>

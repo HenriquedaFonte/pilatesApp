@@ -1049,6 +1049,8 @@
       "phone": "Phone",
       "language": "Preferred Language",
       "dob": "Date of Birth",
+      "age": "Age",
+      "years": "years",
       "memberSince": "Member Since",
       "observations": "Observations",
       "currentBalances": "Current Credit Balances",

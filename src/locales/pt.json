@@ -726,6 +726,8 @@
       "phone": "Telefone",
       "language": "Idioma Preferido",
       "dob": "Data de Nascimento",
+      "age": "Idade",
+      "years": "anos",
       "memberSince": "Membro Desde",
       "observations": "Observações",
       "currentBalances": "Saldos de Créditos Atuais",

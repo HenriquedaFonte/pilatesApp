@@ -1133,6 +1133,8 @@
       "phone": "Téléphone",
       "language": "Langue Préférée",
       "dob": "Date de Naissance",
+      "age": "Âge",
+      "years": "ans",
       "memberSince": "Membre Depuis",
       "observations": "Observations",
       "currentBalances": "Soldes de Crédits Actuels",
