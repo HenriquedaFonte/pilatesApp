@@ -16,4 +16,4 @@ User-agent: Slurp
 Allow: /
 
 # Sitemap
-Sitemap: https://pilates-app-git-main-josi-pilates-projects.vercel.app/sitemap.xml
+Sitemap: https://josipilates.com/sitemap.xml
