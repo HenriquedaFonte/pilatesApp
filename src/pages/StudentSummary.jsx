@@ -75,6 +75,7 @@ const StudentSummary = () => {
   const [error, setError] = useState('')
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [updating, setUpdating] = useState(false)
+  const [editError, setEditError] = useState('')
 
   const form = useForm({
     resolver: zodResolver(profileSchema),
@@ -94,6 +95,7 @@ const StudentSummary = () => {
 
   const handleEditProfile = () => {
     if (student) {
+      setEditError('')
       form.reset({
         full_name: student.full_name || '',
         email: student.email || '',
@@ -111,7 +113,7 @@ const StudentSummary = () => {
   const onSubmitProfile = async data => {
     try {
       setUpdating(true)
-      setError('')
+      setEditError('')
 
       const emailChanged = data.email !== student.email
 
@@ -159,7 +161,7 @@ const StudentSummary = () => {
       await fetchStudentData()
       setIsEditDialogOpen(false)
     } catch (error) {
-      setError(t('teacher.studentSummary.editError', 'Error updating profile: ') + error.message)
+      setEditError(t('teacher.studentSummary.editError', 'Error updating profile: ') + error.message)
     } finally {
       setUpdating(false)
     }
@@ -475,7 +477,7 @@ const StudentSummary = () => {
         </Card>
 
         {/* Edit Profile Dialog */}
-        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <Dialog open={isEditDialogOpen} onOpenChange={open => { setIsEditDialogOpen(open); if (!open) setEditError('') }}>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
               <DialogTitle>{t('teacher.studentSummary.editTitle')}</DialogTitle>
@@ -560,11 +562,16 @@ const StudentSummary = () => {
                   rows={3}
                 />
               </div>
+              {editError && (
+                <Alert variant="destructive">
+                  <AlertDescription>{editError}</AlertDescription>
+                </Alert>
+              )}
               <DialogFooter>
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => setIsEditDialogOpen(false)}
+                  onClick={() => { setIsEditDialogOpen(false); setEditError('') }}
                 >
                   {t('teacher.studentSummary.cancel')}
                 </Button>
