@@ -382,21 +382,23 @@
       "schedule": "Agenda",
       "studentPortal": "Espace client",
       "bookTrial": "Séance d'introduction",
-      "bookTrialMobile": "Essai"
+      "bookTrialMobile": "Essai",
+      "online": "En ligne"
     },
     "hero": {
       "greeting": "Bonjour!",
       "intro": "Qui suis-je:",
-      "description": "Cours particuliers, duos et petits groupes avec Josiane — instructrice certifiée de Pilates et spécialiste du mouvement. Attention personnalisée, amélioration de votre posture et prévention des blessures.",
-      "title": "Le Pilates qui prend soin de votre corps, en petit comité.",
+      "description": "Cours particuliers, duos et cours en ligne avec Josiane — instructrice certifiée de Pilates et spécialiste du mouvement. Attention personnalisée, amélioration de votre posture et prévention des blessures.",
+      "title": "Le Pilates qui prend soin de votre corps.",
       "titleHighlight": "votre corps",
-      "badgePhysio": "Spécialiste du mouvement",
+      "badgePhysio": "Formée en physiothérapie",
       "badgeExperience": "21 ans d'expérience",
       "badgeLocation": "Montréal, QC",
       "ctaTrial": "Réserver une séance d'introduction",
       "ctaServices": "Voir les services",
       "note": "Première séance d'introduction — idéale pour bien débuter.",
-      "viewSchedule": "Voir l'agenda"
+      "viewSchedule": "Voir l'agenda",
+      "modalities": "Privé · Duo · Groupe · En ligne"
     },
     "trust": {
       "physioTitle": "Spécialiste posture",
@@ -414,10 +416,10 @@
       "subtitle": "Le mouvement avec intention, le progrès avec clarté.",
       "subtitleHighlight": "intention",
       "greeting": "Salut!!",
-      "description": "Josiane allie son expertise de spécialiste du mouvement à une pratique approfondie du Pilates pour offrir un accompagnement unique à Montréal. Chaque séance est adaptée à votre corps, vos objectifs et votre rythme.",
+      "description": "Josiane est physiothérapeute de formation et instructrice certifiée de Pilates — une combinaison unique qui lui permet d'offrir un accompagnement personnalisé à Montréal. Chaque séance est adaptée à votre corps, vos objectifs et votre rythme.",
       "extendedTitle": "Un peu plus sur moi",
-      "extended": "En petits groupes ou en privé, l'accent est mis sur la qualité du mouvement, la posture et la prévention des blessures — pour que vous repartiez plus fort, plus mobile et plus serein.",
-      "badgePhysio": "Spécialiste du mouvement",
+      "extended": "Grâce à sa formation en physiothérapie et son expertise en Pilates, l'accent est mis sur la qualité du mouvement, la correction posturale et la prévention des blessures — pour que vous repartiez plus fort, plus mobile et plus serein.",
+      "badgePhysio": "Formée en physiothérapie",
       "badgePilates": "Instructrice Pilates",
       "badgePrevention": "Prévention des blessures",
       "yearsExperience": "21+",
@@ -435,6 +437,7 @@
       "private": {
         "title": "Privé",
         "intro": "Séance individuelle, attention complète à votre posture.",
+        "introClass": "Séance d'introduction individuelle: $80",
         "single": "1 classe: $80",
         "four": "4 classes: $286",
         "eight": "8 classes: $520",
@@ -442,12 +445,13 @@
         "cta": "Réserver un privé",
         "feature1": "Programme <b>100% personnalisé</b>",
         "feature2": "Idéal pour débuter ou en rééducation",
-        "feature3": "Forfaits 4 et 8 séances avantageux"
+        "feature3": "Forfaits 4 et 8 séances avantageux",
+        "from": "dès $43,33 / cl."
       },
       "duos": {
         "title": "Duo",
         "intro": "À deux — entre amis ou en couple, motivation garantie.",
-        "introClass": "Classe d'introduction: $125",
+        "introClass": "Classe d'introduction (pour 2 personnes): $125",
         "single": "1 classe: $115",
         "six": "6 classes: $545",
         "twelve": "12 classes: $1028",
@@ -455,11 +459,13 @@
         "cta": "Réserver un duo",
         "feature1": "Séance d'introduction <b>pour deux</b>",
         "feature2": "Attention rapprochée, ambiance conviviale",
-        "feature3": "Forfaits 6 et 12 séances"
+        "feature3": "Forfaits 6 et 12 séances",
+        "from": "dès $85,66 / cl. (pour 2)"
       },
       "group": {
         "title": "Groupe",
         "intro": "Petit groupe — un entraînement social et stimulant.",
+        "introClass": "Séance d'introduction individuelle: $80",
         "single": "1 classe: $40",
         "six": "6 classes: $202",
         "twelve": "12 classes: $360",
@@ -467,8 +473,37 @@
         "cta": "Voir l'horaire",
         "feature1": "Petits groupes, <b>jamais surchargés</b>",
         "feature2": "L'option la plus accessible",
-        "feature3": "Forfaits 6 et 12 séances"
+        "feature3": "Forfaits 6 et 12 séances",
+        "from": "dès $30 / cl."
       }
+    },
+    "online": {
+      "eyebrow": "Nouveau · En ligne",
+      "title": "Le Pilates, où que vous soyez.",
+      "titleHighlight": "où que vous soyez",
+      "subtitle": "Suivez les cours en direct sur Zoom avec corrections, ou à votre rythme avec les cours enregistrés.",
+      "opt1Tag": "Le plus complet",
+      "opt1Title": "Groupe accompagné",
+      "opt1Price": "$58",
+      "opt1Unit": "/ mois",
+      "opt1Li1": "Cours de 45 min — mercredis à 20h30 et vendredis à 12h00, avec corrections en direct",
+      "opt1Li2": "Accès aux cours enregistrés (Instagram et Zoom)",
+      "opt1Note": "Horaire sujet à ajustement pour mieux accommoder les participantes.",
+      "opt1Cta": "S'inscrire",
+      "opt1Msg": "Bonjour Josiane, je souhaite m'inscrire au groupe accompagné en ligne ($58/mois).",
+      "opt2Title": "Cours enregistrés",
+      "opt2Price": "$26",
+      "opt2Unit": "/ mois",
+      "opt2Li1": "Accès aux cours enregistrés uniquement",
+      "opt2Cta": "S'inscrire",
+      "opt2Msg": "Bonjour Josiane, je souhaite m'inscrire aux cours enregistrés ($26/mois).",
+      "opt3Title": "Drop-in groupe en ligne",
+      "opt3Price": "$14",
+      "opt3Unit": "+ taxes",
+      "opt3Li1": "Un cours à l'unité dans le groupe en ligne",
+      "opt3Note": "Paiement par virement Interac.",
+      "opt3Cta": "Réserver un cours",
+      "opt3Msg": "Bonjour Josiane, je souhaite réserver un drop-in dans le groupe en ligne ($14 + taxes)."
     },
     "location": {
       "title": "Horaires & emplacement",

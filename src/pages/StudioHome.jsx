@@ -95,6 +95,7 @@ const StudioHome = () => {
   const [autoAdvancePaused, setAutoAdvancePaused] = useState(false)
   const [testimonials, setTestimonials] = useState([])
   const [expandedTestimonials, setExpandedTestimonials] = useState({})
+  const [expandedSvc, setExpandedSvc] = useState(null)
   
   const resumeTimerRef = useRef(null)
 
@@ -353,7 +354,7 @@ Sent from Josi Pilates website contact form.
   }, [user, profile, isProfileComplete, navigate])
 
   // Split-text helper to format italic highlight in headings natively across FR/EN/PT
-  const renderHeadingWithItalic = (text, highlight, highlightClass = 'text-[#a3e0d3] font-serif not-italic') => {
+  const renderHeadingWithItalic = (text, highlight, highlightClass = '') => {
     if (!text) return ''
     if (!highlight) return text
     const parts = text.split(highlight)
@@ -397,6 +398,7 @@ Sent from Josi Pilates website contact form.
           <div className="nav-links hidden lg:flex">
             <a href="#about">{t('studioHome.nav.about')}</a>
             <a href="#services">{t('studioHome.nav.services')}</a>
+            <a href="#online">{t('studioHome.nav.online')}</a>
             <a href="#schedule">{t('studioHome.nav.schedule')}</a>
             <a href="#testimonials">{t('studioHome.nav.testimonials')}</a>
             <a href="#contact">{t('studioHome.nav.contact')}</a>
@@ -478,6 +480,13 @@ Sent from Josi Pilates website contact form.
                 {t('studioHome.nav.services')}
               </a>
               <a
+                href="#online"
+                className="text-[var(--ink-2)] hover:text-[var(--ink)] py-2 block font-semibold text-sm"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {t('studioHome.nav.online')}
+              </a>
+              <a
                 href="#schedule"
                 className="text-[var(--ink-2)] hover:text-[var(--ink)] py-2 block font-semibold text-sm"
                 onClick={() => setMobileMenuOpen(false)}
@@ -536,7 +545,8 @@ Sent from Josi Pilates website contact form.
               t('studioHome.hero.titleHighlight')
             )}
           </h1>
-          <p>{t('studioHome.hero.description')}</p>
+          <p className="hero-modalities hidden">{t('studioHome.hero.modalities')}</p>
+          <p className="hero-desc">{t('studioHome.hero.description')}</p>
           <div className="hero-cta">
             <a href="#contact" className="btn btn-primary btn-lg">
               <Calendar className="w-4 h-4" /> {t('studioHome.hero.ctaTrial')}
@@ -545,7 +555,7 @@ Sent from Josi Pilates website contact form.
               {t('studioHome.hero.ctaServices')} <ArrowRight className="w-4 h-4" />
             </a>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 16 }}>
+          <div className="hero-schedule-link" style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 16 }}>
             <Calendar className="w-3.5 h-3.5 text-[#a3e0d3]" />
             <a
               href="#schedule"
@@ -611,7 +621,7 @@ Sent from Josi Pilates website contact form.
               {renderHeadingWithItalic(
                 t('studioHome.about.subtitle'),
                 t('studioHome.about.subtitleHighlight'),
-                'text-[#017a6b] font-serif not-italic'
+                'text-[#017a6b]'
               )}
             </h2>
             <p>{t('studioHome.about.description')}</p>
@@ -639,7 +649,7 @@ Sent from Josi Pilates website contact form.
             {renderHeadingWithItalic(
               t('studioHome.testimonialsTitle'),
               'élèves',
-              'text-[#017a6b] font-serif not-italic'
+              'text-[#017a6b]'
             )}
           </h2>
           <p>{t('studioHome.testimonialsSubtitle')}</p>
@@ -796,7 +806,7 @@ Sent from Josi Pilates website contact form.
               {renderHeadingWithItalic(
                 t('studioHome.services.subtitle'),
                 'vous convient',
-                'text-[#017a6b] font-serif not-italic'
+                'text-[#017a6b]'
               )}
             </h2>
             <p>{t('studioHome.services.subtitleDesc')}</p>
@@ -901,6 +911,172 @@ Sent from Josi Pilates website contact form.
               </div>
             </div>
           </div>
+
+          {/* Mobile service list (accordion) */}
+          <div className="svc-list">
+            {/* Private */}
+            <div
+              className={`svc-list-item${expandedSvc === 'private' ? ' open' : ''}`}
+              onClick={() => setExpandedSvc(expandedSvc === 'private' ? null : 'private')}
+            >
+              <div className="svc-list-header">
+                <span className="svc-list-title">{t('studioHome.services.private.title')}</span>
+                <span className="svc-list-from">{t('studioHome.services.private.from')}</span>
+                <svg className="svc-list-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9" /></svg>
+              </div>
+              <div className="svc-list-body">
+                <p>{t('studioHome.services.private.intro')}</p>
+                <ul>
+                  <li><Check className="w-4 h-4 text-[#01b48d] flex-shrink-0 mt-0.5" /><span>{t('studioHome.services.private.introClass')}</span></li>
+                  <li><Check className="w-4 h-4 text-[#01b48d] flex-shrink-0 mt-0.5" /><span>{t('studioHome.services.private.single')}</span></li>
+                  <li><Check className="w-4 h-4 text-[#01b48d] flex-shrink-0 mt-0.5" /><span>{t('studioHome.services.private.four')}</span></li>
+                  <li><Check className="w-4 h-4 text-[#01b48d] flex-shrink-0 mt-0.5" /><span>{t('studioHome.services.private.eight')}</span></li>
+                </ul>
+                <a href="#contact" className="btn btn-primary" style={{ display: 'block', textAlign: 'center', marginTop: 12 }}>{t('studioHome.services.private.cta')}</a>
+              </div>
+            </div>
+            {/* Duos */}
+            <div
+              className={`svc-list-item${expandedSvc === 'duos' ? ' open' : ''}`}
+              onClick={() => setExpandedSvc(expandedSvc === 'duos' ? null : 'duos')}
+            >
+              <div className="svc-list-header">
+                <span className="svc-list-title">{t('studioHome.services.duos.title')}</span>
+                <span className="svc-list-from">{t('studioHome.services.duos.from')}</span>
+                <svg className="svc-list-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9" /></svg>
+              </div>
+              <div className="svc-list-body">
+                <p>{t('studioHome.services.duos.intro')}</p>
+                <ul>
+                  <li><Check className="w-4 h-4 text-[#01b48d] flex-shrink-0 mt-0.5" /><span>{t('studioHome.services.duos.introClass')}</span></li>
+                  <li><Check className="w-4 h-4 text-[#01b48d] flex-shrink-0 mt-0.5" /><span>{t('studioHome.services.duos.single')}</span></li>
+                  <li><Check className="w-4 h-4 text-[#01b48d] flex-shrink-0 mt-0.5" /><span>{t('studioHome.services.duos.six')}</span></li>
+                  <li><Check className="w-4 h-4 text-[#01b48d] flex-shrink-0 mt-0.5" /><span>{t('studioHome.services.duos.twelve')}</span></li>
+                </ul>
+                <a href="#contact" className="btn btn-primary" style={{ display: 'block', textAlign: 'center', marginTop: 12 }}>{t('studioHome.services.duos.cta')}</a>
+              </div>
+            </div>
+            {/* Group */}
+            <div
+              className={`svc-list-item${expandedSvc === 'group' ? ' open' : ''}`}
+              onClick={() => setExpandedSvc(expandedSvc === 'group' ? null : 'group')}
+            >
+              <div className="svc-list-header">
+                <span className="svc-list-title">{t('studioHome.services.group.title')}</span>
+                <span className="svc-list-from">{t('studioHome.services.group.from')}</span>
+                <svg className="svc-list-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9" /></svg>
+              </div>
+              <div className="svc-list-body">
+                <p>{t('studioHome.services.group.intro')}</p>
+                <ul>
+                  <li><Check className="w-4 h-4 text-[#01b48d] flex-shrink-0 mt-0.5" /><span>{t('studioHome.services.group.introClass')}</span></li>
+                  <li><Check className="w-4 h-4 text-[#01b48d] flex-shrink-0 mt-0.5" /><span>{t('studioHome.services.group.single')}</span></li>
+                  <li><Check className="w-4 h-4 text-[#01b48d] flex-shrink-0 mt-0.5" /><span>{t('studioHome.services.group.six')}</span></li>
+                  <li><Check className="w-4 h-4 text-[#01b48d] flex-shrink-0 mt-0.5" /><span>{t('studioHome.services.group.twelve')}</span></li>
+                </ul>
+                <a href="#schedule" className="btn btn-primary" style={{ display: 'block', textAlign: 'center', marginTop: 12 }}>{t('studioHome.services.group.cta')}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ONLINE CLASSES SECTION */}
+      <section id="online" className="online-section sec">
+        <div className="sec-head center" style={{ marginBottom: 40 }}>
+          <div className="eyebrow">{t('studioHome.online.eyebrow')}</div>
+          <h2>
+            {renderHeadingWithItalic(
+              t('studioHome.online.title'),
+              t('studioHome.online.titleHighlight')
+            )}
+          </h2>
+          <p style={{ maxWidth: 560, margin: '0 auto' }}>{t('studioHome.online.subtitle')}</p>
+        </div>
+        <div className="online-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, maxWidth: 960, margin: '0 auto' }}>
+
+          {/* Opt 1 — Groupe accompagné */}
+          <div className="svc feat" style={{ position: 'relative' }}>
+            <div className="svc-tag">{t('studioHome.online.opt1Tag')}</div>
+            <div className="svc-top">
+              <h3>{t('studioHome.online.opt1Title')}</h3>
+              <div style={{ marginTop: 8 }}>
+                <span style={{ fontFamily: 'var(--serif)', fontSize: 32, fontWeight: 600 }}>{t('studioHome.online.opt1Price')}</span>
+                <span style={{ fontSize: 14, color: 'var(--ink-muted)', marginLeft: 4 }}>{t('studioHome.online.opt1Unit')}</span>
+              </div>
+            </div>
+            <div className="svc-body">
+              <ul>
+                <li><Check className="w-4 h-4 text-[#01b48d] flex-shrink-0 mt-0.5" /><span>{t('studioHome.online.opt1Li1')}</span></li>
+                <li><Check className="w-4 h-4 text-[#01b48d] flex-shrink-0 mt-0.5" /><span>{t('studioHome.online.opt1Li2')}</span></li>
+              </ul>
+              <p className="text-xs text-[#8a958f] mt-3 leading-relaxed italic border-t border-[#e7e9e3] pt-3">
+                {t('studioHome.online.opt1Note')}
+              </p>
+              <a
+                href={`https://wa.me/14382748396?text=${encodeURIComponent(t('studioHome.online.opt1Msg'))}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-primary"
+                style={{ display: 'block', textAlign: 'center', marginTop: 16 }}
+              >
+                {t('studioHome.online.opt1Cta')}
+              </a>
+            </div>
+          </div>
+
+          {/* Opt 2 — Cours enregistrés */}
+          <div className="svc">
+            <div className="svc-top">
+              <h3>{t('studioHome.online.opt2Title')}</h3>
+              <div style={{ marginTop: 8 }}>
+                <span style={{ fontFamily: 'var(--serif)', fontSize: 32, fontWeight: 600 }}>{t('studioHome.online.opt2Price')}</span>
+                <span style={{ fontSize: 14, color: 'var(--ink-muted)', marginLeft: 4 }}>{t('studioHome.online.opt2Unit')}</span>
+              </div>
+            </div>
+            <div className="svc-body">
+              <ul>
+                <li><Check className="w-4 h-4 text-[#01b48d] flex-shrink-0 mt-0.5" /><span>{t('studioHome.online.opt2Li1')}</span></li>
+              </ul>
+              <a
+                href={`https://wa.me/14382748396?text=${encodeURIComponent(t('studioHome.online.opt2Msg'))}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-primary"
+                style={{ display: 'block', textAlign: 'center', marginTop: 16 }}
+              >
+                {t('studioHome.online.opt2Cta')}
+              </a>
+            </div>
+          </div>
+
+          {/* Opt 3 — Drop-in */}
+          <div className="svc">
+            <div className="svc-top">
+              <h3>{t('studioHome.online.opt3Title')}</h3>
+              <div style={{ marginTop: 8 }}>
+                <span style={{ fontFamily: 'var(--serif)', fontSize: 32, fontWeight: 600 }}>{t('studioHome.online.opt3Price')}</span>
+                <span style={{ fontSize: 14, color: 'var(--ink-muted)', marginLeft: 4 }}>{t('studioHome.online.opt3Unit')}</span>
+              </div>
+            </div>
+            <div className="svc-body">
+              <ul>
+                <li><Check className="w-4 h-4 text-[#01b48d] flex-shrink-0 mt-0.5" /><span>{t('studioHome.online.opt3Li1')}</span></li>
+              </ul>
+              <p className="text-xs text-[#8a958f] mt-3 leading-relaxed italic border-t border-[#e7e9e3] pt-3">
+                {t('studioHome.online.opt3Note')}
+              </p>
+              <a
+                href={`https://wa.me/14382748396?text=${encodeURIComponent(t('studioHome.online.opt3Msg'))}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-primary"
+                style={{ display: 'block', textAlign: 'center', marginTop: 16 }}
+              >
+                {t('studioHome.online.opt3Cta')}
+              </a>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -917,7 +1093,7 @@ Sent from Josi Pilates website contact form.
                 {renderHeadingWithItalic(
                   t('studioHome.location.subtitle'),
                   'rencontrer',
-                  'text-[#a3e0d3] font-serif not-italic'
+                  'text-[#a3e0d3]'
                 )}
               </h2>
               {/* Sur rendez-vous uniquement */}
@@ -987,7 +1163,7 @@ Sent from Josi Pilates website contact form.
               {renderHeadingWithItalic(
                 t('studioHome.contact.title'),
                 'Écrivez-nous',
-                'text-[#017a6b] font-serif not-italic'
+                'text-[#017a6b]'
               )}
             </h2>
             <p>{t('studioHome.contact.subtitle')}</p>
@@ -1180,6 +1356,22 @@ Sent from Josi Pilates website contact form.
           </div>
         </div>
       </footer>
+
+      {/* Sticky CTA — mobile only */}
+      <div className="sticky-cta">
+        <a href="#contact" className="cta-primary">
+          <Calendar className="w-4 h-4" style={{ display: 'inline', marginRight: 6, verticalAlign: 'middle' }} />
+          {t('studioHome.nav.bookTrialMobile')}
+        </a>
+        <a
+          href="https://wa.me/14382748396"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="cta-secondary"
+        >
+          WhatsApp
+        </a>
+      </div>
     </div>
   )
 }

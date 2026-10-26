@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
@@ -97,6 +97,10 @@ body {
   --brand-200: #a3e0d3;
 }
 
+.studio-home-site h2 em {
+  font-style: normal;
+}
+
 .studio-home-site {
   /* Site container background & typography */
   background: var(--sand);
@@ -123,7 +127,7 @@ body {
   --gold: #c79a4b;
   --rose: #d2664f;
   --font: 'Hanken Grotesk', system-ui, sans-serif;
-  --serif: 'Fraunces', Georgia, serif;
+  --serif: 'Hanken Grotesk', system-ui, sans-serif;
   --nav-bg: rgba(246, 243, 236, 0.82);
 
   /* nav */
@@ -188,6 +192,9 @@ body {
     display: flex;
     flex-direction: column;
     gap: 16px;
+  }
+  h2 em {
+    font-style: normal;
   }
 
   @media (min-width: 1024px) {
@@ -348,7 +355,7 @@ body {
     margin-bottom: 20px;
   }
   .hero h1 em {
-    font-style: italic;
+    font-style: normal;
     color: var(--brand-200);
   }
   .hero p {
@@ -447,8 +454,9 @@ body {
     margin-bottom: 14px;
     color: var(--ink);
   }
-  .sec h2 em {
-    font-style: italic;
+  .sec h2 em,
+  .sec-head h2 em {
+    font-style: normal;
     color: var(--brand-700);
   }
   .sec-head p {
@@ -509,7 +517,7 @@ body {
     color: var(--ink);
   }
   .about-body h2 em {
-    font-style: italic;
+    font-style: normal;
     color: var(--brand-700);
   }
   .about-body p {
@@ -703,7 +711,7 @@ body {
     color: #fff;
   }
   .hl-info h2 em {
-    font-style: italic;
+    font-style: normal;
     color: var(--brand-200);
   }
   .hours {
@@ -783,7 +791,7 @@ body {
     font-size: 15px;
     color: var(--ink-2);
     line-height: 1.65;
-    font-style: italic;
+    font-style: normal;
     flex: 1;
   }
   .tst .who {
@@ -947,7 +955,7 @@ body {
     color: var(--ink);
   }
   .ct-side h2 em {
-    font-style: italic;
+    font-style: normal;
     color: var(--brand-700);
   }
   .ct-side > p {
@@ -1124,6 +1132,161 @@ body {
     }
     .ft-top {
       grid-template-columns: 1fr;
+    }
+  }
+
+  /* ── Desktop defaults for mobile-only elements ─────────────────────────── */
+  .sticky-cta { display: none; }
+  .svc-list { display: none; }
+  .hero-modalities { display: none; }
+
+  /* ── Mobile (< 768px) ─────────────────────────────────────────────────── */
+  @media (max-width: 767px) {
+
+    /* Hero: card photo on top + text below */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      min-height: unset;
+    }
+    .hero-bg {
+      position: relative !important;
+      inset: unset !important;
+      width: calc(100% - 32px) !important;
+      height: 280px;
+      border-radius: 20px;
+      margin: 16px 16px 0;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .hero-bg::after { display: none; }
+    .hero-overlay { display: none; }
+    .hero-in {
+      position: relative;
+      padding: 20px 20px 32px;
+      color: var(--ink);
+    }
+    .hero h1 {
+      font-size: 30px;
+      color: var(--ink) !important;
+      line-height: 1.18;
+      margin-bottom: 8px;
+    }
+    .hero h1 em { color: var(--brand-400) !important; font-style: normal; }
+    .hero-desc { display: none; }
+    .hero-modalities {
+      display: block !important;
+      font-size: 13px;
+      color: var(--ink-2) !important;
+      letter-spacing: 0.04em;
+      margin-bottom: 16px;
+    }
+    .hero-desc {
+      display: none !important;
+    }
+    .hero-cta {
+      flex-direction: column;
+      gap: 10px;
+    }
+    .hero-cta a { text-align: center; }
+    .hero-schedule-link { display: none !important; }
+    .hero-note { display: none; }
+    .hero-badges { display: none; }
+
+    /* Trust strip */
+    .trust { display: none; }
+
+    /* Services: list instead of cards */
+    .svc-grid { display: none; }
+    .svc-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      padding: 0 16px;
+    }
+    .svc-list-item {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+    }
+    .svc-list-item:last-child { border-bottom: none; }
+    .svc-list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+    .svc-list-title {
+      font-family: var(--serif);
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--ink);
+    }
+    .svc-list-from {
+      font-size: 13px;
+      color: var(--ink-2);
+      flex-shrink: 0;
+      margin-left: 8px;
+    }
+    .svc-list-chevron {
+      width: 20px;
+      height: 20px;
+      transition: transform 0.2s;
+      color: var(--ink-2);
+      flex-shrink: 0;
+      margin-left: 8px;
+    }
+    .svc-list-item.open .svc-list-chevron { transform: rotate(180deg); }
+    .svc-list-body {
+      display: none;
+      padding-top: 12px;
+    }
+    .svc-list-item.open .svc-list-body { display: block; }
+    .svc-list-body p { font-size: 14px; color: var(--ink-2); margin-bottom: 10px; }
+    .svc-list-body ul { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; }
+    .svc-list-body ul li { display: flex; align-items: flex-start; gap: 8px; font-size: 14px; color: var(--ink); }
+    .svc-list-body .svc-features { font-size: 13px; color: var(--ink-2); }
+    .svc-ico { display: none; }
+
+    /* Online section */
+    .online-section {
+      padding: 40px 16px;
+    }
+    .online-grid {
+      grid-template-columns: 1fr !important;
+      gap: 16px;
+    }
+
+    /* Sticky CTA */
+    .sticky-cta {
+      display: flex;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+      background: var(--paper);
+      backdrop-filter: blur(8px);
+      border-top: 1px solid var(--line);
+      z-index: 200;
+      gap: 10px;
+    }
+    .sticky-cta a {
+      flex: 1;
+      text-align: center;
+      padding: 12px 0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .sticky-cta .cta-primary {
+      background: var(--brand);
+      color: #fff;
+    }
+    .sticky-cta .cta-secondary {
+      background: var(--line-2);
+      color: var(--ink);
     }
   }
 }
