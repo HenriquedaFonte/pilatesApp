@@ -51,7 +51,7 @@ class EmailService {
           </div>`;
   }
 
-  async sendEmail({ to, subject, htmlContent, textContent, attachments = [], language = 'pt' }) {
+  async sendEmail({ to, subject, htmlContent, textContent, attachments = [], language = 'pt', replyTo }) {
     const hr = '<hr style="margin: 30px 0; border: none; border-top: 1px solid #e2e8f0;">';
     if (htmlContent.includes(hr)) {
       htmlContent = htmlContent.replace(hr, `${this._getPortalCta(language)}\n          ${hr}`);
@@ -62,7 +62,8 @@ class EmailService {
         to: [to.email],
         subject: subject,
         html: htmlContent,
-        text: textContent
+        text: textContent,
+        ...(replyTo && { reply_to: replyTo })
       };
 
       // Add attachments if provided

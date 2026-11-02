@@ -276,6 +276,7 @@ Sent from Josi Pilates website contact form.
 
       await emailService.sendEmail({
         to: { email: 'josipilatesmontreal@gmail.com', name: 'Josi Pilates' },
+        replyTo: contactForm.email,
         subject,
         htmlContent: `
           <!DOCTYPE html>

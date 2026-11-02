@@ -8,6 +8,7 @@ interface EmailPayload {
   subject: string
   html: string
   text: string
+  reply_to?: string
   attachments?: Array<{
     filename: string
     path: string
@@ -71,7 +72,8 @@ Deno.serve(async (req) => {
       to: emailPayload.to,
       subject: emailPayload.subject,
       html: emailPayload.html,
-      text: emailPayload.text
+      text: emailPayload.text,
+      ...(emailPayload.reply_to && { reply_to: emailPayload.reply_to })
     }
 
     // Add attachments if present
