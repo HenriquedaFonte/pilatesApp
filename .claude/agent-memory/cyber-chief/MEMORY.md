@@ -1,0 +1,1 @@
+- [Pilates App Security Posture](project_pilates-security.md) — Supabase+React Pilates studio app; known critical authz gaps from 2026-06-20 audit
