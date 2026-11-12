@@ -774,7 +774,12 @@
         "confirmPassword": "Confirmer le nouveau mot de passe",
         "confirmPasswordPlaceholder": "Confirmez le nouveau mot de passe",
         "updating": "Modification...",
-        "update": "Changer le mot de passe"
+        "update": "Changer le mot de passe",
+        "mismatch": "Les deux nouveaux mots de passe ne sont pas identiques.",
+        "tooShort": "Le nouveau mot de passe doit contenir au moins 6 caractères.",
+        "currentIncorrect": "Le mot de passe actuel est incorrect.",
+        "updateSuccess": "Mot de passe modifié.",
+        "updateError": "Impossible de modifier le mot de passe."
       }
     },
     "students": {
