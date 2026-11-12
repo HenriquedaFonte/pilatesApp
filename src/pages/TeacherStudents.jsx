@@ -3,11 +3,8 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import emailService from '../lib/emailService'
-import {
-  getUpcomingBirthdays,
-  isBirthdayBannerDismissed,
-  dismissBirthdayBanner
-} from '../lib/birthdays'
+import { getUpcomingBirthdays } from '../lib/birthdays'
+import BirthdayBanner from '../components/BirthdayBanner'
 import { getDayName as getDayNameLocale, formatTime as formatTimeLocale } from '../lib/format'
 import { Button } from '@/components/ui/button'
 import {
@@ -137,7 +134,6 @@ const TeacherStudents = () => {
   }
 
   const [upcomingBirthdays, setUpcomingBirthdays] = useState([])
-  const [showBirthdayBanner, setShowBirthdayBanner] = useState(false)
   const [newUser, setNewUser] = useState({
     email: '',
     fullName: '',
@@ -268,10 +264,6 @@ const TeacherStudents = () => {
       setSchedules(schedulesData || [])
       const birthdays = getUpcomingBirthdays(studentsData || [])
       setUpcomingBirthdays(birthdays)
-      setShowBirthdayBanner(
-        birthdays.length > 0 &&
-          !isBirthdayBannerDismissed(birthdays.map(b => b.id))
-      )
 
       // Fetch last check-ins for each student
       if (studentsData && studentsData.length > 0) {
@@ -299,18 +291,6 @@ const TeacherStudents = () => {
       setLoading(false)
     }
   }
-
-  const handleDismissBirthdays = () => {
-    dismissBirthdayBanner(upcomingBirthdays.map(b => b.id))
-    setShowBirthdayBanner(false)
-  }
-
-  const birthdayWhen = daysUntil =>
-    daysUntil === 0
-      ? t('teacher.students.birthdays.today')
-      : daysUntil === 1
-        ? t('teacher.students.birthdays.tomorrow')
-        : t('teacher.students.birthdays.inDays', { count: daysUntil })
 
   const handleBalanceChange = async e => {
     e.preventDefault()
@@ -827,44 +807,7 @@ const TeacherStudents = () => {
           </Alert>
         )}
 
-        {showBirthdayBanner && upcomingBirthdays.length > 0 && (
-          <div
-            role="status"
-            className="mb-6 rounded-2xl border border-emerald-200/60 bg-emerald-50/60 dark:border-emerald-900/40 dark:bg-emerald-950/20 px-4 py-3"
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex items-center gap-2 text-sm font-semibold text-emerald-800 dark:text-emerald-300">
-                <Cake className="h-4 w-4 shrink-0" />
-                {t('teacher.students.birthdays.title')}
-              </div>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={handleDismissBirthdays}
-                className="h-7 -mr-2 -mt-1 px-2 text-xs text-emerald-800 hover:bg-emerald-100 dark:text-emerald-300 dark:hover:bg-emerald-900/30"
-              >
-                {t('teacher.students.birthdays.dismiss')}
-              </Button>
-            </div>
-            <ul className="mt-2 flex flex-wrap gap-2">
-              {upcomingBirthdays.map(student => (
-                <li
-                  key={student.id}
-                  className="rounded-full bg-background/80 dark:bg-background/40 border border-emerald-200/60 dark:border-emerald-900/40 px-3 py-1 text-xs"
-                >
-                  <span className="font-medium text-foreground">
-                    {student.full_name}
-                  </span>
-                  <span className="text-muted-foreground">
-                    {' · '}
-                    {birthdayWhen(student.daysUntil)}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        <BirthdayBanner birthdays={upcomingBirthdays} className="mb-6" />
 
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <div className="relative flex-1">
