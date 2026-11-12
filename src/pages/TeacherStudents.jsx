@@ -196,7 +196,20 @@ const TeacherStudents = () => {
       const { error } = await supabase.functions.invoke('manage-student', {
         body: { action: 'hard-delete', studentId: selectedStudent.id }
       })
-      if (error) throw new Error(error.message)
+      if (error) {
+        // Aluno com recibo de seguro não pode ser apagado de vez (Story 3.5).
+        let code = null
+        try {
+          code = (await error.context?.clone?.().json())?.code ?? null
+        } catch {
+          // resposta sem JSON: segue com a mensagem genérica
+        }
+        if (code === 'STUDENT_HAS_RECEIPTS') {
+          showError(t('teacher.students.hardDeleteDialog.hasReceipts'))
+          return
+        }
+        throw new Error(error.message)
+      }
       showSuccess(`Aluno(a) ${selectedStudent.full_name} excluído(a) permanentemente.`)
       await fetchDeletedStudents()
     } catch (err) {

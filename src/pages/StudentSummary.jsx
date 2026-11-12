@@ -51,10 +51,13 @@ import {
   Phone,
   Globe,
   Loader2,
-  Edit
+  Edit,
+  Receipt
 } from 'lucide-react'
 import TeacherLayout from '../components/TeacherLayout'
 import InsuranceFields from '../components/InsuranceFields'
+import IssueReceiptDialog from '../components/IssueReceiptDialog'
+import ReceiptsList from '../components/ReceiptsList'
 
 const profileSchema = z.object({
   full_name: z.string().min(1, 'Full name is required'),
@@ -76,6 +79,8 @@ const StudentSummary = () => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [updating, setUpdating] = useState(false)
   const [editError, setEditError] = useState('')
+  const [isReceiptDialogOpen, setIsReceiptDialogOpen] = useState(false)
+  const [receiptsRefreshKey, setReceiptsRefreshKey] = useState(0)
 
   const form = useForm({
     resolver: zodResolver(profileSchema),
@@ -482,6 +487,39 @@ const StudentSummary = () => {
         {/* Seguro saúde do aluno (editável pela professora) */}
         {profile?.role === 'teacher' && studentId && (
           <InsuranceFields studentId={studentId} className="mb-6" />
+        )}
+
+        {/* Recibos de seguro (Story 3.5): emissão e histórico */}
+        {profile?.role === 'teacher' && studentId && (
+          <Card className="mb-6 rounded-2xl">
+            <CardHeader>
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <div>
+                  <CardTitle className="flex items-center">
+                    <Receipt className="h-5 w-5 mr-2" />
+                    {t('receipts.title')}
+                  </CardTitle>
+                  <CardDescription>{t('receipts.description')}</CardDescription>
+                </div>
+                <Button size="sm" className="rounded-xl" onClick={() => setIsReceiptDialogOpen(true)}>
+                  <Receipt className="h-4 w-4 mr-2" />
+                  {t('receipts.issueButton')}
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <ReceiptsList filters={{ studentId }} refreshKey={receiptsRefreshKey} />
+            </CardContent>
+          </Card>
+        )}
+        {profile?.role === 'teacher' && student && (
+          <IssueReceiptDialog
+            open={isReceiptDialogOpen}
+            onOpenChange={setIsReceiptDialogOpen}
+            student={student}
+            teacherId={profile.id}
+            onIssued={() => setReceiptsRefreshKey(k => k + 1)}
+          />
         )}
 
         {/* Edit Profile Dialog */}

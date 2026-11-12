@@ -36,6 +36,7 @@ const AttendanceReport = lazy(() => import('./pages/AttendanceReport'))
 const LowCreditsReport = lazy(() => import('./pages/lowCreditsReport'))
 const CreditHistoryReport = lazy(() => import('./pages/CreditHistoryReport'))
 const FinancialReport = lazy(() => import('./pages/FinancialReport'))
+const TeacherReceipts = lazy(() => import('./pages/TeacherReceipts'))
 const EmailNotifications = lazy(() => import('./pages/EmailNotifications'))
 const AuthCallback = lazy(() => import('./components/AuthCallback'))
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
@@ -158,6 +159,14 @@ function AppRoutes() {
           element={
             <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
               <FinancialReport />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/teacher/receipts"
+          element={
+            <ProtectedRoute requireRole="teacher" requireCompleteProfile={true}>
+              <TeacherReceipts />
             </ProtectedRoute>
           }
         />

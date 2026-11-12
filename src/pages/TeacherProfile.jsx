@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
@@ -17,6 +18,9 @@ import TeacherLayout from '../components/TeacherLayout'
 import PractitionerCredentialsForm from '../components/PractitionerCredentialsForm'
 
 const TeacherProfile = () => {
+  // ?tab=professional abre direto nos dados profissionais (link do modal de recibo)
+  const [searchParams] = useSearchParams()
+  const initialTab = searchParams.get('tab') === 'professional' ? 'professional' : 'personal'
   const [profileData, setProfileData] = useState({
     full_name: '',
     email: '',
@@ -206,7 +210,7 @@ const TeacherProfile = () => {
           </Alert>
         )}
 
-        <Tabs defaultValue="personal" className="space-y-6">
+        <Tabs defaultValue={initialTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-3 h-auto rounded-xl p-1 bg-muted">
             <TabsTrigger value="personal" className="rounded-lg py-2.5 text-xs font-bold transition-all whitespace-normal">{t('teacher.profile.tabs.personal')}</TabsTrigger>
             <TabsTrigger value="security" className="rounded-lg py-2.5 text-xs font-bold transition-all whitespace-normal">{t('teacher.profile.tabs.security')}</TabsTrigger>
