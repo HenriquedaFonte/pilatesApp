@@ -1372,7 +1372,10 @@
       "template": "Não foi possível carregar o formulário do recibo. Recarregue a página e tente de novo.",
       "network": "Falha de conexão. Confira a internet e tente de novo.",
       "generic": "Não foi possível concluir. Tente de novo.",
-      "download": "Não foi possível baixar o PDF. Tente de novo."
+      "download": "Não foi possível baixar o PDF. Tente de novo.",
+      "open": "Não foi possível abrir o PDF. Tente de novo.",
+      "share": "Não foi possível compartilhar o PDF. Tente de novo.",
+      "shareUnsupported": "Este aparelho não permite compartilhar o arquivo. Use \"Abrir PDF\" ou \"Baixar\"."
     },
     "list": {
       "loading": "Carregando recibos...",
@@ -1393,7 +1396,10 @@
       "download": "Baixar",
       "generatePdf": "Gerar PDF",
       "pdfGenerated": "PDF do recibo {{number}} gerado.",
-      "void": "Anular"
+      "void": "Anular",
+      "open": "Abrir PDF",
+      "share": "Compartilhar",
+      "shareReady": "PDF pronto. Toque em \"Compartilhar\" de novo."
     },
     "void": {
       "title": "Anular recibo",

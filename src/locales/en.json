@@ -1299,7 +1299,10 @@
       "template": "Could not load the receipt form. Please reload the page and try again.",
       "network": "Connection failed. Please check your internet and try again.",
       "generic": "Could not complete the action. Please try again.",
-      "download": "Could not download the PDF. Please try again."
+      "download": "Could not download the PDF. Please try again.",
+      "open": "Could not open the PDF. Please try again.",
+      "share": "Could not share the PDF. Please try again.",
+      "shareUnsupported": "This device cannot share the file. Use \"Open PDF\" or \"Download\"."
     },
     "list": {
       "loading": "Loading receipts...",
@@ -1320,7 +1323,10 @@
       "download": "Download",
       "generatePdf": "Generate PDF",
       "pdfGenerated": "PDF for receipt {{number}} generated.",
-      "void": "Void"
+      "void": "Void",
+      "open": "Open PDF",
+      "share": "Share",
+      "shareReady": "PDF ready. Tap \"Share\" again."
     },
     "void": {
       "title": "Void receipt",

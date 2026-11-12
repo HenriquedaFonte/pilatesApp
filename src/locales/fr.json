@@ -1383,7 +1383,10 @@
       "template": "Impossible de charger le formulaire du reçu. Rechargez la page et réessayez.",
       "network": "Échec de connexion. Vérifiez Internet et réessayez.",
       "generic": "Impossible de terminer l'opération. Veuillez réessayer.",
-      "download": "Impossible de télécharger le PDF. Veuillez réessayer."
+      "download": "Impossible de télécharger le PDF. Veuillez réessayer.",
+      "open": "Impossible d'ouvrir le PDF. Veuillez réessayer.",
+      "share": "Impossible de partager le PDF. Veuillez réessayer.",
+      "shareUnsupported": "Cet appareil ne permet pas de partager le fichier. Utilisez « Ouvrir le PDF » ou « Télécharger »."
     },
     "list": {
       "loading": "Chargement des reçus...",
@@ -1404,7 +1407,10 @@
       "download": "Télécharger",
       "generatePdf": "Générer le PDF",
       "pdfGenerated": "PDF du reçu {{number}} généré.",
-      "void": "Annuler"
+      "void": "Annuler",
+      "open": "Ouvrir le PDF",
+      "share": "Partager",
+      "shareReady": "PDF prêt. Touchez « Partager » de nouveau."
     },
     "void": {
       "title": "Annuler le reçu",
