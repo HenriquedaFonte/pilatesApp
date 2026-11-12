@@ -184,7 +184,7 @@ const TeacherDashboard = () => {
         {/* Editorial Header */}
         <div className="flex flex-col gap-1.5 pb-2">
           <h2 className="text-4xl font-serif-display text-foreground tracking-tight">
-            {getGreeting()}, <span className="text-primary italic">{getFirstName(profile?.full_name)}</span>
+            {getGreeting()}, <Link to="/teacher/profile" title={t('teacher.sidebar.profile')} className="text-primary italic hover:underline underline-offset-4">{getFirstName(profile?.full_name)}</Link>
           </h2>
           <p className="text-sm font-medium text-muted-foreground capitalize">
             {getFormattedDate()}

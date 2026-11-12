@@ -122,20 +122,22 @@ const TeacherLayout = ({ children }) => {
           </div>
         </div>
         <div className="flex items-center gap-3 px-2 py-3 bg-muted/30 rounded-2xl border border-border/20">
-          <div className="h-9 w-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm shrink-0 border border-primary/20">
-            {getInitials(profile?.full_name)}
-          </div>
           <Link
             to="/teacher/profile"
             onClick={() => setMobileMenuOpen(false)}
             title={t('teacher.sidebar.profile')}
-            className="flex-1 min-w-0 rounded-lg hover:opacity-80"
+            className="flex flex-1 min-w-0 items-center gap-3 rounded-lg hover:opacity-80"
           >
-            <div className="text-[13px] font-bold text-foreground truncate">
-              {profile?.full_name || 'Professora'}
+            <div className="h-9 w-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm shrink-0 border border-primary/20">
+              {getInitials(profile?.full_name)}
             </div>
-            <div className="text-[11.5px] text-muted-foreground font-medium">
-              {t('teacher.sidebar.teacher')}
+            <div className="min-w-0">
+              <div className="text-[13px] font-bold text-foreground truncate">
+                {profile?.full_name || 'Professora'}
+              </div>
+              <div className="text-[11.5px] text-muted-foreground font-medium">
+                {t('teacher.sidebar.teacher')}
+              </div>
             </div>
           </Link>
           <Button
