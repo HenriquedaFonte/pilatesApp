@@ -1092,13 +1092,10 @@
           "low_credits": "Low credits",
           "zero_credits": "Zero balance",
           "class": "Specific class",
-          "registration_day": "Registration day",
           "selected": "Manual selection"
         },
         "selectClass": "Select class:",
         "selectClassPlaceholder": "Select class",
-        "selectDay": "Registration day of the week:",
-        "selectDayPlaceholder": "Select day",
         "selectManual": "Select manually:",
         "clearAll": "Clear All",
         "selectAll": "Select All",
@@ -1125,7 +1122,9 @@
         "sendConsentBtn": "Send Term to {{count}} student(s)",
         "sendEmailBtn": "Send Email to {{count}} student(s)",
         "multilingualOn": "This template is sent in each student's language (Portuguese, English or French, as set in their profile).",
-        "multilingualOff": "You edited the text: every student will get exactly the text above, in one language. To send it in each student's language, select the template again without editing."
+        "multilingualOff": "You edited the text: every student will get exactly the text above, in one language. To send it in each student's language, select the template again without editing.",
+        "loadingClass": "Loading class students...",
+        "emptyClass": "No active students in this class."
       },
       "templates": {
         "title": "Email Templates",
@@ -1147,6 +1146,18 @@
         "recipientsCount": "{{count}} student(s)",
         "emptyTitle": "No emails sent",
         "emptyDesc": "There is no record of notifications sent so far in the studio."
+      },
+      "includeInactive": "Include inactive students ({{count}})",
+      "confirm": {
+        "title": "Send to {{count}} student(s)?",
+        "kindCustom": "Email \"{{subject}}\" to:",
+        "kindConsent": "Consent form (with the PDF attached) to:",
+        "kindLowCredits": "Low balance notice to:",
+        "andMore": " and {{count}} more",
+        "inactiveIncluded": "Inactive students are included in this send.",
+        "cancel": "Cancel",
+        "send": "Send to {{count}}",
+        "progress": "Sending {{done}} of {{total}}..."
       }
     },
     "studentSummary": {

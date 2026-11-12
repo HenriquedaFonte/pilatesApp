@@ -1,12 +1,19 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 import { useTranslation } from 'react-i18next'
-import { getDayName } from '../lib/format'
 import emailService from '../lib/emailService'
 import EmailTemplates from '../components/EmailTemplates'
 import { getTemplate } from '../lib/emailTemplates'
+import {
+  totalCredits,
+  filterRecipients,
+  getLowCreditsStudents,
+  summarizeRecipients,
+  groupEmailHistory,
+  HISTORY_LIMIT
+} from '../lib/emailRecipients'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -29,6 +36,16 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from '@/components/ui/alert-dialog'
 import {
   Loader2,
   Send,
@@ -59,7 +76,13 @@ const EmailNotifications = () => {
   const [emailMessage, setEmailMessage] = useState('')
   const [filterType, setFilterType] = useState('all')
   const [selectedClass, setSelectedClass] = useState('')
-  const [selectedDay, setSelectedDay] = useState('')
+  const [classStudentIds, setClassStudentIds] = useState(null)
+  const [classLoading, setClassLoading] = useState(false)
+  const [includeInactive, setIncludeInactive] = useState(false)
+  // Envio aguardando confirmação: { kind: 'custom' | 'consent' | 'low_credits', recipients }
+  const [pendingSend, setPendingSend] = useState(null)
+  const [progress, setProgress] = useState(null)
+  const sendingRef = useRef(false)
   const [selectedStudents, setSelectedStudents] = useState([])
   const [studentSearchTerm, setStudentSearchTerm] = useState('')
   const [lowCreditsThreshold, setLowCreditsThreshold] = useState(3)
@@ -131,20 +154,19 @@ const EmailNotifications = () => {
           duo_credits, 
           group_credits, 
           created_at,
-          phone
+          phone,
+          is_active
         `
         )
         .eq('role', 'student')
+        .is('deleted_at', null)
         .order('full_name')
 
       if (studentsError) throw studentsError
 
       const studentsWithTotalCredits = (studentsData || []).map(student => ({
         ...student,
-        totalCredits:
-          (student.individual_credits || 0) +
-          (student.duo_credits || 0) +
-          (student.group_credits || 0)
+        totalCredits: totalCredits(student)
       }))
 
       const { data: classesData, error: classesError } = await supabase
@@ -171,101 +193,129 @@ const EmailNotifications = () => {
         .from('email_notifications')
         .select('*')
         .order('created_at', { ascending: false })
+        .limit(HISTORY_LIMIT)
 
       if (error) throw error
 
-      const groupedHistory = {}
-      notifications.forEach(notification => {
-        const key = `${notification.subject}_${new Date(
-          notification.created_at
-        ).getTime()}`
-
-        if (!groupedHistory[key]) {
-          groupedHistory[key] = {
-            id: key,
-            type: notification.email_type,
-            subject: notification.subject,
-            recipients: 0,
-            success: 0,
-            failed: 0,
-            timestamp: notification.created_at,
-            details: []
-          }
-        }
-
-        groupedHistory[key].recipients++
-        if (notification.status === 'sent') {
-          groupedHistory[key].success++
-        } else if (notification.status === 'failed') {
-          groupedHistory[key].failed++
-        }
-
-        groupedHistory[key].details.push({
-          student: notification.recipient_email,
-          success: notification.status === 'sent',
-          error: notification.error_message
-        })
-      })
-
-      const historyArray = Object.values(groupedHistory)
-      setEmailHistory(historyArray)
+      setEmailHistory(groupEmailHistory(notifications))
     } catch (error) {
       console.error('Error loading email history:', error)
     }
   }
 
-  const getFilteredStudents = () => {
-    let filtered = [...students]
-
-    switch (filterType) {
-      case 'low_credits':
-        filtered = filtered.filter(
-          student => student.totalCredits <= lowCreditsThreshold
-        )
-        break
-      case 'zero_credits':
-        filtered = filtered.filter(student => student.totalCredits === 0)
-        break
-      case 'class':
-        if (selectedClass) {
-          filtered = students
-        }
-        break
-      case 'registration_day':
-        if (selectedDay) {
-          filtered = filtered.filter(student => {
-            const registrationDay = new Date(student.created_at).getDay()
-            return registrationDay.toString() === selectedDay
-          })
-        }
-        break
-      case 'selected':
-        filtered = students.filter(student =>
-          selectedStudents.includes(student.id)
-        )
-        break
-      default:
-        break
+  // Alunos da turma escolhida (student_class_link → class_schedules da turma).
+  useEffect(() => {
+    if (filterType !== 'class' || !selectedClass) {
+      setClassStudentIds(null)
+      return
     }
+    let cancelled = false
+    const loadClassStudents = async () => {
+      setClassLoading(true)
+      setClassStudentIds(null)
+      try {
+        const { data: schedules, error: schedulesError } = await supabase
+          .from('class_schedules')
+          .select('id')
+          .eq('class_id', selectedClass)
+        if (schedulesError) throw schedulesError
 
-    return filtered
-  }
+        const scheduleIds = (schedules || []).map(sc => sc.id)
+        let ids = []
+        if (scheduleIds.length > 0) {
+          const { data: links, error: linksError } = await supabase
+            .from('student_class_link')
+            .select('student_id')
+            .in('class_schedule_id', scheduleIds)
+          if (linksError) throw linksError
+          ids = [...new Set((links || []).map(l => l.student_id))]
+        }
+        if (!cancelled) setClassStudentIds(ids)
+      } catch (error) {
+        console.error('Error loading class students:', error)
+        if (!cancelled) {
+          setClassStudentIds([])
+          setMessage(t('teacher.emails.messages.loadError', 'Error loading data: ') + error.message)
+          setMessageType('error')
+        }
+      } finally {
+        if (!cancelled) setClassLoading(false)
+      }
+    }
+    loadClassStudents()
+    return () => {
+      cancelled = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- recarrega só quando a turma ou o filtro mudam
+  }, [filterType, selectedClass])
 
-  const sendLowCreditsNotifications = async () => {
+  const getFilteredStudents = () =>
+    filterRecipients(students, {
+      filterType,
+      lowCreditsThreshold,
+      classStudentIds,
+      selectedIds: selectedStudents,
+      includeInactive
+    })
+
+  // Trava contra clique duplo: o estado `sending` só muda no próximo render.
+  const beginSending = total => {
+    if (sendingRef.current) return false
+    sendingRef.current = true
     setSending(true)
     setMessage('')
+    setProgress({ done: 0, total })
+    return true
+  }
 
-    try {
-      const lowCreditsStudents = students.filter(
-        student => student.totalCredits <= lowCreditsThreshold
-      )
+  const endSending = () => {
+    sendingRef.current = false
+    setSending(false)
+    setProgress(null)
+  }
 
-      if (lowCreditsStudents.length === 0) {
+  const requestSend = kind => {
+    if (sendingRef.current) return
+    let recipients
+    if (kind === 'low_credits') {
+      recipients = getLowCreditsStudents(students, lowCreditsThreshold, includeInactive)
+      if (recipients.length === 0) {
         setMessage(t('teacher.emails.messages.noLowCredits', 'No students with low credits found.'))
         setMessageType('info')
         return
       }
+    } else {
+      if (
+        kind === 'custom' &&
+        (!emailSubject.trim() || !emailMessage.trim())
+      ) {
+        setMessage(t('teacher.emails.messages.fillSubjectAndMessage', 'Please fill in the email subject and message.'))
+        setMessageType('error')
+        return
+      }
+      recipients = getFilteredStudents()
+      if (recipients.length === 0) {
+        setMessage(t('teacher.emails.messages.noSelectedStudents', 'No students selected for sending.'))
+        setMessageType('error')
+        return
+      }
+    }
+    setPendingSend({ kind, recipients })
+  }
 
+  const confirmSend = () => {
+    const pending = pendingSend
+    setPendingSend(null)
+    if (!pending) return
+    if (pending.kind === 'low_credits') sendLowCreditsNotifications(pending.recipients)
+    else if (pending.kind === 'consent') sendConsentForms(pending.recipients)
+    else sendCustomEmail(pending.recipients)
+  }
+
+  const sendLowCreditsNotifications = async lowCreditsStudents => {
+    if (!beginSending(lowCreditsStudents.length)) return
+
+    try {
       const results = []
       let successCount = 0
       let failCount = 0
@@ -319,6 +369,7 @@ const EmailNotifications = () => {
           failCount++
         }
 
+        setProgress({ done: successCount + failCount, total: lowCreditsStudents.length })
         await new Promise(resolve => setTimeout(resolve, 200))
       }
 
@@ -337,7 +388,7 @@ const EmailNotifications = () => {
       setMessage(t('teacher.emails.messages.sendError', 'Error sending notifications: ') + error.message)
       setMessageType('error')
     } finally {
-      setSending(false)
+      endSending()
     }
   }
 
@@ -355,75 +406,50 @@ const EmailNotifications = () => {
   const isMultilingualTemplate = MULTILINGUAL_TEMPLATES.includes(selectedTemplateId)
   const multilingualTemplateId = getMultilingualTemplateId()
 
-  const sendCustomEmail = async () => {
-    // Special handling for consent form template
-    if (selectedTemplateId === 'consentForm') {
-      const targetStudents = getFilteredStudents()
+  const sendConsentForms = async targetStudents => {
+    if (!beginSending(targetStudents.length)) return
 
-      if (targetStudents.length === 0) {
-        setMessage(t('teacher.emails.messages.noSelectedStudents', 'No students selected for sending.'))
-        setMessageType('error')
-        return
-      }
+    try {
+      let successCount = 0
+      let failCount = 0
 
-      setSending(true)
-      setMessage('')
-
-      try {
-        let successCount = 0
-        let failCount = 0
-
-        for (const student of targetStudents) {
-          const result = await sendConsentFormEmail(student)
-          if (result.success) {
-            successCount++
-          } else {
-            console.error(
-              `Error sending consent form to ${student.full_name}:`,
-              result.error
-            )
-            failCount++
-          }
-          // Add small delay to avoid rate limiting
-          await new Promise(resolve => setTimeout(resolve, 200))
+      for (const student of targetStudents) {
+        const result = await sendConsentFormEmail(student)
+        if (result.success) {
+          successCount++
+        } else {
+          console.error(
+            `Error sending consent form to ${student.full_name}:`,
+            result.error
+          )
+          failCount++
         }
-
-        setMessage(
-          t('teacher.emails.messages.consentFormsSent', {
-            defaultValue: 'Consent forms sent: {{successCount}} successes, {{failCount}} failures.',
-            successCount,
-            failCount
-          })
-        )
-        setMessageType(failCount === 0 ? 'success' : 'error')
-
-        await loadEmailHistory()
-      } catch (error) {
-        console.error('Error sending consent forms:', error)
-        setMessage(t('teacher.emails.messages.consentError', 'Error sending consent forms: ') + error.message)
-        setMessageType('error')
-      } finally {
-        setSending(false)
+        setProgress({ done: successCount + failCount, total: targetStudents.length })
+        // Add small delay to avoid rate limiting
+        await new Promise(resolve => setTimeout(resolve, 200))
       }
-      return
-    }
 
-    if (!emailSubject.trim() || !emailMessage.trim()) {
-      setMessage(t('teacher.emails.messages.fillSubjectAndMessage', 'Please fill in the email subject and message.'))
+      setMessage(
+        t('teacher.emails.messages.consentFormsSent', {
+          defaultValue: 'Consent forms sent: {{successCount}} successes, {{failCount}} failures.',
+          successCount,
+          failCount
+        })
+      )
+      setMessageType(failCount === 0 ? 'success' : 'error')
+
+      await loadEmailHistory()
+    } catch (error) {
+      console.error('Error sending consent forms:', error)
+      setMessage(t('teacher.emails.messages.consentError', 'Error sending consent forms: ') + error.message)
       setMessageType('error')
-      return
+    } finally {
+      endSending()
     }
+  }
 
-    const targetStudents = getFilteredStudents()
-
-    if (targetStudents.length === 0) {
-      setMessage(t('teacher.emails.messages.noSelectedStudents', 'No students selected for sending.'))
-      setMessageType('error')
-      return
-    }
-
-    setSending(true)
-    setMessage('')
+  const sendCustomEmail = async targetStudents => {
+    if (!beginSending(targetStudents.length)) return
 
     try {
       const results = await emailService.sendCustomNotification(
@@ -431,7 +457,10 @@ const EmailNotifications = () => {
         emailSubject,
         emailMessage,
         senderName,
-        { templateId: multilingualTemplateId }
+        {
+          templateId: multilingualTemplateId,
+          onProgress: (done, total) => setProgress({ done, total })
+        }
       )
 
       for (let i = 0; i < results.length; i++) {
@@ -477,7 +506,7 @@ const EmailNotifications = () => {
       setMessage(t('teacher.emails.messages.emailError', 'Error sending email: ') + error.message)
       setMessageType('error')
     } finally {
-      setSending(false)
+      endSending()
     }
   }
 
@@ -591,17 +620,53 @@ const EmailNotifications = () => {
   }
 
   const filteredStudents = getFilteredStudents()
-  const lowCreditsStudents = students.filter(
-    s => s.totalCredits <= lowCreditsThreshold
+  const lowCreditsStudents = getLowCreditsStudents(
+    students,
+    lowCreditsThreshold,
+    includeInactive
   )
+  const visibleStudents = includeInactive
+    ? students
+    : students.filter(s => s.is_active !== false)
+  const inactiveCount = students.length - visibleStudents.length
 
-  const searchedStudents = students.filter(
+  const searchedStudents = visibleStudents.filter(
     student =>
       student.full_name
         .toLowerCase()
         .includes(studentSearchTerm.toLowerCase()) ||
-      student.email.toLowerCase().includes(studentSearchTerm.toLowerCase())
+      (student.email || '').toLowerCase().includes(studentSearchTerm.toLowerCase())
   )
+
+  const sendingLabel = fallback =>
+    progress
+      ? t('teacher.emails.confirm.progress', {
+          done: Math.min(progress.done + 1, progress.total),
+          total: progress.total
+        })
+      : fallback
+
+  const inactiveToggle = idSuffix => (
+    <div className="flex items-start gap-2.5">
+      <Checkbox
+        id={`include-inactive-${idSuffix}`}
+        checked={includeInactive}
+        onCheckedChange={checked => setIncludeInactive(checked === true)}
+        disabled={sending}
+        className="mt-0.5 rounded border-border focus:ring-primary"
+      />
+      <Label
+        htmlFor={`include-inactive-${idSuffix}`}
+        className="text-xs text-muted-foreground cursor-pointer leading-snug"
+      >
+        {t('teacher.emails.includeInactive', { count: inactiveCount })}
+      </Label>
+    </div>
+  )
+
+  const pendingSummary = pendingSend
+    ? summarizeRecipients(pendingSend.recipients)
+    : null
 
   if (loading) {
     return (
@@ -798,15 +863,17 @@ const EmailNotifications = () => {
                     </Badge>
                   </div>
 
+                  {inactiveToggle('quick')}
+
                   <Button
-                    onClick={sendLowCreditsNotifications}
+                    onClick={() => requestSend('low_credits')}
                     disabled={sending || lowCreditsStudents.length === 0}
                     className="w-full rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-5 h-11 transition-all"
                   >
                     {sending ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        {t('teacher.emails.quick.sending')}
+                        {sendingLabel(t('teacher.emails.quick.sending'))}
                       </>
                     ) : (
                       <>
@@ -880,7 +947,7 @@ const EmailNotifications = () => {
 
                     <div className="space-y-2">
                       <Label htmlFor="filter-type" className="text-xs font-semibold text-muted-foreground">{t('teacher.emails.customCard.filterLabel')}</Label>
-                      <Select value={filterType} onValueChange={setFilterType}>
+                      <Select value={filterType} onValueChange={setFilterType} disabled={sending}>
                         <SelectTrigger className="rounded-xl border-border bg-background focus-visible:ring-primary h-10 w-full">
                           <SelectValue placeholder={t('teacher.emails.customCard.filterDesc')} />
                         </SelectTrigger>
@@ -889,7 +956,6 @@ const EmailNotifications = () => {
                           <SelectItem value="low_credits">{t('teacher.emails.customCard.filters.low_credits')}</SelectItem>
                           <SelectItem value="zero_credits">{t('teacher.emails.customCard.filters.zero_credits')}</SelectItem>
                           <SelectItem value="class">{t('teacher.emails.customCard.filters.class')}</SelectItem>
-                          <SelectItem value="registration_day">{t('teacher.emails.customCard.filters.registration_day')}</SelectItem>
                           <SelectItem value="selected">{t('teacher.emails.customCard.filters.selected')}</SelectItem>
                         </SelectContent>
                       </Select>
@@ -898,7 +964,7 @@ const EmailNotifications = () => {
                     {filterType === 'class' && (
                       <div className="space-y-2">
                         <Label htmlFor="class-select" className="text-xs font-semibold text-muted-foreground">{t('teacher.emails.customCard.selectClass')}</Label>
-                        <Select value={selectedClass} onValueChange={setSelectedClass}>
+                        <Select value={selectedClass} onValueChange={setSelectedClass} disabled={sending}>
                           <SelectTrigger className="rounded-xl border-border bg-background focus-visible:ring-primary h-10 w-full">
                             <SelectValue placeholder={t('teacher.emails.customCard.selectClassPlaceholder')} />
                           </SelectTrigger>
@@ -910,26 +976,17 @@ const EmailNotifications = () => {
                             ))}
                           </SelectContent>
                         </Select>
-                      </div>
-                    )}
-
-                    {filterType === 'registration_day' && (
-                      <div className="space-y-2">
-                        <Label htmlFor="day-select" className="text-xs font-semibold text-muted-foreground">{t('teacher.emails.customCard.selectDay')}</Label>
-                        <Select value={selectedDay} onValueChange={setSelectedDay}>
-                          <SelectTrigger className="rounded-xl border-border bg-background focus-visible:ring-primary h-10 w-full">
-                            <SelectValue placeholder={t('teacher.emails.customCard.selectDayPlaceholder')} />
-                          </SelectTrigger>
-                          <SelectContent className="rounded-xl">
-                            <SelectItem value="0">{getDayName(0, i18n.language)}</SelectItem>
-                            <SelectItem value="1">{getDayName(1, i18n.language)}</SelectItem>
-                            <SelectItem value="2">{getDayName(2, i18n.language)}</SelectItem>
-                            <SelectItem value="3">{getDayName(3, i18n.language)}</SelectItem>
-                            <SelectItem value="4">{getDayName(4, i18n.language)}</SelectItem>
-                            <SelectItem value="5">{getDayName(5, i18n.language)}</SelectItem>
-                            <SelectItem value="6">{getDayName(6, i18n.language)}</SelectItem>
-                          </SelectContent>
-                        </Select>
+                        {classLoading && (
+                          <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+                            <Loader2 className="h-3 w-3 animate-spin" />
+                            {t('teacher.emails.customCard.loadingClass')}
+                          </p>
+                        )}
+                        {!classLoading && selectedClass && classStudentIds && classStudentIds.length === 0 && (
+                          <p className="text-xs text-muted-foreground">
+                            {t('teacher.emails.customCard.emptyClass')}
+                          </p>
+                        )}
                       </div>
                     )}
 
@@ -976,6 +1033,8 @@ const EmailNotifications = () => {
                         </div>
                       </div>
                     )}
+
+                    {inactiveToggle('custom')}
                   </div>
                 </Card>
 
@@ -1089,9 +1148,12 @@ const EmailNotifications = () => {
                     )}
 
                     <Button
-                      onClick={sendCustomEmail}
+                      onClick={() =>
+                        requestSend(selectedTemplateId === 'consentForm' ? 'consent' : 'custom')
+                      }
                       disabled={
                         sending ||
+                        classLoading ||
                         filteredStudents.length === 0 ||
                         (selectedTemplateId !== 'consentForm' &&
                           (!emailSubject.trim() || !emailMessage.trim()))
@@ -1101,7 +1163,7 @@ const EmailNotifications = () => {
                       {sending ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          {t('teacher.emails.customCard.sendingCustom')}
+                          {sendingLabel(t('teacher.emails.customCard.sendingCustom'))}
                         </>
                       ) : (
                         <>
@@ -1227,6 +1289,50 @@ const EmailNotifications = () => {
             </Card>
           </TabsContent>
         </Tabs>
+
+        <AlertDialog
+          open={!!pendingSend}
+          onOpenChange={open => {
+            if (!open) setPendingSend(null)
+          }}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                {t('teacher.emails.confirm.title', { count: pendingSend?.recipients.length || 0 })}
+              </AlertDialogTitle>
+              <AlertDialogDescription asChild>
+                <div className="space-y-2 text-sm text-muted-foreground">
+                  <p>
+                    {pendingSend?.kind === 'low_credits'
+                      ? t('teacher.emails.confirm.kindLowCredits')
+                      : pendingSend?.kind === 'consent'
+                      ? t('teacher.emails.confirm.kindConsent')
+                      : t('teacher.emails.confirm.kindCustom', { subject: emailSubject })}
+                  </p>
+                  {pendingSummary && (
+                    <p className="text-foreground font-medium">
+                      {pendingSummary.names.join(', ')}
+                      {pendingSummary.more > 0 &&
+                        t('teacher.emails.confirm.andMore', { count: pendingSummary.more })}
+                    </p>
+                  )}
+                  {includeInactive && (
+                    <p className="text-amber-700 dark:text-amber-400">
+                      {t('teacher.emails.confirm.inactiveIncluded')}
+                    </p>
+                  )}
+                </div>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{t('teacher.emails.confirm.cancel')}</AlertDialogCancel>
+              <AlertDialogAction onClick={confirmSend}>
+                {t('teacher.emails.confirm.send', { count: pendingSend?.recipients.length || 0 })}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </TeacherLayout>
   )

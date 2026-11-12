@@ -213,7 +213,7 @@ ${processedTemplate.footer}
     });
   }
 
-  async sendBulkEmails(emails) {
+  async sendBulkEmails(emails, onProgress) {
     const results = [];
     
     for (const email of emails) {
@@ -234,6 +234,7 @@ ${processedTemplate.footer}
           error: error.message 
         });
       }
+      if (onProgress) onProgress(results.length, emails.length);
     }
     
     return results;
@@ -417,7 +418,7 @@ ${processedTemplate.tagline}
       };
     }));
 
-    return this.sendBulkEmails(emails);
+    return this.sendBulkEmails(emails, options.onProgress);
   }
 
   async sendWelcomeEmail(student) {
