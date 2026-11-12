@@ -110,3 +110,6 @@ logs/
 
 # Scratch / debug scripts (podem conter credenciais)
 scratch/
+
+# Arquivos de credenciais (nunca commitar)
+credenciais*
