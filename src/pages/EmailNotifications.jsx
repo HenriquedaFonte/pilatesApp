@@ -4,7 +4,14 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 import { useTranslation } from 'react-i18next'
 import emailService from '../lib/emailService'
-import { getTemplate } from '../lib/emailTemplates'
+import {
+  emptyContent,
+  completeLanguages,
+  missingLanguages,
+  unknownVariables,
+  buildCustomEmail,
+  addPortalCta
+} from '../lib/customEmail'
 import {
   totalCredits,
   filterRecipients,
@@ -14,7 +21,8 @@ import {
   sendKindOf,
   normalizeTemplateParam,
   canAdvance,
-  messagePreview,
+  countByLanguage,
+  studentLanguage,
   HISTORY_LIMIT,
   LANGUAGES
 } from '../lib/emailRecipients'
@@ -55,7 +63,7 @@ const uiLang = language => (LANGUAGES.includes(language) ? language : 'pt')
 
 const EmailNotifications = () => {
   const { t, i18n } = useTranslation()
-  const { profile } = useAuth()
+  const { user, profile } = useAuth()
   const [searchParams, setSearchParams] = useSearchParams()
   const language = uiLang(i18n.language?.slice(0, 2))
 
@@ -81,10 +89,14 @@ const EmailNotifications = () => {
 
   // Passo 2: o quê
   const [templateId, setTemplateId] = useState(null)
-  const [templateLanguage, setTemplateLanguage] = useState(language)
+  const [editLanguage, setEditLanguage] = useState(language)
   const [senderName, setSenderName] = useState(profile?.full_name || 'Professora')
-  const [subject, setSubject] = useState('')
-  const [message, setMessage] = useState('')
+  const [content, setContent] = useState(emptyContent)
+
+  // Passo 3: pré-visualização e teste
+  const [previewStudentId, setPreviewStudentId] = useState(null)
+  const [previewLanguage, setPreviewLanguage] = useState(null)
+  const [testState, setTestState] = useState({ sending: false, ok: false, error: '' })
 
   // Passo 3: envio
   const [confirmOpen, setConfirmOpen] = useState(false)
@@ -115,9 +127,9 @@ const EmailNotifications = () => {
       setFilterType('selected')
     }
     const lang = LANGUAGES.includes(languageParam) ? languageParam : null
-    if (lang) setTemplateLanguage(lang)
+    if (lang) setEditLanguage(lang)
     if (templateParam && TEMPLATE_CARDS[templateParam]) {
-      applyTemplate(templateParam, lang || templateLanguage)
+      applyTemplate(templateParam)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- só quando o endereço muda
   }, [searchParams])
@@ -237,56 +249,84 @@ const EmailNotifications = () => {
   }
 
   // ---- Modelo ----
-  const applyTemplate = (id, lang = templateLanguage) => {
-    setTemplateId(id)
-    const content = templateContent(id, lang)
-    if (id === 'blank') {
-      // Mensagem em branco não apaga o que já foi escrito à mão.
-      if (templateId && templateId !== 'blank') {
-        setSubject('')
-        setMessage('')
-      }
+  const applyTemplate = id => {
+    // Aviso geral (em branco) não apaga o que já foi escrito à mão.
+    if (id === 'blank' && (!templateId || templateId === 'blank')) {
+      setTemplateId(id)
       return
     }
-    setSubject(content.subject)
-    setMessage(content.message)
+    setTemplateId(id)
+    setContent(templateContent(id))
   }
 
-  // Texto do modelo ainda sem edição (em qualquer língua)?
-  const isUnedited = id =>
-    LANGUAGES.some(lang => {
-      const content = templateContent(id, lang)
-      return content.subject === subject && content.message === message
-    })
-
-  const handleTemplateLanguageChange = lang => {
-    setTemplateLanguage(lang)
-    if (templateId && templateId !== 'blank' && isUnedited(templateId)) {
-      applyTemplate(templateId, lang)
-    }
-  }
-
-  // Modelos com texto completo em pt/en/fr: se o assunto e a mensagem não foram
-  // editados, cada aluno recebe o texto na sua língua.
-  const isMultilingualTemplate = !!TEMPLATE_CARDS[templateId]?.fullMessage
-  const multilingualTemplateId =
-    isMultilingualTemplate &&
-    LANGUAGES.some(lang => {
-      const tpl = getTemplate(templateId, lang)
-      return tpl.subject === subject && tpl.message === message
-    })
-      ? templateId
-      : null
+  const handleContentChange = (lang, field, value) =>
+    setContent(prev => ({ ...prev, [lang]: { ...prev[lang], [field]: value } }))
 
   const sendKind = templateId ? sendKindOf(templateId) : null
+  const languageCounts = countByLanguage(recipients)
+  const unknown = sendKind === 'custom' ? unknownVariables(content) : []
+  const missing =
+    sendKind === 'custom' ? missingLanguages(content, languageCounts).filter(m => m.fallback) : []
+  // Assunto gravado no histórico: o da primeira língua preenchida (sem variáveis trocadas).
+  const mainLanguage = completeLanguages(content)[0] || null
+  const mainSubject = mainLanguage ? content[mainLanguage].subject.trim() : ''
+
+  // ---- Pré-visualização ----
+  const teacherEmail = profile?.email || user?.email || ''
+  const previewStudent = recipients.find(s => s.id === previewStudentId) || recipients[0] || null
+  const effectivePreviewLanguage =
+    previewLanguage || (previewStudent ? studentLanguage(previewStudent) : language)
+  const builtPreview =
+    sendKind === 'custom' && previewStudent
+      ? buildCustomEmail({
+          student: previewStudent,
+          content,
+          senderName,
+          language: effectivePreviewLanguage
+        })
+      : null
+  const preview = builtPreview
+    ? {
+        language: builtPreview.language,
+        subject: builtPreview.subject,
+        html: addPortalCta(builtPreview.htmlContent, builtPreview.language, emailService.getBaseUrl())
+      }
+    : null
+
+  const handlePreviewStudentChange = id => {
+    setPreviewStudentId(id)
+    setPreviewLanguage(null)
+    setTestState({ sending: false, ok: false, error: '' })
+  }
+  const handlePreviewLanguageChange = lang => {
+    setPreviewLanguage(lang)
+    setTestState({ sending: false, ok: false, error: '' })
+  }
+
+  // "Mandar teste para mim": só para a professora logada; não entra no histórico.
+  const sendTest = async () => {
+    if (!previewStudent || !teacherEmail || testState.sending) return
+    setTestState({ sending: true, ok: false, error: '' })
+    try {
+      await emailService.sendCustomTest({
+        to: teacherEmail,
+        sample: previewStudent,
+        content,
+        senderName,
+        language: effectivePreviewLanguage
+      })
+      setTestState({ sending: false, ok: true, error: '' })
+    } catch (error) {
+      setTestState({ sending: false, ok: false, error: error.message || '' })
+    }
+  }
 
   // ---- Passos ----
   const stepReady = canAdvance(step, {
     recipientsCount: recipients.length,
     loading: classLoading,
     templateId,
-    subject,
-    message
+    content
   })
   const locked = sending || !!result
 
@@ -306,9 +346,11 @@ const EmailNotifications = () => {
     setExcludedIds([])
     setSearch('')
     setTemplateId(null)
-    setTemplateLanguage(language)
-    setSubject('')
-    setMessage('')
+    setEditLanguage(language)
+    setContent(emptyContent())
+    setPreviewStudentId(null)
+    setPreviewLanguage(null)
+    setTestState({ sending: false, ok: false, error: '' })
     setResult(null)
     setProgress(null)
     if ([...searchParams.keys()].length > 0) setSearchParams({}, { replace: true })
@@ -354,19 +396,12 @@ const EmailNotifications = () => {
     const failed = []
     try {
       if (kind === 'custom') {
-        const results = await emailService.sendCustomNotification(
-          targets,
-          subject,
-          message,
-          senderName,
-          {
-            templateId: multilingualTemplateId,
-            onProgress: (done, total) => setProgress({ done, total })
-          }
-        )
+        const results = await emailService.sendCustomNotification(targets, content, senderName, {
+          onProgress: (done, total) => setProgress({ done, total })
+        })
         for (let i = 0; i < targets.length; i++) {
           const r = results[i] || { success: false, error: 'no result' }
-          await logNotification(targets[i], 'custom', subject, r.success ? 'sent' : 'failed', r.error || null)
+          await logNotification(targets[i], 'custom', mainSubject, r.success ? 'sent' : 'failed', r.error || null)
           if (r.success) success++
           else failed.push({ name: targets[i].full_name, error: r.error || '' })
         }
@@ -498,16 +533,13 @@ const EmailNotifications = () => {
                       uiLanguage={language}
                       templateId={templateId}
                       onSelectTemplate={id => applyTemplate(id)}
-                      templateLanguage={templateLanguage}
-                      onTemplateLanguageChange={handleTemplateLanguageChange}
+                      editLanguage={editLanguage}
+                      setEditLanguage={setEditLanguage}
                       senderName={senderName}
                       setSenderName={setSenderName}
-                      subject={subject}
-                      setSubject={setSubject}
-                      message={message}
-                      setMessage={setMessage}
-                      isMultilingualTemplate={isMultilingualTemplate}
-                      multilingualActive={!!multilingualTemplateId}
+                      content={content}
+                      onContentChange={handleContentChange}
+                      languageCounts={languageCounts}
                     />
                   )}
                   {step === 3 && (
@@ -515,10 +547,22 @@ const EmailNotifications = () => {
                       recipients={recipients}
                       groupLabel={groupLabel}
                       templateLabel={templateTitle(templateId, language)}
-                      subject={sendKind === 'custom' ? subject : ''}
-                      messageStart={messagePreview(message)}
+                      isCustom={sendKind === 'custom'}
+                      content={content}
+                      unknown={unknown}
                       senderName={senderName}
                       automaticNote={automaticNote}
+                      previewProps={{
+                        recipients,
+                        previewStudentId: previewStudent?.id || null,
+                        onPreviewStudentChange: handlePreviewStudentChange,
+                        previewLanguage: effectivePreviewLanguage,
+                        setPreviewLanguage: handlePreviewLanguageChange,
+                        preview,
+                        teacherEmail,
+                        onSendTest: sendTest,
+                        testState
+                      }}
                       sending={sending}
                       progress={progress}
                       result={result}
@@ -585,13 +629,27 @@ const EmailNotifications = () => {
                       ? t('teacher.emails.confirm.kindLowCredits')
                       : sendKind === 'consent'
                       ? t('teacher.emails.confirm.kindConsent')
-                      : t('teacher.emails.confirm.kindCustom', { subject })}
+                      : t('teacher.emails.confirm.kindCustom', { subject: mainSubject })}
                   </p>
                   {pendingSummary && (
                     <p className="text-foreground font-medium">
                       {pendingSummary.names.join(', ')}
                       {pendingSummary.more > 0 &&
                         t('teacher.emails.confirm.andMore', { count: pendingSummary.more })}
+                    </p>
+                  )}
+                  {missing.map(m => (
+                    <p key={m.lang} className="text-amber-700 dark:text-amber-400">
+                      {t('teacher.emails.content.missingLanguage', {
+                        count: m.count,
+                        lang: m.lang.toUpperCase(),
+                        fallback: m.fallback.toUpperCase()
+                      })}
+                    </p>
+                  ))}
+                  {unknown.length > 0 && (
+                    <p className="text-amber-700 dark:text-amber-400">
+                      {t('teacher.emails.content.unknownVariables', { list: unknown.join(', ') })}
                     </p>
                   )}
                   {includeInactive && (

@@ -60,7 +60,7 @@ describe('sendKindOf / normalizeTemplateParam', () => {
   it('links antigos do relatório de créditos viram o modelo de créditos', () => {
     expect(normalizeTemplateParam('zeroCredits')).toBe('lowCredits')
     expect(normalizeTemplateParam('zero_credits')).toBe('lowCredits')
-    expect(normalizeTemplateParam('promotion')).toBe('promotion')
+    expect(normalizeTemplateParam('profileUpdate')).toBe('profileUpdate')
     expect(normalizeTemplateParam(null)).toBe(null)
   })
 })
@@ -73,8 +73,9 @@ describe('canAdvance', () => {
   })
   it('passo 2 precisa de modelo; mensagem escrita precisa de assunto e texto', () => {
     expect(canAdvance(2, {})).toBe(false)
-    expect(canAdvance(2, { templateId: 'blank', subject: 'Oi', message: ' ' })).toBe(false)
-    expect(canAdvance(2, { templateId: 'blank', subject: 'Oi', message: 'Texto' })).toBe(true)
+    expect(canAdvance(2, { templateId: 'blank', content: { pt: { subject: 'Oi', message: ' ' } } })).toBe(false)
+    expect(canAdvance(2, { templateId: 'blank', content: { pt: { subject: 'Oi', message: 'Texto' } } })).toBe(true)
+    expect(canAdvance(2, { templateId: 'blank', content: { fr: { subject: 'Salut', message: 'Texte' } } })).toBe(true)
     expect(canAdvance(2, { templateId: 'lowCredits' })).toBe(true)
     expect(canAdvance(2, { templateId: 'consentForm' })).toBe(true)
   })

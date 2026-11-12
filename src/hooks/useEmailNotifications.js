@@ -99,7 +99,7 @@ export const useEmailNotifications = () => {
 
   const sendCustomEmail = async (students, subject, message, senderName = 'Professora') => {
     try {
-      const results = await emailService.sendCustomNotification(students, subject, message, senderName);
+      const results = await emailService.sendCustomNotification(students, { pt: { subject, message } }, senderName);
       
       for (const student of students) {
         await logEmailSent({

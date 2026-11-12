@@ -744,20 +744,25 @@
       },
       "content": {
         "title": "O que você quer mandar?",
-        "desc": "Escolha um modelo ou comece com uma mensagem em branco.",
-        "globeHint": "Sai na língua de cada aluno.",
-        "chooseFirst": "Escolha um modelo ou \"Mensagem em branco\" para continuar.",
+        "desc": "Escolha um modelo ou escreva um aviso geral.",
+        "globeHint": "Cada aluno recebe na língua do seu perfil (português, inglês ou francês).",
+        "chooseFirst": "Escolha um modelo ou \"Aviso geral\" para continuar.",
         "autoLowCredits": "Este email sai pronto, na língua de cada aluno, com o saldo de créditos dele e como renovar. Não precisa escrever nada.",
         "consentDesc": "Este email sai pronto, na língua de cada aluno, com o termo de consentimento e as regras do estúdio em PDF anexado.",
         "senderName": "Assinado por",
         "senderPlaceholder": "Ex.: Josi",
-        "languageLabel": "Língua do texto do modelo",
         "subjectLabel": "Assunto",
         "subjectPlaceholder": "Assunto do email",
         "messageLabel": "Mensagem",
         "messagePlaceholder": "Escreva a mensagem aqui...",
-        "multilingualOn": "Este modelo sai na língua de cada aluno (português, inglês ou francês, conforme o perfil).",
-        "multilingualOff": "Você editou o texto: todos os alunos vão receber exatamente o texto acima, numa língua só. Para enviar na língua de cada aluno, escolha o modelo de novo sem editar."
+        "languagesHint": "Escreva em cada língua. O ✓ mostra as que estão prontas.",
+        "studentsInLanguage_one": "{{count}} aluno",
+        "studentsInLanguage_other": "{{count}} alunos",
+        "insertVariable": "Inserir:",
+        "variablesHelp": "{nome} vira o primeiro nome do aluno e {creditos} o total de créditos dele. \"Olá, Nome!\" e a assinatura entram sozinhos.",
+        "missingLanguage_one": "{{count}} aluno em {{lang}} vai receber o texto em {{fallback}} (o texto em {{lang}} está vazio).",
+        "missingLanguage_other": "{{count}} alunos em {{lang}} vão receber o texto em {{fallback}} (o texto em {{lang}} está vazio).",
+        "unknownVariables": "Estas palavras entre chaves não são variáveis e vão sair no email do jeito que estão: {{list}}. Troque pelo texto certo ou use {nome} / {creditos}."
       },
       "review": {
         "title": "Revisar e enviar",
@@ -776,7 +781,9 @@
         "resultFailed_one": "{{count}} falha",
         "resultFailed_other": "{{count}} falhas",
         "failedList": "Não receberam:",
-        "error": "O envio parou com erro:"
+        "error": "O envio parou com erro:",
+        "texts": "Textos",
+        "emptyLanguage": "vazio (usa outra língua)"
       },
       "history": {
         "title": "Histórico de Notificações",
@@ -805,6 +812,16 @@
         "cancel": "Cancelar",
         "send": "Enviar para {{count}}",
         "progress": "Enviando {{done}} de {{total}}..."
+      },
+      "preview": {
+        "title": "Pré-visualização do email",
+        "language": "Língua",
+        "student": "Aluno de exemplo",
+        "fallback": "Não tem texto em {{lang}}: quem é de {{lang}} recebe o texto em {{fallback}}, como abaixo.",
+        "sendTest": "Mandar teste para mim",
+        "testHint": "Manda este email para {{email}}, com [TESTE] no assunto. Não entra no histórico.",
+        "testSent": "Teste enviado para {{email}}.",
+        "testError": "O teste não foi enviado:"
       }
     },
     "studentSummary": {

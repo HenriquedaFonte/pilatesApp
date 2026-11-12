@@ -1204,20 +1204,25 @@
       },
       "content": {
         "title": "Que voulez-vous envoyer ?",
-        "desc": "Choisissez un modèle ou commencez avec un message vide.",
-        "globeHint": "Envoyé dans la langue de chaque élève.",
-        "chooseFirst": "Choisissez un modèle ou « Message vide » pour continuer.",
+        "desc": "Choisissez un modèle ou écrivez un avis général.",
+        "globeHint": "Chaque élève le reçoit dans la langue de son profil (portugais, anglais ou français).",
+        "chooseFirst": "Choisissez un modèle ou « Avis général » pour continuer.",
         "autoLowCredits": "Ce courriel est prêt, dans la langue de chaque élève, avec son solde de crédits et comment renouveler. Rien à écrire.",
         "consentDesc": "Ce courriel est prêt, dans la langue de chaque élève, avec le formulaire de consentement et les règles du studio en PDF joint.",
         "senderName": "Signé par",
         "senderPlaceholder": "Ex. : Josi",
-        "languageLabel": "Langue du texte du modèle",
         "subjectLabel": "Objet",
         "subjectPlaceholder": "Objet du courriel",
         "messageLabel": "Message",
         "messagePlaceholder": "Écrivez votre message ici...",
-        "multilingualOn": "Ce modèle est envoyé dans la langue de chaque élève (portugais, anglais ou français, selon son profil).",
-        "multilingualOff": "Vous avez modifié le texte : tous les élèves recevront exactement le texte ci-dessus, dans une seule langue. Pour envoyer dans la langue de chaque élève, choisissez de nouveau le modèle sans le modifier."
+        "languagesHint": "Écrivez dans chaque langue. Le ✓ indique celles qui sont prêtes.",
+        "studentsInLanguage_one": "{{count}} élève",
+        "studentsInLanguage_other": "{{count}} élèves",
+        "insertVariable": "Insérer :",
+        "variablesHelp": "{nome} devient le prénom de l'élève et {creditos} son total de crédits. « Bonjour, Nom ! » et la signature sont ajoutés automatiquement.",
+        "missingLanguage_one": "{{count}} élève en {{lang}} recevra le texte en {{fallback}} (le texte en {{lang}} est vide).",
+        "missingLanguage_other": "{{count}} élèves en {{lang}} recevront le texte en {{fallback}} (le texte en {{lang}} est vide).",
+        "unknownVariables": "Ces mots entre accolades ne sont pas des variables et apparaîtront tels quels dans le courriel : {{list}}. Remplacez-les par le bon texte ou utilisez {nome} / {creditos}."
       },
       "review": {
         "title": "Vérifier et envoyer",
@@ -1236,7 +1241,9 @@
         "resultFailed_one": "{{count}} échec",
         "resultFailed_other": "{{count}} échecs",
         "failedList": "Ne l'ont pas reçu :",
-        "error": "L'envoi s'est arrêté avec une erreur :"
+        "error": "L'envoi s'est arrêté avec une erreur :",
+        "texts": "Textes",
+        "emptyLanguage": "vide (utilise une autre langue)"
       },
       "history": {
         "title": "Historique des Notifications",
@@ -1265,6 +1272,16 @@
         "cancel": "Annuler",
         "send": "Envoyer à {{count}}",
         "progress": "Envoi {{done}} sur {{total}}..."
+      },
+      "preview": {
+        "title": "Aperçu du courriel",
+        "language": "Langue",
+        "student": "Élève d'exemple",
+        "fallback": "Il n'y a pas de texte en {{lang}} : les élèves en {{lang}} reçoivent le texte en {{fallback}}, comme ci-dessous.",
+        "sendTest": "M'envoyer un test",
+        "testHint": "Envoie ce courriel à {{email}}, avec [TESTE] dans l'objet. N'apparaît pas dans l'historique.",
+        "testSent": "Test envoyé à {{email}}.",
+        "testError": "Le test n'a pas été envoyé :"
       }
     },
     "studentSummary": {
