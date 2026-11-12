@@ -129,5 +129,6 @@ As três migrations de segurança (`20261112010000`, `20261112020000`, `20261112
 ## Regras fixas
 - Uma tarefa, uma sessão, um PR.
 - Textos sempre nas três línguas (pt, en, fr).
+- Teste só vira `[x]` quando o usuário confirmar que fez; senão continua aberto.
 - Tarefas críticas vão para o agente `dev-critico` (ver `.claude/rules/escolha-de-esforco.md`).
 - Todo push termina com o bloco "Próxima sessão" (ver `CLAUDE.md`).
