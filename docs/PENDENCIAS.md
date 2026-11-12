@@ -26,7 +26,8 @@ _Última atualização: 2026-11-12_
   - [ ] 3.5 Emissão e histórico (professora) (dev-critico)
   - [ ] 3.6 "Meus recibos" no portal do aluno
   - [ ] 3.7 Política de Privacidade (dev-critico)
-- [ ] `npm run lint` falha no `main` com 75 problemas (56 erros, 19 avisos) pré-existentes, a maioria variáveis não usadas (ex.: `TeacherTestimonials.jsx`). Limpar numa sessão própria.
+- [x] Lint zerado (eram 75 problemas): variáveis e imports sem uso removidos, `scratch/` ignorado, `scripts/` com globais de Node, `react-refresh` desligado para `components/ui` e `useAuth`, e `exhaustive-deps` silenciado linha a linha nos `useEffect` de carga (intencionais).
+- [x] Gerenciador de pacotes: o projeto usa **pnpm** (`packageManager` no `package.json`, `pnpm-lock.yaml` atualizado). O `package-lock.json` estava desatualizado e quebrava `npm ci`; foi removido. Instalar com `pnpm install`; os scripts continuam `npm run lint/test/build`.
 - [ ] Remover do repositório o arquivo vazio `credenciais google.txt` e adicionar `credenciais*` ao `.gitignore`.
 
 ## Regras fixas

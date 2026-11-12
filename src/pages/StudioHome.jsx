@@ -102,6 +102,7 @@ const StudioHome = () => {
   // Fetch testimonials from Supabase (matching original production query exactly)
   useEffect(() => {
     fetchTestimonials()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- carga intencional só quando estas dependências mudam
   }, [i18n.language])
 
   const fetchTestimonials = async () => {
@@ -685,7 +686,9 @@ Sent from Josi Pilates website contact form.
                     if (current.startsWith('"') && current.endsWith('"')) {
                       try {
                         current = JSON.parse(current)
-                      } catch {}
+                      } catch {
+                        // não é JSON válido: segue com o texto original
+                      }
                     }
                     if (current && typeof current === 'object') {
                       const val = current[i18n.language] !== undefined ? current[i18n.language] : (

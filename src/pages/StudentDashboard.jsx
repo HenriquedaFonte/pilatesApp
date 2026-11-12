@@ -148,11 +148,6 @@ const StudentDashboard = () => {
     await signOut()
   }
 
-  const getBalanceIcon = balance => {
-    if (balance <= 2) return <AlertTriangle className="h-5 w-5 text-red-600" />
-    return <CheckCircle className="h-5 w-5 text-green-600" />
-  }
-
   // TODO Fase 2: validar campo de saldo total com o backend
   const getTotalBalance = () => {
     return (

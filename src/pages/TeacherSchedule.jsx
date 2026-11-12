@@ -66,12 +66,6 @@ const EMPTY_FORM = {
   visibility: 'rascunho',
 }
 
-const statusColors = {
-  aberta:      'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300',
-  ultima_vaga: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
-  lotada:      'bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-300',
-}
-
 const statusSegColors = {
   aberta:      'bg-[#01b48d] text-white',
   ultima_vaga: 'bg-[#c79a4b] text-white',
@@ -92,6 +86,7 @@ export default function TeacherSchedule() {
 
   useEffect(() => {
     fetchSlots()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- carga intencional só quando estas dependências mudam
   }, [])
 
   const fetchSlots = async () => {
@@ -105,7 +100,7 @@ export default function TeacherSchedule() {
         .order('start_time')
       if (err) throw err
       setSlots(data || [])
-    } catch (err) {
+    } catch {
       setError(t('teacher.schedule.errorLoad'))
     } finally {
       setLoading(false)
