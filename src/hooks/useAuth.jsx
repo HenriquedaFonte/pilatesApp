@@ -121,7 +121,10 @@ export const AuthProvider = ({ children }) => {
             email: sessionUser.email,
             full_name:
               sessionUser.user_metadata?.full_name || sessionUser.user_metadata?.name || '',
-            role: sessionUser.user_metadata?.role || 'student',
+            // Sempre 'student': o papel nunca vem do user_metadata (o próprio
+            // usuário controla). A policy de INSERT de profiles só aceita
+            // 'student'; professora/admin só por service_role ou SQL.
+            role: 'student',
             individual_credits: 0,
             duo_credits: 0,
             group_credits: 0,
