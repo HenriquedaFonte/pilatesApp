@@ -2,7 +2,7 @@
 import { describe, it, expect } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
-import { PDFDocument, PDFName, PDFRef } from 'pdf-lib'
+import { PDFDocument, PDFName, PDFRawStream, PDFRef, decodePDFRawStream } from 'pdf-lib'
 import { generateReceiptPdf, formatMoney, formatDate } from '@/lib/receiptPdf'
 import { RECEIPT_FIELDS } from '@/lib/receiptPdfFields'
 
@@ -49,7 +49,22 @@ async function reload(bytes) {
     const subtype = String(doc.context.lookup(ref).dict.get(PDFName.of('Subtype')))
     expect(['/Form', '/Image']).toContain(subtype)
   }
-  return { doc, fields: doc.getForm().getFields() }
+  return { doc, fields: doc.getForm().getFields(), textColors: fieldTextColors(doc, xobjects) }
+}
+
+// Operadores de cor usados nas aparências dos campos (viram XObjects no flatten)
+function fieldTextColors(doc, xobjects) {
+  const colors = new Set()
+  for (const [name, ref] of xobjects ? xobjects.entries() : []) {
+    const obj = doc.context.lookup(ref)
+    if (!String(name).startsWith('/FlatWidget') || !(obj instanceof PDFRawStream)) continue
+    const content = new TextDecoder('latin1').decode(decodePDFRawStream(obj).decode())
+    const text = content.replace(/\((?:\\.|[^\\)])*\)/g, '') // ignora o texto dos campos
+    for (const m of text.matchAll(/(?:[\d.]+\s+){0,3}[\d.]+\s+(?:rg|g|k)\b/g)) {
+      colors.add(m[0].replace(/\s+/g, ' '))
+    }
+  }
+  return colors
 }
 
 describe('generateReceiptPdf', () => {
@@ -82,6 +97,34 @@ describe('generateReceiptPdf', () => {
     const { doc, fields } = await reload(await generateReceiptPdf(data, opts('naturopathy')))
     expect(doc.getPageCount()).toBe(1)
     expect(fields).toHaveLength(0)
+  })
+
+  it('preenche os dois formulários em preto (o naturopathie vem em azul no template)', async () => {
+    for (const type of ['kinesitherapy', 'naturopathy']) {
+      const { textColors } = await reload(await generateReceiptPdf(base(type), opts(type)))
+      expect(textColors.size).toBeGreaterThan(0)
+      for (const color of textColors) expect(['0 g', '0 0 0 rg', '0 0 0 1 k']).toContain(color)
+    }
+  })
+
+  it('nome do produto centralizado (o template vem alinhado à direita)', async () => {
+    const data = { ...base('naturopathy'), products: [{ name: 'Tisane', price: 8 }] }
+    const bytes = await generateReceiptPdf(data, opts('naturopathy'))
+    const doc = await PDFDocument.load(bytes)
+    const xobjects = doc.getPage(0).node.Resources().lookup(PDFName.of('XObject'))
+    const hex = [...'Tisane'].map(c => c.charCodeAt(0).toString(16).toUpperCase()).join('')
+    let x
+    for (const [name, ref] of xobjects.entries()) {
+      const obj = doc.context.lookup(ref)
+      if (!String(name).startsWith('/FlatWidget') || !(obj instanceof PDFRawStream)) continue
+      const content = new TextDecoder('latin1').decode(decodePDFRawStream(obj).decode())
+      const m = new RegExp(`1 0 0 1 ([\\d.-]+) [\\d.-]+ Tm\\s*<${hex}>`, 'i').exec(content)
+      if (m) x = Number(m[1])
+    }
+    expect(x).toBeDefined()
+    // caixa de ~185 pt, "Tisane" ~28 pt: centralizado ≈ 78; à direita seria ≈ 156
+    expect(x).toBeGreaterThan(60)
+    expect(x).toBeLessThan(100)
   })
 
   it('aceita 10 tratamentos e recusa 11', async () => {
