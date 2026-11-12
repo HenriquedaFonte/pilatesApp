@@ -3,6 +3,11 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import emailService from '../lib/emailService'
+import {
+  getUpcomingBirthdays,
+  isBirthdayBannerDismissed,
+  dismissBirthdayBanner
+} from '../lib/birthdays'
 import { getDayName as getDayNameLocale, formatTime as formatTimeLocale } from '../lib/format'
 import { Button } from '@/components/ui/button'
 import {
@@ -132,8 +137,7 @@ const TeacherStudents = () => {
   }
 
   const [upcomingBirthdays, setUpcomingBirthdays] = useState([])
-  const [showBirthdayNotification, setShowBirthdayNotification] =
-    useState(false)
+  const [showBirthdayBanner, setShowBirthdayBanner] = useState(false)
   const [newUser, setNewUser] = useState({
     email: '',
     fullName: '',
@@ -264,9 +268,10 @@ const TeacherStudents = () => {
       setSchedules(schedulesData || [])
       const birthdays = getUpcomingBirthdays(studentsData || [])
       setUpcomingBirthdays(birthdays)
-      if (birthdays.length > 0) {
-        setShowBirthdayNotification(true)
-      }
+      setShowBirthdayBanner(
+        birthdays.length > 0 &&
+          !isBirthdayBannerDismissed(birthdays.map(b => b.id))
+      )
 
       // Fetch last check-ins for each student
       if (studentsData && studentsData.length > 0) {
@@ -295,31 +300,17 @@ const TeacherStudents = () => {
     }
   }
 
-  const getUpcomingBirthdays = students => {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0) // Set to start of day for date comparison
-    // Get start from today
-    const startOfWeek = new Date(today)
-    startOfWeek.setHours(0, 0, 0, 0)
-    const endOfWeek = new Date(startOfWeek)
-    endOfWeek.setDate(startOfWeek.getDate() + 6)
-    endOfWeek.setHours(23, 59, 59, 999)
-
-    return students.filter(student => {
-      if (!student.date_of_birth) return false
-      const dateStr = student.date_of_birth
-      const [year, month, day] = dateStr.split('-').map(Number)
-      const birthDate = new Date(year, month - 1, day)
-      const thisYearBirthday = new Date(
-        today.getFullYear(),
-        birthDate.getMonth(),
-        birthDate.getDate()
-      )
-      // If birthday has passed this year, don't include
-      if (thisYearBirthday < today) return false
-      return thisYearBirthday >= startOfWeek && thisYearBirthday <= endOfWeek
-    })
+  const handleDismissBirthdays = () => {
+    dismissBirthdayBanner(upcomingBirthdays.map(b => b.id))
+    setShowBirthdayBanner(false)
   }
+
+  const birthdayWhen = daysUntil =>
+    daysUntil === 0
+      ? t('teacher.students.birthdays.today')
+      : daysUntil === 1
+        ? t('teacher.students.birthdays.tomorrow')
+        : t('teacher.students.birthdays.inDays', { count: daysUntil })
 
   const handleBalanceChange = async e => {
     e.preventDefault()
@@ -683,10 +674,11 @@ const TeacherStudents = () => {
       return true
     })
     .sort((a, b) => {
-      const aBirthday = upcomingBirthdays.some(birth => birth.id === a.id)
-      const bBirthday = upcomingBirthdays.some(birth => birth.id === b.id)
-      if (aBirthday && !bBirthday) return -1
-      if (!aBirthday && bBirthday) return 1
+      const aBirthday = upcomingBirthdays.find(birth => birth.id === a.id)
+      const bBirthday = upcomingBirthdays.find(birth => birth.id === b.id)
+      if (aBirthday && bBirthday) return aBirthday.daysUntil - bBirthday.daysUntil
+      if (aBirthday) return -1
+      if (bBirthday) return 1
       return 0
     })
 
@@ -835,6 +827,45 @@ const TeacherStudents = () => {
           </Alert>
         )}
 
+        {showBirthdayBanner && upcomingBirthdays.length > 0 && (
+          <div
+            role="status"
+            className="mb-6 rounded-2xl border border-emerald-200/60 bg-emerald-50/60 dark:border-emerald-900/40 dark:bg-emerald-950/20 px-4 py-3"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center gap-2 text-sm font-semibold text-emerald-800 dark:text-emerald-300">
+                <Cake className="h-4 w-4 shrink-0" />
+                {t('teacher.students.birthdays.title')}
+              </div>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={handleDismissBirthdays}
+                className="h-7 -mr-2 -mt-1 px-2 text-xs text-emerald-800 hover:bg-emerald-100 dark:text-emerald-300 dark:hover:bg-emerald-900/30"
+              >
+                {t('teacher.students.birthdays.dismiss')}
+              </Button>
+            </div>
+            <ul className="mt-2 flex flex-wrap gap-2">
+              {upcomingBirthdays.map(student => (
+                <li
+                  key={student.id}
+                  className="rounded-full bg-background/80 dark:bg-background/40 border border-emerald-200/60 dark:border-emerald-900/40 px-3 py-1 text-xs"
+                >
+                  <span className="font-medium text-foreground">
+                    {student.full_name}
+                  </span>
+                  <span className="text-muted-foreground">
+                    {' · '}
+                    {birthdayWhen(student.daysUntil)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -907,7 +938,7 @@ const TeacherStudents = () => {
                       <CardTitle className="text-base font-bold text-foreground flex items-center gap-1.5 flex-wrap">
                         {student.full_name}
                         {hasUpcomingBirthday && (
-                          <Cake className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 animate-bounce" title="Aniversário chegando!" />
+                          <Cake className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 animate-bounce" title={t('teacher.students.birthdays.cakeTitle')} />
                         )}
                       </CardTitle>
                       <CardDescription className="text-xs text-muted-foreground break-all">
@@ -1478,64 +1509,6 @@ const TeacherStudents = () => {
                 <Button type="submit">Save</Button>
               </div>
             </form>
-          </DialogContent>
-        </Dialog>
-
-        {/* Birthday Notification Dialog */}
-        <Dialog
-          open={showBirthdayNotification}
-          onOpenChange={setShowBirthdayNotification}
-        >
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle className="flex items-center">
-                <Cake className="h-5 w-5 mr-2 text-green-500" />
-                Upcoming Birthdays
-              </DialogTitle>
-              <DialogDescription>
-                Here are the students with birthdays in the next 7 days.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-2">
-              {upcomingBirthdays.map(student => {
-                const dateStr = student.date_of_birth
-                const [year, month, day] = dateStr.split('-').map(Number)
-                const birthDate = new Date(year, month - 1, day)
-                const today = new Date()
-                today.setHours(0, 0, 0, 0)
-                const thisYearBirthday = new Date(
-                  today.getFullYear(),
-                  birthDate.getMonth(),
-                  birthDate.getDate()
-                )
-                if (thisYearBirthday < today) {
-                  thisYearBirthday.setFullYear(today.getFullYear() + 1)
-                }
-                const daysUntil = Math.ceil(
-                  (thisYearBirthday - today) / (1000 * 60 * 60 * 24)
-                )
-                return (
-                  <div
-                    key={student.id}
-                    className="flex items-center justify-between p-2 bg-green-50 dark:bg-green-900/20 rounded-lg"
-                  >
-                    <span className="font-medium">{student.full_name}</span>
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
-                      {daysUntil === 0
-                        ? 'Today!'
-                        : daysUntil === 1
-                          ? 'Tomorrow'
-                          : `${daysUntil} days`}
-                    </span>
-                  </div>
-                )
-              })}
-            </div>
-            <DialogFooter>
-              <Button onClick={() => setShowBirthdayNotification(false)}>
-                Got it!
-              </Button>
-            </DialogFooter>
           </DialogContent>
         </Dialog>
 

@@ -368,6 +368,15 @@
       },
       "dialogCommon": {
         "confirm": "Confirmar"
+      },
+      "birthdays": {
+        "title": "Aniversários nos próximos 7 dias",
+        "today": "hoje",
+        "tomorrow": "amanhã",
+        "inDays_one": "em {{count}} dia",
+        "inDays_other": "em {{count}} dias",
+        "dismiss": "Ocultar até amanhã",
+        "cakeTitle": "Aniversário chegando!"
       }
     },
     "classes": {

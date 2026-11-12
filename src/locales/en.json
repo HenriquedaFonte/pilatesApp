@@ -667,6 +667,15 @@
       },
       "dialogCommon": {
         "confirm": "Confirm"
+      },
+      "birthdays": {
+        "title": "Birthdays in the next 7 days",
+        "today": "today",
+        "tomorrow": "tomorrow",
+        "inDays_one": "in {{count}} day",
+        "inDays_other": "in {{count}} days",
+        "dismiss": "Hide until tomorrow",
+        "cakeTitle": "Birthday coming up!"
       }
     },
     "checkin": {
