@@ -1,0 +1,84 @@
+// CÓPIA DOCUMENTAL — NÃO É CÓDIGO ATIVO DO REPOSITÓRIO. NÃO FAZER DEPLOY DESTE ARQUIVO.
+// Edge Function "send-custom-email" (v12, último deploy 2025-09-23) baixada de produção em 2026-11-12
+// via GET /v1/projects/<ref>/functions/send-custom-email/body (fonte extraído do eszip, sem alterações).
+// Guardada só como referência e plano de reversão. Ver docs/PENDENCIAS.md.
+// Riscos conhecidos: relay aberto (qualquer portador da anon key envia email de josi@josipilates.com para qualquer endereço), loga o payload inteiro.
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type'
+};
+Deno.serve(async (req)=>{
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', {
+      headers: corsHeaders
+    });
+  }
+  try {
+    const { to, subject, html, text, from } = await req.json();
+    const emailServiceUrl = Deno.env.get('EMAIL_SERVICE_URL') || 'https://api.resend.com/emails';
+    const emailApiKey = Deno.env.get('RESEND_API_KEY');
+    if (!emailApiKey) throw new Error('Email API key not configured');
+    const emailData = {
+      from: 'josi@josipilates.com',
+      to: Array.isArray(to) ? to : [
+        to
+      ],
+      subject,
+      html,
+      text
+    };
+    console.log("Payload:", emailData);
+    // const emailResponse = await fetch(emailServiceUrl, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Authorization': `Bearer ${emailApiKey}`,
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify(emailData)
+    // });
+    // if (!emailResponse.ok) {
+    //   const errorText = await emailResponse.text();
+    //   throw new Error(`Email service error: ${emailResponse.status} - ${errorText}`);
+    // }
+    const emailResponse = await fetch(emailServiceUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${emailApiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(emailData)
+    });
+    // ✅ Leia o corpo uma vez e salve
+    const responseText = await emailResponse.text();
+    // ✅ Use essa variável para tudo
+    console.log("📥 Status da resposta:", emailResponse.status);
+    console.log("📥 Corpo da resposta:", responseText);
+    if (!emailResponse.ok) {
+      throw new Error(`Email service error: ${emailResponse.status} - ${responseText}`);
+    }
+    const result = JSON.parse(responseText);
+    return new Response(JSON.stringify({
+      success: true,
+      result
+    }), {
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'application/json'
+      },
+      status: 200
+    });
+  } catch (error) {
+    console.error('Edge Function error:', error);
+    return new Response(JSON.stringify({
+      success: false,
+      error: error.message
+    }), {
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'application/json'
+      },
+      status: 500
+    });
+  }
+});
