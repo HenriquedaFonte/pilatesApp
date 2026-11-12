@@ -828,7 +828,12 @@
         "confirmPassword": "Confirm New Password",
         "confirmPasswordPlaceholder": "Confirm new password",
         "updating": "Changing Password...",
-        "update": "Change Password"
+        "update": "Change Password",
+        "mismatch": "The two new passwords do not match.",
+        "tooShort": "The new password must be at least 6 characters long.",
+        "currentIncorrect": "The current password is incorrect.",
+        "updateSuccess": "Password updated.",
+        "updateError": "Could not update the password."
       }
     },
     "reports": {

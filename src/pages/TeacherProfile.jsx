@@ -128,13 +128,13 @@ const TeacherProfile = () => {
     setSuccess('')
 
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      showError('New passwords do not match')
+      showError(t('teacher.profile.security.mismatch'))
       setUpdatingPassword(false)
       return
     }
 
     if (passwordData.newPassword.length < 6) {
-      showError('New password must be at least 6 characters long')
+      showError(t('teacher.profile.security.tooShort'))
       setUpdatingPassword(false)
       return
     }
@@ -147,7 +147,8 @@ const TeacherProfile = () => {
       })
 
       if (signInError) {
-        throw new Error('Current password is incorrect')
+        showError(t('teacher.profile.security.currentIncorrect'))
+        return
       }
 
       // Update password
@@ -157,14 +158,14 @@ const TeacherProfile = () => {
 
       if (updateError) throw updateError
 
-      showSuccess('Password updated successfully!')
+      showSuccess(t('teacher.profile.security.updateSuccess'))
       setPasswordData({
         currentPassword: '',
         newPassword: '',
         confirmPassword: ''
       })
     } catch (error) {
-      showError(error.message || 'Failed to update password')
+      showError(`${t('teacher.profile.security.updateError')}${error?.message ? ` (${error.message})` : ''}`)
     } finally {
       setUpdatingPassword(false)
     }

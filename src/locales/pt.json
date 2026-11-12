@@ -470,7 +470,12 @@
         "confirmPassword": "Confirmar Nova Senha",
         "confirmPasswordPlaceholder": "Confirme a nova senha",
         "updating": "Alterando Senha...",
-        "update": "Alterar Senha"
+        "update": "Alterar Senha",
+        "mismatch": "As duas senhas novas não são iguais.",
+        "tooShort": "A nova senha precisa ter pelo menos 6 caracteres.",
+        "currentIncorrect": "A senha atual está incorreta.",
+        "updateSuccess": "Senha alterada.",
+        "updateError": "Não foi possível alterar a senha."
       }
     },
     "reports": {
