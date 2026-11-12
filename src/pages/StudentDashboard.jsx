@@ -296,7 +296,7 @@ const StudentDashboard = () => {
                 className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer hover:text-gray-900 dark:hover:text-white"
                 onClick={() => navigate('/student/profile')}
               >
-                {t('common.welcome')}, {profile?.full_name}
+                {t('common.welcome')}, {profile?.full_name?.split(' ')[0]}
               </span>
               <Button variant="outline" size="sm" onClick={handleSignOut}>
                 <LogOut className="h-4 w-4 mr-2" />
@@ -370,28 +370,28 @@ const StudentDashboard = () => {
             <Link to="/student/history" className="w-full">
               <Button
                 variant="outline"
-                className="w-full h-11 justify-center rounded-2xl border border-border bg-card text-foreground hover:bg-primary hover:text-primary-foreground font-semibold px-2 transition-colors flex flex-col md:flex-row items-center gap-1 md:gap-2 shadow-xs text-xs md:text-sm py-2"
+                className="w-full h-auto min-h-[4rem] md:min-h-11 justify-center rounded-2xl border border-border bg-card text-foreground hover:bg-primary hover:text-primary-foreground font-semibold px-2 transition-colors flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 shadow-xs text-xs md:text-sm py-2 whitespace-normal"
               >
                 <History className="h-4 w-4 text-primary shrink-0" />
-                <span className="truncate">{t('nav.history', 'Histórico')}</span>
+                <span className="text-center leading-tight break-words">{t('nav.history', 'Histórico')}</span>
               </Button>
             </Link>
             <Link to="/student/profile" className="w-full">
               <Button
                 variant="outline"
-                className="w-full h-11 justify-center rounded-2xl border border-border bg-card text-foreground hover:bg-primary hover:text-primary-foreground font-semibold px-2 transition-colors flex flex-col md:flex-row items-center gap-1 md:gap-2 shadow-xs text-xs md:text-sm py-2"
+                className="w-full h-auto min-h-[4rem] md:min-h-11 justify-center rounded-2xl border border-border bg-card text-foreground hover:bg-primary hover:text-primary-foreground font-semibold px-2 transition-colors flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 shadow-xs text-xs md:text-sm py-2 whitespace-normal"
               >
                 <User className="h-4 w-4 text-primary shrink-0" />
-                <span className="truncate">{t('nav.profile', 'Perfil')}</span>
+                <span className="text-center leading-tight break-words">{t('nav.profile', 'Perfil')}</span>
               </Button>
             </Link>
             <Link to="/student/rules" className="w-full">
               <Button
                 variant="outline"
-                className="w-full h-11 justify-center rounded-2xl border border-border bg-card text-foreground hover:bg-primary hover:text-primary-foreground font-semibold px-2 transition-colors flex flex-col md:flex-row items-center gap-1 md:gap-2 shadow-xs text-xs md:text-sm py-2"
+                className="w-full h-auto min-h-[4rem] md:min-h-11 justify-center rounded-2xl border border-border bg-card text-foreground hover:bg-primary hover:text-primary-foreground font-semibold px-2 transition-colors flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 shadow-xs text-xs md:text-sm py-2 whitespace-normal"
               >
                 <FileText className="h-4 w-4 text-primary shrink-0" />
-                <span className="truncate">{t('rules.title', 'Regulamento')}</span>
+                <span className="text-center leading-tight break-words">{t('rules.title', 'Regulamento')}</span>
               </Button>
             </Link>
           </div>

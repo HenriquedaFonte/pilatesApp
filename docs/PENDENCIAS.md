@@ -36,6 +36,8 @@ As três migrations de segurança (`20261112010000`, `20261112020000`, `20261112
   3. **Emails automáticos:** no dia seguinte, conferir que `low-credits-daily` e `zero-credits-daily` continuaram enviando (rodam como `postgres`, sem JWT: liberados).
 - [ ] **Story 3.1 / AC-7:** depois de rodar a migration 3.1 **e a correção de segurança acima**, abrir `docs/testes/3.1-rls-seguro-e-credenciais.sql`, trocar `<UUID_ALUNO_A>`, `<UUID_ALUNO_B>` e `<UUID_PROFESSORA>` por ids reais de `profiles` e rodar no SQL Editor. Sucesso = nenhum erro (termina em ROLLBACK, nada fica gravado). Erro "AC-7 FALHOU: ..." diz o que falhou.
 
+- [ ] **Teste no celular em pé (painel do aluno):** o topo mostra só o primeiro nome ("Olá, Henrique") e os 3 botões de Acesso Rápido (Histórico, Perfil, Regras do Studio) mostram o texto inteiro, quebrando em 2 linhas se precisar.
+
 ## SQL / deploys pendentes
 - [x] Migrations de segurança `20261112010000`, `20261112020000` e `20261112030000` rodadas em produção (2026-11-12). O CSV do diagnóstico de antes da `020000` está guardado com o usuário: as linhas `recriar` dele são a reversão exata das policies antigas. Reversões aproximadas (só emergência, reabrem as falhas): `docs/testes/seguranca-privilegios-reversao.sql`, `seguranca-rls-tabelas-reversao.sql` e `seguranca-rpcs-anon-reversao.sql`.
 - [ ] **Migration `20261112040000_require_staff_in_report_rpcs.sql`** (relatórios só para professora). Ordem: **tanto faz** em relação ao merge (o PR não muda código do site; o site já chama essas funções só como professora). Passos no SQL Editor:
