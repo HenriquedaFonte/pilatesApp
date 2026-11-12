@@ -27,6 +27,7 @@ const TeacherProfile = () => {
     newPassword: '',
     confirmPassword: ''
   })
+  const [confirmEmail, setConfirmEmail] = useState('')
   const [loading] = useState(false)
   const [updatingProfile, setUpdatingProfile] = useState(false)
   const [updatingPassword, setUpdatingPassword] = useState(false)
@@ -44,6 +45,10 @@ const TeacherProfile = () => {
 
   const { user, profile, updateProfile } = useAuth()
   const { t } = useTranslation()
+
+  const normalizeEmail = value => (value || '').trim().toLowerCase()
+  const newEmail = normalizeEmail(profileData.email)
+  const emailChanged = !!profile && newEmail !== normalizeEmail(profile.email)
 
   useEffect(() => {
     if (profile) {
@@ -63,24 +68,54 @@ const TeacherProfile = () => {
     setSuccess('')
 
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .update({
-          full_name: profileData.full_name,
-          email: profileData.email,
-          phone: profileData.phone || null,
-          preferred_language: profileData.preferred_language
+      if (emailChanged) {
+        if (newEmail !== normalizeEmail(confirmEmail)) {
+          showError(t('teacher.profile.personal.emailMismatch'))
+          return
+        }
+
+        // O email é o login: muda no Supabase Auth e em profiles juntos, pela
+        // mesma Edge Function que a professora usa para o email do aluno
+        // (manage-student, update-email; só aceita quem tem role 'teacher').
+        // Não usamos supabase.auth.updateUser({ email }) porque o email de
+        // confirmação do Supabase Auth sai numa língua só.
+        const { error: edgeError } = await supabase.functions.invoke('manage-student', {
+          body: { action: 'update-email', studentId: user.id, email: newEmail }
         })
-        .eq('id', user.id)
-        .select()
-        .single()
+
+        if (edgeError) {
+          let detail = ''
+          try {
+            const body = await edgeError.context?.json()
+            detail = body?.error || body?.message || ''
+          } catch {
+            // sem detalhe: fica só a mensagem traduzida
+          }
+          showError(`${t('teacher.profile.personal.emailUpdateError')}${detail ? ` (${detail})` : ''}`)
+          return
+        }
+      }
+
+      // Sem `email`: ele só muda pelo caminho acima (Auth + profiles juntos).
+      const { error } = await updateProfile({
+        full_name: profileData.full_name,
+        phone: profileData.phone || null,
+        preferred_language: profileData.preferred_language
+      })
 
       if (error) throw error
 
-      updateProfile(data)
-      showSuccess('Profile updated successfully!')
+      if (emailChanged) {
+        // Atualiza a sessão para o `user.email` local passar a ser o novo
+        // (usado na troca de senha). Se falhar, o próximo login resolve.
+        await supabase.auth.refreshSession().catch(() => {})
+        setConfirmEmail('')
+        showSuccess(t('teacher.profile.personal.updateSuccessEmail', { email: newEmail }))
+      } else {
+        showSuccess(t('teacher.profile.personal.updateSuccess'))
+      }
     } catch (error) {
-      showError(error.message || 'Failed to update profile')
+      showError(`${t('teacher.profile.personal.updateError')}${error?.message ? ` (${error.message})` : ''}`)
     } finally {
       setUpdatingProfile(false)
     }
@@ -218,7 +253,27 @@ const TeacherProfile = () => {
                           required
                         />
                       </div>
+                      <p className="text-xs text-muted-foreground">{t('teacher.profile.personal.emailHint')}</p>
                     </div>
+
+                    {emailChanged && (
+                      <div className="space-y-1.5">
+                        <Label htmlFor="confirmEmail" className="text-xs font-semibold text-muted-foreground">{t('teacher.profile.personal.confirmEmail')}</Label>
+                        <div className="relative">
+                          <Mail className="absolute left-3.5 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            id="confirmEmail"
+                            type="email"
+                            autoComplete="off"
+                            value={confirmEmail}
+                            onChange={(e) => setConfirmEmail(e.target.value)}
+                            placeholder={t('teacher.profile.personal.confirmEmailPlaceholder')}
+                            className="pl-10 rounded-xl border-border bg-background focus-visible:ring-primary h-10 w-full text-sm"
+                            required
+                          />
+                        </div>
+                      </div>
+                    )}
 
                     <div className="space-y-1.5">
                       <Label htmlFor="phone" className="text-xs font-semibold text-muted-foreground">{t('teacher.profile.personal.phone')}</Label>
