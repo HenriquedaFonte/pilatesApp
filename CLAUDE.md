@@ -29,6 +29,7 @@ Aplicação web de um estúdio de Pilates em Montreal (josipilates.com).
 Antes, atualizar `docs/PENDENCIAS.md` no mesmo PR. Depois, terminar com passos numerados:
 1. Merge do PR (com o link).
 2. SQL para rodar no Supabase, ou "não tem SQL". Se mudou Edge Function, o comando de deploy.
+   Sempre dizer a ordem: **SQL antes do merge** (o código novo depende do banco alterado), **merge antes do SQL** (o SQL quebraria o site no ar) ou **tanto faz** (independentes), com o motivo.
 3. O que testar depois do deploy.
 4. Encerrar esta sessão.
 5. Abrir uma sessão nova no Claude Code, no repositório `HenriquedaFonte/pilatesApp`, com o esforço em medium.
