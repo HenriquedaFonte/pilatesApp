@@ -783,11 +783,15 @@
         "failedList": "Não receberam:",
         "error": "O envio parou com erro:",
         "texts": "Textos",
-        "emptyLanguage": "vazio (usa outra língua)"
+        "emptyLanguage": "vazio (usa outra língua)",
+        "campaignError": "não foi possível registrar o envio. Nenhum email foi enviado.",
+        "resendNote": "Reenvio para quem falhou em \"{{subject}}\". Vai como um envio novo no histórico.",
+        "resendMissing_one": "{{count}} aluno que falhou não está mais na lista e ficou de fora.",
+        "resendMissing_other": "{{count}} alunos que falharam não estão mais na lista e ficaram de fora."
       },
       "history": {
         "title": "Histórico de Notificações",
-        "desc": "Registro consolidado de todos os e-mails enviados pelo painel administrativo",
+        "desc": "Cada envio é uma linha. Clique num envio para ver quem recebeu e quem falhou.",
         "sentBadge": "{{count}} enviados",
         "failedBadge": "{{count}} falhas",
         "emailType": "Tipo do E-mail",
@@ -799,7 +803,22 @@
         "recipients": "Destinatários",
         "recipientsCount": "{{count}} aluno(s)",
         "emptyTitle": "Nenhum e-mail enviado",
-        "emptyDesc": "Não há registro de notificações enviadas até o momento no estúdio."
+        "emptyDesc": "Não há registro de notificações enviadas até o momento no estúdio.",
+        "loadError": "Não foi possível carregar o histórico. Tente de novo.",
+        "noRecipients": "Nenhum destinatário registrado neste envio.",
+        "noSubject": "(sem assunto)",
+        "errorLabel": "Erro:",
+        "statusSent": "Enviado",
+        "statusFailed": "Falhou",
+        "statusSending": "Não concluído",
+        "sendingNote": "Este envio ainda não terminou ou foi interrompido (página fechada ou erro). A lista mostra o que ficou registrado até agora.",
+        "previous": "Anterior",
+        "next": "Próxima",
+        "pageOf": "Página {{page}} de {{pages}}",
+        "resendFailed": "Reenviar para quem falhou ({{count}})",
+        "resendNobody": "Nenhum aluno para reenviar: quem falhou não está mais na lista de alunos.",
+        "legacyTitle": "Envios anteriores",
+        "legacyDesc": "Emails de antes do registro por envio, agrupados por assunto e horário."
       },
       "includeInactive": "Incluir alunos inativos ({{count}})",
       "confirm": {
@@ -811,7 +830,8 @@
         "inactiveIncluded": "Alunos inativos estão incluídos neste envio.",
         "cancel": "Cancelar",
         "send": "Enviar para {{count}}",
-        "progress": "Enviando {{done}} de {{total}}..."
+        "progress": "Enviando {{done}} de {{total}}...",
+        "resendNote": "Reenvio para quem falhou em \"{{subject}}\"."
       },
       "preview": {
         "title": "Pré-visualização do email",

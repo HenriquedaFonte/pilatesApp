@@ -1243,11 +1243,15 @@
         "failedList": "Ne l'ont pas reçu :",
         "error": "L'envoi s'est arrêté avec une erreur :",
         "texts": "Textes",
-        "emptyLanguage": "vide (utilise une autre langue)"
+        "emptyLanguage": "vide (utilise une autre langue)",
+        "campaignError": "l'envoi n'a pas pu être enregistré. Aucun courriel n'a été envoyé.",
+        "resendNote": "Renvoi à ceux qui ont échoué dans « {{subject}} ». Il apparaîtra comme un nouvel envoi dans l'historique.",
+        "resendMissing_one": "{{count}} élève qui a échoué n'est plus dans la liste et a été laissé de côté.",
+        "resendMissing_other": "{{count}} élèves qui ont échoué ne sont plus dans la liste et ont été laissés de côté."
       },
       "history": {
         "title": "Historique des Notifications",
-        "desc": "Registre consolidé de tous les courriels envoyés par le panneau administratif",
+        "desc": "Chaque envoi est une ligne. Cliquez sur un envoi pour voir qui l'a reçu et qui a échoué.",
         "sentBadge": "{{count}} envoyés",
         "failedBadge": "{{count}} échecs",
         "emailType": "Type de Courriel",
@@ -1259,7 +1263,22 @@
         "recipients": "Destinataires",
         "recipientsCount": "{{count}} élève(s)",
         "emptyTitle": "Aucun courriel envoyé",
-        "emptyDesc": "Il n'y a aucun enregistrement de notifications envoyées pour le moment dans le studio."
+        "emptyDesc": "Il n'y a aucun enregistrement de notifications envoyées pour le moment dans le studio.",
+        "loadError": "Impossible de charger l'historique. Veuillez réessayer.",
+        "noRecipients": "Aucun destinataire enregistré pour cet envoi.",
+        "noSubject": "(sans objet)",
+        "errorLabel": "Erreur :",
+        "statusSent": "Envoyé",
+        "statusFailed": "Échec",
+        "statusSending": "Non terminé",
+        "sendingNote": "Cet envoi est encore en cours ou a été interrompu (page fermée ou erreur). La liste montre ce qui a été enregistré jusqu'ici.",
+        "previous": "Précédent",
+        "next": "Suivant",
+        "pageOf": "Page {{page}} sur {{pages}}",
+        "resendFailed": "Renvoyer à ceux qui ont échoué ({{count}})",
+        "resendNobody": "Aucun élève à qui renvoyer : ceux qui ont échoué ne sont plus dans la liste des élèves.",
+        "legacyTitle": "Envois précédents",
+        "legacyDesc": "Courriels d'avant l'enregistrement par envoi, regroupés par objet et par heure."
       },
       "includeInactive": "Inclure les élèves inactifs ({{count}})",
       "confirm": {
@@ -1271,7 +1290,8 @@
         "inactiveIncluded": "Les élèves inactifs sont inclus dans cet envoi.",
         "cancel": "Annuler",
         "send": "Envoyer à {{count}}",
-        "progress": "Envoi {{done}} sur {{total}}..."
+        "progress": "Envoi {{done}} sur {{total}}...",
+        "resendNote": "Renvoi à ceux qui ont échoué dans « {{subject}} »."
       },
       "preview": {
         "title": "Aperçu du courriel",
