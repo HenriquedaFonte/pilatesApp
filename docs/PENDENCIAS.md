@@ -124,7 +124,7 @@ As três migrations de segurança (`20261112010000`, `20261112020000`, `20261112
   - **Cópia de segurança:** definição exata de cada função mexida/apagada e de cada job removido em `josi_backup.email_cleanup_20261112` (schema fora da API).
 - [x] ~~**Pendência das funções de disparo que ficarem:**~~ (nenhuma ficou; as 3 foram apagadas) se o diagnóstico de depois ainda mostrar `manual_trigger_notifications`, `trigger_email_notifications` ou `schedule_email_notifications`, é porque algo ainda as usa (ver `citada_por`). Decidir caso a caso (dev-critico). Linhas `outras` do diagnóstico (outras funções de email/notificação/cron) também não foram mexidas.
 - [ ] **Edge Functions em produção:** conferir no painel do Supabase (Edge Functions) se existem só `create-user`, `manage-student`, `reset-password` e `send-email`. Uma Edge Function que não está no repositório poderia chamar uma função de disparo apagada (com service_role); se existir outra, avisar o dev-critico.
-- [ ] Remover do repositório o arquivo vazio `credenciais google.txt` e adicionar `credenciais*` ao `.gitignore`.
+- [x] ~~Remover do repositório o arquivo vazio `credenciais google.txt` e adicionar `credenciais*` ao `.gitignore`.~~ Feito (2026-11-12): arquivo removido (sempre esteve vazio no histórico, nada vazou) e `credenciais*` no `.gitignore`.
 
 ## Regras fixas
 - Uma tarefa, uma sessão, um PR.
