@@ -162,15 +162,18 @@ function validate(data) {
 
 // Prepara o template gerado no PDFill: as aparências originais não têm
 // /Subtype /Form, e o flatten as copiaria quebradas para a página (leitores
-// reclamam). Todo campo é zerado para que updateFieldAppearances gere
-// aparências novas para todos, inclusive os que ficam vazios.
+// reclamam). Todo campo é zerado (e posto em preto) para que
+// updateFieldAppearances gere aparências novas para todos, inclusive os vazios.
 // Obs.: o de kinésithérapie tem um segundo campo "Text1" solto embaixo da
 // assinatura. getTextField('Text1') pega o primeiro (o do titular); o outro
 // fica vazio. Não é removido porque o template ainda o referencia em outro
 // lugar e removê-lo deixaria uma referência quebrada no PDF.
 function prepareForm(form) {
   for (const field of form.getFields()) {
-    if (field instanceof PDFTextField) field.setText('')
+    if (field instanceof PDFTextField) {
+      field.setText('')
+      setBlackText(field)
+    }
   }
 }
 
@@ -183,6 +186,15 @@ function removeDanglingAnnots(pdf, page) {
     const ref = annots.get(i)
     if (ref instanceof PDFRef && !pdf.context.lookup(ref)) annots.remove(i)
   }
+}
+
+// Cada template traz sua cor de texto (kinésithérapie preto, naturopathie
+// azul-marinho). Decisão da Josi (2026-11-12): os dois sempre em preto.
+// Tira qualquer operador de cor do /DA e põe preto (0 g).
+const DA_COLOR_RE = /(?:[\d.]+\s+){0,3}[\d.]+\s+(?:rg|g|k)\b/g
+function setBlackText(field) {
+  const da = field.acroField.getDefaultAppearance() ?? ''
+  field.acroField.setDefaultAppearance(`${da.replace(DA_COLOR_RE, ' ').replace(/\s+/g, ' ').trim()} 0 g`)
 }
 
 function fittedFontSize(font, text, rect) {
@@ -216,7 +228,9 @@ export async function generateReceiptPdf(data, options = {}) {
     const rect = field.acroField.getWidgets()[0].getRectangle()
     field.setText(text)
     field.setFontSize(fittedFontSize(font, text, rect))
-    if (align) field.setAlignment(align)
+    setBlackText(field)
+    // TextAlignment.Left é 0: comparar com undefined, não usar `if (align)`
+    if (align !== undefined) field.setAlignment(align)
   }
 
   const patient = data.patient
@@ -248,7 +262,7 @@ export async function generateReceiptPdf(data, options = {}) {
   })
   productRows.forEach((row, i) => {
     const [nameField, priceField] = map.products[i]
-    setField(nameField, row.name, TextAlignment.Left)
+    setField(nameField, row.name, TextAlignment.Center)
     setField(priceField, formatMoney(row.cents), TextAlignment.Right)
   })
   if (map.totalProducts && productRows.length > 0) {
