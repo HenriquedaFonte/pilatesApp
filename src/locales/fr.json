@@ -3,7 +3,8 @@
     "dashboard": "Tableau de Bord Étudiant",
     "history": "Mon Historique",
     "profile": "Profil",
-    "changePassword": "Changer le Mot de Passe"
+    "changePassword": "Changer le Mot de Passe",
+    "receipts": "Mes reçus"
   },
   "dashboard": {
     "title": "Tableau de Bord Étudiant",
@@ -1408,6 +1409,24 @@
       "from": "Émis du",
       "to": "Au",
       "clear": "Effacer les filtres"
+    }
+  },
+  "studentReceipts": {
+    "title": "Mes reçus",
+    "subtitle": "Reçus d'assurance santé (kinésithérapie et naturopathie) à envoyer à votre assureur.",
+    "back": "Retour au tableau de bord",
+    "empty": "Vous n'avez pas encore de reçus. Demandez à votre professeure.",
+    "open": "Ouvrir le PDF",
+    "download": "Télécharger le PDF",
+    "share": "Partager",
+    "preparing": "En préparation",
+    "preparingNote": "Le PDF de ce reçu est en préparation. Revenez plus tard ou parlez à votre professeure.",
+    "voidNote": "Ce reçu a été annulé et n'est plus valide. En cas de doute, parlez à votre professeure.",
+    "shareReady": "PDF prêt. Touchez « Partager » de nouveau.",
+    "errors": {
+      "open": "Impossible d'ouvrir le PDF. Veuillez réessayer.",
+      "share": "Impossible de partager le PDF. Veuillez réessayer.",
+      "shareUnsupported": "Cet appareil ne permet pas de partager le fichier. Utilisez « Ouvrir le PDF » ou « Télécharger le PDF »."
     }
   }
 }

@@ -28,6 +28,7 @@ const TeacherTestimonials = lazy(() => import('./pages/TeacherTestimonials'))
 const TeacherSchedule = lazy(() => import('./pages/TeacherSchedule'))
 const StudentDashboard = lazy(() => import('./pages/StudentDashboard'))
 const StudentHistory = lazy(() => import('./pages/StudentHistory'))
+const StudentReceipts = lazy(() => import('./pages/StudentReceipts'))
 const StudioRules = lazy(() => import('./pages/StudioRules'))
 const StudentProfile = lazy(() => import('./pages/StudentProfile'))
 const TeacherProfile = lazy(() => import('./pages/TeacherProfile'))
@@ -208,6 +209,14 @@ function AppRoutes() {
           element={
             <ProtectedRoute requireRole="student" requireCompleteProfile={true}>
               <StudentHistory />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/receipts"
+          element={
+            <ProtectedRoute requireRole="student" requireCompleteProfile={true}>
+              <StudentReceipts />
             </ProtectedRoute>
           }
         />

@@ -224,3 +224,21 @@ export const moneyFormatter = lang =>
     style: 'currency',
     currency: 'CAD',
   })
+
+// iPhone/iPad (inclusive iPadOS, que se apresenta como Mac com tela de toque).
+// Nesses aparelhos o PDF abre no visualizador do Safari (ver e compartilhar)
+// em vez de ser baixado (Story 3.6).
+export function isAppleMobileDevice(nav = typeof navigator !== 'undefined' ? navigator : undefined) {
+  if (!nav) return false
+  const ua = String(nav.userAgent || '')
+  if (/iPad|iPhone|iPod/.test(ua)) return true
+  return /Macintosh/.test(ua) && Number(nav.maxTouchPoints) > 1
+}
+
+// Celular/tablet (iOS ou Android): mostra o botão "Compartilhar" (Web Share).
+export function isMobileDevice(nav = typeof navigator !== 'undefined' ? navigator : undefined) {
+  if (!nav) return false
+  return isAppleMobileDevice(nav) || /Android/i.test(String(nav.userAgent || ''))
+}
+
+export const receiptFileName = receipt => `${receipt.receipt_number}.pdf`

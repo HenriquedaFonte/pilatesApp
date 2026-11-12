@@ -30,7 +30,8 @@ import {
   CheckCircle,
   XCircle,
   User,
-  FileText
+  FileText,
+  Receipt
 } from 'lucide-react'
 import Logo from '../components/Logo'
 import { ThemeToggle } from '../components/ThemeToggle'
@@ -52,6 +53,7 @@ const StudentDashboard = () => {
   const [recentHistory, setRecentHistory] = useState([])
   const [recentAttendance, setRecentAttendance] = useState([])
   const [loading, setLoading] = useState(true)
+  const [receiptCount, setReceiptCount] = useState(0)
 
   const fetchStudentData = useCallback(async () => {
     try {
@@ -130,6 +132,14 @@ const StudentDashboard = () => {
             schedules?.find(s => s.id === att.schedule_id) || null
         })) || []
 
+      // Recibos de seguro (Story 3.6): o atalho só aparece se houver algum.
+      // Falha aqui não atrapalha o painel.
+      const { count: receipts } = await supabase
+        .from('insurance_receipts')
+        .select('id', { count: 'exact', head: true })
+        .eq('student_id', profile.id)
+
+      setReceiptCount(receipts || 0)
       setMyClasses(enrolledClasses || [])
       setRecentHistory(history || [])
       setRecentAttendance(attendanceWithSchedules)
@@ -370,7 +380,7 @@ const StudentDashboard = () => {
           <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider px-1">
             {t('dashboard.quickActions', 'Acesso Rápido')}
           </h3>
-          <div className="grid grid-cols-3 gap-2.5">
+          <div className={`grid gap-2.5 ${receiptCount > 0 ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-3'}`}>
             <Link to="/student/history" className="w-full">
               <Button
                 variant="outline"
@@ -398,6 +408,17 @@ const StudentDashboard = () => {
                 <span className="text-center leading-tight break-words">{t('rules.title', 'Regulamento')}</span>
               </Button>
             </Link>
+            {receiptCount > 0 && (
+              <Link to="/student/receipts" className="w-full">
+                <Button
+                  variant="outline"
+                  className="w-full h-auto min-h-[4rem] md:min-h-11 justify-center rounded-2xl border border-border bg-card text-foreground hover:bg-primary hover:text-primary-foreground font-semibold px-2 transition-colors flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 shadow-xs text-xs md:text-sm py-2 whitespace-normal"
+                >
+                  <Receipt className="h-4 w-4 text-primary shrink-0" />
+                  <span className="text-center leading-tight break-words">{t('nav.receipts')} ({receiptCount})</span>
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
 

@@ -3,7 +3,7 @@
 > Memória entre sessões. Toda sessão nova começa lendo este arquivo.
 > No fim de cada tarefa: "Atualize o PENDENCIAS".
 
-_Última atualização: 2026-11-12_
+_Última atualização: 2026-11-12 (Story 3.6)_
 
 ## Estado atual
 - Produção: josipilates.com (Vercel, branch `main`).
@@ -76,8 +76,16 @@ As três migrations de segurança (`20261112010000`, `20261112020000`, `20261112
   8. **Anular:** "Anular" sem motivo → botão desabilitado; com motivo → "Recibo ... anulado.", badge "Anulado", motivo embaixo, sem botão "Anular". O "Baixar" continua.
   9. **Lista geral:** menu Relatórios → "Recibos de seguro": aparecem os recibos com o nome do aluno; filtros por aluno, tipo e período funcionam; "Limpar filtros" volta tudo.
   10. **Apagar de vez aluno com recibo:** mover o aluno de teste para a lixeira e tentar "Excluir permanentemente" → aparece "Este(a) aluno(a) tem recibo de seguro emitido e não pode ser excluído(a) permanentemente..." e o aluno continua na lixeira, com histórico de créditos e check-ins intactos (restaurar e conferir). No Supabase (tabela `audit_log`), **nenhuma** linha `student.hard_delete` nova para ele.
-  11. **Aluno (portal):** ainda não há tela de recibos (vem na 3.6); conferir só que o painel do aluno continua normal.
+  11. **Aluno (portal):** ver o teste da Story 3.6 logo abaixo.
   12. **Conferir com a Josi** o PDF real (dados, assinatura, posição dos campos) antes de mandar o primeiro recibo de verdade para um aluno.
+- [ ] **Teste no site depois do merge da Story 3.6 ("Meus recibos" do aluno; sem SQL, sem deploy):** precisa de um recibo emitido para um **aluno de teste** (teste da 3.5). Conferir os textos em pt, en e fr.
+  1. **Aluno sem recibo:** o painel continua com os 3 botões de Acesso Rápido (não aparece "Meus recibos"). Abrir `josipilates.com/student/receipts` direto → "Você ainda não tem recibos. Peça à sua professora."
+  2. **Aluno com recibo:** no painel aparece o 4º botão "Meus recibos (n)" (no celular em pé, 2 por linha). Abre a lista: nº, tipo, emissão, datas dos tratamentos, total e status.
+  3. **iPhone e iPad (Safari):** botão "Abrir PDF" → abre o PDF numa aba nova, no visualizador do Safari; o botão de compartilhar do Safari funciona (Salvar em Arquivos, Mail, Imprimir). Botão "Compartilhar" → abre direto a folha de compartilhamento com o arquivo `K-2026-0001.pdf`. Se a internet estiver lenta e aparecer "PDF pronto. Toque em Compartilhar de novo.", tocar de novo deve abrir na hora.
+  4. **Android:** "Baixar PDF" baixa `K-2026-0001.pdf`; "Compartilhar" abre a folha de compartilhamento. **Computador:** só "Baixar PDF" (sem "Compartilhar").
+  5. **Recibo anulado** (anular pela professora): badge "Anulado", número riscado, texto "Este recibo foi anulado e não vale mais..." e **sem** botão de abrir/baixar. O motivo da anulação não aparece para o aluno.
+  6. **PDF pendente** (só se acontecer): badge "Em preparação" e sem botão.
+  7. **AC-6 (segurança):** aluno A não lê PDF do aluno B nem montando o caminho: isso é a RLS do bucket da 3.3, já coberta pelo teste SQL `docs/testes/3.3-recibos-teste.sql` (passou em produção). No site, só conferir que cada aluno de teste vê **apenas** os próprios recibos.
 - [ ] **Teste no celular em pé (painel do aluno):** o topo mostra só o primeiro nome ("Olá, Henrique") e os 3 botões de Acesso Rápido (Histórico, Perfil, Regras do Studio) mostram o texto inteiro, quebrando em 2 linhas se precisar.
 
 ## SQL / deploys pendentes
@@ -158,7 +166,12 @@ As três migrations de segurança (`20261112010000`, `20261112020000`, `20261112
     - Antes de chamar a RPC, o PDF é gerado em memória (prévia): se o gerador recusar os dados, nenhum recibo é criado. Depois: RPC → lê o recibo gravado → PDF a partir dele (mesmo caminho do "Gerar PDF") → upload → `attach_receipt_pdf`. Se o upload/anexo falhar, o recibo fica "PDF pendente" com "Gerar PDF"; o "Gerar PDF" aceita arquivo já enviado (409) e só anexa.
     - O snapshot guarda o que é impresso + `signaturePath`; o PDF usa a data de emissão gravada (`issued_at`, dia de Montréal) e os totais gravados (o gerador confere que batem com a soma).
     - Erros do servidor e do gerador viram mensagens próprias em pt/en/fr (`receipts.errors.*`); nada vai para o console.
-  - [ ] 3.6 "Meus recibos" no portal do aluno
+  - [x] 3.6 "Meus recibos" no portal do aluno — **feita no código** (sem SQL, sem deploy; usa a RLS/bucket da 3.3). Falta o teste no site (ver "Testes em aberto"). Detalhes: `docs/stories/3.6.story.md`. Resumo:
+    - Página `/student/receipts` (`StudentReceipts.jsx`), em cards (bom no celular). Atalho "Meus recibos (n)" no Acesso Rápido do painel, só quando o aluno tem recibo.
+    - **iPhone/iPad:** "Abrir PDF" abre no visualizador do Safari (URL assinada de 60 s, inline; a aba é aberta no toque para o Safari não bloquear), que tem o botão de compartilhar. **Celular (iOS e Android):** também "Compartilhar" (Web Share com o arquivo `K-AAAA-0001.pdf`). **Outros:** "Baixar PDF" (como na tela da professora).
+    - Decisão AC-4: recibo anulado aparece com "Anulado" e **sem download** (evita o aluno mandar ao seguro um recibo que não vale). O motivo da anulação não é mostrado ao aluno. Se a Josi preferir liberar o download com aviso, é uma mudança pequena.
+    - Abrir/baixar/compartilhar ficou em `src/lib/receiptFiles.js` (sem pdf-lib): o portal do aluno carrega ~15 KB em vez de ~450 KB.
+  - [ ] **Ideia (menor):** usar o mesmo "Abrir PDF"/"Compartilhar" na tela da professora (`ReceiptsList.jsx`), se a Josi emitir recibos pelo iPhone.
   - [ ] 3.7 Política de Privacidade (dev-critico)
 - [x] Lint zerado (eram 75 problemas): variáveis e imports sem uso removidos, `scratch/` ignorado, `scripts/` com globais de Node, `react-refresh` desligado para `components/ui` e `useAuth`, e `exhaustive-deps` silenciado linha a linha nos `useEffect` de carga (intencionais).
 - [x] Gerenciador de pacotes: o projeto usa **pnpm** (`packageManager` no `package.json`, `pnpm-lock.yaml` atualizado). O `package-lock.json` estava desatualizado e quebrava `npm ci`; foi removido. Instalar com `pnpm install`; os scripts continuam `npm run lint/test/build`.

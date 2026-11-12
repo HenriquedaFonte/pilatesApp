@@ -3,7 +3,8 @@
     "dashboard": "Painel do Aluno",
     "history": "Meu Histórico",
     "profile": "Perfil",
-    "changePassword": "Alterar Senha"
+    "changePassword": "Alterar Senha",
+    "receipts": "Meus recibos"
   },
   "dashboard": {
     "title": "Painel do Aluno",
@@ -1397,6 +1398,24 @@
       "from": "Emitidos de",
       "to": "Até",
       "clear": "Limpar filtros"
+    }
+  },
+  "studentReceipts": {
+    "title": "Meus recibos",
+    "subtitle": "Recibos de seguro saúde (kinésithérapie e naturopathie) para enviar ao seu plano.",
+    "back": "Voltar ao painel",
+    "empty": "Você ainda não tem recibos. Peça à sua professora.",
+    "open": "Abrir PDF",
+    "download": "Baixar PDF",
+    "share": "Compartilhar",
+    "preparing": "Em preparação",
+    "preparingNote": "O PDF deste recibo está em preparação. Volte mais tarde ou fale com a sua professora.",
+    "voidNote": "Este recibo foi anulado e não vale mais. Em caso de dúvida, fale com a sua professora.",
+    "shareReady": "PDF pronto. Toque em \"Compartilhar\" de novo.",
+    "errors": {
+      "open": "Não foi possível abrir o PDF. Tente de novo.",
+      "share": "Não foi possível compartilhar o PDF. Tente de novo.",
+      "shareUnsupported": "Este aparelho não permite compartilhar o arquivo. Use \"Abrir PDF\" ou \"Baixar PDF\"."
     }
   }
 }

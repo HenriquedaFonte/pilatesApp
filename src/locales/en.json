@@ -3,7 +3,8 @@
     "dashboard": "Student Dashboard",
     "history": "My History",
     "profile": "Profile",
-    "changePassword": "Change Password"
+    "changePassword": "Change Password",
+    "receipts": "My receipts"
   },
   "dashboard": {
     "title": "Student Dashboard",
@@ -1324,6 +1325,24 @@
       "from": "Issued from",
       "to": "To",
       "clear": "Clear filters"
+    }
+  },
+  "studentReceipts": {
+    "title": "My receipts",
+    "subtitle": "Health insurance receipts (kinesitherapy and naturopathy) to send to your plan.",
+    "back": "Back to dashboard",
+    "empty": "You don't have any receipts yet. Ask your teacher.",
+    "open": "Open PDF",
+    "download": "Download PDF",
+    "share": "Share",
+    "preparing": "Being prepared",
+    "preparingNote": "The PDF for this receipt is being prepared. Come back later or talk to your teacher.",
+    "voidNote": "This receipt was voided and is no longer valid. If in doubt, talk to your teacher.",
+    "shareReady": "PDF ready. Tap \"Share\" again.",
+    "errors": {
+      "open": "Could not open the PDF. Please try again.",
+      "share": "Could not share the PDF. Please try again.",
+      "shareUnsupported": "This device can't share the file. Use \"Open PDF\" or \"Download PDF\"."
     }
   }
 }
