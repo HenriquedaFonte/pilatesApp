@@ -10,6 +10,7 @@
     "subtitle": "Acompanhe sua jornada de pilates",
     "balanceTitle": "Saldo de Aulas",
     "balanceLow": "Saldo baixo - Considere comprar mais aulas",
+    "balanceZeroMsg": "Seus créditos acabaram. Converse com a professora para renovar seu plano.",
     "balanceLowMsg": "Seus créditos estão acabando. Converse com a professora para renovar seu plano.",
     "balanceOk": "Aulas restantes",
     "balanceGoodMsg": "Seu saldo está bom! Continue aproveitando as suas aulas de pilates.",

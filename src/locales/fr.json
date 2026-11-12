@@ -10,6 +10,7 @@
     "subtitle": "Suivez votre parcours de pilates",
     "balanceTitle": "Solde de Cours",
     "balanceLow": "Solde faible - Envisagez d'acheter plus de cours",
+    "balanceZeroMsg": "Vos crédits sont épuisés. Veuillez en parler à votre professeure pour renouveler votre forfait.",
     "balanceLowMsg": "Vos crédits sont presque épuisés. Veuillez en parler à votre professeure pour renouveler votre forfait.",
     "balanceOk": "Cours restants",
     "balanceGoodMsg": "Votre solde est bon ! Continuez à profiter de vos cours de pilates.",

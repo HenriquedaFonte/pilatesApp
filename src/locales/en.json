@@ -10,6 +10,7 @@
     "subtitle": "Track your pilates journey",
     "balanceTitle": "Class Balance",
     "balanceLow": "Low balance - Consider purchasing more classes",
+    "balanceZeroMsg": "You are out of credits. Please talk to your teacher to renew your plan.",
     "balanceLowMsg": "Your credits are running low. Please talk to your teacher to renew your plan.",
     "balanceOk": "Classes remaining",
     "balanceGoodMsg": "Your balance is good! Keep enjoying your pilates classes.",
