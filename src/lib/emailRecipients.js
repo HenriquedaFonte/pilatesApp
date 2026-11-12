@@ -115,3 +115,80 @@ export const groupEmailHistory = (notifications, gapMs = HISTORY_GAP_MS) => {
 
   return groups.reverse()
 }
+
+// ---- Story 4.2: tela "Nova mensagem" em 3 passos ----
+
+export const LANGUAGES = ['pt', 'en', 'fr']
+
+// Língua do aluno para o email (mesma regra do emailService: sem língua → pt).
+export const studentLanguage = student =>
+  LANGUAGES.includes(student.preferred_language) ? student.preferred_language : 'pt'
+
+// Quantos destinatários em cada língua: { pt, en, fr }.
+export const countByLanguage = students => {
+  const counts = { pt: 0, en: 0, fr: 0 }
+  for (const s of students || []) counts[studentLanguage(s)]++
+  return counts
+}
+
+// Tira da lista os alunos que a professora removeu à mão.
+export const excludeStudents = (students, excludedIds = []) => {
+  if (!excludedIds || excludedIds.length === 0) return students
+  const ids = new Set(excludedIds)
+  return students.filter(s => !ids.has(s.id))
+}
+
+// Busca por nome ou email, sem diferenciar maiúsculas nem acentos.
+const normalize = text =>
+  (text || '')
+    .toString()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+
+export const searchStudents = (students, term) => {
+  const q = normalize(term).trim()
+  if (!q) return students
+  return students.filter(
+    s => normalize(s.full_name).includes(q) || normalize(s.email).includes(q)
+  )
+}
+
+// Modelos que saem prontos (sem assunto/mensagem escritos na tela).
+export const AUTOMATIC_TEMPLATES = {
+  lowCredits: 'low_credits',
+  consentForm: 'consent'
+}
+
+// Tipo de envio conforme o modelo escolhido: 'low_credits' | 'consent' | 'custom'.
+export const sendKindOf = templateId => AUTOMATIC_TEMPLATES[templateId] || 'custom'
+
+// Links antigos (relatório de créditos baixos) → modelo de créditos.
+const TEMPLATE_ALIASES = {
+  zeroCredits: 'lowCredits',
+  zero_credits: 'lowCredits',
+  low_credits: 'lowCredits'
+}
+export const normalizeTemplateParam = templateId =>
+  TEMPLATE_ALIASES[templateId] || templateId || null
+
+/**
+ * O passo pode avançar?
+ * - 1 (para quem): pelo menos um destinatário e a turma já carregada.
+ * - 2 (o quê): modelo escolhido; se não for automático, assunto e mensagem preenchidos.
+ */
+export const canAdvance = (step, { recipientsCount = 0, loading = false, templateId = null, subject = '', message = '' } = {}) => {
+  if (step === 1) return !loading && recipientsCount > 0
+  if (step === 2) {
+    if (!templateId) return false
+    if (sendKindOf(templateId) !== 'custom') return true
+    return subject.trim() !== '' && message.trim() !== ''
+  }
+  return false
+}
+
+// Começo da mensagem para o resumo do passo 3.
+export const messagePreview = (message, max = 160) => {
+  const text = (message || '').replace(/\s+/g, ' ').trim()
+  return text.length > max ? `${text.slice(0, max).trimEnd()}…` : text
+}

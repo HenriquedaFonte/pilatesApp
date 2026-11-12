@@ -1148,72 +1148,95 @@
     "emails": {
       "title": "Panneau de Courriels",
       "subtitle": "Envoyez des notifications et des alertes directement dans les boîtes de réception des élèves",
-      "tabs": {
-        "notifications": "Envoi Rapide",
-        "custom": "E-mail Personnalisé",
-        "templates": "Modèles",
+      "areas": {
+        "new": "Nouveau message",
         "history": "Historique"
       },
-      "quick": {
-        "title": "Notification de Solde Faible",
-        "desc": "Envoyez des alertes automatiques rapides basées sur la limite de crédits",
-        "thresholdLabel": "Définir le seuil d'alerte :",
-        "totalCredits": "crédits totaux",
-        "qualifiedBadge": "{{count}} élève(s) qualifié(s)",
-        "sending": "Envoi des Courriels...",
-        "notify": "Notifier {{count}} Élèves",
-        "qualifiedTitle": "Élèves Qualifiés",
-        "qualifiedDesc": "Qui recevra l'alerte de solde faible avec les paramètres actuels",
-        "emptyTitle": "Aucun élève qualifié",
-        "emptyDesc": "Tout est en ordre ! Aucun élève n'a de crédits inférieurs à {{total}}."
+      "steps": {
+        "recipients": "À qui",
+        "content": "Quoi",
+        "review": "Vérifier et envoyer"
       },
-      "customCard": {
-        "filterTitle": "Filtre de Récipiendaires",
-        "filterDesc": "Choisissez qui recevra le courriel",
-        "filterLabel": "Filtrer les élèves par :",
-        "filters": {
+      "nav": {
+        "back": "Retour",
+        "next": "Continuer",
+        "newMessage": "Nouveau message"
+      },
+      "languageNames": {
+        "pt": "Portugais",
+        "en": "Anglais",
+        "fr": "Français"
+      },
+      "messages": {
+        "loadError": "Erreur lors du chargement des données :"
+      },
+      "recipients": {
+        "title": "À qui envoyer le message ?",
+        "desc": "Choisissez un groupe. Vous pouvez retirer des élèves de la liste avant de continuer.",
+        "groups": {
           "all": "Tous les élèves",
           "low_credits": "Crédits faibles",
-          "zero_credits": "Solde nul",
-          "class": "Cours spécifique",
-          "selected": "Sélection manuelle"
+          "zero_credits": "Sans crédits",
+          "class": "Un cours",
+          "selected": "Choisir des élèves"
         },
-        "selectClass": "Sélectionner le cours :",
-        "selectClassPlaceholder": "Sélectionner le cours",
-        "selectManual": "Sélectionner manuellement :",
-        "clearAll": "Tout effacer",
-        "selectAll": "Tout sélectionner",
-        "searchStudent": "Rechercher un élève...",
-        "creditsCount": "{{count}} crédits",
-        "selectedCount": "Récipiendaires Sélectionnés : {{count}}",
-        "emptySelection": "Aucun élève sélectionné par le filtre actuel.",
-        "moreStudents": " et {{count}} autre(s) élève(s)...",
-        "contentTitle": "Contenu de la Notification",
-        "contentDesc": "Rédigez le courriel ou utilisez un modèle de l'onglet correspondant",
-        "senderName": "Nom de l'Expéditeur",
-        "senderPlaceholder": "Ex : Professeure Josi, Studio Josi Pilates",
-        "activeTemplate": "Modèle Actif",
-        "templateIndicator": "Modèle : {{name}}",
-        "noTemplateIndicator": "Aucun Modèle (Texte Livre)",
-        "subjectLabel": "Objet du Courriel",
-        "subjectPlaceholder": "Objet de la notification",
-        "messageLabel": "Message",
-        "messagePlaceholder": "Rédigez le message ici...",
-        "consentTitle": "Modèle : Formulaire de Consentement",
-        "consentDesc": "Ce modèle enverra le document des politiques et conditions des cours de Pilates directement avec une pièce jointe PDF aux élèves sélectionnés.",
-        "attachment": "📎 Pièce jointe : PilatesLessonsPolicies.pdf",
-        "sendingCustom": "Envoi des Courriels...",
-        "sendConsentBtn": "Envoyer le Terme à {{count}} élève(s)",
-        "sendEmailBtn": "Envoyer le Courriel à {{count}} élève(s)",
-        "multilingualOn": "Ce modèle est envoyé dans la langue de chaque élève (portugais, anglais ou français, selon son profil).",
-        "multilingualOff": "Vous avez modifié le texte : tous les élèves recevront exactement le texte ci-dessus, dans une seule langue. Pour l'envoyer dans la langue de chaque élève, sélectionnez à nouveau le modèle sans le modifier.",
+        "thresholdLabel": "Crédits faibles = jusqu'à",
+        "thresholdUnit": "crédits",
+        "selectClass": "Cours :",
+        "selectClassPlaceholder": "Choisissez le cours",
         "loadingClass": "Chargement des élèves du cours...",
-        "emptyClass": "Aucun élève actif dans ce cours."
+        "emptyClass": "Aucun élève actif dans ce cours.",
+        "count_one": "{{count}} élève va le recevoir",
+        "count_other": "{{count}} élèves vont le recevoir",
+        "searchPlaceholder": "Rechercher par nom ou courriel...",
+        "remove": "Retirer",
+        "restore": "Remettre",
+        "restoreAll_one": "Remettre le {{count}} retiré",
+        "restoreAll_other": "Remettre les {{count}} retirés",
+        "selectHint": "Cochez les élèves qui vont le recevoir.",
+        "selectAll": "Tout cocher",
+        "clearAll": "Tout décocher",
+        "empty": "Aucun élève dans ce groupe.",
+        "emptySearch": "Aucun élève ne correspond à cette recherche.",
+        "inactiveBadge": "Inactif",
+        "credits_one": "{{count}} crédit",
+        "credits_other": "{{count}} crédits"
       },
-      "templates": {
-        "title": "Modèles de Courriel",
-        "desc": "Choisissez un modèle prédéfini pour accélérer l'envoi des alertes",
-        "languageLabel": "Langue du Modèle :"
+      "content": {
+        "title": "Que voulez-vous envoyer ?",
+        "desc": "Choisissez un modèle ou commencez avec un message vide.",
+        "globeHint": "Envoyé dans la langue de chaque élève.",
+        "chooseFirst": "Choisissez un modèle ou « Message vide » pour continuer.",
+        "autoLowCredits": "Ce courriel est prêt, dans la langue de chaque élève, avec son solde de crédits et comment renouveler. Rien à écrire.",
+        "consentDesc": "Ce courriel est prêt, dans la langue de chaque élève, avec le formulaire de consentement et les règles du studio en PDF joint.",
+        "senderName": "Signé par",
+        "senderPlaceholder": "Ex. : Josi",
+        "languageLabel": "Langue du texte du modèle",
+        "subjectLabel": "Objet",
+        "subjectPlaceholder": "Objet du courriel",
+        "messageLabel": "Message",
+        "messagePlaceholder": "Écrivez votre message ici...",
+        "multilingualOn": "Ce modèle est envoyé dans la langue de chaque élève (portugais, anglais ou français, selon son profil).",
+        "multilingualOff": "Vous avez modifié le texte : tous les élèves recevront exactement le texte ci-dessus, dans une seule langue. Pour envoyer dans la langue de chaque élève, choisissez de nouveau le modèle sans le modifier."
+      },
+      "review": {
+        "title": "Vérifier et envoyer",
+        "desc": "Vérifiez avant d'envoyer. Une fois envoyé, impossible d'annuler.",
+        "to": "À",
+        "model": "Modèle",
+        "subject": "Objet",
+        "message": "Message",
+        "sender": "Signé par",
+        "removedCount_one": "{{count}} retiré de la liste",
+        "removedCount_other": "{{count}} retirés de la liste",
+        "sending": "Envoi en cours...",
+        "keepOpen": "Ne fermez pas cette page avant la fin.",
+        "resultSent_one": "{{count}} envoyé",
+        "resultSent_other": "{{count}} envoyés",
+        "resultFailed_one": "{{count}} échec",
+        "resultFailed_other": "{{count}} échecs",
+        "failedList": "Ne l'ont pas reçu :",
+        "error": "L'envoi s'est arrêté avec une erreur :"
       },
       "history": {
         "title": "Historique des Notifications",

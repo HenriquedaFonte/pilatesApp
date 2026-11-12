@@ -619,32 +619,13 @@ const LowCreditsReport = () => {
                                 size="sm"
                                 variant="outline"
                                 className="rounded-xl border-border bg-background hover:bg-muted text-xs font-semibold px-4 h-8"
-                                onClick={async () => {
-                                  try {
-                                    // Get student's language preference
-                                    const { data: profile } = await supabase
-                                      .from('profiles')
-                                      .select('preferred_language')
-                                      .eq('id', student.student_id)
-                                      .single()
-
-                                    const language =
-                                      profile?.preferred_language || 'pt'
-
-                                    navigate(
-                                      `/teacher/email-notifications?student=${student.student_id}&filter=selected&tab=custom&template=zeroCredits&language=${language}`
-                                    )
-                                  } catch (error) {
-                                    console.error(
-                                      'Error fetching student language:',
-                                      error
-                                    )
-                                    // Default to Portuguese if error
-                                    navigate(
-                                      `/teacher/email-notifications?student=${student.student_id}&filter=selected&tab=custom&template=zero_credits&language=pt`
-                                    )
-                                  }
-                                }}
+                                onClick={() =>
+                                  // Abre "Nova mensagem" no passo 1 com este aluno e o
+                                  // modelo de créditos (sai na língua de cada aluno).
+                                  navigate(
+                                    `/teacher/email-notifications?student=${student.student_id}&template=lowCredits`
+                                  )
+                                }
                               >
                                 {t('teacher.reports.lowCredits.notifyEmail')}
                               </Button>

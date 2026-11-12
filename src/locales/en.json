@@ -1064,72 +1064,95 @@
     "emails": {
       "title": "Email Dashboard",
       "subtitle": "Send notifications and alerts directly to students' inboxes",
-      "tabs": {
-        "notifications": "Quick Send",
-        "custom": "Custom Email",
-        "templates": "Templates",
+      "areas": {
+        "new": "New message",
         "history": "History"
       },
-      "quick": {
-        "title": "Low Balance Notification",
-        "desc": "Send quick automatic alerts based on the credits limit",
-        "thresholdLabel": "Set alert threshold:",
-        "totalCredits": "total credits",
-        "qualifiedBadge": "{{count}} qualified student(s)",
-        "sending": "Sending Emails...",
-        "notify": "Notify {{count}} Students",
-        "qualifiedTitle": "Qualified Students",
-        "qualifiedDesc": "Who will receive the low balance alert with the current settings",
-        "emptyTitle": "No qualified students",
-        "emptyDesc": "All clear! No students have credits below {{total}}."
+      "steps": {
+        "recipients": "To whom",
+        "content": "What",
+        "review": "Review and send"
       },
-      "customCard": {
-        "filterTitle": "Recipient Filter",
-        "filterDesc": "Choose who will receive the email",
-        "filterLabel": "Filter students by:",
-        "filters": {
+      "nav": {
+        "back": "Back",
+        "next": "Continue",
+        "newMessage": "New message"
+      },
+      "languageNames": {
+        "pt": "Portuguese",
+        "en": "English",
+        "fr": "French"
+      },
+      "messages": {
+        "loadError": "Error loading data:"
+      },
+      "recipients": {
+        "title": "Who is the message for?",
+        "desc": "Choose a group. You can remove students from the list before continuing.",
+        "groups": {
           "all": "All students",
           "low_credits": "Low credits",
-          "zero_credits": "Zero balance",
-          "class": "Specific class",
-          "selected": "Manual selection"
+          "zero_credits": "No credits",
+          "class": "A class",
+          "selected": "Pick students"
         },
-        "selectClass": "Select class:",
-        "selectClassPlaceholder": "Select class",
-        "selectManual": "Select manually:",
-        "clearAll": "Clear All",
-        "selectAll": "Select All",
-        "searchStudent": "Search student...",
-        "creditsCount": "{{count}} credits",
-        "selectedCount": "Selected Recipients: {{count}}",
-        "emptySelection": "No student selected by the current filter.",
-        "moreStudents": " and {{count}} more student(s)...",
-        "contentTitle": "Notification Content",
-        "contentDesc": "Write the email or use a template from the corresponding tab",
-        "senderName": "Sender Name",
-        "senderPlaceholder": "Ex: Teacher Josi, Josi Pilates Studio",
-        "activeTemplate": "Active Template",
-        "templateIndicator": "Template: {{name}}",
-        "noTemplateIndicator": "No Template (Free Text Email)",
-        "subjectLabel": "Email Subject",
-        "subjectPlaceholder": "Notification subject",
-        "messageLabel": "Message",
-        "messagePlaceholder": "Write the message here...",
-        "consentTitle": "Template: Consent Form",
-        "consentDesc": "This template will send the Pilates lessons policies and terms document directly with a PDF attachment to the selected students.",
-        "attachment": "📎 Attachment: PilatesLessonsPolicies.pdf",
-        "sendingCustom": "Sending Emails...",
-        "sendConsentBtn": "Send Term to {{count}} student(s)",
-        "sendEmailBtn": "Send Email to {{count}} student(s)",
-        "multilingualOn": "This template is sent in each student's language (Portuguese, English or French, as set in their profile).",
-        "multilingualOff": "You edited the text: every student will get exactly the text above, in one language. To send it in each student's language, select the template again without editing.",
+        "thresholdLabel": "Low credits = up to",
+        "thresholdUnit": "credits",
+        "selectClass": "Class:",
+        "selectClassPlaceholder": "Choose the class",
         "loadingClass": "Loading class students...",
-        "emptyClass": "No active students in this class."
+        "emptyClass": "No active students in this class.",
+        "count_one": "{{count}} student will receive it",
+        "count_other": "{{count}} students will receive it",
+        "searchPlaceholder": "Search by name or email...",
+        "remove": "Remove",
+        "restore": "Put back",
+        "restoreAll_one": "Put back the {{count}} removed",
+        "restoreAll_other": "Put back the {{count}} removed",
+        "selectHint": "Check the students who will receive it.",
+        "selectAll": "Check all",
+        "clearAll": "Uncheck all",
+        "empty": "No students in this group.",
+        "emptySearch": "No students match this search.",
+        "inactiveBadge": "Inactive",
+        "credits_one": "{{count}} credit",
+        "credits_other": "{{count}} credits"
       },
-      "templates": {
-        "title": "Email Templates",
-        "desc": "Choose a predefined template to speed up sending alerts",
-        "languageLabel": "Template Language:"
+      "content": {
+        "title": "What do you want to send?",
+        "desc": "Choose a template or start with a blank message.",
+        "globeHint": "Sent in each student's language.",
+        "chooseFirst": "Choose a template or \"Blank message\" to continue.",
+        "autoLowCredits": "This email is ready-made, in each student's language, with their credit balance and how to renew. Nothing to write.",
+        "consentDesc": "This email is ready-made, in each student's language, with the consent form and the studio rules attached as a PDF.",
+        "senderName": "Signed by",
+        "senderPlaceholder": "E.g.: Josi",
+        "languageLabel": "Template text language",
+        "subjectLabel": "Subject",
+        "subjectPlaceholder": "Email subject",
+        "messageLabel": "Message",
+        "messagePlaceholder": "Write your message here...",
+        "multilingualOn": "This template is sent in each student's language (Portuguese, English or French, according to their profile).",
+        "multilingualOff": "You edited the text: all students will receive exactly the text above, in a single language. To send in each student's language, choose the template again without editing."
+      },
+      "review": {
+        "title": "Review and send",
+        "desc": "Check before sending. Once sent, it cannot be undone.",
+        "to": "To",
+        "model": "Template",
+        "subject": "Subject",
+        "message": "Message",
+        "sender": "Signed by",
+        "removedCount_one": "{{count}} removed from the list",
+        "removedCount_other": "{{count}} removed from the list",
+        "sending": "Sending...",
+        "keepOpen": "Do not close this page until it finishes.",
+        "resultSent_one": "{{count}} sent",
+        "resultSent_other": "{{count}} sent",
+        "resultFailed_one": "{{count}} failure",
+        "resultFailed_other": "{{count}} failures",
+        "failedList": "Did not receive it:",
+        "error": "Sending stopped with an error:"
       },
       "history": {
         "title": "Notification History",
