@@ -211,7 +211,7 @@ const ReviewStep = ({
               total: progress.total
             })}
           </p>
-          <p className="text-xs text-muted-foreground">{t('teacher.emails.review.keepOpen')}</p>
+          <p className="text-xs text-muted-foreground">{t('teacher.emails.review.canLeave')}</p>
         </div>
       )}
 

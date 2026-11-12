@@ -775,7 +775,7 @@
         "removedCount_one": "{{count}} tirado da lista",
         "removedCount_other": "{{count}} tirados da lista",
         "sending": "Enviando...",
-        "keepOpen": "Não feche esta página até terminar.",
+        "canLeave": "Pode fechar esta página: o envio continua no servidor. O resultado fica no Histórico.",
         "resultSent_one": "{{count}} enviado",
         "resultSent_other": "{{count}} enviados",
         "resultFailed_one": "{{count}} falha",
@@ -818,7 +818,13 @@
         "resendFailed": "Reenviar para quem falhou ({{count}})",
         "resendNobody": "Nenhum aluno para reenviar: quem falhou não está mais na lista de alunos.",
         "legacyTitle": "Envios anteriores",
-        "legacyDesc": "Emails de antes do registro por envio, agrupados por assunto e horário."
+        "legacyDesc": "Emails de antes do registro por envio, agrupados por assunto e horário.",
+        "statusQueued": "Enviando",
+        "serverNote": "Envio em andamento no servidor: {{done}} de {{total}}. Esta lista atualiza sozinha.",
+        "continueHint": "Se o número não mudar por alguns minutos, clique em \"Continuar envio\". Quem já recebeu não recebe de novo.",
+        "continueSend": "Continuar envio",
+        "continueStarted": "Pedido enviado. O número deve voltar a subir em alguns segundos.",
+        "continueError": "Não foi possível continuar o envio. Tente de novo."
       },
       "includeInactive": "Incluir alunos inativos ({{count}})",
       "confirm": {

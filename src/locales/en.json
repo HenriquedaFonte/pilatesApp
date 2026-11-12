@@ -1151,7 +1151,7 @@
         "removedCount_one": "{{count}} removed from the list",
         "removedCount_other": "{{count}} removed from the list",
         "sending": "Sending...",
-        "keepOpen": "Do not close this page until it finishes.",
+        "canLeave": "You can close this page: sending continues on the server. The result will be in History.",
         "resultSent_one": "{{count}} sent",
         "resultSent_other": "{{count}} sent",
         "resultFailed_one": "{{count}} failure",
@@ -1194,7 +1194,13 @@
         "resendFailed": "Resend to those who failed ({{count}})",
         "resendNobody": "No students to resend to: those who failed are no longer in the student list.",
         "legacyTitle": "Earlier emails",
-        "legacyDesc": "Emails from before sends were recorded, grouped by subject and time."
+        "legacyDesc": "Emails from before sends were recorded, grouped by subject and time.",
+        "statusQueued": "Sending",
+        "serverNote": "Sending on the server: {{done}} of {{total}}. This list updates by itself.",
+        "continueHint": "If the number does not change for a few minutes, click \"Resume sending\". Students who already received it will not get it again.",
+        "continueSend": "Resume sending",
+        "continueStarted": "Request sent. The number should start going up again in a few seconds.",
+        "continueError": "Could not resume sending. Please try again."
       },
       "includeInactive": "Include inactive students ({{count}})",
       "confirm": {

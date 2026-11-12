@@ -1235,7 +1235,7 @@
         "removedCount_one": "{{count}} retiré de la liste",
         "removedCount_other": "{{count}} retirés de la liste",
         "sending": "Envoi en cours...",
-        "keepOpen": "Ne fermez pas cette page avant la fin.",
+        "canLeave": "Vous pouvez fermer cette page : l'envoi continue sur le serveur. Le résultat sera dans l'Historique.",
         "resultSent_one": "{{count}} envoyé",
         "resultSent_other": "{{count}} envoyés",
         "resultFailed_one": "{{count}} échec",
@@ -1278,7 +1278,13 @@
         "resendFailed": "Renvoyer à ceux qui ont échoué ({{count}})",
         "resendNobody": "Aucun élève à qui renvoyer : ceux qui ont échoué ne sont plus dans la liste des élèves.",
         "legacyTitle": "Envois précédents",
-        "legacyDesc": "Courriels d'avant l'enregistrement par envoi, regroupés par objet et par heure."
+        "legacyDesc": "Courriels d'avant l'enregistrement par envoi, regroupés par objet et par heure.",
+        "statusQueued": "Envoi en cours",
+        "serverNote": "Envoi en cours sur le serveur : {{done}} sur {{total}}. Cette liste se met à jour toute seule.",
+        "continueHint": "Si le nombre ne change pas pendant quelques minutes, cliquez sur « Reprendre l'envoi ». Les élèves qui l'ont déjà reçu ne le recevront pas une deuxième fois.",
+        "continueSend": "Reprendre l'envoi",
+        "continueStarted": "Demande envoyée. Le nombre devrait recommencer à monter dans quelques secondes.",
+        "continueError": "Impossible de reprendre l'envoi. Réessayez."
       },
       "includeInactive": "Inclure les élèves inactifs ({{count}})",
       "confirm": {
