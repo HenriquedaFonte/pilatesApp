@@ -52,6 +52,7 @@
     "preferences": "Préférences",
     "fullName": "Nom Complet",
     "email": "E-mail",
+    "emailReadOnlyHint": "Pour changer votre courriel, contactez Josi. Elle mettra à jour votre courriel de connexion et votre courriel de contact.",
     "phone": "Téléphone",
     "language": "Langue Préférée",
     "save": "Sauvegarder les Modifications",
