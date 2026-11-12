@@ -643,7 +643,8 @@
         "typeToConfirm": "Type EXCLUIR PERMANENTEMENTE to confirm:",
         "placeholder": "Type EXCLUIR PERMANENTEMENTE to confirm",
         "confirm": "Delete Permanently",
-        "deleting": "Deleting..."
+        "deleting": "Deleting...",
+        "hasReceipts": "This student has issued insurance receipts and cannot be permanently deleted. The data stays in the trash."
       },
       "dialogCommon": {
         "confirm": "Confirm"
@@ -669,7 +670,8 @@
       "controls": "Controls",
       "teacher": "Teacher",
       "signOut": "Sign out",
-      "agenda": "Schedule"
+      "agenda": "Schedule",
+      "receipts": "Insurance receipts"
     },
     "schedule": {
       "title": "Class",
@@ -1181,5 +1183,147 @@
     "saveSuccess": "Insurance details saved.",
     "saveError": "Could not save the insurance details.",
     "loadError": "Could not load the insurance details."
+  },
+  "receipts": {
+    "title": "Insurance receipts",
+    "description": "Receipts for health insurance (kinesitherapy and naturopathy). Once issued, a receipt cannot be changed, only voided.",
+    "issueButton": "Issue receipt",
+    "types": {
+      "kinesitherapy": "Kinesitherapy",
+      "naturopathy": "Naturopathy"
+    },
+    "dialog": {
+      "title": "Issue receipt",
+      "titleWithType": "Issue receipt — {{type}}",
+      "description": "Student: {{name}}",
+      "loading": "Loading data...",
+      "loadError": "Could not load the data for the receipt. Please try again.",
+      "chooseType": "Choose the receipt type.",
+      "choose": "Issue {{type}}",
+      "missingLicense": "Your {{type}} license number is missing from your professional details.",
+      "missingSignature": "Your signature image is missing from your professional details.",
+      "signatureLoadError": "Could not load your signature. Please upload the image again in your professional details.",
+      "goToProfile": "Open my professional details",
+      "emptyHint": "Fields in yellow are empty. Fill in what is needed; everything can be edited before issuing.",
+      "sections": {
+        "patient": "Patient",
+        "holder": "Policy holder",
+        "practitioner": "Practitioner",
+        "treatments": "Treatments",
+        "products": "Products (homeopathy / herbology)"
+      },
+      "fields": {
+        "patientFullName": "Full name",
+        "patientDateOfBirth": "Date of birth",
+        "patientCityProvince": "City / province",
+        "patientPhone": "Phone",
+        "policyNumber": "Policy number",
+        "holderIsSelf": "The student is the policy holder",
+        "holder_fullName": "Holder's name",
+        "holder_cityProvince": "Holder's city / province",
+        "holder_employer": "Holder's employer",
+        "holder_occupation": "Holder's occupation",
+        "holder_phoneWork": "Holder's work phone",
+        "holder_phoneHome": "Holder's home phone",
+        "practitionerName": "Practitioner name",
+        "license": "License number ({{type}})",
+        "date": "Treatment date",
+        "amount": "Amount",
+        "productName": "Product",
+        "productPrice": "Price"
+      },
+      "saveToProfile": "Save policy, city and holder to the student's insurance details",
+      "addTreatment": "Add treatment (up to {{max}})",
+      "addProduct": "Add product (up to {{max}})",
+      "noProducts": "No products. Optional.",
+      "removeRow": "Remove row",
+      "consultations": "Number of consultations",
+      "totalFees": "Total fees",
+      "totalProducts": "Total products",
+      "preview": "Preview",
+      "previewBlocked": "The browser blocked the new tab.",
+      "openPreview": "Open the preview",
+      "issue": "Issue",
+      "issuing": "Issuing...",
+      "back": "Back",
+      "cancel": "Cancel",
+      "confirmTitle": "Issue the receipt?",
+      "confirmText": "Once issued, the receipt cannot be changed, only voided.",
+      "confirmIssue": "Issue receipt",
+      "fixErrors": "Please fix the highlighted fields before continuing."
+    },
+    "validation": {
+      "type": "Choose the receipt type.",
+      "required": "Required field.",
+      "invalidDate": "Invalid date.",
+      "futureDate": "The date cannot be in the future.",
+      "invalidAmount": "Enter an amount greater than zero (up to 2 decimals).",
+      "atLeastOneTreatment": "Enter at least one treatment.",
+      "tooManyTreatments": "At most {{max}} treatments per receipt.",
+      "tooManyProducts": "At most {{max}} products per receipt.",
+      "productsOnlyNaturopathy": "Products are only allowed on naturopathy receipts."
+    },
+    "issue": {
+      "success": "Receipt {{number}} issued.",
+      "pdfPending": "Receipt {{number}} was issued, but the PDF was not saved. Use \"Generate PDF\" in the receipt history.",
+      "saveProfileError": "The receipt was issued, but the data could not be saved to the student's insurance details."
+    },
+    "errors": {
+      "permission": "You are not allowed to do this, or your session expired. Please sign in again.",
+      "studentNotFound": "Student not found.",
+      "receiptNotFound": "Receipt not found.",
+      "alreadyVoid": "This receipt has already been voided.",
+      "reasonRequired": "Please enter the reason for voiding.",
+      "futureDate": "A treatment date is in the future.",
+      "invalidData": "A treatment or product has invalid data. Please check dates and amounts.",
+      "signature": "Could not use the signature image. Please upload it again in your professional details (PNG or JPEG).",
+      "template": "Could not load the receipt form. Please reload the page and try again.",
+      "network": "Connection failed. Please check your internet and try again.",
+      "generic": "Could not complete the action. Please try again.",
+      "download": "Could not download the PDF. Please try again."
+    },
+    "list": {
+      "loading": "Loading receipts...",
+      "loadError": "Could not load the receipts.",
+      "empty": "No receipts issued.",
+      "number": "No.",
+      "student": "Student",
+      "type": "Type",
+      "issuedAt": "Issued",
+      "treatmentDates": "Treatment dates",
+      "total": "Total",
+      "status": "Status",
+      "actions": "Actions",
+      "statusIssued": "Issued",
+      "statusVoid": "Voided",
+      "pdfPending": "PDF pending",
+      "voidReason": "Reason: {{reason}}",
+      "download": "Download",
+      "generatePdf": "Generate PDF",
+      "pdfGenerated": "PDF for receipt {{number}} generated.",
+      "void": "Void"
+    },
+    "void": {
+      "title": "Void receipt",
+      "description": "Receipt {{number}}. It stays in the history, marked as voided. To correct it, void it and issue a new one.",
+      "reason": "Reason (required)",
+      "reasonPlaceholder": "E.g.: wrong amount",
+      "confirm": "Void receipt",
+      "voiding": "Voiding...",
+      "cancel": "Cancel",
+      "success": "Receipt {{number}} voided."
+    },
+    "page": {
+      "title": "Insurance receipts",
+      "subtitle": "All issued receipts",
+      "filters": "Filters",
+      "student": "Student",
+      "allStudents": "All students",
+      "type": "Type",
+      "allTypes": "All types",
+      "from": "Issued from",
+      "to": "To",
+      "clear": "Clear filters"
+    }
   }
 }

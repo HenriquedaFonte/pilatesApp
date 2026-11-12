@@ -20,7 +20,8 @@ import {
   X,
   TrendingUp,
   MessageSquare,
-  CalendarDays
+  CalendarDays,
+  Receipt
 } from 'lucide-react'
 
 const TeacherLayout = ({ children }) => {
@@ -60,6 +61,7 @@ const TeacherLayout = ({ children }) => {
     { labelKey: 'teacher.sidebar.creditHistory', path: '/teacher/credit-history-report', icon: History },
     { labelKey: 'teacher.sidebar.emails', path: '/teacher/email-notifications', icon: Mail },
     { labelKey: 'teacher.sidebar.financial', path: '/teacher/financial-report', icon: TrendingUp },
+    { labelKey: 'teacher.sidebar.receipts', path: '/teacher/receipts', icon: Receipt },
     { labelKey: 'teacher.sidebar.testimonials', path: '/teacher/testimonials', icon: MessageSquare },
   ]
 

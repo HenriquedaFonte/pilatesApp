@@ -170,7 +170,8 @@
       "controls": "Controles",
       "teacher": "Professora",
       "signOut": "Sair",
-      "agenda": "Agenda"
+      "agenda": "Agenda",
+      "receipts": "Recibos de seguro"
     },
     "schedule": {
       "title": "Agenda de",
@@ -361,7 +362,8 @@
         "typeToConfirm": "Digite EXCLUIR PERMANENTEMENTE para confirmar:",
         "placeholder": "Digite EXCLUIR PERMANENTEMENTE para confirmar",
         "confirm": "Excluir Permanentemente",
-        "deleting": "Excluindo..."
+        "deleting": "Excluindo...",
+        "hasReceipts": "Este(a) aluno(a) tem recibo de seguro emitido e não pode ser excluído(a) permanentemente. Os dados ficam na lixeira."
       },
       "dialogCommon": {
         "confirm": "Confirmar"
@@ -1254,5 +1256,147 @@
     "saveSuccess": "Dados do seguro salvos.",
     "saveError": "Não foi possível salvar os dados do seguro.",
     "loadError": "Não foi possível carregar os dados do seguro."
+  },
+  "receipts": {
+    "title": "Recibos de seguro",
+    "description": "Recibos para o seguro saúde (kinésithérapie e naturopathie). Depois de emitido, o recibo não pode ser alterado, só anulado.",
+    "issueButton": "Emitir recibo",
+    "types": {
+      "kinesitherapy": "Kinésithérapie",
+      "naturopathy": "Naturopathie"
+    },
+    "dialog": {
+      "title": "Emitir recibo",
+      "titleWithType": "Emitir recibo — {{type}}",
+      "description": "Aluno(a): {{name}}",
+      "loading": "Carregando dados...",
+      "loadError": "Não foi possível carregar os dados para o recibo. Tente de novo.",
+      "chooseType": "Escolha o tipo de recibo.",
+      "choose": "Emitir {{type}}",
+      "missingLicense": "Falta o nº de licença de {{type}} nos seus dados profissionais.",
+      "missingSignature": "Falta a imagem da sua assinatura nos dados profissionais.",
+      "signatureLoadError": "Não foi possível carregar a sua assinatura. Envie a imagem de novo nos dados profissionais.",
+      "goToProfile": "Abrir meus dados profissionais",
+      "emptyHint": "Os campos em amarelo estão vazios. Complete o que for preciso; tudo pode ser editado antes de emitir.",
+      "sections": {
+        "patient": "Paciente",
+        "holder": "Titular da apólice",
+        "practitioner": "Praticante",
+        "treatments": "Tratamentos",
+        "products": "Produtos (homeopatia / herbologia)"
+      },
+      "fields": {
+        "patientFullName": "Nome completo",
+        "patientDateOfBirth": "Data de nascimento",
+        "patientCityProvince": "Cidade / província",
+        "patientPhone": "Telefone",
+        "policyNumber": "Nº da apólice",
+        "holderIsSelf": "O(a) aluno(a) é o(a) titular da apólice",
+        "holder_fullName": "Nome do titular",
+        "holder_cityProvince": "Cidade / província do titular",
+        "holder_employer": "Empregador do titular",
+        "holder_occupation": "Ocupação do titular",
+        "holder_phoneWork": "Telefone comercial do titular",
+        "holder_phoneHome": "Telefone residencial do titular",
+        "practitionerName": "Nome da praticante",
+        "license": "Nº de licença ({{type}})",
+        "date": "Data do tratamento",
+        "amount": "Valor",
+        "productName": "Produto",
+        "productPrice": "Preço"
+      },
+      "saveToProfile": "Salvar apólice, cidade e titular no cadastro de seguro do(a) aluno(a)",
+      "addTreatment": "Adicionar tratamento (até {{max}})",
+      "addProduct": "Adicionar produto (até {{max}})",
+      "noProducts": "Nenhum produto. Opcional.",
+      "removeRow": "Remover linha",
+      "consultations": "Nº de consultas",
+      "totalFees": "Total dos honorários",
+      "totalProducts": "Total dos produtos",
+      "preview": "Pré-visualizar",
+      "previewBlocked": "O navegador bloqueou a nova aba.",
+      "openPreview": "Abrir a prévia",
+      "issue": "Emitir",
+      "issuing": "Emitindo...",
+      "back": "Voltar",
+      "cancel": "Cancelar",
+      "confirmTitle": "Emitir o recibo?",
+      "confirmText": "Depois de emitido o recibo não pode ser alterado, só anulado.",
+      "confirmIssue": "Emitir recibo",
+      "fixErrors": "Corrija os campos marcados antes de continuar."
+    },
+    "validation": {
+      "type": "Escolha o tipo de recibo.",
+      "required": "Campo obrigatório.",
+      "invalidDate": "Data inválida.",
+      "futureDate": "A data não pode ser no futuro.",
+      "invalidAmount": "Informe um valor maior que zero (até 2 casas decimais).",
+      "atLeastOneTreatment": "Informe ao menos um tratamento.",
+      "tooManyTreatments": "No máximo {{max}} tratamentos por recibo.",
+      "tooManyProducts": "No máximo {{max}} produtos por recibo.",
+      "productsOnlyNaturopathy": "Produtos só existem no recibo de naturopathie."
+    },
+    "issue": {
+      "success": "Recibo {{number}} emitido.",
+      "pdfPending": "Recibo {{number}} emitido, mas o PDF não foi salvo. Use \"Gerar PDF\" no histórico de recibos.",
+      "saveProfileError": "O recibo foi emitido, mas não foi possível salvar os dados no cadastro de seguro do(a) aluno(a)."
+    },
+    "errors": {
+      "permission": "Você não tem permissão para esta ação, ou a sessão expirou. Entre de novo.",
+      "studentNotFound": "Aluno(a) não encontrado(a).",
+      "receiptNotFound": "Recibo não encontrado.",
+      "alreadyVoid": "Este recibo já foi anulado.",
+      "reasonRequired": "Informe o motivo da anulação.",
+      "futureDate": "A data de um tratamento está no futuro.",
+      "invalidData": "Algum tratamento ou produto tem dados inválidos. Confira datas e valores.",
+      "signature": "Não foi possível usar a imagem da assinatura. Envie de novo nos dados profissionais (PNG ou JPEG).",
+      "template": "Não foi possível carregar o formulário do recibo. Recarregue a página e tente de novo.",
+      "network": "Falha de conexão. Confira a internet e tente de novo.",
+      "generic": "Não foi possível concluir. Tente de novo.",
+      "download": "Não foi possível baixar o PDF. Tente de novo."
+    },
+    "list": {
+      "loading": "Carregando recibos...",
+      "loadError": "Não foi possível carregar os recibos.",
+      "empty": "Nenhum recibo emitido.",
+      "number": "Nº",
+      "student": "Aluno(a)",
+      "type": "Tipo",
+      "issuedAt": "Emissão",
+      "treatmentDates": "Datas dos tratamentos",
+      "total": "Total",
+      "status": "Status",
+      "actions": "Ações",
+      "statusIssued": "Emitido",
+      "statusVoid": "Anulado",
+      "pdfPending": "PDF pendente",
+      "voidReason": "Motivo: {{reason}}",
+      "download": "Baixar",
+      "generatePdf": "Gerar PDF",
+      "pdfGenerated": "PDF do recibo {{number}} gerado.",
+      "void": "Anular"
+    },
+    "void": {
+      "title": "Anular recibo",
+      "description": "Recibo {{number}}. Ele continua no histórico, marcado como anulado. Para corrigir, anule e emita um novo.",
+      "reason": "Motivo (obrigatório)",
+      "reasonPlaceholder": "Ex.: valor errado",
+      "confirm": "Anular recibo",
+      "voiding": "Anulando...",
+      "cancel": "Cancelar",
+      "success": "Recibo {{number}} anulado."
+    },
+    "page": {
+      "title": "Recibos de seguro",
+      "subtitle": "Todos os recibos emitidos",
+      "filters": "Filtros",
+      "student": "Aluno(a)",
+      "allStudents": "Todos os alunos",
+      "type": "Tipo",
+      "allTypes": "Todos os tipos",
+      "from": "Emitidos de",
+      "to": "Até",
+      "clear": "Limpar filtros"
+    }
   }
 }

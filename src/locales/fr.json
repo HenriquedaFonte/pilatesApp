@@ -615,7 +615,8 @@
       "controls": "Contrôles",
       "teacher": "Professeure",
       "signOut": "Se déconnecter",
-      "agenda": "Agenda"
+      "agenda": "Agenda",
+      "receipts": "Reçus d'assurance"
     },
     "schedule": {
       "title": "Agenda des",
@@ -866,7 +867,8 @@
         "typeToConfirm": "Tapez EXCLUIR PERMANENTEMENTE pour confirmer :",
         "placeholder": "Tapez EXCLUIR PERMANENTEMENTE pour confirmer",
         "confirm": "Supprimer définitivement",
-        "deleting": "Suppression..."
+        "deleting": "Suppression...",
+        "hasReceipts": "Cet(te) élève a des reçus d'assurance émis et ne peut pas être supprimé(e) définitivement. Les données restent dans la corbeille."
       },
       "dialogCommon": {
         "confirm": "Confirmer"
@@ -1265,5 +1267,147 @@
     "saveSuccess": "Informations d'assurance enregistrées.",
     "saveError": "Impossible d'enregistrer les informations d'assurance.",
     "loadError": "Impossible de charger les informations d'assurance."
+  },
+  "receipts": {
+    "title": "Reçus d'assurance",
+    "description": "Reçus pour l'assurance santé (kinésithérapie et naturopathie). Une fois émis, un reçu ne peut pas être modifié, seulement annulé.",
+    "issueButton": "Émettre un reçu",
+    "types": {
+      "kinesitherapy": "Kinésithérapie",
+      "naturopathy": "Naturopathie"
+    },
+    "dialog": {
+      "title": "Émettre un reçu",
+      "titleWithType": "Émettre un reçu — {{type}}",
+      "description": "Élève : {{name}}",
+      "loading": "Chargement des données...",
+      "loadError": "Impossible de charger les données du reçu. Veuillez réessayer.",
+      "chooseType": "Choisissez le type de reçu.",
+      "choose": "Émettre {{type}}",
+      "missingLicense": "Votre numéro de permis de {{type}} manque dans vos informations professionnelles.",
+      "missingSignature": "L'image de votre signature manque dans vos informations professionnelles.",
+      "signatureLoadError": "Impossible de charger votre signature. Téléversez l'image de nouveau dans vos informations professionnelles.",
+      "goToProfile": "Ouvrir mes informations professionnelles",
+      "emptyHint": "Les champs en jaune sont vides. Complétez ce qui est nécessaire; tout peut être modifié avant l'émission.",
+      "sections": {
+        "patient": "Patient",
+        "holder": "Titulaire de la police",
+        "practitioner": "Praticienne",
+        "treatments": "Traitements",
+        "products": "Produits (homéopathie / herbologie)"
+      },
+      "fields": {
+        "patientFullName": "Nom complet",
+        "patientDateOfBirth": "Date de naissance",
+        "patientCityProvince": "Ville / province",
+        "patientPhone": "Téléphone",
+        "policyNumber": "Numéro de police",
+        "holderIsSelf": "L'élève est le/la titulaire de la police",
+        "holder_fullName": "Nom du titulaire",
+        "holder_cityProvince": "Ville / province du titulaire",
+        "holder_employer": "Employeur du titulaire",
+        "holder_occupation": "Occupation du titulaire",
+        "holder_phoneWork": "Téléphone au travail du titulaire",
+        "holder_phoneHome": "Téléphone à la maison du titulaire",
+        "practitionerName": "Nom de la praticienne",
+        "license": "Numéro de permis ({{type}})",
+        "date": "Date du traitement",
+        "amount": "Montant",
+        "productName": "Produit",
+        "productPrice": "Prix"
+      },
+      "saveToProfile": "Enregistrer la police, la ville et le titulaire dans le dossier d'assurance de l'élève",
+      "addTreatment": "Ajouter un traitement (jusqu'à {{max}})",
+      "addProduct": "Ajouter un produit (jusqu'à {{max}})",
+      "noProducts": "Aucun produit. Facultatif.",
+      "removeRow": "Retirer la ligne",
+      "consultations": "Nombre de consultations",
+      "totalFees": "Total des honoraires",
+      "totalProducts": "Total des produits",
+      "preview": "Aperçu",
+      "previewBlocked": "Le navigateur a bloqué le nouvel onglet.",
+      "openPreview": "Ouvrir l'aperçu",
+      "issue": "Émettre",
+      "issuing": "Émission...",
+      "back": "Retour",
+      "cancel": "Annuler",
+      "confirmTitle": "Émettre le reçu?",
+      "confirmText": "Une fois émis, le reçu ne peut pas être modifié, seulement annulé.",
+      "confirmIssue": "Émettre le reçu",
+      "fixErrors": "Corrigez les champs indiqués avant de continuer."
+    },
+    "validation": {
+      "type": "Choisissez le type de reçu.",
+      "required": "Champ obligatoire.",
+      "invalidDate": "Date invalide.",
+      "futureDate": "La date ne peut pas être dans le futur.",
+      "invalidAmount": "Indiquez un montant supérieur à zéro (2 décimales au maximum).",
+      "atLeastOneTreatment": "Indiquez au moins un traitement.",
+      "tooManyTreatments": "Au maximum {{max}} traitements par reçu.",
+      "tooManyProducts": "Au maximum {{max}} produits par reçu.",
+      "productsOnlyNaturopathy": "Les produits ne sont permis que sur les reçus de naturopathie."
+    },
+    "issue": {
+      "success": "Reçu {{number}} émis.",
+      "pdfPending": "Le reçu {{number}} a été émis, mais le PDF n'a pas été enregistré. Utilisez « Générer le PDF » dans l'historique des reçus.",
+      "saveProfileError": "Le reçu a été émis, mais les données n'ont pas pu être enregistrées dans le dossier d'assurance de l'élève."
+    },
+    "errors": {
+      "permission": "Vous n'avez pas la permission, ou votre session a expiré. Veuillez vous reconnecter.",
+      "studentNotFound": "Élève introuvable.",
+      "receiptNotFound": "Reçu introuvable.",
+      "alreadyVoid": "Ce reçu a déjà été annulé.",
+      "reasonRequired": "Indiquez le motif de l'annulation.",
+      "futureDate": "La date d'un traitement est dans le futur.",
+      "invalidData": "Un traitement ou un produit contient des données invalides. Vérifiez les dates et les montants.",
+      "signature": "Impossible d'utiliser l'image de la signature. Téléversez-la de nouveau dans vos informations professionnelles (PNG ou JPEG).",
+      "template": "Impossible de charger le formulaire du reçu. Rechargez la page et réessayez.",
+      "network": "Échec de connexion. Vérifiez Internet et réessayez.",
+      "generic": "Impossible de terminer l'opération. Veuillez réessayer.",
+      "download": "Impossible de télécharger le PDF. Veuillez réessayer."
+    },
+    "list": {
+      "loading": "Chargement des reçus...",
+      "loadError": "Impossible de charger les reçus.",
+      "empty": "Aucun reçu émis.",
+      "number": "Nº",
+      "student": "Élève",
+      "type": "Type",
+      "issuedAt": "Émission",
+      "treatmentDates": "Dates des traitements",
+      "total": "Total",
+      "status": "Statut",
+      "actions": "Actions",
+      "statusIssued": "Émis",
+      "statusVoid": "Annulé",
+      "pdfPending": "PDF en attente",
+      "voidReason": "Motif : {{reason}}",
+      "download": "Télécharger",
+      "generatePdf": "Générer le PDF",
+      "pdfGenerated": "PDF du reçu {{number}} généré.",
+      "void": "Annuler"
+    },
+    "void": {
+      "title": "Annuler le reçu",
+      "description": "Reçu {{number}}. Il reste dans l'historique, marqué comme annulé. Pour le corriger, annulez-le et émettez-en un nouveau.",
+      "reason": "Motif (obligatoire)",
+      "reasonPlaceholder": "Ex. : montant erroné",
+      "confirm": "Annuler le reçu",
+      "voiding": "Annulation...",
+      "cancel": "Fermer",
+      "success": "Reçu {{number}} annulé."
+    },
+    "page": {
+      "title": "Reçus d'assurance",
+      "subtitle": "Tous les reçus émis",
+      "filters": "Filtres",
+      "student": "Élève",
+      "allStudents": "Tous les élèves",
+      "type": "Type",
+      "allTypes": "Tous les types",
+      "from": "Émis du",
+      "to": "Au",
+      "clear": "Effacer les filtres"
+    }
   }
 }

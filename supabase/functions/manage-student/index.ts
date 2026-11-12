@@ -138,6 +138,28 @@ serve(async (req) => {
 
     // ── Action: hard-delete (permanent, requires friction in UI) ─────────────
     if (action === 'hard-delete') {
+      // Recibo de seguro é documento fiscal: os FKs de insurance_receipts para
+      // profiles não têm CASCADE, então o perfil não pode ser apagado. Recusar
+      // AQUI, antes do audit_log e de qualquer delete (os deletes abaixo são
+      // separados, sem transação: sem esta checagem tudo seria apagado e só o
+      // perfil falharia no fim). Se a checagem falhar, também recusa.
+      const { count: receiptCount, error: receiptErr } = await supabaseClient
+        .from('insurance_receipts')
+        .select('id', { count: 'exact', head: true })
+        .eq('student_id', studentId)
+      if (receiptErr || typeof receiptCount !== 'number') {
+        throw new Error('Could not check insurance receipts; student was not deleted')
+      }
+      if (receiptCount > 0) {
+        return new Response(
+          JSON.stringify({
+            error: 'Student has insurance receipts and cannot be permanently deleted',
+            code: 'STUDENT_HAS_RECEIPTS',
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 409 }
+        )
+      }
+
       console.log(`Starting HARD DELETE for student: ${studentId}`)
 
       const snapshot = await fetchProfileSnapshot()
