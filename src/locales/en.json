@@ -699,7 +699,8 @@
       "teacher": "Teacher",
       "signOut": "Sign out",
       "agenda": "Schedule",
-      "receipts": "Insurance receipts"
+      "receipts": "Insurance receipts",
+      "profile": "My profile"
     },
     "schedule": {
       "title": "Class",
