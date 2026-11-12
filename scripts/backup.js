@@ -48,6 +48,7 @@ const TABLES = [
   'classes',
   'class_schedules',
   'email_notifications',
+  'email_campaigns',
   'email_logs',
   'testimonials',
   'student_insurance',

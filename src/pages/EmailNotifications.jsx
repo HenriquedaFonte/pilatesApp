@@ -16,16 +16,15 @@ import {
   totalCredits,
   filterRecipients,
   summarizeRecipients,
-  groupEmailHistory,
   excludeStudents,
   sendKindOf,
   normalizeTemplateParam,
   canAdvance,
   countByLanguage,
   studentLanguage,
-  HISTORY_LIMIT,
   LANGUAGES
 } from '../lib/emailRecipients'
+import { buildCampaignRow, buildCampaignFilter, buildResend, campaignSubject } from '../lib/emailCampaigns'
 import { TEMPLATE_CARDS, templateContent, templateTitle } from '../lib/templateCards'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -71,7 +70,11 @@ const EmailNotifications = () => {
   const [classes, setClasses] = useState([])
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
-  const [emailHistory, setEmailHistory] = useState([])
+  // Muda depois de cada envio para o Histórico recarregar.
+  const [historyReloadKey, setHistoryReloadKey] = useState(0)
+  const [historyNotice, setHistoryNotice] = useState('')
+  // Reenvio para quem falhou: { campaignId, subject, missing } do envio de origem.
+  const [resendOf, setResendOf] = useState(null)
 
   const [area, setArea] = useState('new')
   const [step, setStep] = useState(1)
@@ -107,7 +110,6 @@ const EmailNotifications = () => {
 
   useEffect(() => {
     loadData()
-    loadEmailHistory()
     // eslint-disable-next-line react-hooks/exhaustive-deps -- carga inicial
   }, [])
 
@@ -165,20 +167,6 @@ const EmailNotifications = () => {
       setLoadError(`${t('teacher.emails.messages.loadError')} ${error.message}`)
     } finally {
       setLoading(false)
-    }
-  }
-
-  const loadEmailHistory = async () => {
-    try {
-      const { data: notifications, error } = await supabase
-        .from('email_notifications')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(HISTORY_LIMIT)
-      if (error) throw error
-      setEmailHistory(groupEmailHistory(notifications))
-    } catch (error) {
-      console.error('Error loading email history:', error)
     }
   }
 
@@ -243,6 +231,7 @@ const EmailNotifications = () => {
   const inactiveCount = students.length - students.filter(s => s.is_active !== false).length
 
   const handleFilterTypeChange = group => {
+    setResendOf(null)
     setFilterType(group)
     setExcludedIds([])
     setSearch('')
@@ -353,13 +342,14 @@ const EmailNotifications = () => {
     setTestState({ sending: false, ok: false, error: '' })
     setResult(null)
     setProgress(null)
+    setResendOf(null)
     if ([...searchParams.keys()].length > 0) setSearchParams({}, { replace: true })
     window.scrollTo?.({ top: 0, behavior: 'smooth' })
   }
 
   // ---- Envio ----
-  const logNotification = (student, emailType, logSubject, status, errorMessage = null) =>
-    supabase.rpc('log_email_notification', {
+  const logNotification = async (campaignId, student, emailType, logSubject, status, errorMessage = null) => {
+    const { error } = await supabase.rpc('log_email_notification', {
       p_student_id: student.id,
       p_email_type: emailType,
       p_recipient_email: student.email,
@@ -371,8 +361,81 @@ const EmailNotifications = () => {
         duo: student.duo_credits,
         group: student.group_credits,
         total: student.totalCredits
-      }
+      },
+      p_campaign_id: campaignId
     })
+    // Sem dados do aluno no console.
+    if (error) console.error('Error logging email notification:', error.code || error.message)
+  }
+
+  // Registra o envio (email_campaigns) antes de mandar qualquer email.
+  const createCampaign = async (kind, targets) => {
+    const filter = buildCampaignFilter({
+      filterType,
+      lowCreditsThreshold,
+      selectedClass,
+      className: classes.find(c => c.id === selectedClass)?.name,
+      includeInactive,
+      excludedCount: excludedIds.length,
+      templateId,
+      resendOf: resendOf?.campaignId
+    })
+    const row = buildCampaignRow({
+      kind,
+      content,
+      senderName,
+      logSubject: LOG_SUBJECTS[kind === 'consent' ? 'consent_form' : 'low_credits'],
+      filter,
+      total: targets.length
+    })
+    const { data, error } = await supabase.from('email_campaigns').insert(row).select('id').single()
+    if (error) throw error
+    return data.id
+  }
+
+  // "Reenviar para quem falhou": abre a confirmação no passo 3 com os mesmos
+  // texto/modelo e só os alunos que falharam (um envio novo).
+  const startResend = async (campaignId, rows) => {
+    if (sendingRef.current) return
+    setHistoryNotice('')
+    const { data: campaign, error } = await supabase
+      .from('email_campaigns')
+      .select('*')
+      .eq('id', campaignId)
+      .single()
+    if (error || !campaign) {
+      console.error('Error loading email campaign:', error?.code || error?.message)
+      setHistoryNotice(t('teacher.emails.history.loadError'))
+      return
+    }
+    const resend = buildResend(campaign, rows, students)
+    if (resend.selectedIds.length === 0) {
+      setHistoryNotice(t('teacher.emails.history.resendNobody'))
+      return
+    }
+    setResult(null)
+    setProgress(null)
+    setFilterType('selected')
+    setSelectedIds(resend.selectedIds)
+    setExcludedIds([])
+    setSearch('')
+    setIncludeInactive(resend.includeInactive)
+    setTemplateId(resend.templateId)
+    setContent(resend.content)
+    if (resend.senderName) setSenderName(resend.senderName)
+    setPreviewStudentId(null)
+    setPreviewLanguage(null)
+    setTestState({ sending: false, ok: false, error: '' })
+    setResendOf({
+      campaignId,
+      subject: campaignSubject(campaign),
+      missing: resend.missing
+    })
+    setStep(3)
+    setArea('new')
+    setConfirmOpen(true)
+    window.scrollTo?.({ top: 0, behavior: 'smooth' })
+  }
 
   const requestSend = () => {
     if (sendingRef.current || result || recipients.length === 0 || !sendKind) return
@@ -394,14 +457,21 @@ const EmailNotifications = () => {
 
     let success = 0
     const failed = []
+    let campaignId = null
     try {
+      try {
+        campaignId = await createCampaign(kind, targets)
+      } catch (error) {
+        console.error('Error creating email campaign:', error.code || error.message)
+        throw new Error(t('teacher.emails.review.campaignError'))
+      }
       if (kind === 'custom') {
         const results = await emailService.sendCustomNotification(targets, content, senderName, {
           onProgress: (done, total) => setProgress({ done, total })
         })
         for (let i = 0; i < targets.length; i++) {
           const r = results[i] || { success: false, error: 'no result' }
-          await logNotification(targets[i], 'custom', mainSubject, r.success ? 'sent' : 'failed', r.error || null)
+          await logNotification(campaignId, targets[i], 'custom', mainSubject, r.success ? 'sent' : 'failed', r.error || null)
           if (r.success) success++
           else failed.push({ name: targets[i].full_name, error: r.error || '' })
         }
@@ -411,11 +481,11 @@ const EmailNotifications = () => {
           try {
             if (kind === 'consent') await emailService.sendConsentFormEmail(student)
             else await emailService.sendLowCreditsNotification(student, student.totalCredits)
-            await logNotification(student, emailType, LOG_SUBJECTS[emailType], 'sent')
+            await logNotification(campaignId, student, emailType, LOG_SUBJECTS[emailType], 'sent')
             success++
           } catch (error) {
-            console.error(`Error sending email to ${student.full_name}:`, error)
-            await logNotification(student, emailType, LOG_SUBJECTS[emailType], 'failed', error.message)
+            console.error('Error sending email:', error.message)
+            await logNotification(campaignId, student, emailType, LOG_SUBJECTS[emailType], 'failed', error.message)
             failed.push({ name: student.full_name, error: error.message })
           }
           setProgress({ done: success + failed.length, total: targets.length })
@@ -424,13 +494,17 @@ const EmailNotifications = () => {
       }
       setResult({ success, failed })
     } catch (error) {
-      console.error('Error sending emails:', error)
+      console.error('Error sending emails:', error.message)
       setResult({ success, failed, error: error.message })
     } finally {
+      if (campaignId) {
+        const { error } = await supabase.rpc('finish_email_campaign', { p_campaign_id: campaignId })
+        if (error) console.error('Error finishing email campaign:', error.code || error.message)
+      }
       sendingRef.current = false
       setSending(false)
       setProgress(null)
-      loadEmailHistory()
+      setHistoryReloadKey(key => key + 1)
     }
   }
 
@@ -492,6 +566,15 @@ const EmailNotifications = () => {
           </TabsList>
 
           <TabsContent value="new" className="space-y-4">
+            {resendOf && (
+              <Alert className="rounded-2xl">
+                <AlertDescription>
+                  {t('teacher.emails.review.resendNote', { subject: resendOf.subject })}
+                  {resendOf.missing > 0 &&
+                    ` ${t('teacher.emails.review.resendMissing', { count: resendOf.missing })}`}
+                </AlertDescription>
+              </Alert>
+            )}
             <Card className="rounded-2xl border border-border bg-card shadow-sm p-2 sm:p-3">
               <Stepper steps={steps} current={step} onGoTo={goTo} disabled={locked} />
             </Card>
@@ -611,7 +694,17 @@ const EmailNotifications = () => {
                 <h2 className="text-lg font-semibold text-foreground">{t('teacher.emails.history.title')}</h2>
                 <p className="text-sm text-muted-foreground">{t('teacher.emails.history.desc')}</p>
               </div>
-              <EmailHistory entries={emailHistory} />
+              {historyNotice && (
+                <Alert variant="destructive" className="rounded-2xl">
+                  <AlertDescription>{historyNotice}</AlertDescription>
+                </Alert>
+              )}
+              <EmailHistory
+                students={students}
+                reloadKey={historyReloadKey}
+                onResendFailed={startResend}
+                resendDisabled={sending}
+              />
             </Card>
           </TabsContent>
         </Tabs>
@@ -631,6 +724,9 @@ const EmailNotifications = () => {
                       ? t('teacher.emails.confirm.kindConsent')
                       : t('teacher.emails.confirm.kindCustom', { subject: mainSubject })}
                   </p>
+                  {resendOf && (
+                    <p>{t('teacher.emails.confirm.resendNote', { subject: resendOf.subject })}</p>
+                  )}
                   {pendingSummary && (
                     <p className="text-foreground font-medium">
                       {pendingSummary.names.join(', ')}

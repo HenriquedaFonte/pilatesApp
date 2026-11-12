@@ -110,6 +110,7 @@ export const groupEmailHistory = (notifications, gapMs = HISTORY_GAP_MS) => {
     group.details.push({
       student: n.recipient_email,
       success: n.status === 'sent',
+      status: n.status,
       error: n.error_message
     })
   }

@@ -1159,11 +1159,15 @@
         "failedList": "Did not receive it:",
         "error": "Sending stopped with an error:",
         "texts": "Texts",
-        "emptyLanguage": "empty (uses another language)"
+        "emptyLanguage": "empty (uses another language)",
+        "campaignError": "the send could not be recorded. No email was sent.",
+        "resendNote": "Resend to those who failed in \"{{subject}}\". It will appear as a new send in the history.",
+        "resendMissing_one": "{{count}} student who failed is no longer in the list and was left out.",
+        "resendMissing_other": "{{count}} students who failed are no longer in the list and were left out."
       },
       "history": {
         "title": "Notification History",
-        "desc": "Consolidated log of all emails sent by the admin panel",
+        "desc": "Each send is one row. Click a send to see who received it and who failed.",
         "sentBadge": "{{count}} sent",
         "failedBadge": "{{count}} failed",
         "emailType": "Email Type",
@@ -1175,7 +1179,22 @@
         "recipients": "Recipients",
         "recipientsCount": "{{count}} student(s)",
         "emptyTitle": "No emails sent",
-        "emptyDesc": "There is no record of notifications sent so far in the studio."
+        "emptyDesc": "There is no record of notifications sent so far in the studio.",
+        "loadError": "Could not load the history. Please try again.",
+        "noRecipients": "No recipients recorded for this send.",
+        "noSubject": "(no subject)",
+        "errorLabel": "Error:",
+        "statusSent": "Sent",
+        "statusFailed": "Failed",
+        "statusSending": "Not completed",
+        "sendingNote": "This send is still running or was interrupted (page closed or error). The list shows what has been recorded so far.",
+        "previous": "Previous",
+        "next": "Next",
+        "pageOf": "Page {{page}} of {{pages}}",
+        "resendFailed": "Resend to those who failed ({{count}})",
+        "resendNobody": "No students to resend to: those who failed are no longer in the student list.",
+        "legacyTitle": "Earlier emails",
+        "legacyDesc": "Emails from before sends were recorded, grouped by subject and time."
       },
       "includeInactive": "Include inactive students ({{count}})",
       "confirm": {
@@ -1187,7 +1206,8 @@
         "inactiveIncluded": "Inactive students are included in this send.",
         "cancel": "Cancel",
         "send": "Send to {{count}}",
-        "progress": "Sending {{done}} of {{total}}..."
+        "progress": "Sending {{done}} of {{total}}...",
+        "resendNote": "Resend to those who failed in \"{{subject}}\"."
       },
       "preview": {
         "title": "Email preview",
