@@ -1,6 +1,6 @@
 # Josi Pilates — instruções para o Claude
 
-**Toda sessão nova começa lendo `docs/PENDENCIAS.md`** (estado atual, testes em aberto, o que está por fazer).
+**Toda sessão nova começa do `main` atualizado (`git pull origin main`) e lendo `docs/PENDENCIAS.md`** (estado atual, testes em aberto, o que está por fazer).
 Regras de esforço e quando usar o agente `dev-critico`: `.claude/rules/escolha-de-esforco.md`.
 
 ## O projeto
@@ -32,4 +32,7 @@ Antes, atualizar `docs/PENDENCIAS.md` no mesmo PR. Depois, terminar com passos n
 3. O que testar depois do deploy.
 4. Encerrar esta sessão.
 5. Abrir uma sessão nova no Claude Code, no repositório `HenriquedaFonte/pilatesApp`, com o esforço em medium.
-6. A primeira mensagem, pronta para colar (em bloco de código).
+6. A primeira mensagem, pronta para colar (em bloco de código), sempre neste formato:
+   ```
+   Comece do main atualizado. Leia docs/PENDENCIAS.md. Quero fazer: [tarefa].
+   ```
