@@ -1,187 +1,136 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { ALLOWED_ATTACHMENTS, buildEmail, type Caller } from './policy.ts'
 
-console.log('Send Email function loaded')
+// Quem pode mandar o quê: ver policy.ts.
 
-interface EmailPayload {
-  from: string
-  to: string[]
-  subject: string
-  html: string
-  text: string
-  reply_to?: string
-  attachments?: Array<{
-    filename: string
-    path: string
-    contentType: string
-  }>
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
+
+function json(body: unknown, status: number) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  })
+}
+
+async function resolveCaller(authHeader: string): Promise<Caller> {
+  const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+  if (serviceRoleKey && authHeader === `Bearer ${serviceRoleKey}`) {
+    return { kind: 'service' }
+  }
+  if (!authHeader) return { kind: 'anonymous' }
+
+  const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? ''
+  const userClient = createClient(supabaseUrl, Deno.env.get('SUPABASE_ANON_KEY') ?? '', {
+    global: { headers: { Authorization: authHeader } },
+  })
+  const { data: { user } } = await userClient.auth.getUser()
+  if (!user) return { kind: 'anonymous' }
+
+  // Mesmo critério de public.is_staff(): role in ('teacher', 'admin').
+  // Lido com service_role (como em manage-student/create-user).
+  const adminClient = createClient(supabaseUrl, serviceRoleKey)
+  const { data: profile, error } = await adminClient
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+  if (!error && (profile?.role === 'teacher' || profile?.role === 'admin')) {
+    return { kind: 'staff', userId: user.id }
+  }
+  return { kind: 'user', userId: user.id, email: user.email ?? '', createdAt: user.created_at ?? null }
+}
+
+async function loadAttachment(name: string) {
+  const spec = ALLOWED_ATTACHMENTS[name]
+  const res = await fetch(spec.url)
+  if (!res.ok) {
+    console.error(`Attachment fetch failed: ${name} (status ${res.status})`)
+    return null
+  }
+  const bytes = new Uint8Array(await res.arrayBuffer())
+  let binary = ''
+  for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i])
+  return { filename: name, content: btoa(binary), type: spec.contentType }
 }
 
 Deno.serve(async (req) => {
-  const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  }
-
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
-
-  // Require an authenticated caller — blocks open relay abuse via anon key
-  const authHeader = req.headers.get('Authorization') ?? ''
-  const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? 'no-key'
-  const isServiceRole = authHeader === `Bearer ${serviceRoleKey}`
-
-  if (!isServiceRole) {
-    const userClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      { global: { headers: { Authorization: authHeader } } }
-    )
-    const { data: { user } } = await userClient.auth.getUser()
-    if (!user) {
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
-    }
+  if (req.method !== 'POST') {
+    return json({ error: 'Method not allowed' }, 405)
   }
 
   try {
-    // Get the email payload
-    const emailPayload: EmailPayload = await req.json()
+    let body: unknown
+    try {
+      body = await req.json()
+    } catch {
+      return json({ error: 'Invalid request' }, 400)
+    }
 
-    console.log('Sending email to:', emailPayload.to)
-    console.log('Email payload:', JSON.stringify(emailPayload, null, 2))
+    const caller = await resolveCaller(req.headers.get('Authorization') ?? '')
+    // deno-lint-ignore no-explicit-any
+    const result = buildEmail(body as any, caller)
+    if (!result.ok) {
+      console.warn(`send-email refused: caller=${caller.kind} status=${result.status} reason=${result.error}`)
+      return json({ error: result.error }, result.status)
+    }
 
-    // Send email via Resend API
     const resendApiKey = Deno.env.get('RESEND_API_KEY')
     if (!resendApiKey) {
       console.error('RESEND_API_KEY not configured')
-      return new Response(
-        JSON.stringify({ error: 'Email service not configured' }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      )
+      return json({ error: 'Email service not configured' }, 500)
     }
 
-    // Prepare the payload for Resend API
-    const resendPayload: any = {
-      from: emailPayload.from,
-      to: emailPayload.to,
-      subject: emailPayload.subject,
-      html: emailPayload.html,
-      text: emailPayload.text,
-      ...(emailPayload.reply_to && { reply_to: emailPayload.reply_to })
+    const { email } = result
+    // deno-lint-ignore no-explicit-any
+    const resendPayload: Record<string, any> = {
+      from: email.from,
+      to: email.to,
+      subject: email.subject,
+      ...(email.html && { html: email.html }),
+      ...(email.text && { text: email.text }),
+      ...(email.reply_to && { reply_to: email.reply_to }),
     }
 
-    // Add attachments if present
-    if (emailPayload.attachments && emailPayload.attachments.length > 0) {
-      console.log(`Processing ${emailPayload.attachments.length} attachments`)
-      resendPayload.attachments = []
-
-      for (const attachment of emailPayload.attachments) {
+    if (email.attachments.length > 0) {
+      const loaded = []
+      for (const name of email.attachments) {
         try {
-          console.log(`Processing attachment: ${attachment.filename} from ${attachment.path}`)
-
-          // For URLs (https/http), fetch them first
-          if (attachment.path.startsWith('http://') || attachment.path.startsWith('https://')) {
-            console.log(`Fetching attachment from URL: ${attachment.path}`)
-            const fileResponse = await fetch(attachment.path)
-
-            if (!fileResponse.ok) {
-              console.error(`Failed to fetch attachment: ${attachment.path} - Status: ${fileResponse.status}`)
-              continue
-            }
-
-            const contentType = fileResponse.headers.get('content-type')
-            console.log(`Attachment content-type: ${contentType}`)
-
-            const fileBuffer = await fileResponse.arrayBuffer()
-            console.log(`Attachment size: ${fileBuffer.byteLength} bytes`)
-
-            // Convert to base64 properly
-            const uint8Array = new Uint8Array(fileBuffer)
-            let binaryString = ''
-            for (let i = 0; i < uint8Array.length; i++) {
-              binaryString += String.fromCharCode(uint8Array[i])
-            }
-            const base64Content = btoa(binaryString)
-
-            resendPayload.attachments.push({
-              filename: attachment.filename,
-              content: base64Content,
-              type: attachment.contentType
-            })
-
-            console.log(`Successfully processed attachment: ${attachment.filename}`)
-          } else {
-            // For local files, read from filesystem
-            console.log(`Reading local file: ${attachment.path}`)
-            const fileContent = await Deno.readFile(attachment.path)
-            const base64Content = btoa(String.fromCharCode.apply(null, Array.from(fileContent)))
-
-            resendPayload.attachments.push({
-              filename: attachment.filename,
-              content: base64Content,
-              type: attachment.contentType
-            })
-          }
-        } catch (error) {
-          console.error(`Error processing attachment ${attachment.filename}:`, error)
+          const a = await loadAttachment(name)
+          if (a) loaded.push(a)
+        } catch (err) {
+          console.error(`Attachment error: ${name}`, err instanceof Error ? err.message : 'unknown')
         }
       }
-
-      console.log(`Final attachments count: ${resendPayload.attachments.length}`)
+      if (loaded.length > 0) resendPayload.attachments = loaded
     }
 
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${resendApiKey}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(resendPayload)
+      body: JSON.stringify(resendPayload),
     })
 
-    const data = await response.json()
+    const data = await response.json().catch(() => ({}))
 
     if (!response.ok) {
-      console.error('Resend API error:', data)
-      console.error('Response status:', response.status)
-      console.error('Response headers available')
-      return new Response(
-        JSON.stringify({
-          error: data.message || 'Failed to send email',
-          details: data,
-          status: response.status
-        }),
-        {
-          status: response.status,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      )
+      // Só o necessário no log; nada do erro bruto do Resend volta ao chamador.
+      console.error(`Resend error: status=${response.status} name=${data?.name ?? 'unknown'}`)
+      return json({ error: 'Failed to send email' }, 502)
     }
 
-    console.log('Email sent successfully:', data.id)
-
-    return new Response(
-      JSON.stringify({ success: true, data }),
-      {
-        status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      }
-    )
-
+    console.log(`Email sent: id=${data?.id} mode=${result.mode} caller=${caller.kind} recipients=${email.to.length}`)
+    return json({ success: true, data: { id: data?.id } }, 200)
   } catch (error) {
-    console.error('Unexpected error:', error)
-    return new Response(
-      JSON.stringify({ error: 'Internal server error' }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      }
-    )
+    console.error('Unexpected error:', error instanceof Error ? error.message : 'unknown')
+    return json({ error: 'Internal server error' }, 500)
   }
 })

@@ -3,13 +3,20 @@
 > Memória entre sessões. Toda sessão nova começa lendo este arquivo.
 > No fim de cada tarefa: "Atualize o PENDENCIAS".
 
-_Última atualização: 2026-11-12 (2 Edge Functions fora do repositório investigadas e apagadas: `send-custom-email` e `send-low-credits-notifications`)_
+_Última atualização: 2026-11-12 (`send-email` restrita: só professora manda para qualquer destinatário; remetente fixo; contato do site e boas-vindas do cadastro limitados)_
 
 ## Estado atual
 - Produção: josipilates.com (Vercel, branch `main`).
 - Processo de trabalho com o Claude configurado: `CLAUDE.md`, agente `dev-critico`, regra de esforço e este arquivo.
 
 ## Testes em aberto (usuário)
+- [ ] **Deploy da `send-email` restrita (sem SQL):** `supabase functions deploy send-email --project-ref kezfpyhsejhjcvlbmejq` (sobe `index.ts` e `policy.ts`). Ordem: **deploy antes do merge** (o formulário de contato novo manda `type: 'contact'`, que a função antiga não conhece; o resto do site funciona com as duas versões). Depois do deploy e do merge, testar cada fluxo:
+  1. **Contato do site, sem login:** em josipilates.com (janela anônima), mandar uma mensagem pelo formulário. Deve aparecer a mensagem de sucesso e chegar em `josipilatesmontreal@gmail.com`, de `josi@josipilates.com`; "Responder" já vem com o email do visitante. Testar com `<b>teste</b>` na mensagem: aparece como texto, não em negrito. (Pelo código antigo do repositório, visitante sem login recebia erro 401 aqui; se antes funcionava em produção, a função no ar era diferente do repositório.)
+  2. **Professora, Alunos:** criar um aluno de teste (chega o email de boas-vindas com o link de senha); adicionar créditos a um aluno de teste (chega o email de créditos).
+  3. **Professora, Notificações por email:** aviso personalizado e aviso de créditos baixos para um aluno de teste (chegam e aparecem no histórico); termo de consentimento (chega com o PDF `PilatesLessonsPolicies.pdf` anexado).
+  4. **Esqueci a senha** (tela de login): chega o email de redefinição (a `reset-password` chama a `send-email` com service_role).
+  5. **Cadastro público:** criar uma conta de teste pela tela de cadastro. Se o Supabase entra direto (sem confirmar email), chega o email de boas-vindas; se pede confirmação de email, o email de boas-vindas não sai (já era assim antes, a função exigia login). Apagar a conta depois.
+  6. **Aluno logado não manda email:** opcional, pelo console do navegador logado como aluno de teste, `supabase.functions.invoke('send-email', { body: { to: ['outro@exemplo.com'], subject: 'x', html: 'x' } })` deve dar erro (403).
 - [ ] **Teste depois de apagar `send-custom-email` e `send-low-credits-notifications` (sem SQL, sem deploy):**
   1. Painel do Supabase → Edge Functions: aparecem só `create-user`, `manage-student`, `reset-password` e `send-email`.
   2. Tela Notificações por email: enviar um aviso para um aluno de teste e conferir que chega e aparece no histórico.
@@ -218,7 +225,14 @@ As três migrations de segurança (`20261112010000`, `20261112020000`, `20261112
   - **Reversão:** copiar `docs/edge-functions-orfas/<slug>.ts.txt` para `supabase/functions/<slug>/index.ts`, tirar o cabeçalho de comentário e rodar `supabase functions deploy <slug> --project-ref kezfpyhsejhjcvlbmejq` (os secrets não são apagados junto com a função).
   - **Teste depois:** no painel do Supabase, Edge Functions mostra só `create-user`, `manage-student`, `reset-password` e `send-email`; na tela Notificações por email, enviar um aviso para um aluno de teste e conferir que chega e aparece no histórico.
   - **Depois (opcional, não urgente):** os secrets `EMAIL_API_KEY`, `SERVICE_ROLE_KEY`, `STUDIO_NAME`, `STUDIO_EMAIL` e `STUDIO_PHONE` não são usados por nenhuma função do repositório; dá para removê-los depois de apagar as duas funções (conferir antes no painel).
-- [ ] **Avaliar (dev-critico) — `send-email` aceita qualquer usuário logado.** Visto nesta investigação, não mexido: a `send-email` do repositório exige login, mas não confere o papel, e aceita `from`, `to` e `html` livres. Qualquer conta (inclusive aluno ou conta criada pelo cadastro público) pode usá-la como relay. Bem menos grave que a `send-custom-email` (precisa de conta), mas vale restringir (ex.: só professora para destinatários arbitrários, remetente fixo).
+- [x] **Avaliado e corrigido no código (dev-critico, 2026-11-12) — `send-email` aceitava qualquer usuário logado.** Falta o deploy e os testes (ver "Testes em aberto"). Antes: exigia login, mas não conferia o papel; aceitava `from`, `to`, `html` e anexos livres (anexo por URL qualquer, inclusive endereço interno, ou caminho de arquivo local do servidor); gravava no log o payload inteiro (destinatário e conteúdo) e devolvia ao chamador o erro bruto do Resend. Agora (`supabase/functions/send-email/index.ts` + regras em `policy.ts`, testes em `src/tests/sendEmailPolicy.test.js`):
+  - Remetente sempre `Josi Pilates <josi@josipilates.com>`; o `from` do cliente é ignorado (e o cliente parou de mandar).
+  - **Professora/admin** (`profiles.role` in `teacher`/`admin`, mesmo critério de `is_staff()`) e **service_role** (`reset-password`): destinatários livres (até 50, email válido), assunto em uma linha.
+  - **Formulário de contato** (`type: 'contact'`, com ou sem login): vai sempre para `josipilatesmontreal@gmail.com`, Reply-To do visitante; o servidor monta o email com nome/email/mensagem escapados (o site manda só os campos).
+  - **Aluno logado** (cadastro público): só para o próprio email do login, sem anexo nem Reply-To, e só nos 30 minutos depois de criar a conta (email de boas-vindas do cadastro). Fora disso, 403. Sem login, fora do contato: 401.
+  - Anexo só da lista fixa (`PilatesLessonsPolicies.pdf`, buscado em `https://josipilates.com/...`); o `path` do cliente é ignorado.
+  - Log só com modo, tipo de quem chama, quantidade de destinatários e id do Resend; erro do Resend volta como "Failed to send email" (502).
+  - Risco que fica: o contato aceita envios sem login para a caixa do estúdio (é um formulário de contato público; sem limite de taxa). Um aluno recém-cadastrado ainda manda HTML livre para o próprio email por 30 minutos (se o cadastro entra sem confirmar email, alguém poderia cadastrar o email de outra pessoa). Para fechar de vez, o email de boas-vindas do cadastro teria de ser montado no servidor.
 - [x] ~~**Edge Functions em produção:** conferir no painel~~ (feito: ver o item acima) do Supabase (Edge Functions) se existem só `create-user`, `manage-student`, `reset-password` e `send-email`. Uma Edge Function que não está no repositório poderia chamar uma função de disparo apagada (com service_role); se existir outra, avisar o dev-critico.
 - [x] ~~Remover do repositório o arquivo vazio `credenciais google.txt` e adicionar `credenciais*` ao `.gitignore`.~~ Feito (2026-11-12): arquivo removido (sempre esteve vazio no histórico, nada vazou) e `credenciais*` no `.gitignore`.
 
