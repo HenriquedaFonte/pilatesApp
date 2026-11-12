@@ -11,12 +11,7 @@ import {
   summarizeTreatmentDates,
   todayMontreal,
 } from '../lib/receipts'
-import {
-  canShareFile,
-  downloadReceipt,
-  fetchReceiptFile,
-  openReceiptPdf,
-} from '../lib/receiptFiles'
+import { downloadReceipt, openReceiptPdf, shareReceipt } from '../lib/receiptFiles'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
@@ -88,31 +83,14 @@ const StudentReceipts = () => {
     }
   }
 
-  // O Safari só deixa abrir o compartilhamento logo depois do toque. Se o PDF
-  // demorou a baixar e ele recusar, o arquivo fica guardado e o próximo toque
-  // compartilha na hora.
+  // shareReceipt guarda o PDF em `files`: se o Safari recusar por demora, o
+  // próximo toque compartilha na hora.
   const handleShare = async receipt => {
     setBusy({ id: receipt.id, action: 'share' })
     try {
-      let file = files.current[receipt.id]
-      if (!file) {
-        file = await fetchReceiptFile(receipt)
-        files.current[receipt.id] = file
-      }
-      if (!canShareFile(file)) {
-        toast.error(t('studentReceipts.errors.shareUnsupported'))
-        return
-      }
-      try {
-        await navigator.share({ files: [file], title: file.name })
-      } catch (err) {
-        if (err?.name === 'AbortError') return
-        if (err?.name === 'NotAllowedError') {
-          toast.info(t('studentReceipts.shareReady'))
-          return
-        }
-        throw err
-      }
+      const result = await shareReceipt(receipt, files.current)
+      if (result === 'unsupported') toast.error(t('studentReceipts.errors.shareUnsupported'))
+      else if (result === 'retry') toast.info(t('studentReceipts.shareReady'))
     } catch {
       toast.error(t('studentReceipts.errors.share'))
     } finally {

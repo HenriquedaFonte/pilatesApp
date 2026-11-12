@@ -3,7 +3,7 @@
 > Memória entre sessões. Toda sessão nova começa lendo este arquivo.
 > No fim de cada tarefa: "Atualize o PENDENCIAS".
 
-_Última atualização: 2026-11-12 (backup: verificação TLS religada no workflow)_
+_Última atualização: 2026-11-12 ("Abrir PDF"/"Compartilhar" na tela de recibos da professora)_
 
 ## Estado atual
 - Produção: josipilates.com (Vercel, branch `main`).
@@ -87,6 +87,12 @@ As três migrations de segurança (`20261112010000`, `20261112020000`, `20261112
   5. **Recibo anulado** (anular pela professora): badge "Anulado", número riscado, texto "Este recibo foi anulado e não vale mais..." e **sem** botão de abrir/baixar. O motivo da anulação não aparece para o aluno.
   6. **PDF pendente** (só se acontecer): badge "Em preparação" e sem botão.
   7. **AC-6 (segurança):** aluno A não lê PDF do aluno B nem montando o caminho: isso é a RLS do bucket da 3.3, já coberta pelo teste SQL `docs/testes/3.3-recibos-teste.sql` (passou em produção). No site, só conferir que cada aluno de teste vê **apenas** os próprios recibos.
+- [ ] **Teste no site depois do merge de "Abrir PDF"/"Compartilhar" na tela da professora (sem SQL, sem deploy):** precisa de um recibo emitido para um **aluno de teste** (teste da 3.5). Lugares: ficha do aluno ("Ver" na lista → card "Recibos de seguro") e Relatórios → "Recibos de seguro". Conferir os textos em pt, en e fr.
+  1. **iPhone/iPad (Safari), logada como professora:** o botão do recibo é "Abrir PDF" → abre o PDF numa aba nova, no visualizador do Safari (com o botão de compartilhar do Safari). Ao lado, "Compartilhar" → abre a folha de compartilhamento com `K-2026-0001.pdf` (Mail, Mensagens, Salvar em Arquivos).
+  2. **Android:** "Baixar" baixa `K-2026-0001.pdf`; "Compartilhar" abre a folha de compartilhamento.
+  3. **Computador:** igual a antes: só "Baixar" (sem "Compartilhar"), "Anular" e, se faltar o PDF, "Gerar PDF".
+  4. **Recibo anulado:** a professora continua podendo abrir/baixar (e compartilhar no celular) o PDF de um recibo anulado (só o aluno não pode).
+  5. **Portal do aluno (regressão):** "Meus recibos" continua compartilhando no celular como antes (a lógica de compartilhar passou para um lugar só, usado pelas duas telas).
 - [ ] **Story 3.7 / AC-3 — revisar o texto novo da Política de Privacidade antes do merge (texto legal; sem SQL, sem deploy):** ler a seção nova **8. Dados de Seguro Saúde e Recibos** e os ajustes nas seções 2.1, 3, 6 e 7 (`src/locales/pt.json`, `en.json`, `fr.json`, chave `privacyPolicy`). O texto em português completo está no PR. Depois do merge, abrir `josipilates.com/privacy-policy` em pt, en e fr: a data "Última atualização" mostra 12 de novembro de 2026 (antes mostrava sempre o dia de hoje), a seção 8 aparece depois da 7 e as seguintes vão até 13. Contato.
 - [x] **Story 3.7 — prazo de guarda dos recibos:** confirmado pelo usuário (2026-11-12): **6 anos após o fim do ano em que o recibo foi emitido**.
 - [x] **Story 3.7 — frase sobre apagar dados de seguro:** a Josi concordou (2026-11-12) com a frase "os dados de seguro do seu perfil (apólice e titular) podem ser apagados a seu pedido" (hoje a professora faz isso esvaziando os campos na ficha do aluno).
@@ -180,7 +186,7 @@ As três migrations de segurança (`20261112010000`, `20261112020000`, `20261112
     - **iPhone/iPad:** "Abrir PDF" abre no visualizador do Safari (URL assinada de 60 s, inline; a aba é aberta no toque para o Safari não bloquear), que tem o botão de compartilhar. **Celular (iOS e Android):** também "Compartilhar" (Web Share com o arquivo `K-AAAA-0001.pdf`). **Outros:** "Baixar PDF" (como na tela da professora).
     - Decisão AC-4: recibo anulado aparece com "Anulado" e **sem download** (evita o aluno mandar ao seguro um recibo que não vale). O motivo da anulação não é mostrado ao aluno. Se a Josi preferir liberar o download com aviso, é uma mudança pequena.
     - Abrir/baixar/compartilhar ficou em `src/lib/receiptFiles.js` (sem pdf-lib): o portal do aluno carrega ~15 KB em vez de ~450 KB.
-  - [ ] **Ideia (menor):** usar o mesmo "Abrir PDF"/"Compartilhar" na tela da professora (`ReceiptsList.jsx`), se a Josi emitir recibos pelo iPhone.
+  - [x] **"Abrir PDF"/"Compartilhar" na tela da professora** (`ReceiptsList.jsx`) — **feito no código** (sem SQL, sem deploy). Falta o teste no site (ver "Testes em aberto"). Mesmo comportamento do portal do aluno: no iPhone/iPad "Abrir PDF" (visualizador do Safari) em vez de "Baixar"; no celular (iOS/Android) também "Compartilhar"; no computador nada muda. Diferença: a professora continua acessando o PDF de recibo anulado. A lógica de compartilhar saiu de `StudentReceipts.jsx` para `shareReceipt` em `src/lib/receiptFiles.js` (usada pelas duas telas; teste em `src/tests/receiptFiles.test.js`). Textos novos em pt/en/fr: `receipts.list.open`, `share`, `shareReady`, `receipts.errors.open`, `share`, `shareUnsupported`.
   - [x] 3.7 Política de Privacidade (dev-critico) — **feita no código** (sem SQL, sem deploy). **Antes do merge: o usuário revisa o texto (AC-3).** Prazo de 6 anos confirmado; frase "ao informar os dados do titular, você confirma que ele está de acordo" retirada a pedido do usuário (2026-11-12) (ver "Testes em aberto"). Detalhes: `docs/stories/3.7.story.md`. Resumo:
     - Seção nova **8. Dados de Seguro Saúde e Recibos** (pt/en/fr; as seguintes viraram 9–13): dados coletados (apólice/contrato, cidade/província, titular quando é outra pessoa; opcionais), o que fica gravado em cada recibo (o que é impresso + PDF), finalidade, quem acessa (o aluno e a professora/administração; PDF em armazenamento privado), o estúdio não envia nada à seguradora (o aluno entrega o recibo), recibo não é alterado nem apagado (só anulado, com motivo), prazo de guarda **6 anos (confirmado)**, exclusão/desativação da conta não apaga os recibos, e como corrigir ("Meu Perfil" para apólice/titular; contato da seção 13 para recibo emitido).
     - Ajustes: item de dados de seguro em 2.1, item de emissão de recibos em 3, exceção dos recibos no direito de exclusão (6) e remissão na retenção (7).

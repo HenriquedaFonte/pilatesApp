@@ -1,15 +1,18 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { supabase } from '../lib/supabase'
 import {
   VOID_REASON_MAX,
+  isAppleMobileDevice,
+  isMobileDevice,
   moneyFormatter,
   receiptErrorKey,
   summarizeTreatmentDates,
   todayMontreal,
 } from '../lib/receipts'
-import { downloadReceipt, ensureReceiptPdf, fetchReceipt, voidReceipt } from '../lib/receiptService'
+import { ensureReceiptPdf, fetchReceipt, voidReceipt } from '../lib/receiptService'
+import { downloadReceipt, openReceiptPdf, shareReceipt } from '../lib/receiptFiles'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
@@ -31,11 +34,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { Loader2, Download, FileWarning, Ban } from 'lucide-react'
+import { Loader2, Download, ExternalLink, FileWarning, Ban, Share2 } from 'lucide-react'
 
 // Histórico de recibos de seguro para a professora (Story 3.5): na ficha do
 // aluno (filters.studentId) e na lista geral (/teacher/receipts).
 // Só leitura pela API; anular e anexar PDF passam pelas RPCs da Story 3.3.
+// iPhone/iPad: "Abrir PDF" (visualizador do Safari) em vez de "Baixar".
+// Celular (iOS/Android): também "Compartilhar" (Web Share), como no portal do aluno.
 
 const COLUMNS =
   'id, receipt_number, receipt_type, student_id, issued_at, treatments, consultations_count, total_fees, total_products, pdf_path, status, voided_at, void_reason'
@@ -52,6 +57,11 @@ const ReceiptsList = ({ filters = {}, refreshKey = 0, showStudent = false, stude
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState(false)
   const [busyId, setBusyId] = useState(null)
+  const [busyAction, setBusyAction] = useState(null)
+  const files = useRef({}) // PDFs já baixados para compartilhar (por id)
+
+  const apple = isAppleMobileDevice()
+  const mobile = isMobileDevice()
   const [reload, setReload] = useState(0)
 
   const [voidTarget, setVoidTarget] = useState(null)
@@ -94,14 +104,33 @@ const ReceiptsList = ({ filters = {}, refreshKey = 0, showStudent = false, stude
   const money = moneyFormatter(lang)
   const issuedDate = iso => todayMontreal(new Date(iso))
 
-  const handleDownload = async receipt => {
+  // Sem await antes de openReceiptPdf: a aba tem de abrir no próprio toque.
+  const handleOpen = async receipt => {
     setBusyId(receipt.id)
+    setBusyAction('open')
     try {
-      await downloadReceipt(receipt)
+      if (apple) await openReceiptPdf(receipt)
+      else await downloadReceipt(receipt)
     } catch {
-      toast.error(t('receipts.errors.download'))
+      toast.error(t(apple ? 'receipts.errors.open' : 'receipts.errors.download'))
     } finally {
       setBusyId(null)
+      setBusyAction(null)
+    }
+  }
+
+  const handleShare = async receipt => {
+    setBusyId(receipt.id)
+    setBusyAction('share')
+    try {
+      const result = await shareReceipt(receipt, files.current)
+      if (result === 'unsupported') toast.error(t('receipts.errors.shareUnsupported'))
+      else if (result === 'retry') toast.info(t('receipts.list.shareReady'))
+    } catch {
+      toast.error(t('receipts.errors.share'))
+    } finally {
+      setBusyId(null)
+      setBusyAction(null)
     }
   }
 
@@ -223,11 +252,30 @@ const ReceiptsList = ({ filters = {}, refreshKey = 0, showStudent = false, stude
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2 flex-wrap">
                       {r.pdf_path ? (
-                        <Button size="sm" variant="outline" className="rounded-xl" disabled={busy}
-                          onClick={() => handleDownload(r)}>
-                          {busy ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Download className="h-4 w-4 mr-1" />}
-                          {t('receipts.list.download')}
-                        </Button>
+                        <>
+                          <Button size="sm" variant="outline" className="rounded-xl" disabled={busy}
+                            onClick={() => handleOpen(r)}>
+                            {busy && busyAction === 'open' ? (
+                              <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                            ) : apple ? (
+                              <ExternalLink className="h-4 w-4 mr-1" />
+                            ) : (
+                              <Download className="h-4 w-4 mr-1" />
+                            )}
+                            {apple ? t('receipts.list.open') : t('receipts.list.download')}
+                          </Button>
+                          {mobile && (
+                            <Button size="sm" variant="outline" className="rounded-xl" disabled={busy}
+                              onClick={() => handleShare(r)}>
+                              {busy && busyAction === 'share' ? (
+                                <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                              ) : (
+                                <Share2 className="h-4 w-4 mr-1" />
+                              )}
+                              {t('receipts.list.share')}
+                            </Button>
+                          )}
+                        </>
                       ) : (
                         !isVoid && (
                           <Button size="sm" variant="outline" className="rounded-xl" disabled={busy}

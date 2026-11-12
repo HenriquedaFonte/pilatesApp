@@ -60,3 +60,25 @@ export function canShareFile(file) {
     return false
   }
 }
+
+// Compartilha o PDF pelo Web Share (celular). Usado no portal do aluno (3.6) e
+// na lista da professora. `cache` guarda o File por id: o Safari só deixa abrir
+// o compartilhamento logo depois do toque; se o PDF demorou a baixar e ele
+// recusar ('retry'), o próximo toque compartilha na hora, sem baixar de novo.
+// Devolve 'shared' | 'cancelled' | 'retry' | 'unsupported'; outros erros sobem.
+export async function shareReceipt(receipt, cache = {}) {
+  let file = cache[receipt.id]
+  if (!file) {
+    file = await fetchReceiptFile(receipt)
+    cache[receipt.id] = file
+  }
+  if (!canShareFile(file)) return 'unsupported'
+  try {
+    await navigator.share({ files: [file], title: file.name })
+    return 'shared'
+  } catch (err) {
+    if (err?.name === 'AbortError') return 'cancelled'
+    if (err?.name === 'NotAllowedError') return 'retry'
+    throw err
+  }
+}
