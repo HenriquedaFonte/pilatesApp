@@ -17,7 +17,7 @@ const PrivacyPolicy = () => {
           </CardHeader>
           <CardContent className="prose max-w-none">
             <p className="text-sm text-muted-foreground mb-6">
-              {t('privacyPolicy.lastUpdated')}: {new Date().toLocaleDateString()}
+              {t('privacyPolicy.lastUpdated')}: {t('privacyPolicy.lastUpdatedDate')}
             </p>
 
             <h2>{t('privacyPolicy.introduction.title')}</h2>
@@ -74,6 +74,14 @@ const PrivacyPolicy = () => {
 
             <h2>{t('privacyPolicy.dataRetention.title')}</h2>
             <p>{t('privacyPolicy.dataRetention.content')}</p>
+
+            <h2>{t('privacyPolicy.insuranceReceipts.title')}</h2>
+            <p>{t('privacyPolicy.insuranceReceipts.content')}</p>
+            <ul>
+              {t('privacyPolicy.insuranceReceipts.items', { returnObjects: true }).map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
+            </ul>
 
             <h2>{t('privacyPolicy.childrenPrivacy.title')}</h2>
             <p>{t('privacyPolicy.childrenPrivacy.content')}</p>

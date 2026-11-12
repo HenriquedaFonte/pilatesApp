@@ -808,6 +808,7 @@
   "privacyPolicy": {
     "title": "Política de Privacidade",
     "lastUpdated": "Última atualização",
+    "lastUpdatedDate": "12 de novembro de 2026",
     "introduction": {
       "title": "1. Introdução",
       "content": "Bem-vindo ao Studio Josi Pilates. Esta Política de Privacidade explica como coletamos, usamos, divulgamos e protegemos suas informações quando você usa nosso aplicativo e serviços."
@@ -822,7 +823,8 @@
           "Número de telefone",
           "Informações de perfil (preferências de idioma, etc.)",
           "Informações de aulas e agendamentos",
-          "Informações de pagamento para compras de aulas"
+          "Informações de pagamento para compras de aulas",
+          "Dados de seguro saúde, se você quiser recibos para o seu seguro (opcionais): número da apólice ou do contrato, cidade/província e, se o titular da apólice for outra pessoa, o nome, a cidade/província, o empregador, a ocupação e os telefones do titular"
         ]
       },
       "autoCollected": {
@@ -850,6 +852,7 @@
       "items": [
         "Fornecer e gerenciar seus serviços de pilates",
         "Processar inscrições e pagamentos",
+        "Emitir os recibos de seguro saúde (kinésithérapie e naturopathie) que você pede para obter reembolso do seu seguro",
         "Enviar notificações importantes sobre aulas e mudanças de horário",
         "Enviar notificações push (com sua permissão)",
         "Melhorar nosso aplicativo e serviços através de análises",
@@ -879,32 +882,47 @@
       "items": [
         "Acessar suas informações pessoais",
         "Corrigir informações inexatas",
-        "Solicitar exclusão de seus dados",
+        "Solicitar exclusão de seus dados (exceto os recibos de seguro saúde durante o prazo de guarda; ver seção 8)",
         "Optar por não receber comunicações de marketing"
       ]
     },
     "dataRetention": {
       "title": "7. Retenção de Dados",
-      "content": "Reteremos suas informações pessoais pelo tempo necessário para fornecer nossos serviços e cumprir obrigações legais. Os dados da conta são retidos enquanto sua conta estiver ativa e por um período razoável após. Você pode solicitar a exclusão de seus dados a qualquer momento."
+      "content": "Reteremos suas informações pessoais pelo tempo necessário para fornecer nossos serviços e cumprir obrigações legais. Os dados da conta são retidos enquanto sua conta estiver ativa e por um período razoável após. Você pode solicitar a exclusão de seus dados a qualquer momento. Os recibos de seguro saúde têm um prazo de guarda próprio, descrito na seção 8."
+    },
+    "insuranceReceipts": {
+      "title": "8. Dados de Seguro Saúde e Recibos",
+      "content": "Esta seção se aplica se você pede recibos para o seu seguro saúde (kinésithérapie ou naturopathie).",
+      "items": [
+        "Dados coletados: número da apólice ou do contrato, sua cidade/província e, quando o titular da apólice é outra pessoa (por exemplo, cônjuge ou pai/mãe), o nome, a cidade/província, o empregador, a ocupação e os telefones do titular. Todos esses campos são opcionais. Ao informar os dados do titular, você confirma que ele está de acordo com esse uso.",
+        "Recibos emitidos: guardamos cada recibo e o seu PDF, com tudo o que está impresso nele: número e data de emissão do recibo, seu nome, data de nascimento, cidade/província e telefone, os dados do titular, o número da apólice, as datas e os valores das sessões, os produtos e preços (naturopathie), os totais, e o nome, a licença e a assinatura da profissional.",
+        "Finalidade: usamos esses dados somente para emitir os recibos que você pede para obter o reembolso do seu seguro.",
+        "Quem tem acesso: somente você e a professora (ou quem administra o estúdio). Você vê os seus dados de seguro em \"Meu Perfil\" e os seus recibos em \"Meus recibos\"; nenhum aluno vê os dados de outro. Os PDFs ficam em armazenamento privado, sem link público.",
+        "Não enviamos seus dados nem seus recibos à seguradora: é você quem entrega o recibo ao seu seguro, se quiser pedir o reembolso. Você não precisa compartilhar esses dados com mais ninguém.",
+        "Um recibo emitido não é alterado nem apagado. Se tiver algum erro, ele é anulado (com o motivo registrado) e, se for o caso, um novo recibo é emitido; o recibo anulado continua guardado, marcado como anulado.",
+        "Prazo de guarda: os recibos são documentos fiscais e são guardados por 6 anos após o fim do ano em que foram emitidos.",
+        "Exclusão da conta: a exclusão ou desativação da sua conta não apaga os recibos já emitidos nem os dados impressos neles; eles continuam guardados enquanto durar o prazo de guarda. Os dados de seguro do seu perfil (apólice e titular) podem ser apagados a seu pedido.",
+        "Correção: você pode corrigir o número da apólice e os dados do titular a qualquer momento em \"Meu Perfil\". Para corrigir um recibo já emitido, ou para qualquer outro pedido sobre esses dados, fale conosco pelos contatos da seção 13."
+      ]
     },
     "childrenPrivacy": {
-      "title": "8. Privacidade das Crianças",
+      "title": "9. Privacidade das Crianças",
       "content": "Nosso aplicativo não é destinado a crianças menores de 13 anos. Não coletamos intencionalmente informações pessoais de crianças menores de 13 anos. Se você for um pai ou responsável e acreditar que seu filho nos forneceu informações pessoais, entre em contato conosco."
     },
     "internationalTransfers": {
-      "title": "9. Transferências Internacionais de Dados",
+      "title": "10. Transferências Internacionais de Dados",
       "content": "Suas informações podem ser transferidas e processadas em países diferentes do seu. Garantimos que salvaguardas apropriadas estejam em vigor para proteger seus dados durante tais transferências."
     },
     "cookies": {
-      "title": "10. Cookies e Tecnologias de Rastreamento",
+      "title": "11. Cookies e Tecnologias de Rastreamento",
       "content": "Podemos usar cookies e tecnologias similares para melhorar sua experiência no aplicativo, lembrar suas preferências e analisar o uso do aplicativo. Você pode gerenciá-los através das configurações do seu dispositivo."
     },
     "policyChanges": {
-      "title": "11. Alterações a Esta Política",
+      "title": "12. Alterações a Esta Política",
       "content": "Podemos atualizar esta Política de Privacidade periodicamente. Notificaremos você sobre mudanças significativas através do aplicativo ou por e-mail."
     },
     "contact": {
-      "title": "12. Contato",
+      "title": "13. Contato",
       "content": "Se você tiver dúvidas sobre esta Política de Privacidade, entre em contato conosco:",
       "items": [
         "E-mail: josipilatesmontreal@gmail.com",

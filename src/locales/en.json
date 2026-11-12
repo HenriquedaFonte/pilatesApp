@@ -138,6 +138,7 @@
   "privacyPolicy": {
     "title": "Privacy Policy",
     "lastUpdated": "Last updated",
+    "lastUpdatedDate": "November 12, 2026",
     "introduction": {
       "title": "1. Introduction",
       "content": "Welcome to Josi Pilates Studio. This Privacy Policy explains how we collect, use, disclose and protect your information when you use our application and services."
@@ -152,7 +153,8 @@
           "Phone number",
           "Profile information (language preferences, etc.)",
           "Class and scheduling information",
-          "Payment information for class purchases"
+          "Payment information for class purchases",
+          "Health insurance details, if you want receipts for your insurance (optional): policy or contract number, city/province and, if the policyholder is someone else, the policyholder's name, city/province, employer, occupation and phone numbers"
         ]
       },
       "autoCollected": {
@@ -180,6 +182,7 @@
       "items": [
         "Provide and manage your pilates services",
         "Process enrollments and payments",
+        "Issue the health insurance receipts (kinésithérapie and naturopathie) you request to claim reimbursement from your insurance",
         "Send important notifications about classes and schedule changes",
         "Send push notifications (with your permission)",
         "Improve our app and services through analytics",
@@ -209,32 +212,47 @@
       "items": [
         "Access your personal information",
         "Correct inaccurate information",
-        "Request deletion of your data",
+        "Request deletion of your data (except health insurance receipts during their retention period; see section 8)",
         "Opt out of marketing communications"
       ]
     },
     "dataRetention": {
       "title": "7. Data Retention",
-      "content": "We retain your personal information for as long as necessary to provide our services and comply with legal obligations. Account data is retained while your account is active and for a reasonable period thereafter. You can request deletion of your data at any time."
+      "content": "We retain your personal information for as long as necessary to provide our services and comply with legal obligations. Account data is retained while your account is active and for a reasonable period thereafter. You can request deletion of your data at any time. Health insurance receipts have their own retention period, described in section 8."
+    },
+    "insuranceReceipts": {
+      "title": "8. Health Insurance Data and Receipts",
+      "content": "This section applies if you ask us for receipts for your health insurance (kinésithérapie or naturopathie).",
+      "items": [
+        "Data collected: policy or contract number, your city/province and, when the policyholder is someone else (for example, a spouse or parent), the policyholder's name, city/province, employer, occupation and phone numbers. All of these fields are optional. By providing the policyholder's details, you confirm that they agree to this use.",
+        "Receipts issued: we keep each receipt and its PDF, with everything printed on it: receipt number and issue date, your name, date of birth, city/province and phone number, the policyholder's details, the policy number, the dates and amounts of the sessions, the products and prices (naturopathie), the totals, and the practitioner's name, licence and signature.",
+        "Purpose: we use this data only to issue the receipts you request to claim reimbursement from your insurance.",
+        "Who has access: only you and the teacher (or whoever manages the studio). You can see your insurance details in \"My Profile\" and your receipts in \"My receipts\"; no student can see another student's data. The PDFs are kept in private storage, with no public link.",
+        "We do not send your data or your receipts to your insurer: you submit the receipt to your insurance yourself, if you wish to claim reimbursement. You do not need to share this data with anyone else.",
+        "An issued receipt is never changed or deleted. If it contains an error, it is voided (with the reason recorded) and, if needed, a new receipt is issued; the voided receipt remains on file, marked as voided.",
+        "Retention period: receipts are tax records and are kept for 6 years after the end of the year in which they were issued.",
+        "Account deletion: deleting or deactivating your account does not delete receipts already issued or the data printed on them; they remain on file for as long as the retention period lasts. The insurance details in your profile (policy and policyholder) can be deleted at your request.",
+        "Correction: you can correct the policy number and the policyholder's details at any time in \"My Profile\". To correct a receipt that has already been issued, or for any other request about this data, contact us using the details in section 13."
+      ]
     },
     "childrenPrivacy": {
-      "title": "8. Children's Privacy",
+      "title": "9. Children's Privacy",
       "content": "Our app is not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13. If you are a parent or guardian and believe your child has provided us with personal information, please contact us."
     },
     "internationalTransfers": {
-      "title": "9. International Data Transfers",
+      "title": "10. International Data Transfers",
       "content": "Your information may be transferred to and processed in countries other than your own. We ensure appropriate safeguards are in place to protect your data during such transfers."
     },
     "cookies": {
-      "title": "10. Cookies and Tracking Technologies",
+      "title": "11. Cookies and Tracking Technologies",
       "content": "We may use cookies and similar technologies to enhance your app experience, remember your preferences, and analyze app usage. You can manage these through your device settings."
     },
     "policyChanges": {
-      "title": "11. Changes to This Policy",
+      "title": "12. Changes to This Policy",
       "content": "We may update this Privacy Policy periodically. We will notify you about significant changes through the app or by email."
     },
     "contact": {
-      "title": "12. Contact",
+      "title": "13. Contact",
       "content": "If you have questions about this Privacy Policy, please contact us:",
       "items": [
         "Email: josipilatesmontreal@gmail.com",

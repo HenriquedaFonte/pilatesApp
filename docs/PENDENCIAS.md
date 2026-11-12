@@ -3,7 +3,7 @@
 > Memória entre sessões. Toda sessão nova começa lendo este arquivo.
 > No fim de cada tarefa: "Atualize o PENDENCIAS".
 
-_Última atualização: 2026-11-12 (Story 3.6)_
+_Última atualização: 2026-11-12 (Story 3.7)_
 
 ## Estado atual
 - Produção: josipilates.com (Vercel, branch `main`).
@@ -87,6 +87,8 @@ As três migrations de segurança (`20261112010000`, `20261112020000`, `20261112
   5. **Recibo anulado** (anular pela professora): badge "Anulado", número riscado, texto "Este recibo foi anulado e não vale mais..." e **sem** botão de abrir/baixar. O motivo da anulação não aparece para o aluno.
   6. **PDF pendente** (só se acontecer): badge "Em preparação" e sem botão.
   7. **AC-6 (segurança):** aluno A não lê PDF do aluno B nem montando o caminho: isso é a RLS do bucket da 3.3, já coberta pelo teste SQL `docs/testes/3.3-recibos-teste.sql` (passou em produção). No site, só conferir que cada aluno de teste vê **apenas** os próprios recibos.
+- [ ] **Story 3.7 / AC-3 — revisar o texto novo da Política de Privacidade antes do merge (texto legal; sem SQL, sem deploy):** ler a seção nova **8. Dados de Seguro Saúde e Recibos** e os ajustes nas seções 2.1, 3, 6 e 7 (`src/locales/pt.json`, `en.json`, `fr.json`, chave `privacyPolicy`). O texto em português completo está no PR. Depois do merge, abrir `josipilates.com/privacy-policy` em pt, en e fr: a data "Última atualização" mostra 12 de novembro de 2026 (antes mostrava sempre o dia de hoje), a seção 8 aparece depois da 7 e as seguintes vão até 13. Contato.
+- [ ] **Story 3.7 — confirmar com a Josi / contador o prazo de guarda dos recibos.** O texto diz **6 anos após o fim do ano em que o recibo foi emitido** (regra usual de registros fiscais no Québec), mas ainda não foi confirmado. Se for outro prazo, trocar o item "Prazo de guarda" da seção 8 nas três línguas **antes do merge**. Confirmar também que a Josi está de acordo com a frase "os dados de seguro do seu perfil (apólice e titular) podem ser apagados a seu pedido" (hoje a professora faz isso esvaziando os campos na ficha do aluno).
 - [ ] **Teste no celular em pé (painel do aluno):** o topo mostra só o primeiro nome ("Olá, Henrique") e os 3 botões de Acesso Rápido (Histórico, Perfil, Regras do Studio) mostram o texto inteiro, quebrando em 2 linhas se precisar.
 
 ## SQL / deploys pendentes
@@ -174,7 +176,10 @@ As três migrations de segurança (`20261112010000`, `20261112020000`, `20261112
     - Decisão AC-4: recibo anulado aparece com "Anulado" e **sem download** (evita o aluno mandar ao seguro um recibo que não vale). O motivo da anulação não é mostrado ao aluno. Se a Josi preferir liberar o download com aviso, é uma mudança pequena.
     - Abrir/baixar/compartilhar ficou em `src/lib/receiptFiles.js` (sem pdf-lib): o portal do aluno carrega ~15 KB em vez de ~450 KB.
   - [ ] **Ideia (menor):** usar o mesmo "Abrir PDF"/"Compartilhar" na tela da professora (`ReceiptsList.jsx`), se a Josi emitir recibos pelo iPhone.
-  - [ ] 3.7 Política de Privacidade (dev-critico)
+  - [x] 3.7 Política de Privacidade (dev-critico) — **feita no código** (sem SQL, sem deploy). **Antes do merge: o usuário revisa o texto (AC-3) e confirma o prazo de guarda com a Josi/contador** (ver "Testes em aberto"). Detalhes: `docs/stories/3.7.story.md`. Resumo:
+    - Seção nova **8. Dados de Seguro Saúde e Recibos** (pt/en/fr; as seguintes viraram 9–13): dados coletados (apólice/contrato, cidade/província, titular quando é outra pessoa; opcionais), o que fica gravado em cada recibo (o que é impresso + PDF), finalidade, quem acessa (o aluno e a professora/administração; PDF em armazenamento privado), o estúdio não envia nada à seguradora (o aluno entrega o recibo), recibo não é alterado nem apagado (só anulado, com motivo), prazo de guarda **6 anos (a confirmar)**, exclusão/desativação da conta não apaga os recibos, e como corrigir ("Meu Perfil" para apólice/titular; contato da seção 13 para recibo emitido).
+    - Ajustes: item de dados de seguro em 2.1, item de emissão de recibos em 3, exceção dos recibos no direito de exclusão (6) e remissão na retenção (7).
+    - "Última atualização" era `new Date()` (mostrava sempre o dia de hoje); agora é uma data fixa traduzida (`privacyPolicy.lastUpdatedDate`, 12 de novembro de 2026). Teste novo `src/tests/privacyPolicy.test.js` confere que pt/en/fr têm as mesmas chaves e o mesmo número de itens.
 - [x] Lint zerado (eram 75 problemas): variáveis e imports sem uso removidos, `scratch/` ignorado, `scripts/` com globais de Node, `react-refresh` desligado para `components/ui` e `useAuth`, e `exhaustive-deps` silenciado linha a linha nos `useEffect` de carga (intencionais).
 - [x] Gerenciador de pacotes: o projeto usa **pnpm** (`packageManager` no `package.json`, `pnpm-lock.yaml` atualizado). O `package-lock.json` estava desatualizado e quebrava `npm ci`; foi removido. Instalar com `pnpm install`; os scripts continuam `npm run lint/test/build`.
 - [x] **Emails automáticos desligados + limpeza (dev-critico, 2026-11-12).** **Decisão do usuário (2026-11-12): desligar os emails automáticos de créditos baixos e zerados**; a professora continua enviando à mão pela tela Notificações por email (sem mudança). Feito no código (migration `20261112050000_cleanup_email_automation.sql`, testada em Postgres 16 local com o estado de produção simulado; ver "SQL / deploys pendentes"). **SQL rodado em produção (2026-11-12); falta o teste no site.**

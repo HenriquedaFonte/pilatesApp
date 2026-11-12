@@ -138,6 +138,7 @@
   "privacyPolicy": {
     "title": "Politique de Confidentialité",
     "lastUpdated": "Dernière mise à jour",
+    "lastUpdatedDate": "12 novembre 2026",
     "introduction": {
       "title": "1. Introduction",
       "content": "Bienvenue au Studio Josi Pilates. Cette Politique de Confidentialité explique comment nous collectons, utilisons, divulguons et protégeons vos informations lorsque vous utilisez notre application et nos services."
@@ -152,7 +153,8 @@
           "Numéro de téléphone",
           "Informations de profil (préférences de langue, etc.)",
           "Informations de cours et de planification",
-          "Informations de paiement pour les achats de cours"
+          "Informations de paiement pour les achats de cours",
+          "Informations d'assurance santé, si vous souhaitez des reçus pour votre assurance (facultatives) : numéro de police ou de contrat, ville/province et, si le titulaire de la police est une autre personne, le nom, la ville/province, l'employeur, la profession et les numéros de téléphone du titulaire"
         ]
       },
       "autoCollected": {
@@ -180,6 +182,7 @@
       "items": [
         "Fournir et gérer vos services de pilates",
         "Traiter les inscriptions et paiements",
+        "Émettre les reçus d'assurance santé (kinésithérapie et naturopathie) que vous demandez pour obtenir un remboursement de votre assurance",
         "Envoyer des notifications importantes sur les cours et changements d'horaire",
         "Envoyer des notifications push (avec votre permission)",
         "Améliorer notre application et nos services grâce aux analyses",
@@ -209,32 +212,47 @@
       "items": [
         "Accéder à vos informations personnelles",
         "Corriger des informations inexactes",
-        "Demander la suppression de vos données",
+        "Demander la suppression de vos données (sauf les reçus d'assurance santé pendant leur durée de conservation; voir la section 8)",
         "Vous désabonner des communications marketing"
       ]
     },
     "dataRetention": {
       "title": "7. Conservation des Données",
-      "content": "Nous conservons vos informations personnelles aussi longtemps que nécessaire pour fournir nos services et nous conformer aux obligations légales. Les données de compte sont conservées tant que votre compte est actif et pendant une période raisonnable par la suite. Vous pouvez demander la suppression de vos données à tout moment."
+      "content": "Nous conservons vos informations personnelles aussi longtemps que nécessaire pour fournir nos services et nous conformer aux obligations légales. Les données de compte sont conservées tant que votre compte est actif et pendant une période raisonnable par la suite. Vous pouvez demander la suppression de vos données à tout moment. Les reçus d'assurance santé ont leur propre durée de conservation, décrite à la section 8."
+    },
+    "insuranceReceipts": {
+      "title": "8. Données d'Assurance Santé et Reçus",
+      "content": "Cette section s'applique si vous nous demandez des reçus pour votre assurance santé (kinésithérapie ou naturopathie).",
+      "items": [
+        "Données collectées : numéro de police ou de contrat, votre ville/province et, lorsque le titulaire de la police est une autre personne (par exemple, un conjoint ou un parent), le nom, la ville/province, l'employeur, la profession et les numéros de téléphone du titulaire. Tous ces champs sont facultatifs. En fournissant les informations du titulaire, vous confirmez qu'il consent à cette utilisation.",
+        "Reçus émis : nous conservons chaque reçu et son PDF, avec tout ce qui y est imprimé : numéro et date d'émission du reçu, votre nom, date de naissance, ville/province et numéro de téléphone, les informations du titulaire, le numéro de police, les dates et montants des séances, les produits et leurs prix (naturopathie), les totaux, ainsi que le nom, le numéro de permis et la signature de la praticienne.",
+        "Finalité : nous utilisons ces données uniquement pour émettre les reçus que vous demandez afin d'obtenir le remboursement de votre assurance.",
+        "Qui y a accès : uniquement vous et l'enseignante (ou la personne qui gère le studio). Vous voyez vos informations d'assurance dans « Mon Profil » et vos reçus dans « Mes reçus »; aucun élève ne voit les données d'un autre. Les PDF sont conservés dans un espace de stockage privé, sans lien public.",
+        "Nous n'envoyons ni vos données ni vos reçus à votre assureur : c'est vous qui remettez le reçu à votre assurance, si vous souhaitez demander un remboursement. Vous n'avez pas besoin de partager ces données avec qui que ce soit d'autre.",
+        "Un reçu émis n'est jamais modifié ni supprimé. S'il contient une erreur, il est annulé (avec le motif enregistré) et, au besoin, un nouveau reçu est émis; le reçu annulé reste conservé, marqué comme annulé.",
+        "Durée de conservation : les reçus sont des documents fiscaux et sont conservés pendant 6 ans après la fin de l'année au cours de laquelle ils ont été émis.",
+        "Suppression du compte : la suppression ou la désactivation de votre compte n'efface pas les reçus déjà émis ni les données qui y sont imprimées; ils restent conservés pendant toute la durée de conservation. Les informations d'assurance de votre profil (police et titulaire) peuvent être supprimées à votre demande.",
+        "Correction : vous pouvez corriger le numéro de police et les informations du titulaire en tout temps dans « Mon Profil ». Pour corriger un reçu déjà émis, ou pour toute autre demande concernant ces données, contactez-nous aux coordonnées de la section 13."
+      ]
     },
     "childrenPrivacy": {
-      "title": "8. Confidentialité des Enfants",
+      "title": "9. Confidentialité des Enfants",
       "content": "Notre application n'est pas destinée aux enfants de moins de 13 ans. Nous ne collectons pas sciemment d'informations personnelles auprès d'enfants de moins de 13 ans. Si vous êtes un parent ou tuteur et que vous croyez que votre enfant nous a fourni des informations personnelles, veuillez nous contacter."
     },
     "internationalTransfers": {
-      "title": "9. Transferts Internationaux de Données",
+      "title": "10. Transferts Internationaux de Données",
       "content": "Vos informations peuvent être transférées et traitées dans des pays autres que le vôtre. Nous nous assurons que des garanties appropriées sont en place pour protéger vos données lors de tels transferts."
     },
     "cookies": {
-      "title": "10. Cookies et Technologies de Suivi",
+      "title": "11. Cookies et Technologies de Suivi",
       "content": "Nous pouvons utiliser des cookies et des technologies similaires pour améliorer votre expérience d'application, mémoriser vos préférences et analyser l'utilisation de l'application. Vous pouvez les gérer via les paramètres de votre appareil."
     },
     "policyChanges": {
-      "title": "11. Modifications de Cette Politique",
+      "title": "12. Modifications de Cette Politique",
       "content": "Nous pouvons mettre à jour cette Politique de Confidentialité périodiquement. Nous vous informerons des changements importants via l'application ou par e-mail."
     },
     "contact": {
-      "title": "12. Contact",
+      "title": "13. Contact",
       "content": "Si vous avez des questions sur cette Politique de Confidentialité, veuillez nous contacter:",
       "items": [
         "E-mail: josipilatesmontreal@gmail.com",
