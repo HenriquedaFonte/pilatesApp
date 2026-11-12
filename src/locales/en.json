@@ -1120,20 +1120,25 @@
       },
       "content": {
         "title": "What do you want to send?",
-        "desc": "Choose a template or start with a blank message.",
-        "globeHint": "Sent in each student's language.",
-        "chooseFirst": "Choose a template or \"Blank message\" to continue.",
+        "desc": "Choose a template or write a general notice.",
+        "globeHint": "Each student gets it in their profile language (Portuguese, English or French).",
+        "chooseFirst": "Choose a template or \"General notice\" to continue.",
         "autoLowCredits": "This email is ready-made, in each student's language, with their credit balance and how to renew. Nothing to write.",
         "consentDesc": "This email is ready-made, in each student's language, with the consent form and the studio rules attached as a PDF.",
         "senderName": "Signed by",
         "senderPlaceholder": "E.g.: Josi",
-        "languageLabel": "Template text language",
         "subjectLabel": "Subject",
         "subjectPlaceholder": "Email subject",
         "messageLabel": "Message",
         "messagePlaceholder": "Write your message here...",
-        "multilingualOn": "This template is sent in each student's language (Portuguese, English or French, according to their profile).",
-        "multilingualOff": "You edited the text: all students will receive exactly the text above, in a single language. To send in each student's language, choose the template again without editing."
+        "languagesHint": "Write in each language. The ✓ shows the ones that are ready.",
+        "studentsInLanguage_one": "{{count}} student",
+        "studentsInLanguage_other": "{{count}} students",
+        "insertVariable": "Insert:",
+        "variablesHelp": "{nome} becomes the student's first name and {creditos} their total credits. \"Hello, Name!\" and the signature are added automatically.",
+        "missingLanguage_one": "{{count}} student in {{lang}} will get the text in {{fallback}} (the {{lang}} text is empty).",
+        "missingLanguage_other": "{{count}} students in {{lang}} will get the text in {{fallback}} (the {{lang}} text is empty).",
+        "unknownVariables": "These words in braces are not variables and will appear in the email as written: {{list}}. Replace them with the right text or use {nome} / {creditos}."
       },
       "review": {
         "title": "Review and send",
@@ -1152,7 +1157,9 @@
         "resultFailed_one": "{{count}} failure",
         "resultFailed_other": "{{count}} failures",
         "failedList": "Did not receive it:",
-        "error": "Sending stopped with an error:"
+        "error": "Sending stopped with an error:",
+        "texts": "Texts",
+        "emptyLanguage": "empty (uses another language)"
       },
       "history": {
         "title": "Notification History",
@@ -1181,6 +1188,16 @@
         "cancel": "Cancel",
         "send": "Send to {{count}}",
         "progress": "Sending {{done}} of {{total}}..."
+      },
+      "preview": {
+        "title": "Email preview",
+        "language": "Language",
+        "student": "Sample student",
+        "fallback": "There is no {{lang}} text: {{lang}} students get the {{fallback}} text, as shown below.",
+        "sendTest": "Send me a test",
+        "testHint": "Sends this email to {{email}}, with [TESTE] in the subject. Not saved in the history.",
+        "testSent": "Test sent to {{email}}.",
+        "testError": "The test was not sent:"
       }
     },
     "studentSummary": {

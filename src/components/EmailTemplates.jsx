@@ -1,5 +1,5 @@
 import React from 'react'
-import { CheckCircle, Globe } from 'lucide-react'
+import { CheckCircle } from 'lucide-react'
 import { TEMPLATE_CARDS, pick } from '../lib/templateCards'
 
 const EmailTemplates = ({ onSelectTemplate, selectedTemplateId, language = 'pt', disabled = false }) => (
@@ -27,9 +27,6 @@ const EmailTemplates = ({ onSelectTemplate, selectedTemplateId, language = 'pt',
                 <span className="text-sm font-semibold text-foreground">
                   {pick(card.title, language)}
                 </span>
-                {(card.automatic || card.fullMessage) && (
-                  <Globe className="h-3.5 w-3.5 text-teal-600 shrink-0" aria-hidden="true" />
-                )}
                 {isSelected && <CheckCircle className="h-4 w-4 text-primary shrink-0 ml-auto" />}
               </div>
               <p className="text-xs text-muted-foreground mt-0.5 leading-snug">

@@ -1,5 +1,7 @@
 import { supabase } from './supabase';
 import { getTemplate, processTemplate } from './emailTemplates';
+import { addPortalCta, buildCustomEmail } from './customEmail';
+import { studentLanguage } from './emailRecipients';
 
 class EmailService {
   constructor() {
@@ -34,28 +36,8 @@ class EmailService {
     }
   }
 
-  _getPortalCta(language = 'pt') {
-    const labels = {
-      pt: 'Acessar Portal do Aluno',
-      en: 'Access Student Portal',
-      fr: 'Accéder au Portail Étudiant'
-    };
-    const label = labels[language] || labels.pt;
-    const url = `${this.getBaseUrl()}/login`;
-    return `
-          <div style="text-align: center; margin: 25px 0; padding: 18px; background-color: #f0fdf4; border-radius: 8px; border: 1px solid #bbf7d0;">
-            <a href="${url}"
-               style="background: linear-gradient(135deg, #01b48d 0%, #017a6b 100%); color: white; padding: 12px 28px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold; font-size: 15px;">
-              ${label}
-            </a>
-          </div>`;
-  }
-
   async sendEmail({ to, subject, htmlContent, textContent, attachments = [], language = 'pt', replyTo }) {
-    const hr = '<hr style="margin: 30px 0; border: none; border-top: 1px solid #e2e8f0;">';
-    if (htmlContent.includes(hr)) {
-      htmlContent = htmlContent.replace(hr, `${this._getPortalCta(language)}\n          ${hr}`);
-    }
+    htmlContent = addPortalCta(htmlContent, language, this.getBaseUrl());
     try {
       // O remetente é fixo no servidor (send-email ignora "from").
       const payload = {
@@ -344,81 +326,54 @@ ${processedTemplate.tagline}
     });
   }
 
-  // options.templateId: modelo com subject/message em pt/en/fr (ex.: 'profileUpdate').
-  // Quando informado, cada aluno recebe o assunto e a mensagem na sua língua
-  // (preferred_language), no lugar de subject/message.
-  async sendCustomNotification(students, defaultSubject, defaultMessage, senderName = 'Professora', options = {}) {
-    const emails = await Promise.all(students.map(async (student) => {
-      const language = await this.getUserLanguage(student.id);
-      const template = getTemplate('custom', language);
-      const localized = options.templateId ? getTemplate(options.templateId, language) : null;
-      const subject = localized?.subject || defaultSubject;
-      const message = localized?.message || defaultMessage;
+  // Língua do aluno: a do objeto, se veio carregada; senão busca no perfil.
+  async languageOf(student) {
+    if (student && 'preferred_language' in student) return studentLanguage(student);
+    return this.getUserLanguage(student.id);
+  }
 
-      const variables = {
-        name: student.name || student.full_name,
-        senderName: senderName
-      };
-
-      const processedTemplate = processTemplate(template, variables);
-
-      return {
+  // Mensagem escrita (Story 4.3). content = { pt: { subject, message }, en, fr }:
+  // cada aluno recebe o texto da sua língua (ou o da primeira língua preenchida),
+  // com {nome}/{creditos} preenchidos e tudo escapado (ver customEmail.js).
+  // Devolve um resultado por aluno, na mesma ordem de `students`.
+  async sendCustomNotification(students, content, senderName = 'Professora', options = {}) {
+    const results = new Array(students.length);
+    const emails = [];
+    const positions = [];
+    for (let i = 0; i < students.length; i++) {
+      const student = students[i];
+      const language = await this.languageOf(student);
+      const built = buildCustomEmail({ student, content, senderName, language });
+      if (!built) {
+        results[i] = { success: false, email: student.email, error: 'empty message' };
+        continue;
+      }
+      positions.push(i);
+      emails.push({
         to: { email: student.email, name: student.name || student.full_name },
-        subject,
-        language,
-        htmlContent: `
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>${subject}</title>
-            <style>
-              @media only screen and (max-width: 600px) {
-                .email-container { padding: 10px !important; }
-                .header { padding: 20px !important; }
-                .header h1 { font-size: 24px !important; }
-                .content { padding: 20px !important; }
-                .message-box { padding: 20px !important; margin: 15px 0 !important; }
-                h2 { font-size: 20px !important; }
-                p { font-size: 16px !important; line-height: 1.5 !important; }
-              }
-            </style>
-          </head>
-          <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;" class="email-container">
-            <div style="background: linear-gradient(135deg, #01b48d 0%, #017a6b 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;" class="header">
-              <h1 style="color: white; margin: 0; font-size: 28px;">Josi Pilates</h1>
-            </div>
+        subject: built.subject,
+        language: built.language,
+        htmlContent: built.htmlContent,
+        textContent: built.textContent
+      });
+    }
+    const sent = await this.sendBulkEmails(emails, options.onProgress);
+    sent.forEach((r, k) => { results[positions[k]] = r; });
+    return results;
+  }
 
-            <div style="background: white; padding: 30px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 10px 10px;" class="content">
-              <h2 style="color: #1e293b; margin-top: 0;">${processedTemplate.greeting(student.name || student.full_name)}</h2>
-
-              <div style="background-color: #f1f5f9; padding: 25px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #3b82f6;" class="message-box">
-                ${message.replace(/\n/g, '<br>')}
-              </div>
-
-              <hr style="margin: 30px 0; border: none; border-top: 1px solid #e2e8f0;">
-
-              <p style="color: #64748b; font-size: 14px; text-align: center;">
-                <strong>${processedTemplate.signature(senderName)}</strong><br>
-                <em>${processedTemplate.tagline}</em>
-              </p>
-            </div>
-          </body>
-          </html>
-        `,
-        textContent: `
-${processedTemplate.greeting(student.name || student.full_name)}
-
-${message}
-
-${processedTemplate.signature(senderName)}
-${processedTemplate.tagline}
-        `
-      };
-    }));
-
-    return this.sendBulkEmails(emails, options.onProgress);
+  // "Mandar teste para mim": o email de `sample` (variáveis e língua), mas para
+  // `to`, com [TESTE] no assunto. Não grava no histórico.
+  async sendCustomTest({ to, sample, content, senderName = 'Professora', language = 'pt' }) {
+    const built = buildCustomEmail({ student: sample, content, senderName, language, test: true });
+    if (!built) throw new Error('empty message');
+    return this.sendEmail({
+      to: { email: to, name: '' },
+      subject: built.subject,
+      htmlContent: built.htmlContent,
+      textContent: built.textContent,
+      language: built.language
+    });
   }
 
   async sendWelcomeEmail(student) {

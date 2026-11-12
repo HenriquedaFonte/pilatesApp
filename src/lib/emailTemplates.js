@@ -119,384 +119,81 @@ export const emailTemplates = {
     }
   },
 
-  classReminder: {
+  // Mensagens escritas da tela Notificações por email (Story 4.3): assunto e
+  // mensagem completos em pt/en/fr. A saudação ("Olá, Nome!") e a assinatura
+  // entram sozinhas. Entre chaves: {nome} e {creditos} são preenchidos; os
+  // outros (ex.: {horário novo}) a professora troca antes de enviar.
+  zeroCreditsNotice: {
     pt: {
-      subject: 'Lembrete: Sua aula de Pilates é amanhã! 📅',
-      greeting: (name) => `Olá, ${name}!`,
-      reminder: 'Este é um lembrete amigável sobre sua aula de Pilates agendada para amanhã.',
-      details: 'Detalhes da aula:',
-      date: (date) => `Data: ${date}`,
-      time: (time) => `Horário: ${time}`,
-      type: (type) => `Tipo: ${type}`,
-      instructor: (instructor) => `Instrutor(a): ${instructor}`,
-      preparation: 'Lembre-se de:',
-      tips: [
-        'Chegar 10 minutos antes',
-        'Trazer uma toalha',
-        'Usar roupas confortáveis',
-        'Hidratar-se bem'
-      ],
-      excitement: 'Mal podemos esperar para vê-lo(a) na aula!',
-      signature: 'Atenciosamente,',
-      teamName: 'Equipe Josi Pilates'
+      subject: 'Seus créditos acabaram - Josi Pilates',
+      message: `Seus créditos de aulas acabaram.
+
+Para continuar vindo às aulas sem interrupção, é só renovar o seu pacote. Fale com a gente na próxima aula ou pelo telefone +1 (438) 274-8396.
+
+Seu saldo aparece sempre no Portal do Aluno, em josipilates.com/login.
+
+Até breve!`
     },
     en: {
-      subject: 'Reminder: Your Pilates class is tomorrow! 📅',
-      greeting: (name) => `Hello, ${name}!`,
-      reminder: 'This is a friendly reminder about your Pilates class scheduled for tomorrow.',
-      details: 'Class details:',
-      date: (date) => `Date: ${date}`,
-      time: (time) => `Time: ${time}`,
-      type: (type) => `Type: ${type}`,
-      instructor: (instructor) => `Instructor: ${instructor}`,
-      preparation: 'Remember to:',
-      tips: [
-        'Arrive 10 minutes early',
-        'Bring a towel',
-        'Wear comfortable clothing',
-        'Stay hydrated'
-      ],
-      excitement: 'We can\'t wait to see you in class!',
-      signature: 'Best regards,',
-      teamName: 'Josi Pilates Team'
+      subject: 'Your credits have run out - Josi Pilates',
+      message: `Your class credits have run out.
+
+To keep coming to class without a break, just renew your package. Talk to us at your next class or call +1 (438) 274-8396.
+
+You can always see your balance in the Student Portal at josipilates.com/login.
+
+See you soon!`
     },
     fr: {
-      subject: 'Rappel: Votre cours de Pilates est demain! 📅',
-      greeting: (name) => `Bonjour, ${name}!`,
-      reminder: 'Ceci est un rappel amical concernant votre cours de Pilates prévu pour demain.',
-      details: 'Détails du cours:',
-      date: (date) => `Date: ${date}`,
-      time: (time) => `Heure: ${time}`,
-      type: (type) => `Type: ${type}`,
-      instructor: (instructor) => `Instructeur: ${instructor}`,
-      preparation: 'Rappelez-vous de:',
-      tips: [
-        'Arriver 10 minutes à l\'avance',
-        'Apporter une serviette',
-        'Porter des vêtements confortables',
-        'Bien s\'hydrater'
-      ],
-      excitement: 'Nous avons hâte de vous voir en cours!',
-      signature: 'Cordialement,',
-      teamName: 'Équipe Josi Pilates'
+      subject: 'Vos crédits sont épuisés - Josi Pilates',
+      message: `Vos crédits de cours sont épuisés.
+
+Pour continuer à venir aux cours sans interruption, il suffit de renouveler votre forfait. Parlez-nous-en à votre prochain cours ou appelez le +1 (438) 274-8396.
+
+Votre solde est toujours affiché dans le Portail de l'élève, sur josipilates.com/login.
+
+À bientôt !`
     }
   },
 
-  lowCreditsGentle: {
+  scheduleChangeNotice: {
     pt: {
-      subject: 'Seus créditos estão acabando - Vamos renovar? 💪',
-      greeting: (name) => `Olá, ${name}!`,
-      message: 'Esperamos que você esteja aproveitando suas aulas de Pilates!',
-      warning: 'Notamos que seus créditos estão chegando ao fim.',
-      creditsText: (credits) => `Créditos restantes: ${credits}`,
-      benefits: 'Benefícios de renovar agora:',
-      benefitsList: [
-        'Continuidade no seu progresso',
-        'Manutenção da sua rotina saudável',
-        'Preços especiais para renovação'
-      ],
-      contact: 'Entre em contato conosco para renovar ou tire suas dúvidas!',
-      closing: 'Estamos aqui para apoiar você!',
-      signature: 'Atenciosamente,',
-      teamName: 'Equipe Josi Pilates'
-    },
-    en: {
-      subject: 'Your credits are running low - Shall we renew? 💪',
-      greeting: (name) => `Hello, ${name}!`,
-      message: 'We hope you\'re enjoying your Pilates classes!',
-      warning: 'We notice your credits are running low.',
-      creditsText: (credits) => `Remaining credits: ${credits}`,
-      benefits: 'Benefits of renewing now:',
-      benefitsList: [
-        'Continuity in your progress',
-        'Maintenance of your healthy routine',
-        'Special renewal prices'
-      ],
-      contact: 'Contact us to renew or ask your questions!',
-      closing: 'We are here to support you!',
-      signature: 'Best regards,',
-      teamName: 'Josi Pilates Team'
-    },
-    fr: {
-      subject: 'Vos crédits s\'épuisent - Renouvelons? 💪',
-      greeting: (name) => `Bonjour, ${name}!`,
-      message: 'Nous espérons que vous profitez de vos cours de Pilates!',
-      warning: 'Nous remarquons que vos crédits s\'épuisent.',
-      creditsText: (credits) => `Crédits restants: ${credits}`,
-      benefits: 'Avantages du renouvellement maintenant:',
-      benefitsList: [
-        'Continuité dans vos progrès',
-        'Maintien de votre routine saine',
-        'Prix spéciaux de renouvellement'
-      ],
-      contact: 'Contactez-nous pour renouveler ou posez vos questions!',
-      closing: 'Nous sommes là pour vous soutenir!',
-      signature: 'Cordialement,',
-      teamName: 'Équipe Josi Pilates'
-    }
-  },
+      subject: 'Mudança no horário da sua aula - Josi Pilates',
+      message: `Precisamos mudar o horário da sua aula.
 
-  promotion: {
-    pt: {
-      subject: 'Oferta Especial: Pacote de Créditos com Desconto! 🎁',
-      greeting: (name) => `Olá, ${name}!`,
-      announcement: 'Temos uma oferta especial só para você! 🎉',
-      promotion: 'PROMOÇÃO LIMITADA:',
-      details: (details) => details,
-      validity: (date) => `Válida até: ${date}`,
-      discount: (percent) => `Desconto de: ${percent}%`,
-      benefits: 'Esta é uma oportunidade única para:',
-      benefitsList: [
-        'Economizar em seus créditos',
-        'Garantir mais aulas por um preço especial',
-        'Manter sua rotina de exercícios'
-      ],
-      callToAction: 'Não perca esta chance! Entre em contato conosco hoje mesmo.',
-      closing: 'Aproveite e cuide da sua saúde com economia!',
-      signature: 'Atenciosamente,',
-      teamName: 'Equipe Josi Pilates'
-    },
-    en: {
-      subject: 'Special Offer: Discounted Credit Package! 🎁',
-      greeting: (name) => `Hello, ${name}!`,
-      announcement: 'We have a special offer just for you! 🎉',
-      promotion: 'LIMITED TIME PROMOTION:',
-      details: (details) => details,
-      validity: (date) => `Valid until: ${date}`,
-      discount: (percent) => `Discount: ${percent}%`,
-      benefits: 'This is a unique opportunity to:',
-      benefitsList: [
-        'Save on your credits',
-        'Get more classes at a special price',
-        'Maintain your exercise routine'
-      ],
-      callToAction: 'Don\'t miss this chance! Contact us today.',
-      closing: 'Take advantage and take care of your health economically!',
-      signature: 'Best regards,',
-      teamName: 'Josi Pilates Team'
-    },
-    fr: {
-      subject: 'Offre Spéciale: Forfait de Crédits Remisé! 🎁',
-      greeting: (name) => `Bonjour, ${name}!`,
-      announcement: 'Nous avons une offre spéciale rien que pour vous! 🎉',
-      promotion: 'PROMOTION LIMITÉE:',
-      details: (details) => details,
-      validity: (date) => `Valable jusqu'au: ${date}`,
-      discount: (percent) => `Remise: ${percent}%`,
-      benefits: 'C\'est une opportunité unique de:',
-      benefitsList: [
-        'Économiser sur vos crédits',
-        'Obtenir plus de cours à prix spécial',
-        'Maintenir votre routine d\'exercice'
-      ],
-      callToAction: 'Ne manquez pas cette chance! Contactez-nous dès aujourd\'hui.',
-      closing: 'Profitez-en et prenez soin de votre santé économiquement!',
-      signature: 'Cordialement,',
-      teamName: 'Équipe Josi Pilates'
-    }
-  },
+Antes: {horário antigo}
+Agora: {horário novo}
 
-  scheduleChange: {
-    pt: {
-      subject: 'Importante: Alteração no horário da sua aula 📅',
-      greeting: (name) => `Olá, ${name}!`,
-      message: 'Precisamos informar sobre uma alteração no horário da sua aula.',
-      change: 'ALTERAÇÃO:',
-      originalTime: (time) => `Aula original: ${time}`,
-      newTime: (time) => `Novo horário: ${time}`,
-      date: (date) => `Data: ${date}`,
-      reason: (reason) => `Motivo: ${reason}`,
-      action: 'O que fazer:',
-      actionItems: [
-        'Confirme se o novo horário funciona para você',
-        'Entre em contato se precisar reagendar',
-        'Chegue 10 minutos antes no novo horário'
-      ],
-      apology: 'Pedimos desculpas por qualquer inconveniente e agradecemos sua compreensão.',
-      closing: 'Nos vemos na aula!',
-      signature: 'Atenciosamente,',
-      teamName: 'Equipe Josi Pilates'
-    },
-    en: {
-      subject: 'Important: Change in your class schedule 📅',
-      greeting: (name) => `Hello, ${name}!`,
-      message: 'We need to inform you about a change in your class schedule.',
-      change: 'CHANGE:',
-      originalTime: (time) => `Original class: ${time}`,
-      newTime: (time) => `New time: ${time}`,
-      date: (date) => `Date: ${date}`,
-      reason: (reason) => `Reason: ${reason}`,
-      action: 'What to do:',
-      actionItems: [
-        'Confirm if the new time works for you',
-        'Contact us if you need to reschedule',
-        'Arrive 10 minutes early at the new time'
-      ],
-      apology: 'We apologize for any inconvenience and thank you for your understanding.',
-      closing: 'See you in class!',
-      signature: 'Best regards,',
-      teamName: 'Josi Pilates Team'
-    },
-    fr: {
-      subject: 'Important: Changement dans l\'horaire de votre cours 📅',
-      greeting: (name) => `Bonjour, ${name}!`,
-      message: 'Nous devons vous informer d\'un changement dans l\'horaire de votre cours.',
-      change: 'CHANGEMENT:',
-      originalTime: (time) => `Cours original: ${time}`,
-      newTime: (time) => `Nouvel horaire: ${time}`,
-      date: (date) => `Date: ${date}`,
-      reason: (reason) => `Raison: ${reason}`,
-      action: 'Que faire:',
-      actionItems: [
-        'Confirmez si le nouvel horaire vous convient',
-        'Contactez-nous si vous devez reprogrammer',
-        'Arrivez 10 minutes à l\'avance au nouvel horaire'
-      ],
-      apology: 'Nous nous excusons pour tout inconvénient et vous remercions de votre compréhension.',
-      closing: 'À bientôt en cours!',
-      signature: 'Cordialement,',
-      teamName: 'Équipe Josi Pilates'
-    }
-  },
+Se o novo horário não funcionar para você, fale com a gente que procuramos outra opção.
 
-  birthday: {
-    pt: {
-      subject: 'Parabéns pelo seu aniversário! 🎂🎉',
-      greeting: (name) => `Parabéns, ${name}!`,
-      celebration: '🎂 Hoje é um dia muito especial - seu aniversário! 🎉',
-      wishes: 'Toda a equipe do Josi Pilates deseja:',
-      wishesList: [
-        'Muita saúde e felicidade',
-        'Conquistas e realizações',
-        'Momentos de paz e bem-estar',
-        'Muito amor e alegria'
-      ],
-      surprise: 'Como presente, preparamos uma surpresa especial para você!',
-      contact: 'Entre em contato conosco para descobrir.',
-      year: 'Que este novo ano de vida seja repleto de movimento, equilíbrio e muita energia positiva!',
-      closing: 'Feliz aniversário!',
-      signature: 'Com carinho,',
-      teamName: 'Equipe Josi Pilates'
+Obrigada pela compreensão!`
     },
     en: {
-      subject: 'Happy Birthday! 🎂🎉',
-      greeting: (name) => `Happy Birthday, ${name}!`,
-      celebration: '🎂 Today is a very special day - your birthday! 🎉',
-      wishes: 'The entire Josi Pilates team wishes you:',
-      wishesList: [
-        'Lots of health and happiness',
-        'Achievements and accomplishments',
-        'Moments of peace and well-being',
-        'Lots of love and joy'
-      ],
-      surprise: 'As a gift, we have prepared a special surprise for you!',
-      contact: 'Contact us to find out.',
-      year: 'May this new year of life be full of movement, balance, and lots of positive energy!',
-      closing: 'Happy Birthday!',
-      signature: 'With care,',
-      teamName: 'Josi Pilates Team'
-    },
-    fr: {
-      subject: 'Joyeux Anniversaire! 🎂🎉',
-      greeting: (name) => `Joyeux Anniversaire, ${name}!`,
-      celebration: '🎂 Aujourd\'hui est un jour très spécial - votre anniversaire! 🎉',
-      wishes: 'Toute l\'équipe Josi Pilates vous souhaite:',
-      wishesList: [
-        'Beaucoup de santé et de bonheur',
-        'Des réalisations et des accomplissements',
-        'Des moments de paix et de bien-être',
-        'Beaucoup d\'amour et de joie'
-      ],
-      surprise: 'En cadeau, nous vous avons préparé une surprise spéciale!',
-      contact: 'Contactez-nous pour découvrir.',
-      year: 'Puisse cette nouvelle année de vie être remplie de mouvement, d\'équilibre et de beaucoup d\'énergie positive!',
-      closing: 'Joyeux Anniversaire!',
-      signature: 'Avec soin,',
-      teamName: 'Équipe Josi Pilates'
-    }
-  },
+      subject: 'Change to your class time - Josi Pilates',
+      message: `We need to change the time of your class.
 
-  feedbackRequest: {
-    pt: {
-      subject: 'Sua opinião é muito importante para nós! 💭',
-      greeting: (name) => `Olá, ${name}!`,
-      message: 'Esperamos que você esteja amando suas aulas de Pilates conosco!',
-      importance: 'Sua opinião é fundamental para continuarmos melhorando nossos serviços.',
-      questions: 'Gostaríamos muito de saber:',
-      questionsList: [
-        '📝 Como tem sido sua experiência?',
-        '📝 O que você mais gosta nas aulas?',
-        '📝 Há algo que podemos melhorar?',
-        '📝 Recomendaria nosso studio para amigos?'
-      ],
-      help: 'Suas sugestões nos ajudam a:',
-      helpList: [
-        'Aprender nossos serviços',
-        'Criar novas modalidades',
-        'Melhorar o atendimento',
-        'Proporcionar a melhor experiência'
-      ],
-      contact: 'Responda este e-mail ou fale conosco pessoalmente.',
-      closing: 'Sua opinião faz toda a diferença!',
-      thanks: 'Obrigado por fazer parte da família Josi Pilates!',
-      signature: 'Atenciosamente,',
-      teamName: 'Equipe Josi Pilates'
-    },
-    en: {
-      subject: 'Your opinion is very important to us! 💭',
-      greeting: (name) => `Hello, ${name}!`,
-      message: 'We hope you\'re loving your Pilates classes with us!',
-      importance: 'Your opinion is fundamental for us to continue improving our services.',
-      questions: 'We would love to know:',
-      questionsList: [
-        '📝 How has your experience been?',
-        '📝 What do you like most about the classes?',
-        '📝 Is there anything we can improve?',
-        '📝 Would you recommend our studio to friends?'
-      ],
-      help: 'Your suggestions help us to:',
-      helpList: [
-        'Improve our services',
-        'Create new modalities',
-        'Enhance customer service',
-        'Provide the best experience'
-      ],
-      contact: 'Reply to this email or speak to us in person.',
-      closing: 'Your opinion makes all the difference!',
-      thanks: 'Thank you for being part of the Josi Pilates family!',
-      signature: 'Best regards,',
-      teamName: 'Josi Pilates Team'
+Before: {old time}
+Now: {new time}
+
+If the new time does not work for you, let us know and we will find another option.
+
+Thank you for your understanding!`
     },
     fr: {
-      subject: 'Votre avis est très important pour nous! 💭',
-      greeting: (name) => `Bonjour, ${name}!`,
-      message: 'Nous espérons que vous adorez vos cours de Pilates avec nous!',
-      importance: 'Votre avis est fondamental pour que nous continuions à améliorer nos services.',
-      questions: 'Nous aimerions beaucoup savoir:',
-      questionsList: [
-        '📝 Comment s\'est passée votre expérience?',
-        '📝 Qu\'est-ce que vous aimez le plus dans les cours?',
-        '📝 Y a-t-il quelque chose que nous pouvons améliorer?',
-        '📝 Recommanderiez-vous notre studio à des amis?'
-      ],
-      help: 'Vos suggestions nous aident à:',
-      helpList: [
-        'Améliorer nos services',
-        'Créer de nouvelles modalités',
-        'Améliorer le service client',
-        'Fournir la meilleure expérience'
-      ],
-      contact: 'Répondez à cet e-mail ou parlez-nous en personne.',
-      closing: 'Votre avis fait toute la différence!',
-      thanks: 'Merci de faire partie de la famille Josi Pilates!',
-      signature: 'Cordialement,',
-      teamName: 'Équipe Josi Pilates'
+      subject: 'Changement d\'horaire de votre cours - Josi Pilates',
+      message: `Nous devons changer l'horaire de votre cours.
+
+Avant : {ancien horaire}
+Maintenant : {nouvel horaire}
+
+Si le nouvel horaire ne vous convient pas, dites-le-nous et nous trouverons une autre option.
+
+Merci de votre compréhension !`
     }
   },
 
   // Pedido de atualização do cadastro (seguro saúde etc.).
-  // subject/message completos em cada língua: a tela Notificações por email
-  // manda cada aluno na sua língua (preferred_language) quando o texto não foi editado.
+  // subject/message completos em cada língua (cada aluno recebe na sua).
   profileUpdate: {
     pt: {
       subject: 'Atualize seu cadastro no Josi Pilates',

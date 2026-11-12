@@ -1,4 +1,5 @@
 // Lógica pura da tela de emails (destinatários e histórico), testável sem React.
+import { completeLanguages } from './customEmail'
 
 export const totalCredits = student =>
   (student.individual_credits || 0) +
@@ -175,14 +176,15 @@ export const normalizeTemplateParam = templateId =>
 /**
  * O passo pode avançar?
  * - 1 (para quem): pelo menos um destinatário e a turma já carregada.
- * - 2 (o quê): modelo escolhido; se não for automático, assunto e mensagem preenchidos.
+ * - 2 (o quê): modelo escolhido; se não for automático, assunto e mensagem
+ *   preenchidos em pelo menos uma língua (content = { pt, en, fr }).
  */
-export const canAdvance = (step, { recipientsCount = 0, loading = false, templateId = null, subject = '', message = '' } = {}) => {
+export const canAdvance = (step, { recipientsCount = 0, loading = false, templateId = null, content = null } = {}) => {
   if (step === 1) return !loading && recipientsCount > 0
   if (step === 2) {
     if (!templateId) return false
     if (sendKindOf(templateId) !== 'custom') return true
-    return subject.trim() !== '' && message.trim() !== ''
+    return completeLanguages(content).length > 0
   }
   return false
 }
