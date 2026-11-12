@@ -808,7 +808,15 @@
         "english": "🇺🇸 English",
         "french": "🇫🇷 French",
         "updating": "Updating Profile...",
-        "update": "Update Profile"
+        "update": "Update Profile",
+        "emailHint": "This is also your login email. If you change it, the new one works right away to sign in (no confirmation email is sent), so double-check it.",
+        "confirmEmail": "Confirm new email",
+        "confirmEmailPlaceholder": "Type the new email again",
+        "emailMismatch": "The two emails do not match. Please check and try again.",
+        "emailUpdateError": "Could not change your login email.",
+        "updateSuccess": "Profile updated.",
+        "updateSuccessEmail": "Profile updated. From now on, sign in with {{email}}.",
+        "updateError": "Could not update your profile."
       },
       "security": {
         "title": "Change Password",

@@ -450,7 +450,15 @@
         "english": "🇺🇸 Inglês",
         "french": "🇫🇷 Francês",
         "updating": "Atualizando Perfil...",
-        "update": "Atualizar Cadastro"
+        "update": "Atualizar Cadastro",
+        "emailHint": "Este é também o seu e-mail de login. Se mudar, o novo vale na hora para entrar no site (sem e-mail de confirmação), então confira com cuidado.",
+        "confirmEmail": "Confirme o novo e-mail",
+        "confirmEmailPlaceholder": "Digite o novo e-mail de novo",
+        "emailMismatch": "Os dois e-mails não são iguais. Confira e tente de novo.",
+        "emailUpdateError": "Não foi possível mudar o e-mail de login.",
+        "updateSuccess": "Perfil atualizado.",
+        "updateSuccessEmail": "Perfil atualizado. A partir de agora, entre no site com {{email}}.",
+        "updateError": "Não foi possível atualizar o perfil."
       },
       "security": {
         "title": "Alterar Senha",

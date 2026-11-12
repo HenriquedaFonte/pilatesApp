@@ -754,7 +754,15 @@
         "english": "Anglais",
         "french": "Français",
         "updating": "Mise à jour...",
-        "update": "Mettre à jour le profil"
+        "update": "Mettre à jour le profil",
+        "emailHint": "C'est aussi votre courriel de connexion. Si vous le changez, le nouveau sert tout de suite pour vous connecter (aucun courriel de confirmation n'est envoyé) : vérifiez-le bien.",
+        "confirmEmail": "Confirmez le nouveau courriel",
+        "confirmEmailPlaceholder": "Saisissez le nouveau courriel une deuxième fois",
+        "emailMismatch": "Les deux courriels ne sont pas identiques. Vérifiez et réessayez.",
+        "emailUpdateError": "Impossible de changer votre courriel de connexion.",
+        "updateSuccess": "Profil mis à jour.",
+        "updateSuccessEmail": "Profil mis à jour. Désormais, connectez-vous avec {{email}}.",
+        "updateError": "Impossible de mettre à jour votre profil."
       },
       "security": {
         "title": "Changer le mot de passe",
