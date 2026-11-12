@@ -339,7 +339,9 @@ const StudentDashboard = () => {
               <p className="text-xs font-medium opacity-90 leading-relaxed">
                 {getTotalBalance() <= 2
                   ? t('dashboard.balanceLowMsg', 'Seus créditos estão acabando. Converse com a professora para renovar seu plano.')
-                  : t('dashboard.balanceOkMsg', 'Seu saldo está excelente! Aproveite as suas sessões de pilates.')}
+                  : getTotalBalance() <= 6
+                    ? t('dashboard.balanceGoodMsg', 'Seu saldo está bom! Continue aproveitando as suas aulas de pilates.')
+                    : t('dashboard.balanceOkMsg', 'Seu saldo está excelente! Aproveite as suas sessões de pilates.')}
               </p>
             </div>
           </Card>
