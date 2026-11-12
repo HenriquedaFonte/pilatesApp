@@ -77,7 +77,7 @@ Novos dados por aluno (tabela própria, fora de `profiles`, por serem sensíveis
 - Envio direto para a seguradora.
 
 ## 7. Perguntas respondidas (Josi, 2026-11-12)
-1. **Assinatura em imagem:** sim, a seguradora aceita. O recibo sai com a imagem da assinatura (PNG) na área de assinatura.
+1. **Assinatura em imagem:** sim, a seguradora aceita. O recibo sai com a imagem da assinatura (PNG) na área de assinatura. A imagem será a mesma assinatura que a Josi já usa para assinar PDFs: exportada como PNG (de preferência com fundo transparente) ou JPEG, até 500 KB (limite do bucket `practitioner-signatures`), e enviada por ela no perfil profissional (Story 3.2).
 2. **"Total des honoraires":** só as consultas. Os produtos de naturopathie têm total próprio ("Total des produits").
 3. **Formato de data no recibo:** `AAAA-MM-JJ` (padrão Québec), ex.: `2026-11-12`.
 4. **Valor padrão por sessão:** não existe. O valor de cada tratamento é digitado na emissão (sem pré-preenchimento).
