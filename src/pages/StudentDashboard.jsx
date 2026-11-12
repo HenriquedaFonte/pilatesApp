@@ -280,12 +280,12 @@ const StudentDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      <header className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
+      <header className="sticky top-0 z-40 bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <Logo className="h-9 w-9 mr-3" />
-              <h1 className="hidden sm:block text-xl font-bold text-gray-900 dark:text-white">
+              <Logo className="h-9 w-9 mr-2 sm:mr-3 shrink-0" />
+              <h1 className="whitespace-nowrap text-base sm:text-xl font-bold text-gray-900 dark:text-white">
                 Josi Pilates
               </h1>
             </div>
