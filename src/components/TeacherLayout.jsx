@@ -21,7 +21,8 @@ import {
   TrendingUp,
   MessageSquare,
   CalendarDays,
-  Receipt
+  Receipt,
+  UserRound
 } from 'lucide-react'
 
 const TeacherLayout = ({ children }) => {
@@ -53,6 +54,7 @@ const TeacherLayout = ({ children }) => {
     { labelKey: 'teacher.sidebar.classes', path: '/teacher/classes', icon: BookOpen },
     { labelKey: 'teacher.sidebar.checkIn', path: '/teacher/check-in', icon: CircleCheck },
     { labelKey: 'teacher.sidebar.agenda', path: '/teacher/agenda', icon: CalendarDays },
+    { labelKey: 'teacher.sidebar.profile', path: '/teacher/profile', icon: UserRound },
   ]
 
   const reportItems = [
@@ -123,14 +125,19 @@ const TeacherLayout = ({ children }) => {
           <div className="h-9 w-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm shrink-0 border border-primary/20">
             {getInitials(profile?.full_name)}
           </div>
-          <div className="flex-1 min-w-0">
+          <Link
+            to="/teacher/profile"
+            onClick={() => setMobileMenuOpen(false)}
+            title={t('teacher.sidebar.profile')}
+            className="flex-1 min-w-0 rounded-lg hover:opacity-80"
+          >
             <div className="text-[13px] font-bold text-foreground truncate">
               {profile?.full_name || 'Professora'}
             </div>
             <div className="text-[11.5px] text-muted-foreground font-medium">
               {t('teacher.sidebar.teacher')}
             </div>
-          </div>
+          </Link>
           <Button
             variant="ghost"
             size="icon"
