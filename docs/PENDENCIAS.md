@@ -34,7 +34,7 @@ As três migrations de segurança (`20261112010000`, `20261112020000`, `20261112
   1. **Professora:** abrir Relatório de frequência (gerar com e sem filtro de aluno), Relatório de créditos baixos (listas de créditos baixos e zerados) e Notificações por email (enviar um aviso para um aluno de teste e conferir que aparece no histórico).
   2. **Aluno:** painel, Histórico e "Meu perfil" continuam carregando (nenhuma tela de aluno usa essas funções).
   3. **Emails automáticos:** não se aplica mais (desligados na `20261112050000`).
-- [ ] **Story 3.1 / AC-7:** depois de rodar a migration 3.1 **e a correção de segurança acima**, abrir `docs/testes/3.1-rls-seguro-e-credenciais.sql`, trocar `<UUID_ALUNO_A>`, `<UUID_ALUNO_B>` e `<UUID_PROFESSORA>` por ids reais de `profiles` e rodar no SQL Editor. Sucesso = nenhum erro (termina em ROLLBACK, nada fica gravado). Erro "AC-7 FALHOU: ..." diz o que falhou.
+- [x] **Story 3.1 / AC-7:** `docs/testes/3.1-rls-seguro-e-credenciais.sql` rodado em produção (2026-11-12) com ids reais (2 alunos + professora): sucesso, sem erro.
 
 - [ ] **Teste depois da migration `20261112050000` (emails automáticos desligados + limpeza):**
   1. No SQL Editor, `SELECT count(*) FROM get_students_for_notification('low_credits');` devolve um número, sem erro (antes dava `42804`).
@@ -67,7 +67,7 @@ As três migrations de segurança (`20261112010000`, `20261112020000`, `20261112
   - Reversão (só emergência; **religa os emails automáticos**): `docs/testes/emails-limpeza-reversao.sql` recria, da cópia exata guardada em `josi_backup.email_cleanup_20261112`, os 4 jobs removidos (com o mesmo estado ativo/inativo) e as funções apagadas (mesmo corpo e GRANTs).
 - [x] **Migration `20261112060000_lock_student_profile_email.sql`** (aluno não muda o próprio email em `profiles`): **rodada em produção (2026-11-12)**; `docs/testes/email-perfil-teste.sql` rodou sem erro. Reversão, se precisar: `docs/testes/email-perfil-reversao.sql`.
 - [x] **Deploy da Edge Function `manage-student`** (log sem email do aluno): **feito em produção (2026-11-12)**. Falta só o teste (ver "Testes em aberto").
-- [ ] **Story 3.1:** rodar no SQL Editor o conteúdo de `supabase/migrations/20261112000000_create_student_insurance_and_practitioner.sql` (cria `student_insurance`, `practitioner_credentials`, bucket privado `practitioner-signatures` e policies). Idempotente. Depois, conferir em Storage que o bucket aparece como privado.
+- [x] **Story 3.1:** migration `supabase/migrations/20261112000000_create_student_insurance_and_practitioner.sql` rodada em produção (2026-11-12). Bucket `practitioner-signatures` conferido: `public = false`, `file_size_limit = 512000`, `allowed_mime_types = [image/png, image/jpeg]`.
 
 ## A fazer
 - [x] **URGENTE (segurança) — `profiles` e RPCs de crédito abertos.** Corrigido no código (migration `20261112010000_fix_profiles_privilege_escalation_and_rls.sql`, testada em Postgres 16 local reproduzindo o estado de produção). **SQL rodado em produção; falta o teste no site** (ver "Testes em aberto"). O que estava aberto em produção (levantado em 2026-11-12):
@@ -106,7 +106,7 @@ As três migrations de segurança (`20261112010000`, `20261112020000`, `20261112
 - [x] **Menor:** as mensagens da aba Segurança de "Meu perfil" da professora estavam só em inglês (texto fixo no `TeacherProfile.jsx`). Agora em pt/en/fr (`teacher.profile.security.mismatch`, `tooShort`, `currentIncorrect`, `updateSuccess`, `updateError`). Erro do Supabase aparece entre parênteses depois da frase traduzida, como no formulário de dados pessoais. Sem SQL, sem deploy. Falta o teste no site (ver "Testes em aberto").
 - [ ] **Epic 3 — Recibos para seguro saúde** (kinésithérapie e naturopathie). PRD: `docs/prd/PRD-002-recibos-seguro-saude.md`. Stories em `docs/stories/3.1` a `3.7`, uma por sessão, na ordem 3.1 → 3.7. Templates oficiais em `src/assets/receipt-templates/`.
   - [ ] Antes de começar a 3.4/3.5: responder as perguntas em aberto do PRD §7 com a Josi (assinatura em imagem, total com ou sem produtos, formato de data, valor padrão).
-  - [x] 3.1 Banco: dados de seguro do aluno + dados profissionais (dev-critico) — migration pronta, **pendente rodar o SQL e o teste AC-7** (ver acima; rodar depois da correção de segurança de `profiles`)
+  - [x] 3.1 Banco: dados de seguro do aluno + dados profissionais (dev-critico) — **concluída**: SQL rodado em produção e teste AC-7 passou (2026-11-12). Próxima: 3.2 (ou 3.4, que não depende de banco).
   - [ ] 3.2 UI: campos de seguro no cadastro + perfil profissional
   - [ ] 3.3 Banco + storage: recibos, numeração, anulação (dev-critico)
   - [ ] 3.4 Gerador de PDF (pdf-lib, formulários oficiais)
