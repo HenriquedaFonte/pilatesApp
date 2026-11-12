@@ -1176,13 +1176,10 @@
           "low_credits": "Crédits faibles",
           "zero_credits": "Solde nul",
           "class": "Cours spécifique",
-          "registration_day": "Jour d'inscription",
           "selected": "Sélection manuelle"
         },
         "selectClass": "Sélectionner le cours :",
         "selectClassPlaceholder": "Sélectionner le cours",
-        "selectDay": "Jour de la semaine d'inscription :",
-        "selectDayPlaceholder": "Sélectionner le jour",
         "selectManual": "Sélectionner manuellement :",
         "clearAll": "Tout effacer",
         "selectAll": "Tout sélectionner",
@@ -1209,7 +1206,9 @@
         "sendConsentBtn": "Envoyer le Terme à {{count}} élève(s)",
         "sendEmailBtn": "Envoyer le Courriel à {{count}} élève(s)",
         "multilingualOn": "Ce modèle est envoyé dans la langue de chaque élève (portugais, anglais ou français, selon son profil).",
-        "multilingualOff": "Vous avez modifié le texte : tous les élèves recevront exactement le texte ci-dessus, dans une seule langue. Pour l'envoyer dans la langue de chaque élève, sélectionnez à nouveau le modèle sans le modifier."
+        "multilingualOff": "Vous avez modifié le texte : tous les élèves recevront exactement le texte ci-dessus, dans une seule langue. Pour l'envoyer dans la langue de chaque élève, sélectionnez à nouveau le modèle sans le modifier.",
+        "loadingClass": "Chargement des élèves du cours...",
+        "emptyClass": "Aucun élève actif dans ce cours."
       },
       "templates": {
         "title": "Modèles de Courriel",
@@ -1231,6 +1230,18 @@
         "recipientsCount": "{{count}} élève(s)",
         "emptyTitle": "Aucun courriel envoyé",
         "emptyDesc": "Il n'y a aucun enregistrement de notifications envoyées pour le moment dans le studio."
+      },
+      "includeInactive": "Inclure les élèves inactifs ({{count}})",
+      "confirm": {
+        "title": "Envoyer à {{count}} élève(s) ?",
+        "kindCustom": "Courriel « {{subject}} » à :",
+        "kindConsent": "Formulaire de consentement (avec le PDF en pièce jointe) à :",
+        "kindLowCredits": "Avis de solde bas à :",
+        "andMore": " et {{count}} de plus",
+        "inactiveIncluded": "Les élèves inactifs sont inclus dans cet envoi.",
+        "cancel": "Annuler",
+        "send": "Envoyer à {{count}}",
+        "progress": "Envoi {{done}} sur {{total}}..."
       }
     },
     "studentSummary": {

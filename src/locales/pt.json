@@ -716,13 +716,10 @@
           "low_credits": "Créditos baixos",
           "zero_credits": "Saldo zerado",
           "class": "Turma específica",
-          "registration_day": "Dia de matrícula",
           "selected": "Seleção manual"
         },
         "selectClass": "Selecionar turma:",
         "selectClassPlaceholder": "Selecione a turma",
-        "selectDay": "Dia da semana de matrícula:",
-        "selectDayPlaceholder": "Selecione o dia",
         "selectManual": "Selecionar manualmente:",
         "clearAll": "Limpar Tudo",
         "selectAll": "Selecionar Tudo",
@@ -749,7 +746,9 @@
         "sendConsentBtn": "Enviar Termo para {{count}} aluno(s)",
         "sendEmailBtn": "Enviar E-mail para {{count}} aluno(s)",
         "multilingualOn": "Este modelo sai na língua de cada aluno (português, inglês ou francês, conforme o perfil).",
-        "multilingualOff": "Você editou o texto: todos os alunos vão receber exatamente o texto acima, numa língua só. Para enviar na língua de cada aluno, selecione o modelo de novo sem editar."
+        "multilingualOff": "Você editou o texto: todos os alunos vão receber exatamente o texto acima, numa língua só. Para enviar na língua de cada aluno, selecione o modelo de novo sem editar.",
+        "loadingClass": "Carregando alunos da turma...",
+        "emptyClass": "Nenhum aluno ativo nesta turma."
       },
       "templates": {
         "title": "Modelos de E-mail",
@@ -771,6 +770,18 @@
         "recipientsCount": "{{count}} aluno(s)",
         "emptyTitle": "Nenhum e-mail enviado",
         "emptyDesc": "Não há registro de notificações enviadas até o momento no estúdio."
+      },
+      "includeInactive": "Incluir alunos inativos ({{count}})",
+      "confirm": {
+        "title": "Enviar para {{count}} aluno(s)?",
+        "kindCustom": "E-mail \"{{subject}}\" para:",
+        "kindConsent": "Termo de consentimento (com o PDF anexado) para:",
+        "kindLowCredits": "Aviso de saldo baixo para:",
+        "andMore": " e mais {{count}}",
+        "inactiveIncluded": "Alunos inativos estão incluídos neste envio.",
+        "cancel": "Cancelar",
+        "send": "Enviar para {{count}}",
+        "progress": "Enviando {{done}} de {{total}}..."
       }
     },
     "studentSummary": {
