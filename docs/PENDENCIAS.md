@@ -10,7 +10,8 @@ _Última atualização: 2026-11-12 (`send-email` restrita: só professora manda 
 - Processo de trabalho com o Claude configurado: `CLAUDE.md`, agente `dev-critico`, regra de esforço e este arquivo.
 
 ## Testes em aberto (usuário)
-- [ ] **Deploy da `send-email` restrita (sem SQL):** `supabase functions deploy send-email --project-ref kezfpyhsejhjcvlbmejq` (sobe `index.ts` e `policy.ts`). Ordem: **deploy antes do merge** (o formulário de contato novo manda `type: 'contact'`, que a função antiga não conhece; o resto do site funciona com as duas versões). Depois do deploy e do merge, testar cada fluxo:
+- [x] **Deploy da `send-email` restrita feito (versão 7, 2026-11-12).**
+- [ ] **Testes depois do deploy da `send-email` restrita (sem SQL):** depois do merge do PR #42, testar cada fluxo:
   1. **Contato do site, sem login:** em josipilates.com (janela anônima), mandar uma mensagem pelo formulário. Deve aparecer a mensagem de sucesso e chegar em `josipilatesmontreal@gmail.com`, de `josi@josipilates.com`; "Responder" já vem com o email do visitante. Testar com `<b>teste</b>` na mensagem: aparece como texto, não em negrito. (Pelo código antigo do repositório, visitante sem login recebia erro 401 aqui; se antes funcionava em produção, a função no ar era diferente do repositório.)
   2. **Professora, Alunos:** criar um aluno de teste (chega o email de boas-vindas com o link de senha); adicionar créditos a um aluno de teste (chega o email de créditos).
   3. **Professora, Notificações por email:** aviso personalizado e aviso de créditos baixos para um aluno de teste (chegam e aparecem no histórico); termo de consentimento (chega com o PDF `PilatesLessonsPolicies.pdf` anexado).
