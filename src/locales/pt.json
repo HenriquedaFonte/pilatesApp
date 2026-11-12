@@ -433,7 +433,8 @@
       "subtitle": "Gerencie suas informações pessoais e credenciais de acesso",
       "tabs": {
         "personal": "Informações Pessoais",
-        "security": "Segurança"
+        "security": "Segurança",
+        "professional": "Dados profissionais"
       },
       "personal": {
         "title": "Informações Pessoais",
@@ -476,6 +477,33 @@
         "currentIncorrect": "A senha atual está incorreta.",
         "updateSuccess": "Senha alterada.",
         "updateError": "Não foi possível alterar a senha."
+      },
+      "professional": {
+        "title": "Dados profissionais (recibos)",
+        "description": "Aparecem nos recibos de seguro. Só você vê estes dados.",
+        "loading": "Carregando...",
+        "professional_name": "Nome profissional",
+        "kinesitherapy_license": "Nº de licença (kinésithérapie)",
+        "naturopathy_license": "Nº de licença (naturopathie)",
+        "save": "Salvar dados profissionais",
+        "saving": "Salvando...",
+        "saveSuccess": "Dados profissionais salvos.",
+        "saveError": "Não foi possível salvar os dados profissionais.",
+        "loadError": "Não foi possível carregar os dados profissionais.",
+        "signature": "Assinatura",
+        "signatureHint": "Use uma imagem da sua assinatura em fundo branco ou transparente. PNG ou JPEG, até 500 KB.",
+        "signatureUpload": "Enviar assinatura",
+        "signatureReplace": "Trocar assinatura",
+        "signatureRemove": "Remover",
+        "noSignature": "Nenhuma assinatura enviada.",
+        "signaturePreviewAlt": "Pré-visualização da assinatura",
+        "signaturePreviewError": "Não foi possível mostrar a assinatura.",
+        "signatureWrongType": "A imagem precisa ser PNG ou JPEG.",
+        "signatureTooBig": "A imagem precisa ter no máximo 500 KB.",
+        "signatureUploaded": "Assinatura salva.",
+        "signatureUploadError": "Não foi possível enviar a assinatura.",
+        "signatureRemoved": "Assinatura removida.",
+        "signatureRemoveError": "Não foi possível remover a assinatura."
       }
     },
     "reports": {
@@ -1204,5 +1232,27 @@
       "contact": "Contato",
       "tagline": "Studio de Pilates em Montreal. Aulas particulares, duos e pequenos grupos com especialista certificada em movimento."
     }
+  },
+  "insurance": {
+    "title": "Seguro saúde",
+    "description": "Dados para os recibos de seguro (kinésithérapie e naturopathie). Todos os campos são opcionais.",
+    "loading": "Carregando...",
+    "fields": {
+      "policy_number": "Nº da apólice",
+      "city_province": "Cidade / província",
+      "holder_is_self": "Eu sou o titular da apólice",
+      "holder_full_name": "Nome do titular",
+      "holder_city_province": "Cidade / província do titular",
+      "holder_employer": "Empregador do titular",
+      "holder_occupation": "Ocupação do titular",
+      "holder_phone_work": "Telefone comercial do titular",
+      "holder_phone_home": "Telefone residencial do titular"
+    },
+    "holderHint": "Preencha com os dados da pessoa titular da apólice (por exemplo, cônjuge ou pai/mãe).",
+    "save": "Salvar dados do seguro",
+    "saving": "Salvando...",
+    "saveSuccess": "Dados do seguro salvos.",
+    "saveError": "Não foi possível salvar os dados do seguro.",
+    "loadError": "Não foi possível carregar os dados do seguro."
   }
 }

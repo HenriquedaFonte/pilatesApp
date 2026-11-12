@@ -791,7 +791,8 @@
       "subtitle": "Manage your personal information and access credentials",
       "tabs": {
         "personal": "Personal Information",
-        "security": "Security"
+        "security": "Security",
+        "professional": "Professional details"
       },
       "personal": {
         "title": "Personal Information",
@@ -834,6 +835,33 @@
         "currentIncorrect": "The current password is incorrect.",
         "updateSuccess": "Password updated.",
         "updateError": "Could not update the password."
+      },
+      "professional": {
+        "title": "Professional details (receipts)",
+        "description": "Shown on insurance receipts. Only you can see these details.",
+        "loading": "Loading...",
+        "professional_name": "Professional name",
+        "kinesitherapy_license": "Licence number (kinésithérapie)",
+        "naturopathy_license": "Licence number (naturopathie)",
+        "save": "Save professional details",
+        "saving": "Saving...",
+        "saveSuccess": "Professional details saved.",
+        "saveError": "Could not save the professional details.",
+        "loadError": "Could not load the professional details.",
+        "signature": "Signature",
+        "signatureHint": "Use an image of your signature on a white or transparent background. PNG or JPEG, up to 500 KB.",
+        "signatureUpload": "Upload signature",
+        "signatureReplace": "Replace signature",
+        "signatureRemove": "Remove",
+        "noSignature": "No signature uploaded.",
+        "signaturePreviewAlt": "Signature preview",
+        "signaturePreviewError": "Could not display the signature.",
+        "signatureWrongType": "The image must be PNG or JPEG.",
+        "signatureTooBig": "The image must be 500 KB or smaller.",
+        "signatureUploaded": "Signature saved.",
+        "signatureUploadError": "Could not upload the signature.",
+        "signatureRemoved": "Signature removed.",
+        "signatureRemoveError": "Could not remove the signature."
       }
     },
     "reports": {
@@ -1131,5 +1159,27 @@
         "fr": "French"
       }
     }
+  },
+  "insurance": {
+    "title": "Health insurance",
+    "description": "Details for your insurance receipts (kinésithérapie and naturopathie). All fields are optional.",
+    "loading": "Loading...",
+    "fields": {
+      "policy_number": "Policy number",
+      "city_province": "City / province",
+      "holder_is_self": "I am the policyholder",
+      "holder_full_name": "Policyholder's name",
+      "holder_city_province": "Policyholder's city / province",
+      "holder_employer": "Policyholder's employer",
+      "holder_occupation": "Policyholder's occupation",
+      "holder_phone_work": "Policyholder's work phone",
+      "holder_phone_home": "Policyholder's home phone"
+    },
+    "holderHint": "Enter the details of the person who holds the policy (for example, a spouse or parent).",
+    "save": "Save insurance details",
+    "saving": "Saving...",
+    "saveSuccess": "Insurance details saved.",
+    "saveError": "Could not save the insurance details.",
+    "loadError": "Could not load the insurance details."
   }
 }

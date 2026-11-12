@@ -54,6 +54,14 @@ As três migrations de segurança (`20261112010000`, `20261112020000`, `20261112
   5. No fim, voltar o email original da professora (de novo pela tela, com os dois campos) e entrar com ele.
 - [ ] **Teste no site depois do merge (mensagens da aba Segurança da professora; sem SQL, sem deploy):** professora → Meu perfil → Segurança, com o site em pt, en e fr: (1) nova senha e confirmação diferentes → "As duas senhas novas não são iguais."; (2) nova senha com menos de 6 caracteres → "A nova senha precisa ter pelo menos 6 caracteres."; (3) senha atual errada → "A senha atual está incorreta."; (4) tudo certo → "Senha alterada." e entrar de novo com a senha nova (se quiser, voltar a senha antiga depois).
 - [ ] **Teste depois do deploy da `manage-student` (log sem email; deploy feito em 2026-11-12):** professora → aluno de teste → Editar perfil → mudar o email e salvar (continua funcionando como antes). No painel do Supabase (Edge Functions → `manage-student` → Logs), a linha nova mostra `Updating email for student: <id>` e **não** mostra o email. Voltar o email original no fim.
+- [ ] **Teste no site depois do merge da Story 3.2 (seguro + dados profissionais; sem SQL, sem deploy):** conferir os textos em pt, en e fr.
+  1. **Aluno → Meu perfil:** embaixo de "Personal Information" aparece o card "Seguro saúde". Preencher nº da apólice e cidade, salvar → "Dados do seguro salvos." Recarregar a página: os dados continuam lá.
+  2. Desligar "Eu sou o titular da apólice": aparecem os 6 campos do titular. Preencher, salvar, recarregar: continuam. Religar, salvar, recarregar e desligar de novo: os campos do titular vêm vazios (são apagados quando o aluno é o titular).
+  3. **Professora → alunos → "Ver" no mesmo aluno:** o card "Seguro saúde" mostra o que o aluno salvou. Mudar um campo e salvar; entrar como o aluno e conferir a mudança.
+  4. **Professora → Meu perfil → aba "Dados profissionais":** preencher nome profissional e as 2 licenças, salvar, recarregar: continuam.
+  5. Enviar uma assinatura PNG (até 500 KB): aparece a pré-visualização e "Trocar assinatura"/"Remover". Recarregar: a imagem continua. Tentar um arquivo maior que 500 KB ou um PDF → mensagem de erro e nada muda.
+  6. Clicar "Remover": a imagem some e aparece "Nenhuma assinatura enviada." (no Supabase, Storage → `practitioner-signatures` → pasta da professora fica vazia).
+  7. Enviar a assinatura definitiva no fim (vai ser usada nos recibos da 3.4/3.5).
 - [ ] **Teste no celular em pé (painel do aluno):** o topo mostra só o primeiro nome ("Olá, Henrique") e os 3 botões de Acesso Rápido (Histórico, Perfil, Regras do Studio) mostram o texto inteiro, quebrando em 2 linhas se precisar.
 
 ## SQL / deploys pendentes
@@ -107,7 +115,7 @@ As três migrations de segurança (`20261112010000`, `20261112020000`, `20261112
 - [ ] **Epic 3 — Recibos para seguro saúde** (kinésithérapie e naturopathie). PRD: `docs/prd/PRD-002-recibos-seguro-saude.md`. Stories em `docs/stories/3.1` a `3.7`, uma por sessão, na ordem 3.1 → 3.7. Templates oficiais em `src/assets/receipt-templates/`.
   - [x] Perguntas do PRD §7 respondidas pela Josi (2026-11-12): assinatura em imagem **sim**; "Total des honoraires" **só consultas**; data **AAAA-MM-JJ**; valor padrão por sessão **não existe** (digitado na emissão); recibo só para **alunos cadastrados**. Registrado no PRD-002 §7.
   - [x] 3.1 Banco: dados de seguro do aluno + dados profissionais (dev-critico) — **concluída**: SQL rodado em produção e teste AC-7 passou (2026-11-12). Próxima: 3.2 (ou 3.4, que não depende de banco).
-  - [ ] 3.2 UI: campos de seguro no cadastro + perfil profissional
+  - [x] 3.2 UI: campos de seguro no cadastro + perfil profissional — **feita no código** (sem SQL, sem deploy); falta o teste no site (ver "Testes em aberto"). Próxima: 3.3 (dev-critico) ou 3.4.
   - [ ] 3.3 Banco + storage: recibos, numeração, anulação (dev-critico)
   - [ ] 3.4 Gerador de PDF (pdf-lib, formulários oficiais)
   - [ ] 3.5 Emissão e histórico (professora) (dev-critico)

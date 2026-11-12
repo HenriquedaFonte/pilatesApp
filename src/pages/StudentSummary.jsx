@@ -54,6 +54,7 @@ import {
   Edit
 } from 'lucide-react'
 import TeacherLayout from '../components/TeacherLayout'
+import InsuranceFields from '../components/InsuranceFields'
 
 const profileSchema = z.object({
   full_name: z.string().min(1, 'Full name is required'),
@@ -477,6 +478,11 @@ const StudentSummary = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Seguro saúde do aluno (editável pela professora) */}
+        {profile?.role === 'teacher' && studentId && (
+          <InsuranceFields studentId={studentId} className="mb-6" />
+        )}
 
         {/* Edit Profile Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={open => { setIsEditDialogOpen(open); if (!open) setEditError('') }}>
