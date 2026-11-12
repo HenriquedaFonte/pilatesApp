@@ -309,9 +309,14 @@ BEGIN
   UPDATE storage.objects SET name = name || '.x' WHERE bucket_id = 'insurance-receipts';
   GET DIAGNOSTICS n = ROW_COUNT;
   IF n <> 0 THEN RAISE EXCEPTION 'FALHOU: professora alterou arquivo do bucket insurance-receipts'; END IF;
+  -- Em produção o Supabase tem uma trava extra (storage.protect_delete) que
+  -- recusa todo DELETE direto. A API de Storage a desliga com esta flag; aqui
+  -- ela é desligada só neste trecho para testar a RLS de verdade.
+  PERFORM set_config('storage.allow_delete_query', 'true', true);
   DELETE FROM storage.objects WHERE bucket_id = 'insurance-receipts';
   GET DIAGNOSTICS n = ROW_COUNT;
   IF n <> 0 THEN RAISE EXCEPTION 'FALHOU: professora apagou arquivo do bucket insurance-receipts'; END IF;
+  PERFORM set_config('storage.allow_delete_query', 'false', true);
   SELECT count(*) INTO n FROM storage.objects
   WHERE bucket_id = 'insurance-receipts'
     AND name IN (a::text || '/' || (r1 ->> 'id') || '.pdf', b::text || '/' || (r3 ->> 'id') || '.pdf');
@@ -396,9 +401,14 @@ BEGIN
   UPDATE storage.objects SET name = name || '.x' WHERE bucket_id = 'insurance-receipts';
   GET DIAGNOSTICS n = ROW_COUNT;
   IF n <> 0 THEN RAISE EXCEPTION 'FALHOU: aluno A alterou arquivo do bucket'; END IF;
+  -- Em produção o Supabase tem uma trava extra (storage.protect_delete) que
+  -- recusa todo DELETE direto. A API de Storage a desliga com esta flag; aqui
+  -- ela é desligada só neste trecho para testar a RLS de verdade.
+  PERFORM set_config('storage.allow_delete_query', 'true', true);
   DELETE FROM storage.objects WHERE bucket_id = 'insurance-receipts';
   GET DIAGNOSTICS n = ROW_COUNT;
   IF n <> 0 THEN RAISE EXCEPTION 'FALHOU: aluno A apagou arquivo do bucket'; END IF;
+  PERFORM set_config('storage.allow_delete_query', 'false', true);
 END $$;
 
 -- ════════════════════════════════════════════════════════════════════════════
