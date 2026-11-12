@@ -3,12 +3,9 @@
 -- Rodar no Supabase SQL Editor DEPOIS da migration
 -- 20261112070000_create_insurance_receipts.sql.
 --
--- Antes de rodar, substituir (Ctrl+H) os três marcadores por ids reais de profiles:
---   <UUID_ALUNO>      → um aluno (role = 'student')
---   <UUID_ALUNO_B>    → outro aluno (role = 'student')
---   <UUID_PROFESSORA> → a professora (role = 'teacher')
--- Para achar os ids:
---   SELECT id, full_name, role FROM public.profiles ORDER BY role, full_name;
+-- Não precisa editar nada: o script escolhe sozinho a professora (role =
+-- 'teacher') e os dois primeiros alunos (role = 'student', ordem do id). Para
+-- usar alunos específicos, trocar o SELECT logo depois do BEGIN.
 --
 -- Tudo roda dentro de uma transação que termina em ROLLBACK: nada fica gravado
 -- (nem recibo, nem número usado, nem audit_log, nem arquivo de teste). Como o
@@ -25,9 +22,12 @@
 
 BEGIN;
 
-SELECT set_config('josi.aluno',      '<UUID_ALUNO>',      true),
-       set_config('josi.aluno_b',    '<UUID_ALUNO_B>',    true),
-       set_config('josi.professora', '<UUID_PROFESSORA>', true);
+SELECT set_config('josi.aluno',
+         (SELECT id::text FROM public.profiles WHERE role = 'student' ORDER BY id LIMIT 1), true),
+       set_config('josi.aluno_b',
+         (SELECT id::text FROM public.profiles WHERE role = 'student' ORDER BY id OFFSET 1 LIMIT 1), true),
+       set_config('josi.professora',
+         (SELECT id::text FROM public.profiles WHERE role = 'teacher' ORDER BY id LIMIT 1), true);
 
 -- ════════════════════════════════════════════════════════════════════════════
 -- 0. Estrutura (como postgres)
@@ -41,13 +41,13 @@ DECLARE
   v_bucket record;
 BEGIN
   IF NOT EXISTS (SELECT 1 FROM public.profiles WHERE id = a AND role = 'student') THEN
-    RAISE EXCEPTION 'FALHOU: <UUID_ALUNO> não é um aluno (role = student)';
+    RAISE EXCEPTION 'FALHOU: aluno de teste não é um aluno (role = student)';
   END IF;
   IF NOT EXISTS (SELECT 1 FROM public.profiles WHERE id = b AND role = 'student') OR a = b THEN
-    RAISE EXCEPTION 'FALHOU: <UUID_ALUNO_B> não é outro aluno (role = student, diferente do primeiro)';
+    RAISE EXCEPTION 'FALHOU: aluno B de teste não é outro aluno (role = student, diferente do primeiro)';
   END IF;
   IF NOT EXISTS (SELECT 1 FROM public.profiles WHERE id = t AND role = 'teacher') THEN
-    RAISE EXCEPTION 'FALHOU: <UUID_PROFESSORA> não é a professora (role = teacher)';
+    RAISE EXCEPTION 'FALHOU: professora de teste não é a professora (role = teacher)';
   END IF;
 
   IF to_regclass('public.insurance_receipts') IS NULL OR to_regclass('public.receipt_counters') IS NULL THEN
