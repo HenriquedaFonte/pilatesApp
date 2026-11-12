@@ -262,69 +262,13 @@ const StudioHome = () => {
 
     try {
       const fullName = `${contactForm.firstName} ${contactForm.lastName}`.trim()
-      const subject = `Contact Form Message from ${fullName}`
-      const message = `
-New contact form submission:
 
-Name: ${fullName}
-Email: ${contactForm.email}
-
-Message:
-${contactForm.message}
-
-Sent from Josi Pilates website contact form.
-      `
-
-      await emailService.sendEmail({
-        to: { email: 'josipilatesmontreal@gmail.com', name: 'Josi Pilates' },
-        replyTo: contactForm.email,
-        subject,
-        htmlContent: `
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>${subject}</title>
-          </head>
-          <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-            <div style="background: linear-gradient(135deg, #01b48d 0%, #017a6b 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-              <div style="display: inline-flex; align-items: center; justify-content: center; gap: 30px;">
-                <div style="width: 60px; height: 60px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: #01b48d;">JP</div>
-                <div style="text-align: left;">
-                  <h1 style="color: white; margin: 0; font-size: 28px;">Josi Pilates</h1>
-                  <p style="color: #f0f0f0; margin: 5px 0 0 0; font-size: 16px;">Contact Form Message</p>
-                </div>
-              </div>
-            </div>
-
-            <div style="background: white; padding: 30px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 10px 10px;">
-              <h2 style="color: #1e293b; margin-top: 0;">New Contact Form Submission</h2>
-
-              <div style="background-color: #f1f5f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                <h3 style="color: #374151; margin-top: 0;">Contact Details</h3>
-                <p style="margin: 5px 0;"><strong>Name:</strong> ${fullName}</p>
-                <p style="margin: 5px 0;"><strong>Email:</strong> ${contactForm.email}</p>
-              </div>
-
-              <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #3b82f6;">
-                <h3 style="color: #1e293b; margin-top: 0;">Message</h3>
-                <p style="margin: 10px 0; white-space: pre-line;">${contactForm.message.replace(
-                  /\n/g,
-                  '<br>'
-                )}</p>
-              </div>
-
-              <hr style="margin: 30px 0; border: none; border-top: 1px solid #e2e8f0;">
-
-              <p style="color: #64748b; font-size: 14px; text-align: center;">
-                This message was sent from the Josi Pilates website contact form.
-              </p>
-            </div>
-          </body>
-          </html>
-        `,
-        textContent: message
+      // O servidor (send-email, type 'contact') monta o email e manda sempre
+      // para a caixa do estúdio, com Reply-To do visitante.
+      await emailService.sendContactForm({
+        name: fullName,
+        email: contactForm.email,
+        message: contactForm.message
       })
 
       setContactFormSuccess(true)
@@ -1242,6 +1186,7 @@ Sent from Josi Pilates website contact form.
                         })
                       }
                       placeholder={t('studioHome.contact.firstNamePlaceholder')}
+                      maxLength={100}
                       required
                     />
                   </div>
@@ -1257,6 +1202,7 @@ Sent from Josi Pilates website contact form.
                         })
                       }
                       placeholder={t('studioHome.contact.lastNamePlaceholder')}
+                      maxLength={100}
                       required
                     />
                   </div>
@@ -1290,6 +1236,7 @@ Sent from Josi Pilates website contact form.
                       })
                     }
                     placeholder={t('studioHome.contact.messagePlaceholder')}
+                    maxLength={5000}
                     required
                   ></textarea>
                 </div>

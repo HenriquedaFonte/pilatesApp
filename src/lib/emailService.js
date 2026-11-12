@@ -57,8 +57,8 @@ class EmailService {
       htmlContent = htmlContent.replace(hr, `${this._getPortalCta(language)}\n          ${hr}`);
     }
     try {
+      // O remetente é fixo no servidor (send-email ignora "from").
       const payload = {
-        from: `${this.fromName} <${this.fromEmail}>`,
         to: [to.email],
         subject: subject,
         html: htmlContent,
@@ -84,6 +84,18 @@ class EmailService {
       console.error('Error sending email:', error);
       throw error;
     }
+  }
+
+  // Formulário de contato do site (funciona sem login). O servidor monta o
+  // email e manda sempre para a caixa do estúdio, com Reply-To do visitante.
+  async sendContactForm({ name, email, message }) {
+    const { data, error } = await supabase.functions.invoke('send-email', {
+      body: { type: 'contact', name, email, message }
+    });
+    if (error || !data?.success) {
+      throw new Error(data?.error || error?.message || 'Failed to send email');
+    }
+    return data.data;
   }
 
   async sendPasswordResetEmail(userEmail, resetLink) {
