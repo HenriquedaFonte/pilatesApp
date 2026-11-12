@@ -14,6 +14,7 @@ import { Loader2, ArrowLeft, User, Phone, Globe, Mail, Lock } from 'lucide-react
 import { ThemeToggle } from '../components/ThemeToggle'
 import Logo from '../components/Logo'
 import TeacherLayout from '../components/TeacherLayout'
+import PractitionerCredentialsForm from '../components/PractitionerCredentialsForm'
 
 const TeacherProfile = () => {
   const [profileData, setProfileData] = useState({
@@ -206,9 +207,10 @@ const TeacherProfile = () => {
         )}
 
         <Tabs defaultValue="personal" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 rounded-xl p-1 bg-muted">
-            <TabsTrigger value="personal" className="rounded-lg py-2.5 text-xs font-bold transition-all">{t('teacher.profile.tabs.personal')}</TabsTrigger>
-            <TabsTrigger value="security" className="rounded-lg py-2.5 text-xs font-bold transition-all">{t('teacher.profile.tabs.security')}</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3 h-auto rounded-xl p-1 bg-muted">
+            <TabsTrigger value="personal" className="rounded-lg py-2.5 text-xs font-bold transition-all whitespace-normal">{t('teacher.profile.tabs.personal')}</TabsTrigger>
+            <TabsTrigger value="security" className="rounded-lg py-2.5 text-xs font-bold transition-all whitespace-normal">{t('teacher.profile.tabs.security')}</TabsTrigger>
+            <TabsTrigger value="professional" className="rounded-lg py-2.5 text-xs font-bold transition-all whitespace-normal">{t('teacher.profile.tabs.professional')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="personal">
@@ -388,6 +390,10 @@ const TeacherProfile = () => {
                 </form>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="professional">
+            {user?.id && <PractitionerCredentialsForm teacherId={user.id} />}
           </TabsContent>
         </Tabs>
       </div>

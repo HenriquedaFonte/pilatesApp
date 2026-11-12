@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Loader2, ArrowLeft, User, Phone, Globe, Mail, Lock } from 'lucide-react'
 import Logo from '../components/Logo'
 import { ThemeToggle } from '../components/ThemeToggle'
+import InsuranceFields from '../components/InsuranceFields'
 
 const StudentProfile = () => {
   const [profileData, setProfileData] = useState({
@@ -279,6 +280,8 @@ const StudentProfile = () => {
                 </form>
               </CardContent>
             </Card>
+
+            {user?.id && <InsuranceFields studentId={user.id} className="mt-6" />}
           </TabsContent>
 
           <TabsContent value="security">

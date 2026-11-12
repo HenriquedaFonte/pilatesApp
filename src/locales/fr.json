@@ -330,7 +330,7 @@
       "content": "Ces conditions sont régies par les lois du Québec, Canada. Tout litige sera résolu dans les tribunaux compétents de Montréal."
     },
     "termsChanges": {
-"title": "14. Modifications des Conditions",
+      "title": "14. Modifications des Conditions",
       "content": "Nous pouvons modifier ces conditions à tout moment. Continuer à utiliser l'application après les modifications constitue l'acceptation des nouvelles conditions."
     },
     "contact": {
@@ -737,7 +737,8 @@
       "subtitle": "Gérez vos informations personnelles et vos identifiants d'accès",
       "tabs": {
         "personal": "Informations personnelles",
-        "security": "Sécurité"
+        "security": "Sécurité",
+        "professional": "Données professionnelles"
       },
       "personal": {
         "title": "Informations personnelles",
@@ -780,6 +781,33 @@
         "currentIncorrect": "Le mot de passe actuel est incorrect.",
         "updateSuccess": "Mot de passe modifié.",
         "updateError": "Impossible de modifier le mot de passe."
+      },
+      "professional": {
+        "title": "Données professionnelles (reçus)",
+        "description": "Elles figurent sur les reçus d'assurance. Vous seule pouvez les voir.",
+        "loading": "Chargement...",
+        "professional_name": "Nom professionnel",
+        "kinesitherapy_license": "Numéro de permis (kinésithérapie)",
+        "naturopathy_license": "Numéro de permis (naturopathie)",
+        "save": "Enregistrer les données professionnelles",
+        "saving": "Enregistrement...",
+        "saveSuccess": "Données professionnelles enregistrées.",
+        "saveError": "Impossible d'enregistrer les données professionnelles.",
+        "loadError": "Impossible de charger les données professionnelles.",
+        "signature": "Signature",
+        "signatureHint": "Utilisez une image de votre signature sur fond blanc ou transparent. PNG ou JPEG, 500 Ko maximum.",
+        "signatureUpload": "Téléverser la signature",
+        "signatureReplace": "Remplacer la signature",
+        "signatureRemove": "Supprimer",
+        "noSignature": "Aucune signature téléversée.",
+        "signaturePreviewAlt": "Aperçu de la signature",
+        "signaturePreviewError": "Impossible d'afficher la signature.",
+        "signatureWrongType": "L'image doit être en PNG ou JPEG.",
+        "signatureTooBig": "L'image doit faire 500 Ko au maximum.",
+        "signatureUploaded": "Signature enregistrée.",
+        "signatureUploadError": "Impossible de téléverser la signature.",
+        "signatureRemoved": "Signature supprimée.",
+        "signatureRemoveError": "Impossible de supprimer la signature."
       }
     },
     "students": {
@@ -1215,5 +1243,27 @@
         "fr": "Français"
       }
     }
+  },
+  "insurance": {
+    "title": "Assurance santé",
+    "description": "Informations pour vos reçus d'assurance (kinésithérapie et naturopathie). Tous les champs sont facultatifs.",
+    "loading": "Chargement...",
+    "fields": {
+      "policy_number": "Numéro de police",
+      "city_province": "Ville / province",
+      "holder_is_self": "Je suis le titulaire de la police",
+      "holder_full_name": "Nom du titulaire",
+      "holder_city_province": "Ville / province du titulaire",
+      "holder_employer": "Employeur du titulaire",
+      "holder_occupation": "Occupation du titulaire",
+      "holder_phone_work": "Téléphone au travail du titulaire",
+      "holder_phone_home": "Téléphone à la maison du titulaire"
+    },
+    "holderHint": "Indiquez les informations de la personne titulaire de la police (par exemple, conjoint ou parent).",
+    "save": "Enregistrer l'assurance",
+    "saving": "Enregistrement...",
+    "saveSuccess": "Informations d'assurance enregistrées.",
+    "saveError": "Impossible d'enregistrer les informations d'assurance.",
+    "loadError": "Impossible de charger les informations d'assurance."
   }
 }
