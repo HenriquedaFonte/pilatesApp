@@ -28,6 +28,8 @@ import {
   ChevronRight
 } from 'lucide-react'
 import TeacherLayout from '../components/TeacherLayout'
+import BirthdayBanner from '../components/BirthdayBanner'
+import { getUpcomingBirthdays } from '../lib/birthdays'
 
 const TeacherDashboard = () => {
   const { profile, signOut } = useAuth()
@@ -41,6 +43,7 @@ const TeacherDashboard = () => {
   })
   const [todayClassesList, setTodayClassesList] = useState([])
   const [loading, setLoading] = useState(true)
+  const [upcomingBirthdays, setUpcomingBirthdays] = useState([])
 
   const getGreeting = () => {
     const hr = new Date().getHours()
@@ -62,8 +65,21 @@ const TeacherDashboard = () => {
 
   useEffect(() => {
     fetchDashboardStats()
+    fetchBirthdays()
     // eslint-disable-next-line react-hooks/exhaustive-deps -- carga intencional só quando estas dependências mudam
   }, [])
+
+  // Aniversários próximos (mesmos alunos da tela Alunos: não excluídos).
+  // Erro aqui não atrapalha o resto do painel.
+  const fetchBirthdays = async () => {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('id, full_name, date_of_birth')
+      .eq('role', 'student')
+      .is('deleted_at', null)
+      .not('date_of_birth', 'is', null)
+    if (!error) setUpcomingBirthdays(getUpcomingBirthdays(data || []))
+  }
 
   // TODO Fase 2: migrar fetchDashboardStats para Supabase
   const fetchDashboardStats = async () => {
@@ -174,6 +190,8 @@ const TeacherDashboard = () => {
             {getFormattedDate()}
           </p>
         </div>
+
+        <BirthdayBanner birthdays={upcomingBirthdays} />
 
         {/* Proportional Stat Tiles */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
