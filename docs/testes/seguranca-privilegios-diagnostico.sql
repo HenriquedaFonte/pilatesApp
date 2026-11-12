@@ -2,11 +2,9 @@
 --
 -- Rodar no Supabase SQL Editor ANTES e DEPOIS da migration
 -- 20261112010000_fix_profiles_privilege_escalation_and_rls.sql.
--- Só consulta o catálogo do Postgres; não altera nada (transação READ ONLY
--- que termina em ROLLBACK).
---
--- Se o editor mostrar só "Success. No rows returned", selecione apenas o
--- SELECT (do "SELECT" até o ";" antes do ROLLBACK) e rode a seleção.
+-- Só consulta o catálogo do Postgres; não altera nada.
+-- Colar o arquivo inteiro e rodar: é uma consulta só (os SELECTs internos
+-- são unidos por UNION ALL e saem numa tabela única).
 --
 -- Esperado DEPOIS da migration:
 --   funcao  prevent_privilege_escalation → SECURITY INVOKER | config=search_path=public
@@ -21,8 +19,6 @@
 --   trigger enforce_privilege_escalation_guard → ATIVO
 --   tabela  profiles → rls=true | dono=postgres
 --   policy  → só as 4 profiles_* (TO authenticated); nenhuma "Allow all ..."
-
-BEGIN TRANSACTION READ ONLY;
 
 SELECT tipo, nome, detalhe
 FROM (
@@ -84,4 +80,3 @@ FROM (
 ) d
 ORDER BY ordem, nome;
 
-ROLLBACK;
