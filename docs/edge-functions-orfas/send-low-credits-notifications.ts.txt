@@ -1,0 +1,439 @@
+// CÓPIA DOCUMENTAL — NÃO É CÓDIGO ATIVO DO REPOSITÓRIO. NÃO FAZER DEPLOY DESTE ARQUIVO.
+// Edge Function "send-low-credits-notifications" (v8, último deploy 2025-09-12) baixada de produção em 2026-11-12
+// via GET /v1/projects/<ref>/functions/send-low-credits-notifications/body (fonte extraído do eszip, sem alterações).
+// Guardada só como referência e plano de reversão. Ver docs/PENDENCIAS.md.
+// Riscos conhecidos: sem checar papel de quem chama; com service_role envia aviso de créditos baixos/zerados para todos os alunos elegíveis; loga nome e email dos alunos.
+
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type'
+};
+// Multi-language translations
+const translations = {
+  pt: {
+    lowCreditsSubject: '💡 Créditos Baixos - {studioName}',
+    zeroCreditsSubject: '⚠️ Créditos Esgotados - {studioName}',
+    hello: 'Olá {studentName}!',
+    lowCreditsMessage: 'Seus créditos estão baixos',
+    zeroCreditsMessage: 'Seus créditos esgotaram',
+    currentCredits: 'Seus Créditos Atuais:',
+    individual: 'Individual',
+    duo: 'Duo',
+    group: 'Grupo',
+    total: 'Total',
+    lowCreditsText: 'Para garantir que você não perca suas aulas favoritas, recomendamos a renovação dos seus créditos.',
+    zeroCreditsText: 'Você não possui mais créditos disponíveis e não poderá participar das próximas aulas até renovar.',
+    zeroCreditsUrgent: 'Para continuar aproveitando nossas aulas de Pilates, é necessário renovar seus créditos o quanto antes.',
+    buyCredits: '🛒 Comprar Créditos',
+    renewCredits: '🛒 Renovar Créditos Agora',
+    contactUs: 'Se preferir, entre em contato conosco:',
+    contactUsRenew: 'Entre em contato conosco para renovar:',
+    phone: 'Telefone',
+    email: 'Email',
+    thankYou: 'Obrigado por fazer parte da nossa comunidade!',
+    backToClasses: 'Estamos aqui para ajudar e ansiosos para vê-lo(a ) de volta às aulas!',
+    unsubscribe: 'Este é um email automático. Se você não deseja mais receber essas notificações, entre em contato conosco.',
+    creditsExhausted: '🚫 Créditos Esgotados',
+    attention: '⚠️ ATENÇÃO {studentName}!',
+    creditsExhaustedCaps: '⚠️ CRÉDITOS ESGOTADOS ⚠️'
+  },
+  en: {
+    lowCreditsSubject: '💡 Low Credits - {studioName}',
+    zeroCreditsSubject: '⚠️ Credits Exhausted - {studioName}',
+    hello: 'Hello {studentName}!',
+    lowCreditsMessage: 'Your credits are running low',
+    zeroCreditsMessage: 'Your credits have been exhausted',
+    currentCredits: 'Your Current Credits:',
+    individual: 'Individual',
+    duo: 'Duo',
+    group: 'Group',
+    total: 'Total',
+    lowCreditsText: 'To ensure you don\'t miss your favorite classes, we recommend renewing your credits.',
+    zeroCreditsText: 'You no longer have available credits and will not be able to participate in upcoming classes until you renew.',
+    zeroCreditsUrgent: 'To continue enjoying our Pilates classes, you need to renew your credits as soon as possible.',
+    buyCredits: '🛒 Buy Credits',
+    renewCredits: '🛒 Renew Credits Now',
+    contactUs: 'If you prefer, contact us:',
+    contactUsRenew: 'Contact us to renew:',
+    phone: 'Phone',
+    email: 'Email',
+    thankYou: 'Thank you for being part of our community!',
+    backToClasses: 'We are here to help and look forward to seeing you back in classes!',
+    unsubscribe: 'This is an automatic email. If you no longer wish to receive these notifications, please contact us.',
+    creditsExhausted: '🚫 Credits Exhausted',
+    attention: '⚠️ ATTENTION {studentName}!',
+    creditsExhaustedCaps: '⚠️ CREDITS EXHAUSTED ⚠️'
+  },
+  fr: {
+    lowCreditsSubject: '💡 Crédits Faibles - {studioName}',
+    zeroCreditsSubject: '⚠️ Crédits Épuisés - {studioName}',
+    hello: 'Bonjour {studentName}!',
+    lowCreditsMessage: 'Vos crédits sont faibles',
+    zeroCreditsMessage: 'Vos crédits sont épuisés',
+    currentCredits: 'Vos Crédits Actuels:',
+    individual: 'Individuel',
+    duo: 'Duo',
+    group: 'Groupe',
+    total: 'Total',
+    lowCreditsText: 'Pour vous assurer de ne pas manquer vos cours préférés, nous recommandons de renouveler vos crédits.',
+    zeroCreditsText: 'Vous n\'avez plus de crédits disponibles et ne pourrez pas participer aux prochains cours jusqu\'au renouvellement.',
+    zeroCreditsUrgent: 'Pour continuer à profiter de nos cours de Pilates, vous devez renouveler vos crédits dès que possible.',
+    buyCredits: '🛒 Acheter des Crédits',
+    renewCredits: '🛒 Renouveler les Crédits Maintenant',
+    contactUs: 'Si vous préférez, contactez-nous:',
+    contactUsRenew: 'Contactez-nous pour renouveler:',
+    phone: 'Téléphone',
+    email: 'Email',
+    thankYou: 'Merci de faire partie de notre communauté!',
+    backToClasses: 'Nous sommes là pour vous aider et avons hâte de vous revoir en cours!',
+    unsubscribe: 'Ceci est un email automatique. Si vous ne souhaitez plus recevoir ces notifications, veuillez nous contacter.',
+    creditsExhausted: '🚫 Crédits Épuisés',
+    attention: '⚠️ ATTENTION {studentName}!',
+    creditsExhaustedCaps: '⚠️ CRÉDITS ÉPUISÉS ⚠️'
+  }
+};
+Deno.serve(async (req)=>{
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', {
+      headers: corsHeaders
+    });
+  }
+  try {
+    // Initialize Supabase client
+    const supabaseClient = createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '');
+    // Get request parameters
+    const { notification_type = 'low_credits', test_mode = false } = await req.json().catch(()=>({}));
+    console.log(`Starting email notification process for type: ${notification_type}`);
+    // Get students eligible for notifications
+    const { data: students, error: studentsError } = await supabaseClient.rpc('get_students_for_notification', {
+      notification_type
+    });
+    if (studentsError) {
+      console.error('Error fetching students:', studentsError);
+      throw studentsError;
+    }
+    if (!students || students.length === 0) {
+      console.log('No students found for notification');
+      return new Response(JSON.stringify({
+        success: true,
+        message: 'No students require notifications at this time',
+        students_processed: 0
+      }), {
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json'
+        },
+        status: 200
+      });
+    }
+    console.log(`Found ${students.length} students eligible for notifications`);
+    // Email service configuration
+    const emailServiceUrl = Deno.env.get('EMAIL_SERVICE_URL') || 'https://api.resend.com/emails';
+    const emailApiKey = Deno.env.get('EMAIL_API_KEY') || Deno.env.get('RESEND_API_KEY');
+    const studioName = Deno.env.get('STUDIO_NAME') || 'Studio de Pilates';
+    const studioEmail = Deno.env.get('STUDIO_EMAIL') || 'contato@studiopilates.com';
+    const studioPhone = Deno.env.get('STUDIO_PHONE') || '(11) 99999-9999';
+    const purchaseLink = Deno.env.get('PURCHASE_LINK') || 'https://studiopilates.com/creditos';
+    if (!emailApiKey) {
+      throw new Error('Email API key not configured');
+    }
+    const results = {
+      success: 0,
+      failed: 0,
+      errors: []
+    };
+    // Process each student
+    for (const student of students){
+      try {
+        console.log(`Processing student: ${student.student_name} (${student.student_email}) - Language: ${student.preferred_language}`);
+        // Generate email template based on notification type and language
+        const emailTemplate = generateEmailTemplate(student, notification_type, student.preferred_language || 'pt', studioName, studioPhone, studioEmail, purchaseLink);
+        // Prepare email data
+        const emailData = {
+          from: `${studioName} <${studioEmail}>`,
+          to: [
+            student.student_email
+          ],
+          subject: emailTemplate.subject,
+          html: emailTemplate.html,
+          text: emailTemplate.text
+        };
+        let emailResult;
+        if (test_mode) {
+          // In test mode, just log what would be sent
+          console.log('TEST MODE - Would send email:', {
+            to: student.student_email,
+            subject: emailTemplate.subject,
+            language: student.preferred_language,
+            credits: {
+              individual: student.individual_credits,
+              duo: student.duo_credits,
+              group: student.group_credits,
+              total: student.total_credits
+            }
+          });
+          emailResult = {
+            id: `test-${Date.now()}`
+          };
+        } else {
+          // Send actual email
+          const emailResponse = await fetch(emailServiceUrl, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${emailApiKey}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(emailData)
+          });
+          if (!emailResponse.ok) {
+            const errorText = await emailResponse.text();
+            throw new Error(`Email service error: ${emailResponse.status} - ${errorText}`);
+          }
+          emailResult = await emailResponse.json();
+        }
+        // Log successful email
+        const { error: logError } = await supabaseClient.rpc('log_email_notification', {
+          p_student_id: student.student_id,
+          p_email_type: notification_type,
+          p_recipient_email: student.student_email,
+          p_subject: emailTemplate.subject,
+          p_status: 'sent',
+          p_error_message: null,
+          p_credits_at_time: JSON.stringify({
+            individual: student.individual_credits,
+            duo: student.duo_credits,
+            group: student.group_credits,
+            total: student.total_credits,
+            threshold: student.low_credits_threshold,
+            language: student.preferred_language
+          }),
+          p_email_provider_id: emailResult.id
+        });
+        if (logError) {
+          console.error('Error logging email:', logError);
+        }
+        results.success++;
+        console.log(`Successfully sent email to ${student.student_name} in ${student.preferred_language}`);
+      } catch (error) {
+        console.error(`Failed to send email to ${student.student_name}:`, error);
+        // Log failed email
+        await supabaseClient.rpc('log_email_notification', {
+          p_student_id: student.student_id,
+          p_email_type: notification_type,
+          p_recipient_email: student.student_email,
+          p_subject: `Failed: ${notification_type} notification`,
+          p_status: 'failed',
+          p_error_message: error.message,
+          p_credits_at_time: JSON.stringify({
+            individual: student.individual_credits,
+            duo: student.duo_credits,
+            group: student.group_credits,
+            total: student.total_credits,
+            threshold: student.low_credits_threshold,
+            language: student.preferred_language
+          }),
+          p_email_provider_id: null
+        });
+        results.failed++;
+        results.errors.push(`${student.student_name}: ${error.message}`);
+      }
+    }
+    console.log('Email notification process completed:', results);
+    return new Response(JSON.stringify({
+      success: true,
+      message: `Processed ${students.length} students`,
+      results: {
+        students_processed: students.length,
+        emails_sent: results.success,
+        emails_failed: results.failed,
+        errors: results.errors
+      }
+    }), {
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'application/json'
+      },
+      status: 200
+    });
+  } catch (error) {
+    console.error('Error in email notification function:', error);
+    return new Response(JSON.stringify({
+      success: false,
+      error: error.message
+    }), {
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'application/json'
+      },
+      status: 500
+    });
+  }
+});
+function generateEmailTemplate(student, notificationType, language, studioName, studioPhone, studioEmail, purchaseLink) {
+  const isZeroCredits = student.total_credits === 0;
+  const lang = translations[language] || translations['pt'] // Fallback to Portuguese
+  ;
+  if (isZeroCredits || notificationType === 'zero_credits') {
+    return {
+      subject: lang.zeroCreditsSubject.replace('{studioName}', studioName),
+      html: generateZeroCreditsHtml(student, language, studioName, studioPhone, studioEmail, purchaseLink),
+      text: generateZeroCreditsText(student, language, studioName, studioPhone, studioEmail, purchaseLink)
+    };
+  } else {
+    return {
+      subject: lang.lowCreditsSubject.replace('{studioName}', studioName),
+      html: generateLowCreditsHtml(student, language, studioName, studioPhone, studioEmail, purchaseLink),
+      text: generateLowCreditsText(student, language, studioName, studioPhone, studioEmail, purchaseLink)
+    };
+  }
+}
+function generateLowCreditsHtml(student, language, studioName, studioPhone, studioEmail, purchaseLink) {
+  const lang = translations[language] || translations['pt'];
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>${lang.lowCreditsSubject.replace('{studioName}', studioName)}</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
+        .credits-box { background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 15px; margin: 20px 0; }
+        .credits-item { display: inline-block; margin: 5px 10px; padding: 5px 10px; background-color: #fff; border-radius: 4px; border: 1px solid #ddd; }
+        .cta-button { display: inline-block; background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+        .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; font-size: 14px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💡 ${lang.hello.replace('{studentName}', student.student_name)}</h1>
+        <p>${lang.lowCreditsMessage}</p>
+    </div>
+    
+    <p>${lang.lowCreditsText}</p>
+    
+    <div class="credits-box">
+        <h3>${lang.currentCredits}</h3>
+        <div class="credits-item">🔵 ${lang.individual}: <strong>${student.individual_credits}</strong></div>
+        <div class="credits-item">🟢 ${lang.duo}: <strong>${student.duo_credits}</strong></div>
+        <div class="credits-item">🟣 ${lang.group}: <strong>${student.group_credits}</strong></div>
+        <div class="credits-item">📊 ${lang.total}: <strong>${student.total_credits}</strong></div>
+    </div>
+    
+    <div style="text-align: center;">
+        <a href="${purchaseLink}" class="cta-button">${lang.buyCredits}</a>
+    </div>
+    
+    <p>${lang.contactUs}</p>
+    <ul>
+        <li>📞 ${lang.phone}: ${studioPhone}</li>
+        <li>📧 ${lang.email}: ${studioEmail}</li>
+    </ul>
+    
+    <div class="footer">
+        <p><strong>${studioName}</strong></p>
+        <p>${lang.thankYou}</p>
+        <p><small>${lang.unsubscribe}</small></p>
+    </div>
+</body>
+</html>`;
+}
+function generateLowCreditsText(student, language, studioName, studioPhone, studioEmail, purchaseLink) {
+  const lang = translations[language] || translations['pt'];
+  return `
+${lang.hello.replace('{studentName}', student.student_name)}
+
+${lang.lowCreditsMessage}
+
+${lang.currentCredits}
+- ${lang.individual}: ${student.individual_credits}
+- ${lang.duo}: ${student.duo_credits}
+- ${lang.group}: ${student.group_credits}
+- ${lang.total}: ${student.total_credits}
+
+${lang.lowCreditsText}
+
+${lang.buyCredits}: ${purchaseLink}
+
+${lang.contactUs}
+- ${lang.phone}: ${studioPhone}
+- ${lang.email}: ${studioEmail}
+
+${studioName}
+${lang.thankYou}
+`;
+}
+function generateZeroCreditsHtml(student, language, studioName, studioPhone, studioEmail, purchaseLink) {
+  const lang = translations[language] || translations['pt'];
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>${lang.zeroCreditsSubject.replace('{studioName}', studioName)}</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #f8d7da; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
+        .alert-box { background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px; padding: 15px; margin: 20px 0; }
+        .cta-button { display: inline-block; background-color: #dc3545; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+        .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; font-size: 14px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>⚠️ ${lang.attention.replace('{studentName}', student.student_name)}</h1>
+        <p>${lang.zeroCreditsMessage}</p>
+    </div>
+    
+    <div class="alert-box">
+        <h3>${lang.creditsExhausted}</h3>
+        <p>${lang.zeroCreditsText}</p>
+    </div>
+    
+    <p>${lang.zeroCreditsUrgent}</p>
+    
+    <div style="text-align: center;">
+        <a href="${purchaseLink}" class="cta-button">${lang.renewCredits}</a>
+    </div>
+    
+    <p><strong>${lang.contactUsRenew}</strong></p>
+    <ul>
+        <li>📞 ${lang.phone}: ${studioPhone}</li>
+        <li>📧 ${lang.email}: ${studioEmail}</li>
+    </ul>
+    
+    <p>${lang.backToClasses}</p>
+    
+    <div class="footer">
+        <p><strong>${studioName}</strong></p>
+        <p>${lang.thankYou}</p>
+        <p><small>${lang.unsubscribe}</small></p>
+    </div>
+</body>
+</html>`;
+}
+function generateZeroCreditsText(student, language, studioName, studioPhone, studioEmail, purchaseLink) {
+  const lang = translations[language] || translations['pt'];
+  return `
+${lang.attention.replace('{studentName}', student.student_name)}
+
+${lang.creditsExhaustedCaps}
+
+${lang.zeroCreditsText}
+
+${lang.zeroCreditsUrgent}
+
+${lang.renewCredits}: ${purchaseLink}
+
+${lang.contactUsRenew}
+- ${lang.phone}: ${studioPhone}
+- ${lang.email}: ${studioEmail}
+
+${lang.backToClasses}
+
+${studioName}
+${lang.thankYou}
+`;
+}
