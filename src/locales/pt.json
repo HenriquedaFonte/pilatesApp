@@ -688,72 +688,95 @@
     "emails": {
       "title": "Painel de E-mails",
       "subtitle": "Envie notificações e alertas diretamente para as caixas de entrada dos alunos",
-      "tabs": {
-        "notifications": "Disparo Rápido",
-        "custom": "E-mail Customizado",
-        "templates": "Modelos",
+      "areas": {
+        "new": "Nova mensagem",
         "history": "Histórico"
       },
-      "quick": {
-        "title": "Notificação de Saldo Baixo",
-        "desc": "Envie alertas automáticos rápidos com base no limite de créditos",
-        "thresholdLabel": "Definir limite de aviso:",
-        "totalCredits": "créditos totais",
-        "qualifiedBadge": "{{count}} aluno(s) qualificados",
-        "sending": "Disparando E-mails...",
-        "notify": "Notificar {{count}} Alunos",
-        "qualifiedTitle": "Alunos Qualificados",
-        "qualifiedDesc": "Quem receberá o aviso de saldo baixo com as configurações atuais",
-        "emptyTitle": "Nenhum aluno qualificado",
-        "emptyDesc": "Tudo limpo! Nenhum aluno possui créditos abaixo de {{total}}."
+      "steps": {
+        "recipients": "Para quem",
+        "content": "O quê",
+        "review": "Revisar e enviar"
       },
-      "customCard": {
-        "filterTitle": "Filtro de Destinatárias",
-        "filterDesc": "Escolha quem receberá o e-mail",
-        "filterLabel": "Filtrar alunos por:",
-        "filters": {
+      "nav": {
+        "back": "Voltar",
+        "next": "Continuar",
+        "newMessage": "Nova mensagem"
+      },
+      "languageNames": {
+        "pt": "Português",
+        "en": "Inglês",
+        "fr": "Francês"
+      },
+      "messages": {
+        "loadError": "Erro ao carregar os dados:"
+      },
+      "recipients": {
+        "title": "Para quem vai a mensagem?",
+        "desc": "Escolha um grupo. Dá para tirar alunos da lista antes de continuar.",
+        "groups": {
           "all": "Todos os alunos",
           "low_credits": "Créditos baixos",
-          "zero_credits": "Saldo zerado",
-          "class": "Turma específica",
-          "selected": "Seleção manual"
+          "zero_credits": "Créditos zerados",
+          "class": "Uma turma",
+          "selected": "Escolher alunos"
         },
-        "selectClass": "Selecionar turma:",
-        "selectClassPlaceholder": "Selecione a turma",
-        "selectManual": "Selecionar manualmente:",
-        "clearAll": "Limpar Tudo",
-        "selectAll": "Selecionar Tudo",
-        "searchStudent": "Buscar aluno...",
-        "creditsCount": "{{count}} créditos",
-        "selectedCount": "Destinatários Selecionados: {{count}}",
-        "emptySelection": "Nenhum aluno selecionado pelo filtro atual.",
-        "moreStudents": " e mais {{count}} aluno(s)...",
-        "contentTitle": "Conteúdo da Notificação",
-        "contentDesc": "Escreva o e-mail ou utilize um template da aba correspondente",
-        "senderName": "Nome do Remetente",
-        "senderPlaceholder": "Ex: Professora Josi, Estúdio Josi Pilates",
-        "activeTemplate": "Template Ativo",
-        "templateIndicator": "Template: {{name}}",
-        "noTemplateIndicator": "Sem Template (E-mail Livre)",
-        "subjectLabel": "Assunto do E-mail",
-        "subjectPlaceholder": "Assunto da notificação",
+        "thresholdLabel": "Créditos baixos = até",
+        "thresholdUnit": "créditos",
+        "selectClass": "Turma:",
+        "selectClassPlaceholder": "Escolha a turma",
+        "loadingClass": "Carregando alunos da turma...",
+        "emptyClass": "Nenhum aluno ativo nesta turma.",
+        "count_one": "{{count}} aluno vai receber",
+        "count_other": "{{count}} alunos vão receber",
+        "searchPlaceholder": "Buscar por nome ou email...",
+        "remove": "Tirar",
+        "restore": "Colocar de volta",
+        "restoreAll_one": "Colocar de volta o {{count}} tirado",
+        "restoreAll_other": "Colocar de volta os {{count}} tirados",
+        "selectHint": "Marque os alunos que vão receber.",
+        "selectAll": "Marcar todos",
+        "clearAll": "Desmarcar todos",
+        "empty": "Nenhum aluno neste grupo.",
+        "emptySearch": "Nenhum aluno encontrado com essa busca.",
+        "inactiveBadge": "Inativo",
+        "credits_one": "{{count}} crédito",
+        "credits_other": "{{count}} créditos"
+      },
+      "content": {
+        "title": "O que você quer mandar?",
+        "desc": "Escolha um modelo ou comece com uma mensagem em branco.",
+        "globeHint": "Sai na língua de cada aluno.",
+        "chooseFirst": "Escolha um modelo ou \"Mensagem em branco\" para continuar.",
+        "autoLowCredits": "Este email sai pronto, na língua de cada aluno, com o saldo de créditos dele e como renovar. Não precisa escrever nada.",
+        "consentDesc": "Este email sai pronto, na língua de cada aluno, com o termo de consentimento e as regras do estúdio em PDF anexado.",
+        "senderName": "Assinado por",
+        "senderPlaceholder": "Ex.: Josi",
+        "languageLabel": "Língua do texto do modelo",
+        "subjectLabel": "Assunto",
+        "subjectPlaceholder": "Assunto do email",
         "messageLabel": "Mensagem",
         "messagePlaceholder": "Escreva a mensagem aqui...",
-        "consentTitle": "Modelo: Formulário de Consentimento",
-        "consentDesc": "Este modelo enviará o documento de políticas e termos de aulas de Pilates diretamente com um anexo em formato PDF para os alunos selecionados.",
-        "attachment": "📎 Anexo: PilatesLessonsPolicies.pdf",
-        "sendingCustom": "Enviando E-mails...",
-        "sendConsentBtn": "Enviar Termo para {{count}} aluno(s)",
-        "sendEmailBtn": "Enviar E-mail para {{count}} aluno(s)",
         "multilingualOn": "Este modelo sai na língua de cada aluno (português, inglês ou francês, conforme o perfil).",
-        "multilingualOff": "Você editou o texto: todos os alunos vão receber exatamente o texto acima, numa língua só. Para enviar na língua de cada aluno, selecione o modelo de novo sem editar.",
-        "loadingClass": "Carregando alunos da turma...",
-        "emptyClass": "Nenhum aluno ativo nesta turma."
+        "multilingualOff": "Você editou o texto: todos os alunos vão receber exatamente o texto acima, numa língua só. Para enviar na língua de cada aluno, escolha o modelo de novo sem editar."
       },
-      "templates": {
-        "title": "Modelos de E-mail",
-        "desc": "Escolha um modelo predefinido para agilizar o envio dos avisos",
-        "languageLabel": "Idioma do Modelo:"
+      "review": {
+        "title": "Revisar e enviar",
+        "desc": "Confira antes de enviar. Depois de enviado, não dá para desfazer.",
+        "to": "Para",
+        "model": "Modelo",
+        "subject": "Assunto",
+        "message": "Mensagem",
+        "sender": "Assinado por",
+        "removedCount_one": "{{count}} tirado da lista",
+        "removedCount_other": "{{count}} tirados da lista",
+        "sending": "Enviando...",
+        "keepOpen": "Não feche esta página até terminar.",
+        "resultSent_one": "{{count}} enviado",
+        "resultSent_other": "{{count}} enviados",
+        "resultFailed_one": "{{count}} falha",
+        "resultFailed_other": "{{count}} falhas",
+        "failedList": "Não receberam:",
+        "error": "O envio parou com erro:"
       },
       "history": {
         "title": "Histórico de Notificações",
