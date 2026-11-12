@@ -1,10 +1,14 @@
--- Migration: limpeza dos emails automáticos
+-- Migration: desliga os emails automáticos e limpa o que sobrou deles
 --   1. corrige get_students_for_notification (erro 42804 em produção);
---   2. apaga os jobs do pg_cron que só fazem SELECT
---      (low-credits-report-daily, send-low-credits-notifications-daily);
---   3. apaga as funções antigas de disparo que mais ninguém usa
+--   2. remove TODOS os jobs conhecidos de email do pg_cron:
+--        low-credits-daily e zero-credits-daily (enviavam os emails de
+--        créditos baixos/zerados — o usuário decidiu desligar em 2026-11-12;
+--        a professora continua enviando à mão pela tela "Notificações por
+--        email", que não muda), low-credits-report-daily e
+--        send-low-credits-notifications-daily (só SELECT, resultado se perdia);
+--   3. apaga as funções antigas de disparo que ficarem sem uso
 --      (manual_trigger_notifications, trigger_email_notifications,
---      schedule_email_notifications — só as que sobrarem sem uso).
+--      schedule_email_notifications — só as que ninguém mais usa).
 --
 -- Pode rodar ANTES ou DEPOIS da 20261112040000 (invólucros dos relatórios):
 --   • depois dela: corrige public.get_students_for_notification_impl (o
@@ -20,7 +24,8 @@
 -- Returned type character varying does not match expected type text in
 -- column 8", mesmo sem linhas. Correção: COALESCE(p.preferred_language,
 -- 'pt')::text. Só essa expressão muda; o resto do corpo de produção fica
--- exatamente igual (o corpo é lido do banco, não do repositório).
+-- exatamente igual (o corpo é lido do banco, não do repositório). O site não
+-- chama essa função (a tela de Notificações monta a lista sozinha).
 --
 -- SUPOSIÇÃO: o corpo de produção contém COALESCE(<x>.preferred_language,
 -- 'pt') como o do repositório. Se não contiver, a migration PARA sem
@@ -33,22 +38,24 @@
 -- defaults (pg_depend). As que ainda forem usadas ficam (NOTICE no fim) e
 -- viram pendência. O site, as Edge Functions do repositório e o backup não
 -- chamam nenhuma delas (levantado em src/, supabase/functions/, scripts/ e
--- .github/).
+-- .github/). log_email_notification (usada pela tela da professora) não é
+-- tocada.
 --
 -- PARA sem aplicar nada se:
---   • o comando de um job a remover fizer algo além de SELECT (net.http,
---     INSERT/UPDATE/DELETE, cron.schedule) ou chamar uma função de disparo;
---   • algo automático que FICA (job ativo do pg_cron, trigger, event
---     trigger) chegar (direto ou por outras funções) a
---     get_students_for_notification: corrigir a função mudaria o que ele faz
---     (hoje falha; corrigido, poderia passar a enviar emails) — decisão do
---     usuário antes;
+--   • sobrar algum job do pg_cron (ativo ou não) ligado a email: nome ou
+--     comando com email/notif/resend/send/http_post/net.http, ou que chegue
+--     (direto ou por outras funções) a uma função que cite isso, a uma
+--     função de disparo ou a get_students_for_notification. Jobs que não
+--     conhecemos não são apagados: mandar o diagnóstico para o dev-critico;
+--   • um trigger/event trigger chegar a get_students_for_notification:
+--     corrigida, ela passaria a rodar sem ninguém ter decidido;
 --   • a correção não se aplicar como esperado (ver SUPOSIÇÃO).
 --
 -- CÓPIA DE SEGURANÇA: antes de mudar/apagar, guarda a definição exata de
 -- cada função (pg_get_functiondef + GRANTs) e de cada job (cron.schedule)
 -- em josi_backup.email_cleanup_20261112 (schema fora da API: nenhum papel
--- da API tem acesso). REVERSÃO: docs/testes/emails-limpeza-reversao.sql.
+-- da API tem acesso). REVERSÃO: docs/testes/emails-limpeza-reversao.sql
+-- (religa os emails automáticos!).
 --
 -- Rodar no Supabase SQL Editor de uma vez (como postgres). Está dentro de
 -- BEGIN/COMMIT: se algo falhar, nada é aplicado. Idempotente: pode rodar de
@@ -102,7 +109,10 @@ CREATE TEMP TABLE josi_plan (
 
 DO $$
 DECLARE
-  c_jobs_remove constant text[] := ARRAY['low-credits-report-daily', 'send-low-credits-notifications-daily'];
+  c_jobs_remove constant text[] := ARRAY['low-credits-daily', 'zero-credits-daily',
+                                         'low-credits-report-daily', 'send-low-credits-notifications-daily'];
+  -- "ligado a email" (nome/comando de job ou corpo de função alcançada)
+  c_email_re    constant text   := '(e-?mail|notif|resend|send|http_post|net\.http)';
   c_candidates  constant text[] := ARRAY['manual_trigger_notifications', 'trigger_email_notifications',
                                          'schedule_email_notifications'];
   c_marker      constant text   := 'josi-pilates: invólucro';
@@ -122,14 +132,12 @@ BEGIN
     RAISE NOTICE 'pg_cron não existe neste banco: nenhum job para remover.';
   END IF;
 
-  -- 1a. Jobs a remover: só se o comando for consulta pura.
+  -- 1a. Jobs a remover: os 4 conhecidos, pelo nome.
   FOR j IN SELECT * FROM josi_jobs WHERE remover LOOP
-    IF j.command ~* ('(net\.|http|insert\s+into|update\s+\S+\s+set|delete\s+from|cron\.|'
-                     || array_to_string(c_candidates, '|') || ')') THEN
-      RAISE EXCEPTION 'O job % não é só um SELECT (comando: %). Nada foi aplicado; mande o diagnóstico para o dev-critico.',
-        j.jobname, left(j.command, 200);
-    END IF;
-    INSERT INTO josi_plan VALUES ('job_remover', NULL, j.jobname, 'só faz SELECT; resultado se perde', NULL);
+    INSERT INTO josi_plan VALUES ('job_remover', NULL, j.jobname,
+      CASE WHEN j.jobname IN ('low-credits-daily', 'zero-credits-daily')
+           THEN 'enviava email automático (desligado a pedido do usuário)'
+           ELSE 'só faz SELECT; resultado se perdia' END, NULL);
   END LOOP;
 
   -- Funções de todos os schemas de usuário (para saber quem cita quem).
@@ -140,6 +148,35 @@ BEGIN
     JOIN pg_namespace n ON n.oid = p.pronamespace
     WHERE n.nspname NOT IN ('pg_catalog', 'information_schema')
       AND n.nspname NOT LIKE 'pg_toast%' AND n.nspname NOT LIKE 'pg_temp%';
+
+  -- 1a'. Nenhum job que FICA (ativo ou não) pode estar ligado a email: não
+  --      apagamos jobs que não conhecemos, então paramos.
+  FOR r IN
+    WITH RECURSIVE reach(jobname, oid) AS (
+      SELECT jj.jobname, f.oid
+      FROM josi_jobs jj
+      JOIN josi_fns f ON f.nspname = 'public' AND strpos(lower(jj.command), lower(f.proname)) > 0
+      WHERE NOT jj.remover
+      UNION
+      SELECT rc.jobname, f2.oid
+      FROM reach rc
+      JOIN josi_fns f1 ON f1.oid = rc.oid
+      JOIN josi_fns f2 ON f2.nspname = 'public' AND f2.oid <> f1.oid AND strpos(f1.src, lower(f2.proname)) > 0
+    )
+    SELECT jj.jobname, left(jj.command, 200) AS command
+    FROM josi_jobs jj
+    WHERE NOT jj.remover
+      AND (jj.jobname ~* c_email_re OR jj.command ~* c_email_re
+           OR EXISTS (SELECT 1 FROM reach rc JOIN josi_fns f ON f.oid = rc.oid
+                      WHERE rc.jobname = jj.jobname
+                        AND (f.src ~* c_email_re
+                             OR f.proname = ANY (c_candidates)
+                             OR f.proname IN ('get_students_for_notification',
+                                              'get_students_for_notification_impl'))))
+  LOOP
+    RAISE EXCEPTION 'O job % (comando: %) parece ligado a email e não é um dos 4 conhecidos. Nada foi aplicado; mande o diagnóstico para o dev-critico.',
+      r.jobname, r.command;
+  END LOOP;
 
   -- 1b. Nada automático que FICA (job ativo do pg_cron, trigger de tabela,
   --     event trigger) pode chegar, direta ou indiretamente, a

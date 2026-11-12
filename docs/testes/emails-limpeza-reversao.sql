@@ -1,10 +1,13 @@
 -- Reversão — limpeza dos emails automáticos
 -- (migration 20261112050000_cleanup_email_automation.sql)
 --
--- Só para emergência. Recria, a partir da cópia exata que a migration guardou
--- em josi_backup.email_cleanup_20261112:
---   • os jobs do pg_cron removidos (low-credits-report-daily,
---     send-low-credits-notifications-daily), com a mesma agenda e comando;
+-- Só para emergência. ATENÇÃO: religa os emails automáticos de créditos
+-- baixos/zerados, que o usuário decidiu desligar em 2026-11-12.
+-- Recria, a partir da cópia exata que a migration guardou em
+-- josi_backup.email_cleanup_20261112:
+--   • os jobs do pg_cron removidos (low-credits-daily, zero-credits-daily,
+--     low-credits-report-daily, send-low-credits-notifications-daily), com a
+--     mesma agenda, comando e estado (ativo/inativo);
 --   • as funções de disparo apagadas, com o mesmo corpo e os mesmos GRANTs.
 -- O que já existir é pulado (pode rodar de novo).
 --

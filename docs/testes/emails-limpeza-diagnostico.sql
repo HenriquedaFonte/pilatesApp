@@ -1,4 +1,4 @@
--- Diagnóstico (só leitura) — limpeza dos emails automáticos
+-- Diagnóstico (só leitura) — desligar os emails automáticos e limpar o resto
 --
 -- Rodar no Supabase SQL Editor ANTES e DEPOIS da migration
 -- 20261112050000_cleanup_email_automation.sql.
@@ -10,6 +10,10 @@
 -- chaves do Resend re_...) saem como <oculto>: dá para mandar o CSV.
 --
 -- Colunas: tipo | nome | detalhe. Tipos, na ordem:
+--   0 migracao_040000  a migration 20261112040000 (relatórios só para
+--                  professora) já foi aplicada? aplicada=true quando existem
+--                  assert_staff_caller, get_students_for_notification_impl e
+--                  os invólucros. aplicada=false: ainda não rodou.
 --   1 cron         todos os jobs: plano (remover/manter), dono, agenda, ativo,
 --                  comando
 --   2 cron_exec    últimas 3 execuções de cada job (status, hora, mensagem)
@@ -19,23 +23,25 @@
 --   4 corpo        definição de cada uma dessas funções
 --   5 citada_por   quem cita/usa cada uma (job, função, trigger, pg_depend)
 --   6 plano        o que a migration deve fazer com cada função de disparo
---   7 alerta       algo automático que fica (job ativo, trigger) chega a
---                  get_students_for_notification → a migration vai PARAR
+--   7 alerta       motivo para a migration PARAR: um job que fica ligado a
+--                  email, ou algo automático que fica (job ativo, trigger)
+--                  chegando a get_students_for_notification
 --   8 outras       outras funções de public que parecem de email/notificação
 --                  (a migration não mexe nelas; ficam como pendência)
 --   9 backup       DEPOIS: o que a migration guardou em josi_backup
 --
 -- ANTES, o esperado é:
---   cron      low-credits-report-daily e send-low-credits-notifications-
---             daily com plano=remover e comando só SELECT;
---             low-credits-daily e zero-credits-daily com plano=manter.
+--   cron      low-credits-daily, zero-credits-daily, low-credits-report-daily
+--             e send-low-credits-notifications-daily com plano=remover;
+--             qualquer outro job com plano=manter e SEM linha de alerta.
 --   alerta    nenhuma linha. Se houver: NÃO rodar a migration (ela pararia);
 --             mandar o CSV para o dev-critico.
---   plano     cada função de disparo com "apagar" ou "manter (...)".
+--   plano     cada função de disparo com "apagar" (esperado: as 3) ou
+--             "manter (usada por: ...)".
 -- DEPOIS, o esperado é:
---   cron      só os jobs com plano=manter;
---   funcao    get_students_for_notification... e as funções com plano
---             "manter"; as "apagar" somem;
+--   cron      nenhum dos 4 jobs; só jobs que não têm a ver com email (se
+--             houver);
+--   funcao    só get_students_for_notification (e _impl, se a 040000 rodou);
 --   backup    uma linha por job removido e por função apagada/corrigida.
 
 WITH
@@ -48,7 +54,8 @@ alvo(nome, papel) AS (
 ),
 jobs AS (
   SELECT x.jobid, x.jobname, x.username, x.schedule, x.active, x.command,
-         x.jobname IN ('low-credits-report-daily', 'send-low-credits-notifications-daily') AS remover
+         x.jobname IN ('low-credits-daily', 'zero-credits-daily',
+                       'low-credits-report-daily', 'send-low-credits-notifications-daily') AS remover
   FROM (
     SELECT CASE WHEN to_regclass('cron.job') IS NOT NULL
                 THEN query_to_xml('SELECT jobid, jobname, username, schedule, active, command FROM cron.job',
@@ -122,15 +129,30 @@ seeds(origem, oid) AS (
 )
 SELECT tipo, nome, detalhe
 FROM (
+  -- 0. A 20261112040000 já foi aplicada?
+  SELECT 0 AS ordem, 'migracao_040000' AS tipo, '20261112040000_require_staff_in_report_rpcs' AS nome,
+         'aplicada=' || (to_regprocedure('public.assert_staff_caller(text,uuid)') IS NOT NULL
+                         AND EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+                                     WHERE n.nspname = 'public' AND p.proname = 'get_students_for_notification_impl'))
+         || ' | assert_staff_caller=' || (to_regprocedure('public.assert_staff_caller(text,uuid)') IS NOT NULL)
+         || ' | get_students_for_notification_impl=' || EXISTS (
+              SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+              WHERE n.nspname = 'public' AND p.proname = 'get_students_for_notification_impl')
+         || ' | involucros=' || (SELECT count(*) FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+              WHERE n.nspname = 'public'
+                AND coalesce(obj_description(p.oid, 'pg_proc'), '') LIKE 'josi-pilates: invólucro%')
+         || ' (em produção: 7 quando aplicada)' AS detalhe
+
+  UNION ALL
   -- 1. Jobs do pg_cron
-  SELECT 1 AS ordem, 'cron' AS tipo, j.jobname AS nome,
+  SELECT 1, 'cron' AS tipo, j.jobname AS nome,
          'plano=' || CASE WHEN j.remover THEN 'remover' ELSE 'manter' END
          || ' | dono=' || coalesce(j.username, '-') || ' | agenda=' || coalesce(j.schedule, '-')
          || ' | ativo=' || coalesce(j.active::text, '-')
          || ' | comando=' || regexp_replace(regexp_replace(regexp_replace(coalesce(j.command, ''),
               'eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]*', '<oculto>', 'g'),
               '(bearer\s+)[A-Za-z0-9._~+/=-]+', '\1<oculto>', 'gi'),
-              '\mre_[A-Za-z0-9_]{8,}', '<oculto>', 'g') AS detalhe
+              '\mre_[A-Za-z0-9_]{8,}', '<oculto>', 'g')
   FROM jobs j
 
   UNION ALL
@@ -193,6 +215,28 @@ FROM (
     WHERE f.nspname = 'public'
       AND f.proname IN ('get_students_for_notification', 'get_students_for_notification_impl')
   ) r
+
+  UNION ALL
+  -- 7b. Alerta: job que fica e parece ligado a email (a migration não apaga
+  --     jobs desconhecidos: para)
+  SELECT 7, 'alerta', 'job ' || j.jobname,
+         'parece ligado a email e não é um dos 4 conhecidos → a migration vai PARAR; mandar o CSV para o dev-critico'
+  FROM jobs j
+  WHERE NOT j.remover
+    AND (j.jobname ~* '(e-?mail|notif|resend|send|http_post|net\.http)'
+         OR j.command ~* '(e-?mail|notif|resend|send|http_post|net\.http)'
+         OR EXISTS (
+           WITH RECURSIVE rj(oid) AS (
+             SELECT f.oid FROM fns f
+             WHERE f.nspname = 'public' AND strpos(lower(j.command), lower(f.proname)) > 0
+             UNION
+             SELECT f2.oid FROM rj
+             JOIN fns f1 ON f1.oid = rj.oid
+             JOIN fns f2 ON f2.nspname = 'public' AND f2.oid <> f1.oid AND strpos(f1.src, lower(f2.proname)) > 0
+           )
+           SELECT 1 FROM rj JOIN fns f ON f.oid = rj.oid
+           WHERE f.src ~* '(e-?mail|notif|resend|send|http_post|net\.http)'
+              OR f.proname IN (SELECT nome FROM alvo)))
 
   UNION ALL
   -- 8. Outras funções que parecem de email/notificação (não mexidas)
