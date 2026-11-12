@@ -7,11 +7,11 @@
 - **Regra de escolha** (`.claude/rules/escolha-de-esforco.md`) — o que é feito direto em medium e o que vai para o `dev-critico`. Na dúvida, o Claude pergunta em uma linha.
 
 ## Como seguir
-1. **Uma tarefa, uma sessão, um PR.** Mergeou, encerra a sessão. Na próxima tarefa, abre uma nova.
+1. **Uma tarefa, uma sessão, um PR.** Mergeou, encerra a sessão. Na próxima tarefa, abre uma nova, só depois do merge.
 2. Deixe a sessão em **medium** no seletor de esforço do app. O Claude manda o que for crítico para o `dev-critico`.
 3. Primeira mensagem de cada sessão nova:
    ```
-   Leia docs/PENDENCIAS.md. Quero fazer: [tarefa].
+   Comece do main atualizado. Leia docs/PENDENCIAS.md. Quero fazer: [tarefa].
    ```
 4. No fim de cada tarefa, peça: **"Atualize o PENDENCIAS"**. Assim a próxima sessão sabe onde paramos.
 5. Conversas de negócio (mensagens para alunos, dúvidas gerais, textos para redes sociais): use o app normal do Claude, fora do Claude Code. É bem mais barato.
@@ -23,4 +23,4 @@
 3. O que testar depois do deploy.
 4. Encerrar esta sessão.
 5. Abrir uma sessão nova no Claude Code, no repositório `HenriquedaFonte/pilatesApp`, com o esforço em medium.
-6. A primeira mensagem, pronta para colar.
+6. A primeira mensagem, pronta para colar, começando com "Comece do main atualizado."
