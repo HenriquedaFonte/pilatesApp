@@ -285,22 +285,22 @@ const StudentDashboard = () => {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Logo className="h-9 w-9 mr-3" />
-              <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+              <h1 className="hidden sm:block text-xl font-bold text-gray-900 dark:text-white">
                 Josi Pilates
               </h1>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4 min-w-0">
               <ThemeToggle />
               <LanguageToggle />
               <span
-                className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer hover:text-gray-900 dark:hover:text-white"
+                className="text-sm truncate max-w-[6rem] sm:max-w-none text-gray-700 dark:text-gray-300 cursor-pointer hover:text-gray-900 dark:hover:text-white"
                 onClick={() => navigate('/student/profile')}
               >
-                {t('common.welcome')}, {profile?.full_name?.split(' ')[0]}
+                {profile?.full_name?.split(' ')[0]}
               </span>
-              <Button variant="outline" size="sm" onClick={handleSignOut}>
-                <LogOut className="h-4 w-4 mr-2" />
-                {t('common.signOut')}
+              <Button variant="outline" size="sm" onClick={handleSignOut} aria-label={t('common.signOut')} className="shrink-0">
+                <LogOut className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">{t('common.signOut')}</span>
               </Button>
             </div>
           </div>
