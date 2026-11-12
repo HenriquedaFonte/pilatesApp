@@ -343,10 +343,16 @@ ${processedTemplate.tagline}
     });
   }
 
-  async sendCustomNotification(students, subject, message, senderName = 'Professora') {
+  // options.templateId: modelo com subject/message em pt/en/fr (ex.: 'profileUpdate').
+  // Quando informado, cada aluno recebe o assunto e a mensagem na sua língua
+  // (preferred_language), no lugar de subject/message.
+  async sendCustomNotification(students, defaultSubject, defaultMessage, senderName = 'Professora', options = {}) {
     const emails = await Promise.all(students.map(async (student) => {
       const language = await this.getUserLanguage(student.id);
       const template = getTemplate('custom', language);
+      const localized = options.templateId ? getTemplate(options.templateId, language) : null;
+      const subject = localized?.subject || defaultSubject;
+      const message = localized?.message || defaultMessage;
 
       const variables = {
         name: student.name || student.full_name,

@@ -747,7 +747,9 @@
         "attachment": "📎 Anexo: PilatesLessonsPolicies.pdf",
         "sendingCustom": "Enviando E-mails...",
         "sendConsentBtn": "Enviar Termo para {{count}} aluno(s)",
-        "sendEmailBtn": "Enviar E-mail para {{count}} aluno(s)"
+        "sendEmailBtn": "Enviar E-mail para {{count}} aluno(s)",
+        "multilingualOn": "Este modelo sai na língua de cada aluno (português, inglês ou francês, conforme o perfil).",
+        "multilingualOff": "Você editou o texto: todos os alunos vão receber exatamente o texto acima, numa língua só. Para enviar na língua de cada aluno, selecione o modelo de novo sem editar."
       },
       "templates": {
         "title": "Modelos de E-mail",

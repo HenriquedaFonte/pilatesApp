@@ -1207,7 +1207,9 @@
         "attachment": "📎 Pièce jointe : PilatesLessonsPolicies.pdf",
         "sendingCustom": "Envoi des Courriels...",
         "sendConsentBtn": "Envoyer le Terme à {{count}} élève(s)",
-        "sendEmailBtn": "Envoyer le Courriel à {{count}} élève(s)"
+        "sendEmailBtn": "Envoyer le Courriel à {{count}} élève(s)",
+        "multilingualOn": "Ce modèle est envoyé dans la langue de chaque élève (portugais, anglais ou français, selon son profil).",
+        "multilingualOff": "Vous avez modifié le texte : tous les élèves recevront exactement le texte ci-dessus, dans une seule langue. Pour l'envoyer dans la langue de chaque élève, sélectionnez à nouveau le modèle sans le modifier."
       },
       "templates": {
         "title": "Modèles de Courriel",

@@ -494,6 +494,66 @@ export const emailTemplates = {
     }
   },
 
+  // Pedido de atualização do cadastro (seguro saúde etc.).
+  // subject/message completos em cada língua: a tela Notificações por email
+  // manda cada aluno na sua língua (preferred_language) quando o texto não foi editado.
+  profileUpdate: {
+    pt: {
+      subject: 'Atualize seu cadastro no Josi Pilates',
+      message: `Estamos atualizando o cadastro dos alunos e contamos com a sua ajuda.
+
+Agora o studio pode emitir recibos para o seu seguro saúde (kinésithérapie e naturopathie). Para isso, pedimos que você entre no Portal do Aluno em josipilates.com/login, abra "Meu perfil" e confira ou complete:
+
+• Telefone
+• Seguro saúde: nº da apólice e cidade/província
+• Se você não for o titular da apólice: desligue "Eu sou o titular da apólice" e preencha os dados do titular
+
+Os dados do seguro são opcionais: preencha só se quiser receber recibos para o seu seguro.
+
+Se ainda não nos passou sua data de nascimento, fale com a Josi (ela também aparece nos recibos).
+
+Não lembra a senha? Na tela de entrada, clique em "Esqueceu a senha?".
+
+Obrigada!`
+    },
+    en: {
+      subject: 'Please update your Josi Pilates profile',
+      message: `We are updating our students' records and would appreciate your help.
+
+The studio can now issue receipts for your health insurance (kinésithérapie and naturopathie). To do so, please sign in to the Student Portal at josipilates.com/login, open "My profile" and check or complete:
+
+• Phone number
+• Health insurance: policy number and city/province
+• If you are not the policyholder: turn off "I am the policyholder" and fill in the policyholder's details
+
+The insurance details are optional: fill them in only if you want receipts for your insurance.
+
+If you have not given us your date of birth yet, please let Josi know (it also appears on the receipts).
+
+Forgot your password? On the sign-in page, click "Esqueceu a senha?" (Forgot your password?).
+
+Thank you!`
+    },
+    fr: {
+      subject: 'Mettez à jour votre profil Josi Pilates',
+      message: `Nous mettons à jour les dossiers de nos élèves et comptons sur votre aide.
+
+Le studio peut maintenant émettre des reçus pour votre assurance santé (kinésithérapie et naturopathie). Pour cela, connectez-vous au Portail de l'élève sur josipilates.com/login, ouvrez « Mon profil » et vérifiez ou complétez :
+
+• Numéro de téléphone
+• Assurance santé : numéro de police et ville/province
+• Si vous n'êtes pas le titulaire de la police : désactivez « Je suis le titulaire de la police » et remplissez les informations du titulaire
+
+Les informations d'assurance sont facultatives : remplissez-les seulement si vous voulez des reçus pour votre assurance.
+
+Si vous ne nous avez pas encore donné votre date de naissance, dites-le à Josi (elle figure aussi sur les reçus).
+
+Mot de passe oublié ? Sur la page de connexion, cliquez sur « Esqueceu a senha? » (Mot de passe oublié ?).
+
+Merci !`
+    }
+  },
+
   custom: {
     pt: {
       greeting: (name) => `Olá, ${name}!`,
