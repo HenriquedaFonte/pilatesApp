@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="design_doc_mode" content="canvas">
+<title>Agenda de Aulas — Conceito | Josi Pilates</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<template id="__bundler_thumbnail"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#01b48d"/><text x="50" y="58" font-size="34" text-anchor="middle" fill="#fff" font-family="serif">JP</text></svg></template>
+<style>
+:root{--brand:#01b48d;--brand-600:#019a7a;--brand-700:#017a6b;--brand-800:#0a5a50;--brand-50:#e9f8f4;--brand-100:#cdeee6;--brand-200:#a3e0d3;--sand:#f6f3ec;--sand-2:#efe9dd;--paper:#fff;--ink:#1a2420;--ink-2:#4d5a54;--ink-3:#8a958f;--line:#e7e9e3;--line-2:#eff1ea;--amber:#c79a4b;--amber-50:#fbf1de;--rose:#c65b4a;--rose-50:#fbeceA;--font:'Hanken Grotesk',system-ui,sans-serif;--serif:'Fraunces',Georgia,serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);color:var(--ink)}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;box-shadow:0 2px 8px rgba(22,34,29,.05),0 8px 24px rgba(22,34,29,.05)}
+.lbl{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--brand-700);background:var(--brand-50);display:inline-flex;padding:5px 12px;border-radius:20px}
+h1.ttl{font-family:var(--serif);font-size:22px;font-weight:500}
+p.desc{font-size:13.5px;color:var(--ink-2);line-height:1.6;max-width:520px}
+
+/* ===== TEACHER PANEL ===== */
+.tp{width:760px;background:var(--sand);border-radius:20px;padding:26px;border:1px solid var(--line-2)}
+.tp-head{display:flex;align-items:center;justify-content:between;justify-content:space-between;margin-bottom:18px}
+.tp-head h2{font-family:var(--serif);font-size:20px;font-weight:500}
+.tp-head .wk{font-size:12.5px;color:var(--ink-3);margin-top:2px}
+.tp-add{background:var(--brand);color:#fff;border:none;border-radius:10px;padding:9px 16px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.tp-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-2);margin:16px 2px 4px}
+.tp-legend .it{display:flex;align-items:center;gap:6px}
+.tp-legend .dot{width:8px;height:8px;border-radius:50%}
+.tp-list{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.tp-row{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:grid;grid-template-columns:64px 1fr auto auto;gap:14px;align-items:center}
+.tp-row .time{font-family:var(--serif);font-size:17px;color:var(--ink)}
+.tp-row .time .day{display:block;font-family:var(--font);font-size:10.5px;color:var(--ink-3);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+.tp-info b{font-size:14px;font-weight:700;display:block}
+.tp-info span{font-size:12px;color:var(--ink-3)}
+.seg{display:flex;background:var(--sand-2);border-radius:10px;padding:3px;gap:2px}
+.seg button{border:none;background:transparent;font-family:var(--font);font-size:11.5px;font-weight:700;padding:7px 11px;border-radius:8px;cursor:pointer;color:var(--ink-3);white-space:nowrap}
+.seg button.on-aberta{background:var(--brand);color:#fff}
+.seg button.on-ultima{background:var(--amber);color:#fff}
+.seg button.on-lotada{background:var(--rose);color:#fff}
+.pub-toggle{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--ink-2)}
+.sw{width:34px;height:20px;border-radius:20px;background:var(--line);position:relative;flex-shrink:0}
+.sw.on{background:var(--brand)}
+.sw i{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.15s}
+.sw.on i{left:16px}
+.tp-row.draft{opacity:.55}
+
+/* ===== PHONE / SITE PREVIEW ===== */
+.phone{width:390px;border-radius:44px;background:#151b18;padding:11px;box-shadow:0 24px 70px rgba(20,30,26,.28)}
+.screen{border-radius:34px;overflow:hidden;background:var(--sand);position:relative;height:760px;display:flex;flex-direction:column}
+.notch{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:120px;height:26px;background:#151b18;border-radius:0 0 16px 16px;z-index:30}
+.status{display:flex;justify-content:space-between;padding:14px 26px 4px;font-size:13px;font-weight:700}
+.sec-h{padding:20px 22px 4px}
+.sec-h .eyebrow{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brand-700);margin-bottom:6px}
+.sec-h h3{font-family:var(--serif);font-size:24px;font-weight:500}
+.sec-h em{font-style:italic;color:var(--brand-700)}
+.days{display:flex;gap:6px;padding:14px 18px 6px;overflow-x:auto}
+.day-pill{flex-shrink:0;padding:9px 14px;border-radius:12px;font-size:12.5px;font-weight:700;color:var(--ink-2);background:var(--paper);border:1px solid var(--line);text-align:center;min-width:44px;position:relative}
+.day-pill span{display:block;font-size:9.5px;font-weight:600;color:var(--ink-3);text-transform:uppercase;margin-bottom:2px}
+.day-pill.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+.day-pill.active span{color:rgba(255,255,255,.75)}
+.day-pill .hoje-dot{position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--brand)}
+.classes{flex:1;overflow-y:auto;padding:8px 18px 100px;display:flex;flex-direction:column;gap:10px}
+.cl-card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.cl-top{display:flex;align-items:center;justify-content:space-between}
+.cl-time{font-family:var(--serif);font-size:19px}
+.cl-time small{font-family:var(--font);font-size:11px;color:var(--ink-3);font-weight:600}
+.status-pill{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;display:inline-flex;align-items:center;gap:5px}
+.status-pill .d{width:6px;height:6px;border-radius:50%}
+.st-aberta{background:var(--brand-50);color:var(--brand-700)}
+.st-aberta .d{background:var(--brand)}
+.st-ultima{background:var(--amber-50);color:var(--amber)}
+.st-ultima .d{background:var(--amber)}
+.st-lotada{background:var(--rose-50);color:var(--rose)}
+.st-lotada .d{background:var(--rose)}
+.cl-mid{display:flex;align-items:center;gap:8px}
+.mod-badge{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:8px;background:var(--sand-2);color:var(--ink-2)}
+.cl-note{font-size:11.5px;color:var(--ink-3)}
+.cl-btn{border:none;border-radius:10px;padding:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px}
+.cl-btn.primary{background:var(--brand);color:#fff}
+.cl-btn.muted{background:var(--sand-2);color:var(--ink-2)}
+.bottom-nav{position:absolute;bottom:0;left:0;right:0;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:11px 8px 24px}
+.bn{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10.5px;font-weight:700;color:var(--ink-3)}
+.bn.active{color:var(--brand)}
+.bn .ic{width:20px;height:20px;border-radius:6px;background:var(--ink-3);opacity:.25}
+.bn.active .ic{background:var(--brand);opacity:1}
+
+/* ===== DESKTOP SECTION ===== */
+.dsk{width:1180px;background:var(--sand);border-radius:20px;padding:64px 56px;border:1px solid var(--line-2)}
+.dsk-head{max-width:560px;margin:0 auto 40px;text-align:center}
+.dsk-head .eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--brand-700);margin-bottom:12px}
+.dsk-head h3{font-family:var(--serif);font-size:38px;font-weight:500;letter-spacing:-.015em}
+.dsk-head em{font-style:italic;color:var(--brand-700)}
+.dsk-head p{font-size:15.5px;color:var(--ink-2);margin-top:10px}
+.dsk-days{display:flex;justify-content:center;gap:8px;margin-bottom:36px}
+.dsk-day{padding:10px 20px;border-radius:12px;font-size:13.5px;font-weight:700;color:var(--ink-2);background:var(--paper);border:1px solid var(--line);cursor:pointer;position:relative}
+.dsk-day span{display:block;font-size:10px;font-weight:600;color:var(--ink-3);text-transform:uppercase;margin-bottom:2px}
+.dsk-day.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+.dsk-day.active span{color:rgba(255,255,255,.75)}
+.dsk-day .hoje{position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:var(--brand)}
+.dsk-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.dsk-card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:14px;transition:.15s}
+.dsk-card.hl{border-color:#f0dfb8;background:#fffdf7}
+.dsk-card.lot{opacity:.88}
+.dsk-card:hover{box-shadow:0 12px 30px rgba(20,30,26,.08)}
+.dsk-row1{display:flex;align-items:baseline;justify-content:space-between}
+.dsk-time{font-family:var(--serif);font-size:26px;color:var(--ink)}
+.dsk-time small{font-family:var(--font);font-size:12px;color:var(--ink-3);font-weight:600;margin-left:4px}
+.dsk-row2{display:flex;align-items:center;justify-content:space-between}
+.dsk-note2{font-size:12px;color:var(--ink-3);line-height:1.5;margin-top:-4px}
+.dsk-btn{border:none;border-radius:10px;padding:11px;font-family:var(--font);font-weight:700;font-size:13.5px;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;gap:7px;margin-top:auto}
+.dsk-btn.primary{background:var(--brand);color:#fff}
+.dsk-btn.primary:hover{background:var(--brand-600)}
+.dsk-btn.muted{background:var(--sand-2);color:var(--ink-2)}
+</style>
+</head>
+<body style="background:#e7e4db">
+
+<div style="position:absolute;left:40px;top:40px;width:1180px">
+  <span class="lbl">CONCEITO DE DESIGN · JOSI PILATES</span>
+  <h1 class="ttl" style="font-size:32px;margin-top:14px">Agenda de Aulas <em style="font-style:italic;color:var(--brand-700)">Interativa</em></h1>
+  <p class="desc" style="max-width:640px;margin-top:8px">Ferramenta para a professora publicar horários e disponibilidade, com bloco correspondente na home mostrando os horários da semana — inclusive turmas cheias, para que a professora possa encaixar alunos manualmente.</p>
+</div>
+
+<div style="position:absolute;left:40px;top:200px">
+  <span class="lbl" style="background:var(--sand-2);color:var(--ink-2)">PAINEL DA PROFESSORA</span>
+  <div class="tp" style="margin-top:14px">
+    <div class="tp-head">
+      <div><h2>Agenda · Julho 2026</h2><div class="wk">12 aulas cadastradas · 9 publicadas</div></div>
+      <button class="tp-add">+ Nova aula</button>
+    </div>
+    <div class="tp-legend">
+      <div class="it"><span class="dot" style="background:var(--brand)"></span>Vaga aberta</div>
+      <div class="it"><span class="dot" style="background:var(--amber)"></span>Última vaga</div>
+      <div class="it"><span class="dot" style="background:var(--rose)"></span>Lotada (visível, encaixe manual)</div>
+      <div class="it"><span class="dot" style="background:var(--ink-3)"></span>Rascunho (oculta do site)</div>
+    </div>
+    <div class="tp-list">
+      <div class="tp-row">
+        <div class="time">08h<span class="day">TER</span></div>
+        <div class="tp-info"><b>Privado</b><span>1 aluna · 55 min</span></div>
+        <div class="seg"><button class="on-aberta">Aberta</button><button>Última</button><button>Lotada</button></div>
+        <div class="pub-toggle"><div class="sw on"><i></i></div>Publicada</div>
+      </div>
+      <div class="tp-row">
+        <div class="time">10h<span class="day">TER</span></div>
+        <div class="tp-info"><b>Grupo</b><span>4 de 5 vagas · 55 min</span></div>
+        <div class="seg"><button>Aberta</button><button class="on-ultima">Última</button><button>Lotada</button></div>
+        <div class="pub-toggle"><div class="sw on"><i></i></div>Publicada</div>
+      </div>
+      <div class="tp-row">
+        <div class="time">17h<span class="day">TER</span></div>
+        <div class="tp-info"><b>Duo</b><span>2 de 2 vagas · 55 min</span></div>
+        <div class="seg"><button>Aberta</button><button>Última</button><button class="on-lotada">Lotada</button></div>
+        <div class="pub-toggle"><div class="sw on"><i></i>Publicada</div></div>
+      </div>
+      <div class="tp-row draft">
+        <div class="time">08h<span class="day">QUA</span></div>
+        <div class="tp-info"><b>Privado</b><span>Nova turma · ainda sem alunas</span></div>
+        <div class="seg"><button class="on-aberta">Aberta</button><button>Última</button><button>Lotada</button></div>
+        <div class="pub-toggle"><div class="sw"><i></i></div>Rascunho</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="position:absolute;left:880px;top:200px">
+  <span class="lbl" style="background:var(--sand-2);color:var(--ink-2)">PÁGINA INICIAL · VISÃO DO VISITANTE</span>
+  <div class="phone" style="margin-top:14px">
+    <div class="screen">
+      <div class="notch"></div>
+      <div class="status"><span>14:33</span><span>●●●●</span></div>
+      <div class="sec-h">
+        <div class="eyebrow">Horários</div>
+        <h3>Aulas da <em>semana</em></h3>
+      </div>
+      <div class="days">
+        <div class="day-pill"><span>Seg</span>15</div>
+        <div class="day-pill active"><span>Ter</span>16<span class="hoje-dot"></span></div>
+        <div class="day-pill"><span>Qua</span>17</div>
+        <div class="day-pill"><span>Qui</span>18</div>
+        <div class="day-pill"><span>Sex</span>19</div>
+        <div class="day-pill"><span>Sáb</span>20</div>
+      </div>
+      <div class="classes">
+        <div class="cl-card">
+          <div class="cl-top"><div class="cl-time">08h<small>·55 min</small></div><span class="status-pill st-aberta"><span class="d"></span>Vaga aberta</span></div>
+          <div class="cl-mid"><span class="mod-badge">Privado</span></div>
+          <button class="cl-btn primary">Agendar pelo WhatsApp</button>
+        </div>
+        <div class="cl-card">
+          <div class="cl-top"><div class="cl-time">10h<small>·55 min</small></div><span class="status-pill st-ultima"><span class="d"></span>Última vaga</span></div>
+          <div class="cl-mid"><span class="mod-badge">Grupo</span></div>
+          <button class="cl-btn primary">Agendar pelo WhatsApp</button>
+        </div>
+        <div class="cl-card">
+          <div class="cl-top"><div class="cl-time">17h<small>·55 min</small></div><span class="status-pill st-lotada"><span class="d"></span>Turma cheia</span></div>
+          <div class="cl-mid"><span class="mod-badge">Duo</span></div>
+          <div class="cl-note">Sem vagas no momento — fale com a gente, às vezes dá pra encaixar.</div>
+          <button class="cl-btn muted">Perguntar sobre vaga</button>
+        </div>
+      </div>
+      <div class="bottom-nav">
+        <div class="bn active"><div class="ic"></div>Início</div>
+        <div class="bn"><div class="ic"></div>Serviços</div>
+        <div class="bn"><div class="ic"></div>Contato</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="position:absolute;left:40px;top:1060px">
+  <span class="lbl" style="background:var(--sand-2);color:var(--ink-2)">SEÇÃO NA HOME · VERSÃO DESKTOP</span>
+  <div class="dsk" style="margin-top:14px">
+    <div class="dsk-head">
+      <div class="eyebrow">Horários</div>
+      <h3>Agenda de <em>Aulas</em></h3>
+      <p>Confira os horários disponíveis e agende pelo WhatsApp — é rápido!</p>
+    </div>
+    <div class="dsk-days">
+      <div class="dsk-day"><span>Seg</span>15</div>
+      <div class="dsk-day active"><span>Ter</span>16<span class="hoje"></span></div>
+      <div class="dsk-day"><span>Qua</span>17</div>
+      <div class="dsk-day"><span>Qui</span>18</div>
+      <div class="dsk-day"><span>Sex</span>19</div>
+      <div class="dsk-day"><span>Sáb</span>20</div>
+    </div>
+    <div class="dsk-grid">
+      <div class="dsk-card">
+        <div class="dsk-row1"><div class="dsk-time">08h<small>55 min</small></div><span class="status-pill st-aberta"><span class="d"></span>Vaga aberta</span></div>
+        <div class="dsk-row2"><span class="mod-badge">Privado</span></div>
+        <button class="dsk-btn primary">Agendar pelo WhatsApp</button>
+      </div>
+      <div class="dsk-card hl">
+        <div class="dsk-row1"><div class="dsk-time">10h<small>55 min</small></div><span class="status-pill st-ultima"><span class="d"></span>Última vaga</span></div>
+        <div class="dsk-row2"><span class="mod-badge">Grupo</span></div>
+        <button class="dsk-btn primary">Agendar pelo WhatsApp</button>
+      </div>
+      <div class="dsk-card lot">
+        <div class="dsk-row1"><div class="dsk-time">17h<small>55 min</small></div><span class="status-pill st-lotada"><span class="d"></span>Turma cheia</span></div>
+        <div class="dsk-row2"><span class="mod-badge">Duo</span></div>
+        <div class="dsk-note2">Sem vagas no momento — fale com a gente, às vezes dá pra encaixar.</div>
+        <button class="dsk-btn muted">Perguntar sobre vaga</button>
+      </div>
+      <div class="dsk-card">
+        <div class="dsk-row1"><div class="dsk-time">18h<small>55 min</small></div><span class="status-pill st-aberta"><span class="d"></span>Vaga aberta</span></div>
+        <div class="dsk-row2"><span class="mod-badge">Grupo</span></div>
+        <button class="dsk-btn primary">Agendar pelo WhatsApp</button>
+      </div>
+      <div class="dsk-card">
+        <div class="dsk-row1"><div class="dsk-time">19h<small>55 min</small></div><span class="status-pill st-aberta"><span class="d"></span>Vaga aberta</span></div>
+        <div class="dsk-row2"><span class="mod-badge">Duo</span></div>
+        <button class="dsk-btn primary">Agendar pelo WhatsApp</button>
+      </div>
+      <div class="dsk-card lot">
+        <div class="dsk-row1"><div class="dsk-time">20h<small>55 min</small></div><span class="status-pill st-lotada"><span class="d"></span>Turma cheia</span></div>
+        <div class="dsk-row2"><span class="mod-badge">Privado</span></div>
+        <div class="dsk-note2">Sem vagas no momento — fale com a gente, às vezes dá pra encaixar.</div>
+        <button class="dsk-btn muted">Perguntar sobre vaga</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="position:absolute;left:40px;top:1950px;width:1180px" class="card" style="padding:22px 26px">
+  <div style="padding:22px 26px">
+  <span class="lbl">LEITURA DO CONCEITO</span>
+  <p class="desc" style="max-width:1100px;margin-top:12px">
+  Professora publica cada horário com um dos 3 estados de vaga + um controle separado de visibilidade (Publicada/Rascunho). Turma "Lotada" continua visível na home — nunca some sozinha — com nota explicando que pode haver encaixe, e o botão leva sempre para o WhatsApp com a professora, que decide caso a caso. Nenhum número exato de vagas é mostrado ao visitante (evita prometer o que o sistema não reserva de fato); a contagem exata (ex. "4 de 5") fica só no painel interno da professora.
+  </p>
+  </div>
+</div>
+
+</body>
+</html>
