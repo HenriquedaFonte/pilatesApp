@@ -8,7 +8,6 @@
 import fs from 'fs';
 import path from 'path';
 import https from 'https';
-import { createRequire } from 'module';
 
 // ── Credenciais: process.env tem prioridade (CI), fallback para .env local ──
 function loadEnv() {
@@ -61,7 +60,7 @@ function fetchJson(url, headers) {
       res.on('data', d => body += d);
       res.on('end', () => {
         try { resolve(JSON.parse(body)); }
-        catch (e) { reject(new Error('JSON parse error: ' + body.slice(0, 200))); }
+        catch { reject(new Error('JSON parse error: ' + body.slice(0, 200))); }
       });
     });
     req.on('error', reject);

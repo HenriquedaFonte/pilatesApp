@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import { useTranslation } from 'react-i18next'
@@ -67,7 +67,6 @@ const profileSchema = z.object({
 const StudentSummary = () => {
   const { t, i18n } = useTranslation()
   const { profile } = useAuth()
-  const navigate = useNavigate()
   const { studentId } = useParams()
   const [student, setStudent] = useState(null)
   const [creditHistory, setCreditHistory] = useState([])
@@ -91,6 +90,7 @@ const StudentSummary = () => {
 
   useEffect(() => {
     fetchStudentData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- carga intencional só quando estas dependências mudam
   }, [studentId])
 
   const handleEditProfile = () => {
@@ -118,7 +118,7 @@ const StudentSummary = () => {
       const emailChanged = data.email !== student.email
 
       if (emailChanged) {
-        const { data: edgeData, error: edgeError } = await supabase.functions.invoke('manage-student', {
+        const { error: edgeError } = await supabase.functions.invoke('manage-student', {
           body: { action: 'update-email', studentId: studentId, email: data.email }
         })
 
@@ -131,7 +131,9 @@ const StudentSummary = () => {
             } catch {
               try {
                 errMsg = await edgeError.context.text() || errMsg;
-              } catch {}
+              } catch {
+                // mantém a mensagem padrão
+              }
             }
           } else {
             errMsg = edgeError.message || errMsg;

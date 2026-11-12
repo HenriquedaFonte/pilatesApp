@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import { useTranslation } from 'react-i18next'
@@ -32,7 +32,6 @@ import { TableSkeleton } from '../components/ui/skeleton'
 
 const StudentHistory = () => {
   const { profile, signOut } = useAuth()
-  const navigate = useNavigate()
   const { t, i18n } = useTranslation()
   const [attendanceHistory, setAttendanceHistory] = useState([])
   const [balanceHistory, setBalanceHistory] = useState([])
@@ -50,6 +49,7 @@ const StudentHistory = () => {
     if (profile?.id) {
       fetchHistory(profile.id)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- carga intencional só quando estas dependências mudam
   }, [profile])
 
   const handleSignOut = async () => {

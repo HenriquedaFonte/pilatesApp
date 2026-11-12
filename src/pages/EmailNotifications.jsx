@@ -75,6 +75,7 @@ const EmailNotifications = () => {
   useEffect(() => {
     loadData()
     loadEmailHistory()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- carga intencional só quando estas dependências mudam
   }, [])
 
 

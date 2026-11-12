@@ -62,6 +62,7 @@ const TeacherDashboard = () => {
 
   useEffect(() => {
     fetchDashboardStats()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- carga intencional só quando estas dependências mudam
   }, [])
 
   // TODO Fase 2: migrar fetchDashboardStats para Supabase

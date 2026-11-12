@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import { useTranslation } from 'react-i18next'
@@ -54,8 +54,7 @@ import {
 } from '@/components/ui/select'
 
 const TeacherTestimonials = () => {
-  const { profile, signOut } = useAuth()
-  const navigate = useNavigate()
+  const { profile } = useAuth()
   const { i18n } = useTranslation()
 
   // Set language based on user preference
@@ -87,11 +86,6 @@ const TeacherTestimonials = () => {
   useEffect(() => {
     fetchTestimonials()
   }, [])
-
-  const handleSignOut = async () => {
-    await signOut()
-    navigate('/')
-  }
 
   // 2.5 FIX: auto-dismiss helpers
   const showSuccess = msg => { setSuccess(msg); setTimeout(() => setSuccess(''), 5000) }

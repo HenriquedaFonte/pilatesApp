@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
@@ -44,7 +43,6 @@ const TeacherProfile = () => {
   }
 
   const { user, profile, updateProfile } = useAuth()
-  const navigate = useNavigate()
   const { t } = useTranslation()
 
   useEffect(() => {

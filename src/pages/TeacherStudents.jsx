@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { useAuth } from '../hooks/useAuth'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import emailService from '../lib/emailService'
@@ -76,7 +75,6 @@ import {
 } from '@/components/ui/alert-dialog'
 
 const TeacherStudents = () => {
-  const { profile, signOut } = useAuth()
   const navigate = useNavigate()
   const { t, i18n } = useTranslation()
   const [searchParams] = useSearchParams()
@@ -101,7 +99,6 @@ const TeacherStudents = () => {
   const [selectedStudentForReset, setSelectedStudentForReset] = useState(null)
   const [balanceLoading, setBalanceLoading] = useState(false)
   const [creatingUser, setCreatingUser] = useState(false)
-  const [passwordResetLoading, setPasswordResetLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [statusFilter, setStatusFilter] = useState('active')
@@ -155,6 +152,7 @@ const TeacherStudents = () => {
   useEffect(() => {
     fetchData()
     fetchDeletedStudents()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- carga intencional só quando estas dependências mudam
   }, [])
 
   const fetchDeletedStudents = async () => {
@@ -209,11 +207,6 @@ const TeacherStudents = () => {
       setSelectedStudent(null)
       setHardDeleteLoading(false)
     }
-  }
-
-  const handleSignOut = async () => {
-    await signOut()
-    navigate('/')
   }
 
   const [selectedSchedules, setSelectedSchedules] = useState([])
@@ -586,7 +579,7 @@ const TeacherStudents = () => {
     setSuccess('')
     setDeleteLoading(true)
     try {
-      const { data, error } = await supabase.functions.invoke('manage-student', {
+      const { error } = await supabase.functions.invoke('manage-student', {
         body: { action: 'delete', studentId: selectedStudent.id }
       })
 
@@ -599,7 +592,9 @@ const TeacherStudents = () => {
           } catch {
             try {
               errMsg = await error.context.text() || errMsg;
-            } catch {}
+            } catch {
+              // mantém a mensagem padrão
+            }
           }
         } else {
           errMsg = error.message || errMsg;
@@ -629,19 +624,6 @@ const TeacherStudents = () => {
       (student.duo_credits || 0) +
       (student.group_credits || 0)
     )
-  }
-
-  const getBalanceColor = balance => {
-    if (balance < 3) return 'text-red-600'
-    if (balance <= 6) return 'text-orange-600'
-    return 'text-green-600'
-  }
-
-  const getBalanceBadge = balance => {
-    // 2.4 FIX: use i18n translations instead of hardcoded English
-    if (balance < 3) return <Badge variant="destructive">{t('teacher.students.balanceLevels.low', { defaultValue: 'Baixo' })}</Badge>
-    if (balance <= 6) return <Badge variant="secondary">{t('teacher.students.balanceLevels.medium', { defaultValue: 'Médio' })}</Badge>
-    return <Badge variant="default">{t('teacher.students.balanceLevels.high', { defaultValue: 'Alto' })}</Badge>
   }
 
   const getDayName = dayOfWeek => {

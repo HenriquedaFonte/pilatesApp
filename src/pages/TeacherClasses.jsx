@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import { Button } from '@/components/ui/button'
 import {
@@ -52,8 +51,6 @@ import {
 import TeacherLayout from '../components/TeacherLayout'
 
 const TeacherClasses = () => {
-  const { profile, signOut } = useAuth()
-  const navigate = useNavigate()
   const { t } = useTranslation()
   const [classes, setClasses] = useState([])
   const [schedules, setSchedules] = useState([])
@@ -80,12 +77,8 @@ const TeacherClasses = () => {
 
   useEffect(() => {
     fetchClasses()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- carga intencional só quando estas dependências mudam
   }, [])
-
-  const handleSignOut = async () => {
-    await signOut()
-    navigate('/')
-  }
 
   const fetchClasses = async () => {
     try {

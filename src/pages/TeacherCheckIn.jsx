@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../hooks/useAuth'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { Button } from '@/components/ui/button'
@@ -43,8 +42,6 @@ import {
 import TeacherLayout from '../components/TeacherLayout'
 
 const TeacherCheckIn = () => {
-  const { profile, signOut } = useAuth()
-  const navigate = useNavigate()
   const { t, i18n } = useTranslation()
   const [selectedDate, setSelectedDate] = useState(() => {
     const today = new Date()
@@ -82,16 +79,13 @@ const TeacherCheckIn = () => {
 
   useEffect(() => {
     fetchScheduledStudents(selectedDate)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- carga intencional só quando estas dependências mudam
   }, [selectedDate])
 
   useEffect(() => {
     fetchAllStudents()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- carga intencional só quando estas dependências mudam
   }, [])
-
-  const handleSignOut = async () => {
-    await signOut()
-    navigate('/')
-  }
 
   const fetchScheduledStudents = async date => {
     setLoading(true)
@@ -394,13 +388,6 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
     } catch (error) {
       showError('Error adding student: ' + error.message)
     }
-  }
-
-  const getStatusColor = status => {
-    if (status === 'present') return 'text-green-600'
-    if (status === 'absent_unnotified') return 'text-red-600'
-    if (status === 'absent_notified') return 'text-orange-600'
-    return 'text-gray-500'
   }
 
   const getTotalCredits = student => {

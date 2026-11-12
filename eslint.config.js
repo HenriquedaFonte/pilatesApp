@@ -4,9 +4,10 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 
 export default [
-  { ignores: ['dist'] },
+  // scratch/: cópias antigas de trabalho, não fazem parte do app
+  { ignores: ['dist', 'scratch'] },
   {
-    files: ['vite.config.js'],
+    files: ['vite.config.js', 'scripts/**/*.js'],
     languageOptions: {
       globals: {
         ...globals.node,
@@ -36,6 +37,13 @@ export default [
         'warn',
         { allowConstantExport: true },
       ],
+    },
+  },
+  {
+    // componentes shadcn/ui e o provider de auth exportam helpers junto com componentes
+    files: ['src/components/ui/**/*.jsx', 'src/hooks/useAuth.jsx'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
     },
   },
 ]
