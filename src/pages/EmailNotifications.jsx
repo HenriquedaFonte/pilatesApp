@@ -341,6 +341,20 @@ const EmailNotifications = () => {
     }
   }
 
+  // Modelos com texto completo em pt/en/fr: se o assunto e a mensagem não foram
+  // editados, cada aluno recebe o texto na sua língua.
+  const MULTILINGUAL_TEMPLATES = ['profileUpdate']
+  const getMultilingualTemplateId = () => {
+    if (!MULTILINGUAL_TEMPLATES.includes(selectedTemplateId)) return null
+    const unchanged = ['pt', 'en', 'fr'].some(lang => {
+      const tpl = getTemplate(selectedTemplateId, lang)
+      return tpl.subject === emailSubject && tpl.message === emailMessage
+    })
+    return unchanged ? selectedTemplateId : null
+  }
+  const isMultilingualTemplate = MULTILINGUAL_TEMPLATES.includes(selectedTemplateId)
+  const multilingualTemplateId = getMultilingualTemplateId()
+
   const sendCustomEmail = async () => {
     // Special handling for consent form template
     if (selectedTemplateId === 'consentForm') {
@@ -416,7 +430,8 @@ const EmailNotifications = () => {
         targetStudents,
         emailSubject,
         emailMessage,
-        senderName
+        senderName,
+        { templateId: multilingualTemplateId }
       )
 
       for (let i = 0; i < results.length; i++) {
@@ -1042,6 +1057,19 @@ const EmailNotifications = () => {
                             className="rounded-xl border-border bg-background focus-visible:ring-primary w-full text-sm leading-relaxed"
                           />
                         </div>
+                        {isMultilingualTemplate && (
+                          <p
+                            className={`text-xs rounded-md px-3 py-2 ${
+                              multilingualTemplateId
+                                ? 'bg-teal-50 text-teal-800 dark:bg-teal-950/30 dark:text-teal-300'
+                                : 'bg-amber-50 text-amber-800 dark:bg-amber-950/30 dark:text-amber-300'
+                            }`}
+                          >
+                            {multilingualTemplateId
+                              ? t('teacher.emails.customCard.multilingualOn')
+                              : t('teacher.emails.customCard.multilingualOff')}
+                          </p>
+                        )}
                       </div>
                     ) : (
                       <div className="rounded-2xl border border-blue-100 bg-blue-50/50 p-5 dark:border-blue-900/30 dark:bg-blue-950/10 space-y-3">

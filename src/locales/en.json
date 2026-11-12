@@ -1123,7 +1123,9 @@
         "attachment": "📎 Attachment: PilatesLessonsPolicies.pdf",
         "sendingCustom": "Sending Emails...",
         "sendConsentBtn": "Send Term to {{count}} student(s)",
-        "sendEmailBtn": "Send Email to {{count}} student(s)"
+        "sendEmailBtn": "Send Email to {{count}} student(s)",
+        "multilingualOn": "This template is sent in each student's language (Portuguese, English or French, as set in their profile).",
+        "multilingualOff": "You edited the text: every student will get exactly the text above, in one language. To send it in each student's language, select the template again without editing."
       },
       "templates": {
         "title": "Email Templates",

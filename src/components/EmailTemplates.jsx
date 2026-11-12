@@ -136,6 +136,23 @@ const EmailTemplates = ({ onSelectTemplate, selectedTemplateId, language = 'pt' 
       color: 'text-pink-600',
       category: 'welcome'
     },
+    profileUpdate: {
+      title: { pt: 'Atualizar cadastro', en: 'Update profile', fr: 'Mettre à jour le profil' },
+      description: {
+        pt: 'Pede que o aluno complete o perfil (telefone, seguro saúde). Sai na língua de cada aluno.',
+        en: 'Asks students to complete their profile (phone, health insurance). Sent in each student\'s language.',
+        fr: 'Demande à l\'élève de compléter son profil (téléphone, assurance santé). Envoyé dans la langue de chaque élève.'
+      },
+      preview: {
+        pt: 'Olá, [Nome]! Estamos atualizando o cadastro dos alunos e contamos com a sua ajuda.',
+        en: 'Hello, [Name]! We are updating our students\' records and would appreciate your help.',
+        fr: 'Bonjour, [Nom]! Nous mettons à jour les dossiers de nos élèves et comptons sur votre aide.'
+      },
+      fullMessage: true,
+      icon: FileText,
+      color: 'text-teal-600',
+      category: 'special'
+    },
     consentForm: {
       title: { pt: 'Formulário de Consentimento', en: 'Consent Form', fr: 'Formulaire de Consentement' },
       description: {
@@ -166,7 +183,9 @@ const EmailTemplates = ({ onSelectTemplate, selectedTemplateId, language = 'pt' 
       icon: metadata.icon,
       color: metadata.color,
       subject: templateData.subject,
-      message: metadata.preview[language] || metadata.preview.pt,
+      message: metadata.fullMessage && templateData.message
+        ? templateData.message
+        : metadata.preview[language] || metadata.preview.pt,
       category: metadata.category
     };
   });
