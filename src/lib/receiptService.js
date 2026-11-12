@@ -9,8 +9,11 @@
 import { supabase } from './supabase'
 import { generateReceiptPdf } from './receiptPdf'
 import { isAlreadyExistsError, pdfDataFromReceipt, receiptPdfPath } from './receipts'
+import { RECEIPTS_BUCKET } from './receiptFiles'
 
-const RECEIPTS_BUCKET = 'insurance-receipts'
+// Abrir/baixar o PDF fica em receiptFiles.js (sem pdf-lib, usado também no portal do aluno).
+export { downloadReceipt } from './receiptFiles'
+
 const SIGNATURES_BUCKET = 'practitioner-signatures'
 
 export async function loadSignatureBytes(path) {
@@ -104,18 +107,4 @@ export async function voidReceipt(receiptId, reason) {
     p_reason: reason,
   })
   if (error) throw error
-}
-
-// URL assinada de 60 s com o nome do arquivo = número do recibo.
-export async function downloadReceipt(receipt) {
-  const { data, error } = await supabase.storage
-    .from(RECEIPTS_BUCKET)
-    .createSignedUrl(receipt.pdf_path, 60, { download: `${receipt.receipt_number}.pdf` })
-  if (error || !data?.signedUrl) throw error || new Error('signed url failed')
-  const a = document.createElement('a')
-  a.href = data.signedUrl
-  a.rel = 'noopener'
-  document.body.appendChild(a)
-  a.click()
-  a.remove()
 }
