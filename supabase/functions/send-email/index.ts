@@ -34,13 +34,36 @@ async function resolveCaller(authHeader: string): Promise<Caller> {
   const adminClient = createClient(supabaseUrl, serviceRoleKey)
   const { data: profile, error } = await adminClient
     .from('profiles')
-    .select('role')
+    .select('role, full_name, preferred_language')
     .eq('id', user.id)
     .single()
   if (!error && (profile?.role === 'teacher' || profile?.role === 'admin')) {
     return { kind: 'staff', userId: user.id }
   }
-  return { kind: 'user', userId: user.id, email: user.email ?? '', createdAt: user.created_at ?? null }
+  // Nome e idioma para o email de boas-vindas: do perfil (criado pelo trigger
+  // handle_new_user), senão do user_metadata do cadastro. Nunca do corpo do pedido.
+  const meta = user.user_metadata ?? {}
+  return {
+    kind: 'user',
+    userId: user.id,
+    email: user.email ?? '',
+    createdAt: user.created_at ?? null,
+    fullName: (!error && profile?.full_name) || meta.full_name || null,
+    language: (!error && profile?.preferred_language) || meta.preferred_language || null,
+    welcomeSentAt: user.app_metadata?.welcome_email_sent_at ?? null,
+  }
+}
+
+// Marca "boas-vindas enviado" em app_metadata (o usuário não altera app_metadata;
+// só service_role). Sem migration. Marca antes de enviar, para não repetir.
+async function setWelcomeSentAt(userId: string, value: string | null): Promise<boolean> {
+  const adminClient = createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '')
+  const { data, error: getError } = await adminClient.auth.admin.getUserById(userId)
+  if (getError || !data?.user) return false
+  const { error } = await adminClient.auth.admin.updateUserById(userId, {
+    app_metadata: { ...(data.user.app_metadata ?? {}), welcome_email_sent_at: value },
+  })
+  return !error
 }
 
 async function loadAttachment(name: string) {
@@ -87,6 +110,15 @@ Deno.serve(async (req) => {
     }
 
     const { email } = result
+
+    let welcomeClaimed = false
+    if (result.mode === 'signup_welcome' && caller.kind === 'user') {
+      if (!(await setWelcomeSentAt(caller.userId, new Date().toISOString()))) {
+        console.error('send-email: could not mark welcome email as sent')
+        return json({ error: 'Internal server error' }, 500)
+      }
+      welcomeClaimed = true
+    }
     // deno-lint-ignore no-explicit-any
     const resendPayload: Record<string, any> = {
       from: email.from,
@@ -124,6 +156,8 @@ Deno.serve(async (req) => {
     if (!response.ok) {
       // Só o necessário no log; nada do erro bruto do Resend volta ao chamador.
       console.error(`Resend error: status=${response.status} name=${data?.name ?? 'unknown'}`)
+      // Boas-vindas que não saiu: desfaz a marca para o aluno poder tentar de novo (na janela).
+      if (welcomeClaimed && caller.kind === 'user') await setWelcomeSentAt(caller.userId, null).catch(() => false)
       return json({ error: 'Failed to send email' }, 502)
     }
 
