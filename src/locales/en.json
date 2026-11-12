@@ -52,6 +52,7 @@
     "preferences": "Preferences",
     "fullName": "Full Name",
     "email": "Email",
+    "emailReadOnlyHint": "To change your email, please contact Josi. She will update both your login email and your contact email.",
     "phone": "Phone",
     "language": "Preferred Language",
     "save": "Save Changes",

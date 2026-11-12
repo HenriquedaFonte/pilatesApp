@@ -52,6 +52,7 @@
     "preferences": "Preferências",
     "fullName": "Nome Completo",
     "email": "E-mail",
+    "emailReadOnlyHint": "Para mudar seu e-mail, fale com a Josi. Ela atualiza o e-mail de acesso e o de contato juntos.",
     "phone": "Telefone",
     "language": "Idioma Preferido",
     "save": "Salvar Alterações",

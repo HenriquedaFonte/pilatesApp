@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import { Button } from '@/components/ui/button'
@@ -42,6 +43,7 @@ const StudentProfile = () => {
   }
 
   const { user, profile, updateProfile } = useAuth()
+  const { t } = useTranslation()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -62,11 +64,13 @@ const StudentProfile = () => {
     setSuccess('')
 
     try {
+      // O email não vai aqui: o aluno não troca o próprio email (só a
+      // professora, pela Edge Function manage-student, que muda login e perfil
+      // juntos). O banco também bloqueia (migration 20261112060000).
       const { data, error } = await supabase
         .from('profiles')
         .update({
           full_name: profileData.full_name,
-          email: profileData.email,
           phone: profileData.phone || null,
           preferred_language: profileData.preferred_language
         })
@@ -217,12 +221,14 @@ const StudentProfile = () => {
                           id="email"
                           type="email"
                           value={profileData.email}
-                          onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
-                          placeholder="your.email@example.com"
-                          className="pl-10"
-                          required
+                          readOnly
+                          aria-describedby="email-readonly-hint"
+                          className="pl-10 bg-muted text-muted-foreground cursor-not-allowed"
                         />
                       </div>
+                      <p id="email-readonly-hint" className="text-xs text-muted-foreground">
+                        {t('profile.emailReadOnlyHint')}
+                      </p>
                     </div>
 
                     <div className="space-y-2">
