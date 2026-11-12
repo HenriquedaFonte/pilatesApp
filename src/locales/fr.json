@@ -967,6 +967,15 @@
         "duo": "Duo",
         "group": "Groupe",
         "total": "Total"
+      },
+      "birthdays": {
+        "title": "Anniversaires dans les 7 prochains jours",
+        "today": "aujourd'hui",
+        "tomorrow": "demain",
+        "inDays_one": "dans {{count}} jour",
+        "inDays_other": "dans {{count}} jours",
+        "dismiss": "Masquer jusqu'à demain",
+        "cakeTitle": "Anniversaire bientôt !"
       }
     },
     "reports": {

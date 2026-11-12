@@ -3,7 +3,7 @@
 > Memória entre sessões. Toda sessão nova começa lendo este arquivo.
 > No fim de cada tarefa: "Atualize o PENDENCIAS".
 
-_Última atualização: 2026-11-12 (`send-email`: boas-vindas do cadastro público montado no servidor; aluno não manda mais assunto/HTML livres)_
+_Última atualização: 2026-11-12 (aviso de aniversário sem pop-up; avaliação do boas-vindas no 1º login; pendência do email pedindo os dados novos de cadastro)_
 
 ## Estado atual
 - Produção: josipilates.com (Vercel, branch `main`).
@@ -26,6 +26,11 @@ _Última atualização: 2026-11-12 (`send-email`: boas-vindas do cadastro públi
   4. **Aluno não manda HTML livre:** no console, logado com a conta de teste (nos primeiros 30 min), `supabase.functions.invoke('send-email', { body: { to: ['<o email da conta>'], subject: 'x', html: '<b>x</b>' } })` dá erro (403).
   5. **Regressão:** professora cria um aluno pela tela Alunos (chega o boas-vindas com o link de senha) e manda um aviso pela tela Notificações por email (chega); o formulário de contato do site continua chegando; "Esqueci a senha" continua chegando.
   6. Apagar as contas de teste no fim (professora → lixeira → excluir permanentemente).
+- [ ] **Teste depois do merge do aviso de aniversário (sem SQL, sem deploy):** em Alunos (professora), com algum aluno fazendo aniversário nos próximos 7 dias:
+  1. Não abre mais pop-up. Aparece uma faixa verde acima da busca, "Aniversários nos próximos 7 dias", com cada aluno e quando ("hoje", "amanhã", "em 3 dias"); os aniversariantes vêm primeiro na lista, do mais próximo ao mais distante, com o bolo no card.
+  2. Clicar num aluno e voltar: a faixa continua lá, sem precisar clicar em nada.
+  3. "Ocultar até amanhã": a faixa some; sair e voltar para Alunos (ou recarregar) e ela continua oculta. No dia seguinte volta. Se aparecer um aniversariante novo no mesmo dia, volta também.
+  4. Trocar a língua para English e Français: textos traduzidos.
 - [ ] **Teste depois de apagar `send-custom-email` e `send-low-credits-notifications` (sem SQL, sem deploy):**
   1. Painel do Supabase → Edge Functions: aparecem só `create-user`, `manage-student`, `reset-password` e `send-email`.
   2. Tela Notificações por email: enviar um aviso para um aluno de teste e conferir que chega e aparece no histórico.
@@ -140,6 +145,8 @@ As três migrations de segurança (`20261112010000`, `20261112020000`, `20261112
 - [x] **Story 3.1:** migration `supabase/migrations/20261112000000_create_student_insurance_and_practitioner.sql` rodada em produção (2026-11-12). Bucket `practitioner-signatures` conferido: `public = false`, `file_size_limit = 512000`, `allowed_mime_types = [image/png, image/jpeg]`.
 
 ## A fazer
+- [ ] **Email para todos os alunos pedindo os dados novos de cadastro.** Pedir que cada aluno entre no Portal do Aluno → "Meu perfil" e complete as informações novas (dados de seguro saúde da Story 3.2: apólice/contrato, cidade/província, titular, e o que mais faltar, como data de nascimento e telefone). Antes de fazer: (1) confirmar com a Josi a lista exata de campos e o texto; (2) só depois do merge e do teste da 3.2 no ar; (3) texto em pt/en/fr, cada aluno na sua língua (`preferred_language`); (4) dá para usar a tela Notificações por email (aviso personalizado) ou criar um modelo novo; decidir se vai só para alunos ativos. Envio para muitos alunos de uma vez passa pela `send-email` (até 50 destinatários por chamada) e pelo limite do Resend: se for criar algo novo de envio em massa, mandar para o dev-critico.
+- [x] **Aviso de aniversário refeito (2026-11-12, sem SQL, sem deploy).** Antes: um pop-up "Upcoming Birthdays" (só em inglês) abria toda vez que a tela Alunos carregava (inclusive ao voltar da ficha de um aluno) e exigia clicar em "Got it!". Agora é uma faixa na própria página, acima da busca, que não bloqueia nada; "Ocultar até amanhã" guarda no navegador (`localStorage`) o dia e quem estava na lista, e a faixa só volta no dia seguinte ou se entrar um aniversariante novo. Textos em pt/en/fr (`teacher.students.birthdays`). Corrigido junto: aniversário logo depois da virada do ano (ex.: em 29/12, quem faz em 02/01) não aparecia; os aniversariantes agora vêm ordenados pela data. Lógica em `src/lib/birthdays.js`, teste em `src/tests/birthdays.test.js`. Falta o teste no site (ver "Testes em aberto").
 - [x] **URGENTE (segurança) — `profiles` e RPCs de crédito abertos.** Corrigido no código (migration `20261112010000_fix_profiles_privilege_escalation_and_rls.sql`, testada em Postgres 16 local reproduzindo o estado de produção). **SQL rodado em produção; falta o teste no site** (ver "Testes em aberto"). O que estava aberto em produção (levantado em 2026-11-12):
   - `prevent_privilege_escalation()` era `SECURITY DEFINER` → o guarda nunca bloqueava: aluno virava professora e se dava créditos.
   - `profiles` tinha só a policy "Allow all authenticated operations" (ALL, `auth.role() = 'authenticated'`) → qualquer aluno lia, editava e apagava qualquer perfil, e podia se inserir como `teacher`.
