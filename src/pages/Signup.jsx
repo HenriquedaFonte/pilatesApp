@@ -99,7 +99,7 @@ const Signup = () => {
       return
     }
 
-    const { error } = await signUp(
+    const { data, error } = await signUp(
       formData.email,
       formData.password,
       formData.fullName,
@@ -114,16 +114,16 @@ const Signup = () => {
       return
     }
 
-    // Send welcome email for self-signup
-    try {
-      await emailService.sendStudentWelcomeSelfSignupEmail({
-        email: formData.email,
-        fullName: formData.fullName,
-        preferredLanguage: formData.preferredLanguage
-      })
-    } catch (emailError) {
-      console.warn('Welcome email failed to send:', emailError)
-      // Don't fail signup if email fails
+    // Email de boas-vindas: montado no servidor (nome e idioma do perfil).
+    // Só com sessão (se o Supabase exigir confirmação de email, não há sessão
+    // aqui e o email não sai, como antes).
+    if (data?.session) {
+      try {
+        await emailService.sendStudentWelcomeSelfSignupEmail()
+      } catch {
+        // O cadastro não falha se o email não sair.
+        console.warn('Welcome email failed to send')
+      }
     }
 
     setSuccess(true)

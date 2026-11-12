@@ -8,11 +8,16 @@
 //   - formulário de contato do site (type: 'contact'), com ou sem login:
 //     destinatário fixo (caixa do estúdio); o servidor monta o email a partir de
 //     nome, email e mensagem (escapados); Reply-To = email do visitante.
-//   - aluno logado (cadastro público): só para o próprio email do login, sem
-//     anexo nem Reply-To, e só logo depois de criar a conta (email de boas-vindas
-//     do cadastro).
+//   - aluno logado (cadastro público): só o email de boas-vindas do cadastro
+//     (type: 'signup_welcome'), montado no servidor com texto fixo (pt/en/fr),
+//     nome e idioma lidos do perfil no servidor (nome escapado); só para o
+//     próprio email do login, nos 30 minutos depois de criar a conta e uma vez
+//     só (marca em app_metadata, gravada pelo index.ts). Assunto/HTML livres,
+//     outro destinatário, anexo ou Reply-To: recusado.
 //   - sem login, fora do contato: recusado.
 // O remetente é sempre STUDIO_FROM; o "from" que vem do cliente é ignorado.
+
+import { buildSignupWelcomeContent } from './signupWelcome.ts'
 
 export const STUDIO_FROM = 'Josi Pilates <josi@josipilates.com>'
 export const STUDIO_INBOX = 'josipilatesmontreal@gmail.com'
@@ -36,7 +41,15 @@ const MAX_CONTACT_MESSAGE = 5000
 export type Caller =
   | { kind: 'service' }
   | { kind: 'staff'; userId: string }
-  | { kind: 'user'; userId: string; email: string; createdAt: string | null }
+  | {
+      kind: 'user'
+      userId: string
+      email: string
+      createdAt: string | null
+      fullName?: string | null // profiles.full_name (ou user_metadata), lido no servidor
+      language?: string | null // profiles.preferred_language (ou user_metadata)
+      welcomeSentAt?: string | null // app_metadata.welcome_email_sent_at
+    }
   | { kind: 'anonymous' }
 
 export interface OutgoingEmail {
@@ -50,7 +63,7 @@ export interface OutgoingEmail {
 }
 
 export type BuildResult =
-  | { ok: true; mode: 'staff' | 'contact' | 'self'; email: OutgoingEmail }
+  | { ok: true; mode: 'staff' | 'contact' | 'signup_welcome'; email: OutgoingEmail }
   | { ok: false; status: number; error: string }
 
 const EMAIL_RE = /^[^\s@<>,;"'()\\]+@[^\s@<>,;"'()\\]+\.[^\s@<>,;"'()\\]+$/
@@ -178,6 +191,26 @@ Sent from Josi Pilates website contact form.`
   }
 }
 
+// Boas-vindas do cadastro público: o cliente só pede (type: 'signup_welcome');
+// destinatário, assunto e corpo vêm do servidor. Campos do cliente são ignorados.
+export function buildSignupWelcomeEmail(caller: Caller, now: number = Date.now()): BuildResult {
+  if (caller.kind === 'anonymous') return fail(401, 'Unauthorized')
+  if (caller.kind !== 'user') return fail(403, 'Forbidden')
+  const own = normalizeEmail(caller.email)
+  if (!own) return fail(403, 'Forbidden')
+  const created = caller.createdAt ? Date.parse(caller.createdAt) : NaN
+  if (!Number.isFinite(created) || now - created > SELF_SIGNUP_WINDOW_MS || now - created < -60_000) {
+    return fail(403, 'Forbidden')
+  }
+  if (caller.welcomeSentAt) return fail(409, 'Already sent')
+  const content = buildSignupWelcomeContent(caller.fullName, caller.language)
+  return {
+    ok: true,
+    mode: 'signup_welcome',
+    email: { from: STUDIO_FROM, to: [own], ...content, attachments: [] },
+  }
+}
+
 export function buildEmail(body: Body, caller: Caller, now: number = Date.now()): BuildResult {
   if (!body || typeof body !== 'object' || Array.isArray(body)) return fail(400, 'Invalid request')
 
@@ -185,43 +218,27 @@ export function buildEmail(body: Body, caller: Caller, now: number = Date.now())
 
   if (caller.kind === 'anonymous') return fail(401, 'Unauthorized')
 
+  if (body.type === 'signup_welcome') return buildSignupWelcomeEmail(caller, now)
+
+  // Conta sem papel de professora: nada além dos dois casos acima.
+  if (caller.kind !== 'service' && caller.kind !== 'staff') return fail(403, 'Forbidden')
+
   const content = readSubjectAndBody(body)
   if (!content) return fail(400, 'Invalid subject or content')
 
-  if (caller.kind === 'service' || caller.kind === 'staff') {
-    const to = readRecipients(body.to)
-    if (!to) return fail(400, 'Invalid recipients')
-    let replyTo: string | undefined
-    if (body.reply_to !== undefined && body.reply_to !== null && body.reply_to !== '') {
-      const r = normalizeEmail(body.reply_to)
-      if (!r) return fail(400, 'Invalid reply_to')
-      replyTo = r
-    }
-    const attachments = readAttachments(body.attachments)
-    if (!attachments) return fail(400, 'Attachment not allowed')
-    return {
-      ok: true,
-      mode: 'staff',
-      email: { from: STUDIO_FROM, to, ...content, ...(replyTo && { reply_to: replyTo }), attachments },
-    }
-  }
-
-  // Aluno / conta do cadastro público: só o email de boas-vindas para si mesmo.
-  const own = normalizeEmail(caller.email)
   const to = readRecipients(body.to)
-  if (!own || !to || to.length !== 1 || to[0].toLowerCase() !== own.toLowerCase()) {
-    return fail(403, 'Forbidden')
+  if (!to) return fail(400, 'Invalid recipients')
+  let replyTo: string | undefined
+  if (body.reply_to !== undefined && body.reply_to !== null && body.reply_to !== '') {
+    const r = normalizeEmail(body.reply_to)
+    if (!r) return fail(400, 'Invalid reply_to')
+    replyTo = r
   }
-  if (body.reply_to || (Array.isArray(body.attachments) && body.attachments.length > 0)) {
-    return fail(403, 'Forbidden')
-  }
-  const created = caller.createdAt ? Date.parse(caller.createdAt) : NaN
-  if (!Number.isFinite(created) || now - created > SELF_SIGNUP_WINDOW_MS || now - created < -60_000) {
-    return fail(403, 'Forbidden')
-  }
+  const attachments = readAttachments(body.attachments)
+  if (!attachments) return fail(400, 'Attachment not allowed')
   return {
     ok: true,
-    mode: 'self',
-    email: { from: STUDIO_FROM, to: [own], ...content, attachments: [] },
+    mode: 'staff',
+    email: { from: STUDIO_FROM, to, ...content, ...(replyTo && { reply_to: replyTo }), attachments },
   }
 }
