@@ -24,6 +24,7 @@ Aplicação web de um estúdio de Pilates em Montreal (josipilates.com).
 6. Mudança em Edge Function = o comando de deploy no bloco "Próxima sessão":
    `supabase functions deploy <nome> --project-ref kezfpyhsejhjcvlbmejq`
 7. Push na branch da sessão e PR para `main`. Nunca push direto na `main`.
+8. Teste (de site, SQL ou deploy) só é marcado como feito (`[x]`) em `docs/PENDENCIAS.md` quando o usuário disser que fez. Sem essa confirmação, continua aberto (`[ ]`) em "Testes em aberto" até ele poder fazer. Vale também para SQL e deploys pendentes.
 
 ## Bloco "Próxima sessão" (obrigatório no fim de todo push)
 Antes, atualizar `docs/PENDENCIAS.md` no mesmo PR. Depois, terminar com passos numerados:
