@@ -177,7 +177,7 @@ serve(async (req) => {
     if (action === 'update-email') {
       if (!email) throw new Error('email is required to update student email')
 
-      console.log(`Updating email for student ${studentId} to: ${email}`)
+      console.log(`Updating email for student: ${studentId}`)
 
       const { error: authUpdateError } = await supabaseClient.auth.admin.updateUserById(
         studentId,

@@ -52,6 +52,7 @@ As três migrations de segurança (`20261112010000`, `20261112020000`, `20261112
   3. Digitar igual nos dois campos e salvar → "Perfil atualizado. A partir de agora, entre no site com ...". Sair e entrar com o email **novo** (o antigo não entra mais). Na aba Segurança, trocar a senha continua funcionando (pede a senha atual).
   4. Pôr um email que já é de um aluno → erro "Não foi possível mudar o e-mail de login" e o email continua o mesmo.
   5. No fim, voltar o email original da professora (de novo pela tela, com os dois campos) e entrar com ele.
+- [ ] **Teste depois do deploy da `manage-student` (log sem email):** professora → aluno de teste → Editar perfil → mudar o email e salvar (continua funcionando como antes). No painel do Supabase (Edge Functions → `manage-student` → Logs), a linha nova mostra `Updating email for student: <id>` e **não** mostra o email. Voltar o email original no fim.
 - [ ] **Teste no celular em pé (painel do aluno):** o topo mostra só o primeiro nome ("Olá, Henrique") e os 3 botões de Acesso Rápido (Histórico, Perfil, Regras do Studio) mostram o texto inteiro, quebrando em 2 linhas se precisar.
 
 ## SQL / deploys pendentes
@@ -64,6 +65,7 @@ As três migrations de segurança (`20261112010000`, `20261112020000`, `20261112
   4. Teste rápido: ver "Testes em aberto".
   - Reversão (só emergência; **religa os emails automáticos**): `docs/testes/emails-limpeza-reversao.sql` recria, da cópia exata guardada em `josi_backup.email_cleanup_20261112`, os 4 jobs removidos (com o mesmo estado ativo/inativo) e as funções apagadas (mesmo corpo e GRANTs).
 - [x] **Migration `20261112060000_lock_student_profile_email.sql`** (aluno não muda o próprio email em `profiles`): **rodada em produção (2026-11-12)**; `docs/testes/email-perfil-teste.sql` rodou sem erro. Reversão, se precisar: `docs/testes/email-perfil-reversao.sql`.
+- [ ] **Deploy da Edge Function `manage-student`** (log sem email do aluno): `supabase functions deploy manage-student --project-ref kezfpyhsejhjcvlbmejq`. Sem SQL. Ordem: **tanto faz** em relação ao merge (o site não muda; só a linha de log da função).
 - [ ] **Story 3.1:** rodar no SQL Editor o conteúdo de `supabase/migrations/20261112000000_create_student_insurance_and_practitioner.sql` (cria `student_insurance`, `practitioner_credentials`, bucket privado `practitioner-signatures` e policies). Idempotente. Depois, conferir em Storage que o bucket aparece como privado.
 
 ## A fazer
@@ -99,7 +101,8 @@ As três migrations de segurança (`20261112010000`, `20261112020000`, `20261112
   - Segurança: a `manage-student` já exige que quem chama seja `role = 'teacher'` (conferido no código); o site só manda o id da própria professora (`user.id`); não abre caminho novo (a professora já trocava o email de qualquer aluno por ela). Aluno chamando recebe erro.
   - Como não sai email de confirmação, um erro de digitação trocaria o login para um email errado: por isso, quando o email muda, aparece "Confirme o novo e-mail" e os dois têm que ser iguais. O email vai sem espaços e em minúsculas. Depois da troca o site atualiza a sessão (`refreshSession`) para a troca de senha usar o email novo.
   - O salvar do resto (nome, telefone, idioma) não manda mais `email` e faz um update só (antes fazia dois, o segundo regravando a linha inteira do perfil). Mensagens de sucesso/erro desse formulário agora em pt/en/fr.
-- [ ] **Menor (dev-critico, precisa de deploy):** a `manage-student` grava no log do Supabase o email novo em `update-email` (`console.log(... to: ${email})`); trocar para logar só o id. E as mensagens da aba Segurança de "Meu perfil" da professora ainda estão só em inglês (texto fixo no `TeacherProfile.jsx`).
+- [x] **Menor (dev-critico):** a `manage-student` gravava no log do Supabase o email novo em `update-email` (`console.log(... to: ${email})`). Corrigido no código: agora loga só o id (`Updating email for student: <id>`). Os outros logs da função já eram só id (`delete`, `restore`, `hard-delete`) ou texto genérico (service role); nenhum outro imprime email, nome ou telefone. Respostas e comportamento iguais. **Falta o deploy da `manage-student`** (`supabase functions deploy manage-student --project-ref kezfpyhsejhjcvlbmejq`) e o teste (ver "Testes em aberto").
+- [ ] **Menor:** as mensagens da aba Segurança de "Meu perfil" da professora ainda estão só em inglês (texto fixo no `TeacherProfile.jsx`); passar para pt/en/fr.
 - [ ] **Epic 3 — Recibos para seguro saúde** (kinésithérapie e naturopathie). PRD: `docs/prd/PRD-002-recibos-seguro-saude.md`. Stories em `docs/stories/3.1` a `3.7`, uma por sessão, na ordem 3.1 → 3.7. Templates oficiais em `src/assets/receipt-templates/`.
   - [ ] Antes de começar a 3.4/3.5: responder as perguntas em aberto do PRD §7 com a Josi (assinatura em imagem, total com ou sem produtos, formato de data, valor padrão).
   - [x] 3.1 Banco: dados de seguro do aluno + dados profissionais (dev-critico) — migration pronta, **pendente rodar o SQL e o teste AC-7** (ver acima; rodar depois da correção de segurança de `profiles`)
