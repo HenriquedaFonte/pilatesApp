@@ -21,7 +21,7 @@ import {
   ChevronDown,
   ChevronUp,
   Mail,
-  Phone,
+  MessageCircle,
   MapPin,
   Award,
   Sparkles,
@@ -1051,7 +1051,7 @@ const StudioHome = () => {
                   <span>{t('studioHome.location.address')}</span>
                 </div>
                 <div className="hl-line">
-                  <Phone className="w-[19px] h-[19px] text-[#a3e0d3]" />
+                  <MessageCircle className="w-[19px] h-[19px] text-[#a3e0d3]" />
                   <span>{t('studioHome.location.phone')}</span>
                 </div>
                 <div className="hl-line">
@@ -1130,7 +1130,7 @@ const StudioHome = () => {
               </div>
               <div className="ct-line">
                 <div className="ic">
-                  <Phone className="w-[19px] h-[19px]" />
+                  <MessageCircle className="w-[19px] h-[19px]" />
                 </div>
                 <div className="tx">
                   <b>{t('studioHome.contact.phone')}</b>
