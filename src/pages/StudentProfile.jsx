@@ -11,10 +11,32 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Loader2, ArrowLeft, User, Phone, Globe, Mail, Lock } from 'lucide-react'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from '@/components/ui/alert-dialog'
+import { Loader2, ArrowLeft, User, Phone, Globe, Mail, Lock, Cake } from 'lucide-react'
 import Logo from '../components/Logo'
 import { ThemeToggle } from '../components/ThemeToggle'
 import InsuranceFields from '../components/InsuranceFields'
+import {
+  DATE_OF_BIRTH_MIN,
+  formatDateOfBirth,
+  todayDateKey,
+  validateDateOfBirth
+} from '../lib/dateOfBirth'
+
+const DATE_OF_BIRTH_ERRORS = {
+  invalid: 'profile.dateOfBirthInvalid',
+  tooOld: 'profile.dateOfBirthTooOld',
+  future: 'profile.dateOfBirthFuture'
+}
 
 const StudentProfile = () => {
   const [profileData, setProfileData] = useState({
@@ -23,6 +45,11 @@ const StudentProfile = () => {
     phone: '',
     preferred_language: 'pt'
   })
+  // Data de nascimento: o aluno preenche uma vez; depois, só a professora muda
+  // (o banco também trava, migration 20261113000000).
+  const [savedDateOfBirth, setSavedDateOfBirth] = useState(null)
+  const [dateOfBirthInput, setDateOfBirthInput] = useState('')
+  const [confirmDateOfBirth, setConfirmDateOfBirth] = useState(false)
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
     newPassword: '',
@@ -59,11 +86,33 @@ const StudentProfile = () => {
         phone: profile.phone || '',
         preferred_language: profile.preferred_language || 'pt'
       })
+      setSavedDateOfBirth(profile.date_of_birth || null)
     }
   }, [profile])
 
+  // Só manda a data se ela ainda estava vazia e o aluno preencheu agora.
+  const newDateOfBirth = !savedDateOfBirth && dateOfBirthInput ? dateOfBirthInput : null
+
   const handleProfileUpdate = async (e) => {
     e.preventDefault()
+    setError('')
+    setSuccess('')
+
+    if (newDateOfBirth) {
+      const problem = validateDateOfBirth(newDateOfBirth)
+      if (problem) {
+        showError(t(DATE_OF_BIRTH_ERRORS[problem]))
+        return
+      }
+      // Depois de salva, só a professora corrige: pede confirmação antes.
+      setConfirmDateOfBirth(true)
+      return
+    }
+
+    await saveProfile()
+  }
+
+  const saveProfile = async () => {
     setUpdatingProfile(true)
     setError('')
     setSuccess('')
@@ -72,13 +121,16 @@ const StudentProfile = () => {
       // O email não vai aqui: o aluno não troca o próprio email (só a
       // professora, pela Edge Function manage-student, que muda login e perfil
       // juntos). O banco também bloqueia (migration 20261112060000).
+      const updates = {
+        full_name: profileData.full_name,
+        phone: profileData.phone || null,
+        preferred_language: profileData.preferred_language
+      }
+      if (newDateOfBirth) updates.date_of_birth = newDateOfBirth
+
       const { data, error } = await supabase
         .from('profiles')
-        .update({
-          full_name: profileData.full_name,
-          phone: profileData.phone || null,
-          preferred_language: profileData.preferred_language
-        })
+        .update(updates)
         .eq('id', user.id)
         .select()
         .single()
@@ -86,10 +138,18 @@ const StudentProfile = () => {
       if (error) throw error
 
       updateProfile(data)
+      setSavedDateOfBirth(data?.date_of_birth || null)
+      setDateOfBirthInput('')
       if (data?.preferred_language) i18n.changeLanguage(data.preferred_language)
       showSuccess(t('profile.success'))
     } catch (error) {
-      showError(error.message || t('profile.error'))
+      // 42501 do banco: a data já estava preenchida (ex.: a professora salvou
+      // antes). Nada foi gravado.
+      if (error?.code === '42501' && String(error.message || '').includes('date_of_birth')) {
+        showError(t('profile.dateOfBirthLocked'))
+      } else {
+        showError(error.message || t('profile.error'))
+      }
     } finally {
       setUpdatingProfile(false)
     }
@@ -253,6 +313,38 @@ const StudentProfile = () => {
                     </div>
 
                     <div className="space-y-2">
+                      <Label htmlFor="dateOfBirth">{t('profile.dateOfBirth')}</Label>
+                      <div className="relative">
+                        <Cake className="absolute left-3 top-3 h-4 w-4 text-gray-400 dark:text-gray-500" />
+                        {savedDateOfBirth ? (
+                          <Input
+                            id="dateOfBirth"
+                            value={formatDateOfBirth(savedDateOfBirth, i18n.resolvedLanguage)}
+                            readOnly
+                            aria-describedby="dob-hint"
+                            className="pl-10 bg-muted text-muted-foreground cursor-not-allowed"
+                          />
+                        ) : (
+                          <Input
+                            id="dateOfBirth"
+                            type="date"
+                            min={DATE_OF_BIRTH_MIN}
+                            max={todayDateKey()}
+                            value={dateOfBirthInput}
+                            onChange={(e) => setDateOfBirthInput(e.target.value)}
+                            aria-describedby="dob-hint"
+                            className="pl-10"
+                          />
+                        )}
+                      </div>
+                      <p id="dob-hint" className="text-xs text-muted-foreground">
+                        {savedDateOfBirth
+                          ? t('profile.dateOfBirthHintLocked')
+                          : t('profile.dateOfBirthHintEmpty')}
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
                       <Label htmlFor="language">{t('profile.language')}</Label>
                       <div className="relative">
                         <Globe className="absolute left-3 top-3 h-4 w-4 text-gray-400 dark:text-gray-500 z-10" />
@@ -286,6 +378,30 @@ const StudentProfile = () => {
                 </form>
               </CardContent>
             </Card>
+
+            <AlertDialog open={confirmDateOfBirth} onOpenChange={setConfirmDateOfBirth}>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{t('profile.dateOfBirthConfirmTitle')}</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {t('profile.dateOfBirthConfirmText', {
+                      date: formatDateOfBirth(newDateOfBirth, i18n.resolvedLanguage)
+                    })}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>{t('profile.dateOfBirthConfirmCancel')}</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => {
+                      setConfirmDateOfBirth(false)
+                      saveProfile()
+                    }}
+                  >
+                    {t('profile.dateOfBirthConfirmOk')}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
 
             {user?.id && <InsuranceFields studentId={user.id} className="mt-6" />}
           </TabsContent>

@@ -22,12 +22,21 @@ describe('modelo profileUpdate (pedido de atualização do cadastro)', () => {
     for (const label of [
       l.nav.profile,
       l.profile.save,
+      l.profile.dateOfBirth,
       l.insurance.save,
       l.insurance.fields.holder_is_self,
       l.login.forgotPassword
     ]) {
       expect(msg).toContain(label)
     }
+  })
+
+  // Pedido da Josi: o studio sempre emitiu recibos (antes à mão); o email não
+  // cita os tipos de recibo nem diz que "agora pode" emitir.
+  it.each(['pt', 'en', 'fr'])('não cita os tipos de recibo em %s', lang => {
+    const msg = getTemplate('profileUpdate', lang).message.toLowerCase()
+    expect(msg).not.toContain('kinésithérapie')
+    expect(msg).not.toContain('naturopathie')
   })
 
   it('cada língua tem um texto diferente', () => {

@@ -95,7 +95,7 @@ export const AuthProvider = ({ children }) => {
         const { data: existingProfile } = await supabase
           .from('profiles')
           .select(
-            'id, email, full_name, role, individual_credits, duo_credits, group_credits, created_at, observations, phone, preferred_language'
+            'id, email, full_name, role, individual_credits, duo_credits, group_credits, created_at, observations, phone, preferred_language, date_of_birth'
           )
           .eq('id', sessionUser.id)
           .single()
