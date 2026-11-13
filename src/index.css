@@ -92,7 +92,10 @@ body {
   --nav-bg: rgba(18, 26, 23, 0.82);
 }
 
-/* Seções sempre escuras precisam do --brand-200 claro independente do tema */
+/* Seções sempre escuras (foto do topo, faixa verde, horários) precisam do
+   --brand-200 claro independente do tema */
+.dark .studio-home-site .hero,
+.dark .studio-home-site .trust,
 .dark .studio-home-site .hl-sec {
   --brand-200: #a3e0d3;
 }
