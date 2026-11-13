@@ -1072,6 +1072,12 @@ body {
   .ft-col a:hover {
     color: #fff;
   }
+  .ft-col .ft-note {
+    display: block;
+    margin-top: 2px;
+    font-size: 12.5px;
+    color: rgba(255, 255, 255, 0.5);
+  }
   .ft-social {
     display: flex;
     gap: 10px;

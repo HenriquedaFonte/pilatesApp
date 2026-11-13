@@ -1293,7 +1293,10 @@ const StudioHome = () => {
             <div className="ft-col">
               <h5>{t('studioHome.footer.contact')}</h5>
               <a href="mailto:josi@josipilates.com">josi@josipilates.com</a>
-              <a href="tel:+14382748396">+1 438 274 8396</a>
+              <a href="https://wa.me/14382748396" target="_blank" rel="noopener noreferrer">
+                +1 438 274 8396
+                <span className="ft-note">{t('studioHome.contact.whatsappNotice')}</span>
+              </a>
               <a style={{ cursor: 'default' }}>10145 Av. Hamel, MTL</a>
             </div>
           </div>
