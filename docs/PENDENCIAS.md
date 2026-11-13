@@ -3,15 +3,15 @@
 > Memória entre sessões. Toda sessão nova começa lendo este arquivo.
 > No fim de cada tarefa: "Atualize o PENDENCIAS".
 
-_Última atualização: 2026-11-13 (recibos: assinatura maior e sobre a linha)_
+_Última atualização: 2026-11-13 (teste da assinatura no recibo passou)_
 
 ## Estado atual
 - Produção: josipilates.com (Vercel, branch `main`).
 - Processo de trabalho com o Claude configurado: `CLAUDE.md`, agente `dev-critico`, regra de esforço e este arquivo.
 
 ## Testes em aberto (usuário)
-- [ ] **Teste depois do merge da assinatura sobre a linha (sem SQL, sem deploy):** "Pré-visualizar" (não gasta número) em kinésithérapie e naturopathie, com a assinatura real: no kinésithérapie, as letras ficam logo acima da linha da assinatura (a perna do "J" pode passar por cima do "POUR" do rodapé, decidido assim); no naturopathie, as letras ficam na altura da palavra "Signature:". O tamanho é parecido com a prévia aprovada.
-- [ ] **Teste depois do merge da assinatura maior no recibo (sem SQL, sem deploy):** professora → aluno de teste → "Ver" → "Recibos de seguro" → "Emitir recibo" → **"Pré-visualizar"** (não gasta número), em kinésithérapie e em naturopathie: a assinatura agora ocupa a linha "Signature" (antes saía minúscula). Não precisa enviar a assinatura de novo. Se ainda ficar pequena, mandar o arquivo da assinatura para conferir.
+- [x] **Teste da assinatura sobre a linha passou (2026-11-13, confirmado pelo usuário: "ficou muito bom").** Texto do teste: "Pré-visualizar" (não gasta número) em kinésithérapie e naturopathie, com a assinatura real: no kinésithérapie, as letras ficam logo acima da linha da assinatura (a perna do "J" pode passar por cima do "POUR" do rodapé, decidido assim); no naturopathie, as letras ficam na altura da palavra "Signature:". O tamanho é parecido com a prévia aprovada.
+- [x] **Teste da assinatura maior no recibo: coberto pelo teste acima (2026-11-13, confirmado pelo usuário).** Texto do teste: professora → aluno de teste → "Ver" → "Recibos de seguro" → "Emitir recibo" → **"Pré-visualizar"** (não gasta número), em kinésithérapie e em naturopathie: a assinatura agora ocupa a linha "Signature" (antes saía minúscula). Não precisa enviar a assinatura de novo. Se ainda ficar pequena, mandar o arquivo da assinatura para conferir.
 - [ ] **Teste depois do merge do destaque do título no tema escuro (sem SQL, sem deploy):** em `josipilates.com` no computador, com o tema **escuro** (botão da lua): no título do topo, "seu corpo" (fr "votre corps", en "your body") aparece em verde-claro, fácil de ler sobre a foto (antes, verde-escuro quase sumindo). Os ícones dos selos do topo e da faixa verde logo abaixo também ficam verde-claro. No tema claro, nada muda.
 - [ ] **Teste depois do merge da lista de idiomas da landing page (sem SQL, sem deploy):** no celular, em `josipilates.com`, abrir o menu ☰ e tocar no seletor de idioma (FR/EN/PT): a lista abre com fundo (branco no tema claro, escuro no tema escuro) e não deixa mais ver os links do menu por baixo. No computador, o seletor do topo também abre com fundo. Trocar de língua funciona.
 - [ ] **Teste depois do merge do ícone de mensagem na landing page (sem SQL, sem deploy):** em `josipilates.com`, na seção "Venez nous rencontrer" (Horários e localização) e na seção de contato (ao lado do formulário), o telefone +1 438 274 8396 aparece com um balão de mensagem no lugar do telefone. No rodapé (coluna "Contact"), embaixo do número aparece "WhatsApp · messages" (pt: "WhatsApp · mensagens") e clicar no número abre o WhatsApp (antes tentava fazer uma ligação). Conferir no computador e no celular.
