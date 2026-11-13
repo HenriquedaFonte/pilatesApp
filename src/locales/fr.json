@@ -1199,15 +1199,15 @@
           "all": "Tous les élèves",
           "low_credits": "Crédits faibles",
           "zero_credits": "Sans crédits",
-          "class": "Un cours",
+          "class": "Un groupe",
           "selected": "Choisir des élèves"
         },
         "thresholdLabel": "Crédits faibles = jusqu'à",
         "thresholdUnit": "crédits",
-        "selectClass": "Cours :",
-        "selectClassPlaceholder": "Choisissez le cours",
-        "loadingClass": "Chargement des élèves du cours...",
-        "emptyClass": "Aucun élève actif dans ce cours.",
+        "selectClass": "Groupe (jour et heure) :",
+        "selectClassPlaceholder": "Choisissez le jour et l'heure",
+        "loadingClass": "Chargement des élèves du groupe...",
+        "emptyClass": "Aucun élève actif dans ce groupe.",
         "count_one": "{{count}} élève va le recevoir",
         "count_other": "{{count}} élèves vont le recevoir",
         "searchPlaceholder": "Rechercher par nom ou courriel...",
@@ -1221,7 +1221,9 @@
         "emptySearch": "Aucun élève ne correspond à cette recherche.",
         "inactiveBadge": "Inactif",
         "credits_one": "{{count}} crédit",
-        "credits_other": "{{count}} crédits"
+        "credits_other": "{{count}} crédits",
+        "classStudents_one": "{{count}} élève",
+        "classStudents_other": "{{count}} élèves"
       },
       "content": {
         "title": "Que voulez-vous envoyer ?",

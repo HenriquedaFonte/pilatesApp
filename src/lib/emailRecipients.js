@@ -195,3 +195,34 @@ export const messagePreview = (message, max = 160) => {
   const text = (message || '').replace(/\s+/g, ' ').trim()
   return text.length > max ? `${text.slice(0, max).trimEnd()}…` : text
 }
+
+// ---- Turmas ----
+// Para a professora, turma = um horário fixo (ex.: segunda 18:15), não o tipo de aula.
+// Cada linha de `class_schedules` é uma turma; os alunos vêm de `student_class_link`.
+
+// Ordem da semana começando na segunda (day_of_week: 0 = domingo).
+const weekOrder = day => (Number(day) + 6) % 7
+
+export const sortSchedules = schedules =>
+  [...(schedules || [])].sort(
+    (a, b) =>
+      weekOrder(a.day_of_week) - weekOrder(b.day_of_week) ||
+      String(a.start_time || '').localeCompare(String(b.start_time || ''))
+  )
+
+// Alunos de cada turma: { [class_schedule_id]: [student_id, ...] } (sem repetir).
+export const studentsBySchedule = links => {
+  const map = {}
+  for (const link of links || []) {
+    if (!link?.class_schedule_id || !link?.student_id) continue
+    const list = (map[link.class_schedule_id] ||= [])
+    if (!list.includes(link.student_id)) list.push(link.student_id)
+  }
+  return map
+}
+
+// Quantos alunos da turma entram na lista (ativos, ou todos com `includeInactive`).
+export const countScheduleStudents = (students, studentIds, includeInactive = false) => {
+  const ids = new Set(studentIds || [])
+  return activeOnly(students, includeInactive).filter(s => ids.has(s.id)).length
+}

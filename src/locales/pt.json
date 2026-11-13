@@ -744,8 +744,8 @@
         },
         "thresholdLabel": "Créditos baixos = até",
         "thresholdUnit": "créditos",
-        "selectClass": "Turma:",
-        "selectClassPlaceholder": "Escolha a turma",
+        "selectClass": "Turma (dia e horário):",
+        "selectClassPlaceholder": "Escolha o dia e o horário",
         "loadingClass": "Carregando alunos da turma...",
         "emptyClass": "Nenhum aluno ativo nesta turma.",
         "count_one": "{{count}} aluno vai receber",
@@ -761,7 +761,9 @@
         "emptySearch": "Nenhum aluno encontrado com essa busca.",
         "inactiveBadge": "Inativo",
         "credits_one": "{{count}} crédito",
-        "credits_other": "{{count}} créditos"
+        "credits_other": "{{count}} créditos",
+        "classStudents_one": "{{count}} aluno",
+        "classStudents_other": "{{count}} alunos"
       },
       "content": {
         "title": "O que você quer mandar?",
