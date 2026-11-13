@@ -43,6 +43,10 @@ export const RECEIPT_FIELDS = {
     practitionerLicense: 'Text34',
     signature: 'Text12',
     signatureDate: 'Text35',
+    // Faixa vertical (pt, de baixo para cima) onde a imagem da assinatura pode
+    // ir: passa do campo (só ~22 pt) até perto do "Nom/Name" em cima e do
+    // rodapé da CPMDQ embaixo. A largura continua a do campo.
+    signatureBand: { bottom: 88, top: 132 },
   },
   naturopathy: {
     template: 'naturopathie',
@@ -74,5 +78,6 @@ export const RECEIPT_FIELDS = {
     practitionerLicense: 'Text46',
     signature: 'Text47',
     signatureDate: 'Text48',
+    signatureBand: { bottom: 64, top: 108 },
   },
 }

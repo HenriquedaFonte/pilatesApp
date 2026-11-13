@@ -300,15 +300,19 @@ export async function generateReceiptPdf(data, options = {}) {
     else if (isJpeg(bytes)) image = await pdf.embedJpg(bytes)
     else throw new Error('Signature must be a PNG or JPEG image')
     const pad = 1
+    // Altura: a faixa do formulário (maior que o campo); sem ela, o campo.
+    const bandBottom = map.signatureBand?.bottom ?? sigRect.y
+    const bandTop = map.signatureBand?.top ?? sigRect.y + sigRect.height
+    const bandHeight = bandTop - bandBottom
     const scale = Math.min(
       (sigRect.width - 2 * pad) / image.width,
-      (sigRect.height - 2 * pad) / image.height
+      (bandHeight - 2 * pad) / image.height
     )
     const w = image.width * scale
     const h = image.height * scale
     page.drawImage(image, {
       x: sigRect.x + pad,
-      y: sigRect.y + (sigRect.height - h) / 2,
+      y: bandBottom + (bandHeight - h) / 2,
       width: w,
       height: h,
     })
