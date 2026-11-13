@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -9,11 +10,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Loader2, Phone, Globe, CheckCircle } from 'lucide-react'
 import Logo from '../components/Logo'
+import { LanguageToggle } from '../components/LanguageToggle'
+
+const SUPPORTED_LANGUAGES = ['pt', 'en', 'fr']
+const uiLanguage = (lng) => {
+  const base = (lng || '').slice(0, 2)
+  return SUPPORTED_LANGUAGES.includes(base) ? base : 'fr'
+}
 
 const ProfileCompletion = () => {
+  const { t, i18n } = useTranslation()
   const [formData, setFormData] = useState({
     phone: '',
-    preferredLanguage: 'pt'
+    preferredLanguage: uiLanguage(i18n.resolvedLanguage)
   })
   const [displayPhone, setDisplayPhone] = useState('') 
   const [loading, setLoading] = useState(false)
@@ -46,15 +55,19 @@ const ProfileCompletion = () => {
         return
       }
 
-      setFormData({
-        phone: profile.phone || '',
-        preferredLanguage: profile.preferred_language || 'pt'
-      })
+      // O idioma do formulário segue o da tela (o que o aluno está lendo).
+      setFormData(prev => ({ ...prev, phone: profile.phone || '' }))
       setDisplayPhone(formatPhoneNumber(profile.phone || ''))
     } catch (error) {
       console.error('Error checking profile status:', error)
     }
   }, [user, supabase, navigate, setFormData, setDisplayPhone])
+
+  // Globo (LanguageToggle) ou ?lng= mudou a língua da tela: o campo acompanha.
+  useEffect(() => {
+    const lng = uiLanguage(i18n.resolvedLanguage)
+    setFormData(prev => (prev.preferredLanguage === lng ? prev : { ...prev, preferredLanguage: lng }))
+  }, [i18n.resolvedLanguage])
 
   useEffect(() => {
     if (!user) {
@@ -91,6 +104,7 @@ const ProfileCompletion = () => {
       ...prev,
       preferredLanguage: value
     }))
+    i18n.changeLanguage(value)
   }
 
   const handleSubmit = async (e) => {
@@ -99,13 +113,13 @@ const ProfileCompletion = () => {
     setError('')
 
     if (!user) {
-      setError('User not authenticated')
+      setError(t('profileCompletion.errors.notAuthenticated'))
       setLoading(false)
       return
     }
 
     if (formData.phone && !formData.phone.match(/^\+[1-9]\d{1,14}$/)) {
-      setError('Please enter a valid phone number in international format')
+      setError(t('profileCompletion.errors.invalidPhone'))
       setLoading(false)
       return
     }
@@ -138,7 +152,11 @@ const ProfileCompletion = () => {
 
     } catch (error) {
       console.error('Error updating profile:', error)
-      setError(error.message || 'Failed to update profile. Please try again.')
+      setError(
+        error?.message
+          ? `${t('profileCompletion.errors.updateFailed')} (${error.message})`
+          : t('profileCompletion.errors.updateFailed')
+      )
     } finally {
       setLoading(false)
     }
@@ -146,15 +164,18 @@ const ProfileCompletion = () => {
 
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+    <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+      <div className="absolute top-4 right-4">
+        <LanguageToggle />
+      </div>
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
             <Logo className="h-12 w-12" />
           </div>
-          <CardTitle className="text-2xl font-bold">Complete Your Profile</CardTitle>
+          <CardTitle className="text-2xl font-bold">{t('profileCompletion.title')}</CardTitle>
           <CardDescription>
-            Please provide some additional information to complete your account setup.
+            {t('profileCompletion.subtitle')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -166,7 +187,7 @@ const ProfileCompletion = () => {
             )}
             
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number</Label>
+              <Label htmlFor="phone">{t('profileCompletion.phone')}</Label>
               <div className="relative">
                 <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                 <Input
@@ -181,17 +202,17 @@ const ProfileCompletion = () => {
                 />
               </div>
               <p className="text-xs text-gray-500">
-                Format: +1 555 555 5555 (optional but recommended for notifications)
+                {t('profileCompletion.phoneHint')}
               </p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="preferredLanguage">Email Language Preference *</Label>
+              <Label htmlFor="preferredLanguage">{t('profileCompletion.language')} *</Label>
               <div className="relative">
                 <Globe className="absolute left-3 top-3 h-4 w-4 text-gray-400 z-10" />
                 <Select value={formData.preferredLanguage} onValueChange={handleLanguageChange} disabled={loading}>
                   <SelectTrigger className="pl-10">
-                    <SelectValue placeholder="Select language" />
+                    <SelectValue placeholder={t('profileCompletion.selectLanguage')} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="pt">🇧🇷 Português</SelectItem>
@@ -201,7 +222,7 @@ const ProfileCompletion = () => {
                 </Select>
               </div>
               <p className="text-xs text-gray-500">
-                Language for email notifications about credits and classes
+                {t('profileCompletion.languageHint')}
               </p>
             </div>
             
@@ -209,17 +230,17 @@ const ProfileCompletion = () => {
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Updating profile...
+                  {t('profileCompletion.submitting')}
                 </>
               ) : (
-                'Complete Profile'
+                t('profileCompletion.submit')
               )}
             </Button>
           </form>
           
           <div className="mt-6 text-center">
             <p className="text-xs text-muted-foreground">
-              * Required fields. You can update this information later in your profile settings.
+              {t('profileCompletion.requiredNote')}
             </p>
           </div>
         </CardContent>

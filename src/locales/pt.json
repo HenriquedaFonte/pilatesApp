@@ -1579,5 +1579,22 @@
     "resetSubmitting": "Enviando...",
     "resetSuccess": "E-mail de recuperação enviado! Verifique sua caixa de entrada.",
     "resetError": "Não foi possível enviar o e-mail de recuperação. Tente novamente."
+  },
+  "profileCompletion": {
+    "title": "Complete seu perfil",
+    "subtitle": "Precisamos de mais algumas informações para terminar o cadastro da sua conta.",
+    "phone": "Telefone",
+    "phoneHint": "Formato: +1 555 555 5555 (opcional, mas recomendado para os avisos)",
+    "language": "Idioma dos e-mails",
+    "selectLanguage": "Escolha o idioma",
+    "languageHint": "Idioma dos e-mails sobre créditos e aulas",
+    "submit": "Concluir perfil",
+    "submitting": "Salvando perfil...",
+    "requiredNote": "* Campo obrigatório. Você pode mudar essas informações depois em \"Meu perfil\".",
+    "errors": {
+      "notAuthenticated": "Você não está conectado. Entre de novo no site.",
+      "invalidPhone": "Digite um telefone válido no formato internacional (ex.: +1 555 555 5555).",
+      "updateFailed": "Não foi possível salvar o perfil. Tente de novo."
+    }
   }
 }

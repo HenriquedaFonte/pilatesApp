@@ -1506,5 +1506,22 @@
     "resetSubmitting": "Sending...",
     "resetSuccess": "Recovery email sent! Check your inbox.",
     "resetError": "Could not send the recovery email. Please try again."
+  },
+  "profileCompletion": {
+    "title": "Complete your profile",
+    "subtitle": "We need a little more information to finish setting up your account.",
+    "phone": "Phone number",
+    "phoneHint": "Format: +1 555 555 5555 (optional but recommended for notifications)",
+    "language": "Email language",
+    "selectLanguage": "Select language",
+    "languageHint": "Language of emails about credits and classes",
+    "submit": "Complete profile",
+    "submitting": "Saving profile...",
+    "requiredNote": "* Required field. You can change this information later in \"My profile\".",
+    "errors": {
+      "notAuthenticated": "You are not signed in. Please sign in again.",
+      "invalidPhone": "Enter a valid phone number in international format (e.g. +1 555 555 5555).",
+      "updateFailed": "Could not save your profile. Please try again."
+    }
   }
 }

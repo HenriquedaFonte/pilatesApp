@@ -1590,5 +1590,22 @@
     "resetSubmitting": "Envoi...",
     "resetSuccess": "Courriel de récupération envoyé ! Vérifiez votre boîte de réception.",
     "resetError": "Impossible d'envoyer le courriel de récupération. Veuillez réessayer."
+  },
+  "profileCompletion": {
+    "title": "Complétez votre profil",
+    "subtitle": "Il nous faut encore quelques informations pour terminer la création de votre compte.",
+    "phone": "Téléphone",
+    "phoneHint": "Format : +1 555 555 5555 (facultatif, mais recommandé pour les avis)",
+    "language": "Langue des courriels",
+    "selectLanguage": "Choisissez la langue",
+    "languageHint": "Langue des courriels sur les crédits et les cours",
+    "submit": "Terminer le profil",
+    "submitting": "Enregistrement du profil...",
+    "requiredNote": "* Champ obligatoire. Vous pourrez modifier ces informations plus tard dans « Mon profil ».",
+    "errors": {
+      "notAuthenticated": "Vous n'êtes pas connecté(e). Veuillez vous reconnecter.",
+      "invalidPhone": "Entrez un numéro de téléphone valide au format international (ex. : +1 555 555 5555).",
+      "updateFailed": "Impossible d'enregistrer votre profil. Veuillez réessayer."
+    }
   }
 }
