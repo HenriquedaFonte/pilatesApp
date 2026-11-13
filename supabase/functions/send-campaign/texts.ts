@@ -42,7 +42,7 @@ export const LOW_CREDITS_TEXTS = {
     message: 'Para continuar aproveitando nossas aulas de Pilates, recomendamos que você renove seus créditos em breve.',
     contactTitle: '💡 Como renovar seus créditos:',
     contactItems: [
-      'Entre em contato conosco pelo WhatsApp: {phone}',
+      'Mande uma mensagem pelo WhatsApp (só mensagens, não atendemos ligações): {phone}',
       'Envie o valor do seu pacote de aulas para o interac pilatesmontreal@gmail.com',
       'Visite nosso studio durante o horário de funcionamento',
     ],
@@ -59,7 +59,7 @@ export const LOW_CREDITS_TEXTS = {
     message: 'To continue enjoying your Pilates classes, we recommend renewing your credits soon.',
     contactTitle: '💡 How to renew your credits:',
     contactItems: [
-      'Contact us by WhatsApp: {phone}',
+      'Send us a message on WhatsApp (messages only, we do not take calls): {phone}',
       'Send the amount for your class package via Interac to pilatesmontreal@gmail.com.',
       'Visit our studio during business hours',
     ],
@@ -76,7 +76,7 @@ export const LOW_CREDITS_TEXTS = {
     message: 'Pour continuer à profiter de vos cours de Pilates sans interruption, nous vous recommandons de renouveler vos crédits bientôt.',
     contactTitle: '💡 Comment renouveler vos crédits:',
     contactItems: [
-      'Contactez-nous par WhatsApp: {phone}',
+      'Envoyez-nous un message sur WhatsApp (messages uniquement, nous ne prenons pas les appels) : {phone}',
       'Envoyez le montant de votre forfait de cours via Interac à pilatesmontreal@gmail.com.',
       "Visitez notre studio pendant les heures d'ouverture",
     ],
