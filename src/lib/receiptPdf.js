@@ -295,6 +295,15 @@ export async function generateReceiptPdf(data, options = {}) {
       : data.practitioner.naturopathyLicense
   setField(map.practitionerName, data.practitioner.name)
   setField(map.practitionerLicense, license)
+  // Desce os campos (pt) quando o texto fica alto demais em relação ao rótulo
+  // impresso ("Nom/Name", "Licence/License No.").
+  if (map.practitionerOffsetY) {
+    for (const name of [map.practitionerName, map.practitionerLicense]) {
+      const widget = form.getTextField(name).acroField.getWidgets()[0]
+      const r = widget.getRectangle()
+      widget.setRectangle({ ...r, y: r.y + map.practitionerOffsetY })
+    }
+  }
   // Data ao lado da assinatura = último tratamento (ver o topo do arquivo).
   setField(map.signatureDate, lastTreatmentDate)
 
