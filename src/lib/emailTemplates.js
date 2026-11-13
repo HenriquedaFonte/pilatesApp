@@ -199,17 +199,17 @@ Merci de votre compréhension !`
       subject: 'Atualize seu cadastro no Josi Pilates',
       message: `Estamos atualizando o cadastro dos alunos e contamos com a sua ajuda.
 
-Agora o studio pode emitir recibos para o seu seguro saúde (kinésithérapie e naturopathie). Para isso, pedimos que você entre no Portal do Aluno em josipilates.com/login, abra "Meu perfil" e confira ou complete:
+Agora o studio pode emitir recibos para o seu seguro saúde (kinésithérapie e naturopathie). Para isso, entre no Portal do Aluno em josipilates.com/login?lng=pt e clique em "Perfil". Lá, confira ou complete:
 
-• Telefone
-• Seguro saúde: nº da apólice e cidade/província
+• Telefone (depois clique em "Salvar Alterações")
+• Seguro saúde: nº da apólice e cidade/província (depois clique em "Salvar dados do seguro")
 • Se você não for o titular da apólice: desligue "Eu sou o titular da apólice" e preencha os dados do titular
 
 Os dados do seguro são opcionais: preencha só se quiser receber recibos para o seu seguro.
 
 Se ainda não nos passou sua data de nascimento, fale com a Josi (ela também aparece nos recibos).
 
-Não lembra a senha? Na tela de entrada, clique em "Esqueceu a senha?".
+Não lembra a senha? Na tela de entrada, clique em "Esqueceu a senha?" e você recebe um link por email para criar uma nova.
 
 Obrigada!`
     },
@@ -217,17 +217,17 @@ Obrigada!`
       subject: 'Please update your Josi Pilates profile',
       message: `We are updating our students' records and would appreciate your help.
 
-The studio can now issue receipts for your health insurance (kinésithérapie and naturopathie). To do so, please sign in to the Student Portal at josipilates.com/login, open "My profile" and check or complete:
+The studio can now issue receipts for your health insurance (kinésithérapie and naturopathie). To do so, sign in to the Student Portal at josipilates.com/login?lng=en and click "Profile". There, check or complete:
 
-• Phone number
-• Health insurance: policy number and city/province
+• Phone number (then click "Save Changes")
+• Health insurance: policy number and city/province (then click "Save insurance details")
 • If you are not the policyholder: turn off "I am the policyholder" and fill in the policyholder's details
 
 The insurance details are optional: fill them in only if you want receipts for your insurance.
 
 If you have not given us your date of birth yet, please let Josi know (it also appears on the receipts).
 
-Forgot your password? On the sign-in page, click "Esqueceu a senha?" (Forgot your password?).
+Forgot your password? On the sign-in page, click "Forgot your password?" and you will receive a link by email to create a new one.
 
 Thank you!`
     },
@@ -235,17 +235,17 @@ Thank you!`
       subject: 'Mettez à jour votre profil Josi Pilates',
       message: `Nous mettons à jour les dossiers de nos élèves et comptons sur votre aide.
 
-Le studio peut maintenant émettre des reçus pour votre assurance santé (kinésithérapie et naturopathie). Pour cela, connectez-vous au Portail de l'élève sur josipilates.com/login, ouvrez « Mon profil » et vérifiez ou complétez :
+Le studio peut maintenant émettre des reçus pour votre assurance santé (kinésithérapie et naturopathie). Pour cela, connectez-vous au Portail de l'élève sur josipilates.com/login?lng=fr et cliquez sur « Profil ». Vérifiez ou complétez :
 
-• Numéro de téléphone
-• Assurance santé : numéro de police et ville/province
+• Numéro de téléphone (puis cliquez sur « Sauvegarder les Modifications »)
+• Assurance santé : numéro de police et ville/province (puis cliquez sur « Enregistrer l'assurance »)
 • Si vous n'êtes pas le titulaire de la police : désactivez « Je suis le titulaire de la police » et remplissez les informations du titulaire
 
 Les informations d'assurance sont facultatives : remplissez-les seulement si vous voulez des reçus pour votre assurance.
 
 Si vous ne nous avez pas encore donné votre date de naissance, dites-le à Josi (elle figure aussi sur les reçus).
 
-Mot de passe oublié ? Sur la page de connexion, cliquez sur « Esqueceu a senha? » (Mot de passe oublié ?).
+Mot de passe oublié ? Sur la page de connexion, cliquez sur « Mot de passe oublié ? » et vous recevrez un lien par courriel pour en créer un nouveau.
 
 Merci !`
     }

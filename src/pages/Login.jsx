@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import { Button } from '@/components/ui/button'
@@ -17,6 +18,7 @@ import {
 import { Loader2 } from 'lucide-react'
 import Logo from '../components/Logo'
 import { ThemeToggle } from '../components/ThemeToggle'
+import { LanguageToggle } from '../components/LanguageToggle'
 
 const Login = () => {
   const [email, setEmail] = useState('')
@@ -31,6 +33,7 @@ const Login = () => {
 
   const { signIn, user, profile, isProfileComplete } = useAuth()
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (user && profile && !loading) {
@@ -54,7 +57,7 @@ const Login = () => {
     const { error } = await signIn(email, password)
     
     if (error) {
-      setError(error.message === 'Invalid login credentials' ? 'E-mail ou senha incorretos.' : error.message)
+      setError(error.message === 'Invalid login credentials' ? t('login.invalidCredentials') : error.message)
       setLoading(false)
       return
     }
@@ -74,14 +77,14 @@ const Login = () => {
       })
 
       if (error || !data?.success) {
-        throw new Error(data?.error || error?.message || 'Falha ao enviar e-mail de recuperação')
+        throw new Error(data?.error || error?.message || t('login.resetError'))
       }
 
-      setResetSuccess('E-mail de recuperação enviado! Verifique sua caixa de entrada.')
+      setResetSuccess(t('login.resetSuccess'))
       setResetEmail('')
     } catch (error) {
       console.error('Error sending password reset:', error)
-      setResetError(error.message || 'Não foi possível enviar o e-mail de recuperação. Tente novamente.')
+      setResetError(error.message || t('login.resetError'))
     } finally {
       setResetLoading(false)
     }
@@ -102,21 +105,22 @@ const Login = () => {
         
         <div className="space-y-4 max-w-md relative z-10">
           <h2 className="font-serif-display text-4xl font-bold leading-tight">
-            Seu corpo inteligente, sua mente em <span className="italic text-emerald-200">equilíbrio</span>.
+            {t('login.heroTitle')} <span className="italic text-emerald-200">{t('login.heroTitleAccent')}</span>.
           </h2>
           <p className="text-sm opacity-90 leading-relaxed font-medium">
-            Pratique pilates com acompanhamento personalizado, gerencie seus créditos de aulas e acompanhe seu histórico de evolução de forma prática e direta.
+            {t('login.heroText')}
           </p>
         </div>
         
         <div className="text-xs opacity-75 relative z-10 font-mono">
-          © {new Date().getFullYear()} Josi Pilates. Todos os direitos reservados.
+          © {new Date().getFullYear()} Josi Pilates. {t('login.rights')}
         </div>
       </div>
 
       {/* Lado Direito - Formulário */}
       <div className="flex-1 flex items-center justify-center p-6 md:p-12 bg-gray-50 dark:bg-slate-900 relative">
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-4 right-4 flex items-center gap-2">
+          <LanguageToggle />
           <ThemeToggle />
         </div>
         
@@ -128,10 +132,10 @@ const Login = () => {
           
           <div className="space-y-2 text-center md:text-left">
             <h2 className="text-2xl font-bold tracking-tight text-foreground md:block hidden">
-              Entrar na sua conta
+              {t('login.title')}
             </h2>
             <p className="text-sm text-muted-foreground">
-              Insira seu e-mail e senha para continuar
+              {t('login.subtitle')}
             </p>
           </div>
 
@@ -143,16 +147,16 @@ const Login = () => {
             )}
             
             <div className="space-y-2">
-              <Label htmlFor="email">E-mail</Label>
+              <Label htmlFor="email">{t('login.email')}</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="nome@exemplo.com"
+                placeholder={t('login.emailPlaceholder')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={loading}
-                aria-label="Endereço de e-mail"
+                aria-label={t('login.emailAria')}
                 aria-describedby={error ? "login-error" : undefined}
                 className="rounded-xl border-border bg-background"
               />
@@ -160,23 +164,23 @@ const Login = () => {
             
             <div className="space-y-2">
               <div className="flex justify-between items-center">
-                <Label htmlFor="password">Senha</Label>
+                <Label htmlFor="password">{t('login.password')}</Label>
                 <button
                   type="button"
                   className="text-xs text-primary hover:underline cursor-pointer font-semibold"
                   onClick={() => setForgotPasswordOpen(true)}
                 >
-                  Esqueceu a senha?
+                  {t('login.forgotPassword')}
                 </button>
               </div>
               <PasswordInput
                 id="password"
-                placeholder="Sua senha secreta"
+                placeholder={t('login.passwordPlaceholder')}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={loading}
-                aria-label="Senha"
+                aria-label={t('login.password')}
                 aria-describedby={error ? "login-error" : undefined}
                 className="rounded-xl border-border bg-background"
               />
@@ -186,29 +190,29 @@ const Login = () => {
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Entrando...
+                  {t('login.submitting')}
                 </>
               ) : (
-                'Entrar'
+                t('login.submit')
               )}
             </Button>
           </form>
           
           <div className="text-center space-y-4 pt-2">
             <p className="text-sm text-muted-foreground">
-              Não tem uma conta?{' '}
+              {t('login.noAccount')}{' '}
               <Link to="/signup" className="text-primary hover:underline font-semibold">
-                Cadastre-se como aluno
+                {t('login.signup')}
               </Link>
             </p>
             
             <div className="flex items-center justify-center space-x-4 text-xs text-muted-foreground pt-4 border-t border-border/50">
               <Link to="/privacy-policy" className="hover:underline">
-                Política de Privacidade
+                {t('login.privacy')}
               </Link>
               <span>•</span>
               <Link to="/terms-of-service" className="hover:underline">
-                Termos de Serviço
+                {t('login.terms')}
               </Link>
             </div>
           </div>
@@ -218,9 +222,9 @@ const Login = () => {
       <Dialog open={forgotPasswordOpen} onOpenChange={setForgotPasswordOpen}>
         <DialogContent className="rounded-2xl border-border max-w-sm">
           <DialogHeader>
-            <DialogTitle className="font-serif-display text-xl">Recuperar Senha</DialogTitle>
+            <DialogTitle className="font-serif-display text-xl">{t('login.resetTitle')}</DialogTitle>
             <DialogDescription className="text-xs">
-              Digite seu endereço de e-mail e enviaremos um link para redefinir sua senha.
+              {t('login.resetDescription')}
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleForgotPassword} className="space-y-4 pt-2">
@@ -235,11 +239,11 @@ const Login = () => {
               </Alert>
             )}
             <div className="space-y-2">
-              <Label htmlFor="resetEmail">E-mail</Label>
+              <Label htmlFor="resetEmail">{t('login.email')}</Label>
               <Input
                 id="resetEmail"
                 type="email"
-                placeholder="nome@exemplo.com"
+                placeholder={t('login.emailPlaceholder')}
                 value={resetEmail}
                 onChange={(e) => setResetEmail(e.target.value)}
                 required
@@ -254,16 +258,16 @@ const Login = () => {
                 onClick={() => setForgotPasswordOpen(false)}
                 className="rounded-xl"
               >
-                Cancelar
+                {t('login.resetCancel')}
               </Button>
               <Button type="submit" disabled={resetLoading} className="rounded-xl">
                 {resetLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Enviando...
+                    {t('login.resetSubmitting')}
                   </>
                 ) : (
-                  'Enviar Link'
+                  t('login.resetSubmit')
                 )}
               </Button>
             </div>

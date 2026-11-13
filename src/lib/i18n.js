@@ -31,7 +31,10 @@ i18n
     },
 
     detection: {
-      order: ['localStorage', 'navigator'],
+      // ?lng=pt|en|fr no link (ex.: emails para os alunos) vence o que está
+      // salvo no navegador e passa a ficar salvo.
+      order: ['querystring', 'localStorage', 'navigator'],
+      lookupQuerystring: 'lng',
       caches: ['localStorage'],
     },
   })

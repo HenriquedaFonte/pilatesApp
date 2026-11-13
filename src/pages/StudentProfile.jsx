@@ -44,8 +44,12 @@ const StudentProfile = () => {
   }
 
   const { user, profile, updateProfile } = useAuth()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (profile?.preferred_language) i18n.changeLanguage(profile.preferred_language)
+  }, [profile?.preferred_language, i18n])
 
   useEffect(() => {
     if (profile) {
@@ -82,9 +86,10 @@ const StudentProfile = () => {
       if (error) throw error
 
       updateProfile(data)
-      showSuccess('Profile updated successfully!')
+      if (data?.preferred_language) i18n.changeLanguage(data.preferred_language)
+      showSuccess(t('profile.success'))
     } catch (error) {
-      showError(error.message || 'Failed to update profile')
+      showError(error.message || t('profile.error'))
     } finally {
       setUpdatingProfile(false)
     }
@@ -97,13 +102,13 @@ const StudentProfile = () => {
     setSuccess('')
 
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      showError('New passwords do not match')
+      showError(t('profile.passwordMismatch'))
       setUpdatingPassword(false)
       return
     }
 
     if (passwordData.newPassword.length < 6) {
-      showError('New password must be at least 6 characters long')
+      showError(t('profile.passwordTooShort'))
       setUpdatingPassword(false)
       return
     }
@@ -116,7 +121,7 @@ const StudentProfile = () => {
       })
 
       if (signInError) {
-        throw new Error('Current password is incorrect')
+        throw new Error(t('profile.currentPasswordWrong'))
       }
 
       // Update password
@@ -126,14 +131,14 @@ const StudentProfile = () => {
 
       if (updateError) throw updateError
 
-      showSuccess('Password updated successfully!')
+      showSuccess(t('profile.passwordSuccess'))
       setPasswordData({
         currentPassword: '',
         newPassword: '',
         confirmPassword: ''
       })
     } catch (error) {
-      showError(error.message || 'Failed to update password')
+      showError(error.message || t('profile.passwordError'))
     } finally {
       setUpdatingPassword(false)
     }
@@ -156,11 +161,12 @@ const StudentProfile = () => {
               <button
                 onClick={() => navigate('/student/dashboard')}
                 className="mr-4 p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg"
+                aria-label={t('profile.back')}
               >
                 <ArrowLeft className="h-5 w-5 text-gray-600 dark:text-gray-300" />
               </button>
               <Logo className="h-8 w-8 mr-3" />
-              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">My Profile</h1>
+              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">{t('profile.title')}</h1>
             </div>
             <ThemeToggle />
           </div>
@@ -181,8 +187,8 @@ const StudentProfile = () => {
 
         <Tabs defaultValue="personal" className="space-y-6">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="personal">Personal Information</TabsTrigger>
-            <TabsTrigger value="security">Security</TabsTrigger>
+            <TabsTrigger value="personal">{t('profile.personalInfo')}</TabsTrigger>
+            <TabsTrigger value="security">{t('profile.security')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="personal">
@@ -190,24 +196,24 @@ const StudentProfile = () => {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <User className="h-5 w-5 mr-2" />
-                  Personal Information
+                  {t('profile.personalInfo')}
                 </CardTitle>
                 <CardDescription>
-                  Update your personal details and preferences
+                  {t('profile.description')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleProfileUpdate} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <Label htmlFor="fullName">Full Name</Label>
+                      <Label htmlFor="fullName">{t('profile.fullName')}</Label>
                       <div className="relative">
                         <User className="absolute left-3 top-3 h-4 w-4 text-gray-400 dark:text-gray-500" />
                         <Input
                           id="fullName"
                           value={profileData.full_name}
                           onChange={(e) => setProfileData({ ...profileData, full_name: e.target.value })}
-                          placeholder="Your full name"
+                          placeholder={t('profile.fullNamePlaceholder')}
                           className="pl-10"
                           required
                         />
@@ -215,7 +221,7 @@ const StudentProfile = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="email">Email Address</Label>
+                      <Label htmlFor="email">{t('profile.email')}</Label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400 dark:text-gray-500" />
                         <Input
@@ -233,7 +239,7 @@ const StudentProfile = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="phone">Phone Number</Label>
+                      <Label htmlFor="phone">{t('profile.phone')}</Label>
                       <div className="relative">
                         <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400 dark:text-gray-500" />
                         <Input
@@ -247,7 +253,7 @@ const StudentProfile = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="language">Preferred Language</Label>
+                      <Label htmlFor="language">{t('profile.language')}</Label>
                       <div className="relative">
                         <Globe className="absolute left-3 top-3 h-4 w-4 text-gray-400 dark:text-gray-500 z-10" />
                         <Select
@@ -255,12 +261,12 @@ const StudentProfile = () => {
                           onValueChange={(value) => setProfileData({ ...profileData, preferred_language: value })}
                         >
                           <SelectTrigger className="pl-10">
-                            <SelectValue placeholder="Select language" />
+                            <SelectValue placeholder={t('profile.languagePlaceholder')} />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="pt">🇧🇷 Portuguese</SelectItem>
-                            <SelectItem value="en">🇺🇸 English</SelectItem>
-                            <SelectItem value="fr">🇫🇷 French</SelectItem>
+                            <SelectItem value="pt">{t('profile.langPt')}</SelectItem>
+                            <SelectItem value="en">{t('profile.langEn')}</SelectItem>
+                            <SelectItem value="fr">{t('profile.langFr')}</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -271,10 +277,10 @@ const StudentProfile = () => {
                     {updatingProfile ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Updating Profile...
+                        {t('profile.saving')}
                       </>
                     ) : (
-                      'Update Profile'
+                      t('profile.save')
                     )}
                   </Button>
                 </form>
@@ -289,43 +295,43 @@ const StudentProfile = () => {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Lock className="h-5 w-5 mr-2" />
-                  Change Password
+                  {t('profile.changePassword')}
                 </CardTitle>
                 <CardDescription>
-                  Update your password to keep your account secure
+                  {t('profile.changePasswordDescription')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handlePasswordUpdate} className="space-y-6">
                   <div className="space-y-2">
-                    <Label htmlFor="currentPassword">Current Password</Label>
+                    <Label htmlFor="currentPassword">{t('profile.currentPassword')}</Label>
                     <PasswordInput
                       id="currentPassword"
                       value={passwordData.currentPassword}
                       onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
-                      placeholder="Enter your current password"
+                      placeholder={t('profile.currentPasswordPlaceholder')}
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="newPassword">New Password</Label>
+                    <Label htmlFor="newPassword">{t('profile.newPassword')}</Label>
                     <PasswordInput
                       id="newPassword"
                       value={passwordData.newPassword}
                       onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                      placeholder="Enter your new password"
+                      placeholder={t('profile.newPasswordPlaceholder')}
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                    <Label htmlFor="confirmPassword">{t('profile.confirmPassword')}</Label>
                     <PasswordInput
                       id="confirmPassword"
                       value={passwordData.confirmPassword}
                       onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                      placeholder="Confirm your new password"
+                      placeholder={t('profile.confirmPasswordPlaceholder')}
                       required
                     />
                   </div>
@@ -334,10 +340,10 @@ const StudentProfile = () => {
                     {updatingPassword ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Updating Password...
+                        {t('profile.passwordSaving')}
                       </>
                     ) : (
-                      'Change Password'
+                      t('profile.changePassword')
                     )}
                   </Button>
                 </form>
