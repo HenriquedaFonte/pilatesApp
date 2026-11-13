@@ -10,6 +10,7 @@ import { supabase } from './supabase'
 import { generateReceiptPdf } from './receiptPdf'
 import { isAlreadyExistsError, pdfDataFromReceipt, receiptPdfPath } from './receipts'
 import { RECEIPTS_BUCKET } from './receiptFiles'
+import { trimSignatureImage } from './signatureTrim'
 
 // Abrir/baixar o PDF fica em receiptFiles.js (sem pdf-lib, usado também no portal do aluno).
 export { downloadReceipt } from './receiptFiles'
@@ -20,7 +21,8 @@ export async function loadSignatureBytes(path) {
   if (!path) return null
   const { data, error } = await supabase.storage.from(SIGNATURES_BUCKET).download(path)
   if (error || !data) throw new Error('signature download failed')
-  return new Uint8Array(await data.arrayBuffer())
+  // Sem as margens vazias, a assinatura ocupa o campo do recibo inteiro.
+  return trimSignatureImage(new Uint8Array(await data.arrayBuffer()))
 }
 
 // Assinatura para (re)gerar o PDF: a do snapshot; se o arquivo não existir mais
