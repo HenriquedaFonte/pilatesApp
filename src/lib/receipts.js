@@ -143,7 +143,9 @@ export function buildSnapshot(form, { license, signaturePath }) {
 
 // Recibo gravado (linha de insurance_receipts) → dados do gerador de PDF.
 // Tratamentos, produtos e totais vêm das colunas (normalizadas pelo servidor);
-// o gerador confere que os totais batem com a soma.
+// o gerador confere que os totais batem com a soma. A data impressa ao lado da
+// assinatura é a do último tratamento (o gerador calcula); issued_at só confere
+// que nenhum tratamento é depois da emissão. O número não é impresso.
 export function pdfDataFromReceipt(receipt, signatureBytes) {
   const s = receipt.snapshot || {}
   return {
@@ -161,7 +163,8 @@ export function pdfDataFromReceipt(receipt, signatureBytes) {
   }
 }
 
-// Prévia: snapshot ainda não gravado, número provisório e data de hoje.
+// Prévia: snapshot ainda não gravado, número provisório (não impresso) e
+// emissão = agora. Sai igual ao PDF emitido: data do último tratamento.
 export function pdfDataFromSnapshot(snapshot, signatureBytes, now = new Date()) {
   return {
     type: snapshot.type,
