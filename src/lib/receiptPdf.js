@@ -300,15 +300,24 @@ export async function generateReceiptPdf(data, options = {}) {
     else if (isJpeg(bytes)) image = await pdf.embedJpg(bytes)
     else throw new Error('Signature must be a PNG or JPEG image')
     const pad = 1
-    const scale = Math.min(
-      (sigRect.width - 2 * pad) / image.width,
-      (sigRect.height - 2 * pad) / image.height
+    // Linha média da assinatura (0 = topo, 1 = base da imagem) sobre a linha
+    // do formulário; o tamanho é o maior que cabe entre `bottom` e `top`.
+    const layout = map.signatureLayout
+    const mid = Number.isFinite(sig.inkMidline) ? Math.min(0.95, Math.max(0.05, sig.inkMidline)) : 0.5
+    // `lift`: a linha média fica um pouco acima da linha impressa (pt).
+    const line = (layout?.line ?? sigRect.y + sigRect.height / 2) + (layout?.lift ?? 0)
+    const below = layout ? line - layout.bottom : sigRect.height / 2
+    const above = layout ? layout.top - line : sigRect.height / 2
+    const h = Math.min(
+      (sigRect.width - 2 * pad) * (image.height / image.width),
+      below / (1 - mid),
+      above / mid,
+      layout?.maxHeight ?? Infinity
     )
-    const w = image.width * scale
-    const h = image.height * scale
+    const w = h * (image.width / image.height)
     page.drawImage(image, {
       x: sigRect.x + pad,
-      y: sigRect.y + (sigRect.height - h) / 2,
+      y: line - (1 - mid) * h,
       width: w,
       height: h,
     })

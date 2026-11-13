@@ -43,6 +43,14 @@ export const RECEIPT_FIELDS = {
     practitionerLicense: 'Text34',
     signature: 'Text12',
     signatureDate: 'Text35',
+    // Assinatura (pt, de baixo para cima): a linha média dela fica em `line`
+    // (a linha impressa do formulário); a imagem vai de `bottom` a `top`
+    // (embaixo do "Nom/Name"). Aqui o rodapé da CPMDQ fica a só ~11 pt da
+    // linha: o traço que desce pode passar por cima da 1ª linha do rodapé,
+    // como numa assinatura à mão (decisão do usuário, 2026-11-13).
+    // Medido no template. A largura continua a do campo; altura até maxHeight.
+    // lift 3 pt (~1 mm): pedido do usuário depois de ver a prévia.
+    signatureLayout: { line: 97.3, lift: 3, bottom: 72, top: 138, maxHeight: 44 },
   },
   naturopathy: {
     template: 'naturopathie',
@@ -74,5 +82,8 @@ export const RECEIPT_FIELDS = {
     practitionerLicense: 'Text46',
     signature: 'Text47',
     signatureDate: 'Text48',
+    // Sem linha impressa: `line` é a base do texto "Signature:"; `bottom` fica
+    // acima do rodapé da CPMDQ.
+    signatureLayout: { line: 85.5, bottom: 61, top: 110, maxHeight: 44 },
   },
 }
