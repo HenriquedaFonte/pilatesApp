@@ -85,9 +85,9 @@ export const RECEIPT_FIELDS = {
     // Sem linha impressa: `line` é a base do texto "Signature:"; `bottom` fica
     // acima do rodapé da CPMDQ.
     signatureLayout: { line: 85.5, bottom: 61, top: 104, maxHeight: 44 },
-    // Nome e licença da praticante 2 mm (5,67 pt) mais baixos: no template o
+    // Nome e licença da praticante 1 mm (2,83 pt) mais baixos: no template o
     // texto ficava acima da base do rótulo (pedido do usuário, 2026-11-13).
     // O topo da assinatura (top) desceu junto, para não encostar no nome.
-    practitionerOffsetY: -5.67,
+    practitionerOffsetY: -2.83,
   },
 }
