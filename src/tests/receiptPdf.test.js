@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url'
 import { PDFDocument, PDFName, PDFRawStream, PDFRef, decodePDFRawStream } from 'pdf-lib'
 import { generateReceiptPdf, formatMoney, formatDate } from '@/lib/receiptPdf'
 import { RECEIPT_FIELDS } from '@/lib/receiptPdfFields'
+import { drawnTexts } from './pdfText'
 
 const template = name =>
   readFileSync(fileURLToPath(new URL(`../assets/receipt-templates/${name}.pdf`, import.meta.url)))
@@ -168,6 +169,51 @@ describe('generateReceiptPdf', () => {
     }
     const { fields } = await reload(await generateReceiptPdf(data, opts('kinesitherapy')))
     expect(fields).toHaveLength(0)
+  })
+
+  it('data ao lado da assinatura = último tratamento (fora de ordem), não a emissão', async () => {
+    for (const type of ['kinesitherapy', 'naturopathy']) {
+      const data = {
+        ...base(type),
+        issuedAt: '2026-11-12',
+        treatments: [
+          { date: '2026-11-03', amount: 85 },
+          { date: '2026-11-10', amount: 85 },
+          { date: '2026-11-05', amount: 85 },
+        ],
+      }
+      const texts = await drawnTexts(await generateReceiptPdf(data, opts(type)))
+      // 1 vez na linha do tratamento + 1 vez ao lado da assinatura
+      expect(texts.filter(t => t === '2026-11-10')).toHaveLength(2)
+      expect(texts.filter(t => t === '2026-11-03')).toHaveLength(1)
+      expect(texts.filter(t => t === '2026-11-05')).toHaveLength(1)
+      expect(texts).not.toContain('2026-11-12')
+    }
+  })
+
+  it('a emissão pode ser no mesmo dia do último tratamento; depois dela é recusado', async () => {
+    const data = { ...base('kinesitherapy'), issuedAt: '2026-10-08' }
+    await expect(generateReceiptPdf(data, opts('kinesitherapy'))).resolves.toBeInstanceOf(Uint8Array)
+    await expect(
+      generateReceiptPdf({ ...data, issuedAt: '2026-10-07' }, opts('kinesitherapy'))
+    ).rejects.toThrow(/cannot be in the future/)
+    // Date da emissão vira o dia de Montréal: 03:00 UTC do dia 09 ainda é dia 08
+    await expect(
+      generateReceiptPdf({ ...data, issuedAt: new Date('2026-10-09T03:00:00Z') }, opts('kinesitherapy'))
+    ).resolves.toBeInstanceOf(Uint8Array)
+  })
+
+  it('o número do recibo não sai no PDF (nem o da prévia)', async () => {
+    for (const type of ['kinesitherapy', 'naturopathy']) {
+      for (const receiptNumber of [base(type).receiptNumber, 'PRÉVIA']) {
+        const texts = await drawnTexts(await generateReceiptPdf({ ...base(type), receiptNumber }, opts(type)))
+        expect(texts.length).toBeGreaterThan(0)
+        const all = texts.join(' ')
+        expect(all).not.toMatch(/Reçu|Re\?u n/)
+        expect(all).not.toContain(receiptNumber)
+        expect(all).not.toContain('PREVIA')
+      }
+    }
   })
 
   it('recusa assinatura que não é PNG nem JPEG', async () => {

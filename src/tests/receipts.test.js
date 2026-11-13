@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url'
 import { PDFDocument } from 'pdf-lib'
 import { generateReceiptPdf } from '@/lib/receiptPdf'
 import { RECEIPT_FIELDS } from '@/lib/receiptPdfFields'
+import { drawnTexts } from './pdfText'
 import {
   PREVIEW_NUMBER,
   buildSnapshot,
@@ -209,6 +210,59 @@ describe('PDF a partir do snapshot e do recibo gravado', () => {
     expect(data.totals).toEqual({ fees: 170.5, products: 12.5 })
     const bytes = await generateReceiptPdf(data, opts)
     expect((await PDFDocument.load(bytes)).getForm().getFields()).toHaveLength(0)
+  })
+
+  it('prévia e recibo gravado: data do último tratamento ao lado da assinatura e sem número', async () => {
+    for (const type of ['kinesitherapy', 'naturopathy']) {
+      // Fora de ordem: o último tratamento (2026-11-10) está no meio da lista.
+      const snapshot = buildSnapshot(
+        form(type, {
+          treatments: [
+            { key: 1, date: '2026-11-03', amount: '85' },
+            { key: 2, date: '2026-11-10', amount: '85' },
+            { key: 3, date: '2026-11-05', amount: '85' },
+          ],
+        }),
+        { license: 'L-1', signaturePath: null }
+      )
+      const opts = { templateBytes: template(type) }
+      // Prévia gerada dias depois do último tratamento
+      const preview = await drawnTexts(
+        await generateReceiptPdf(pdfDataFromSnapshot(snapshot, null, new Date('2026-11-13T15:00:00Z')), opts)
+      )
+      const number = `${RECEIPT_FIELDS[type].letter}-2026-0001`
+      const row = {
+        receipt_type: type,
+        receipt_number: number,
+        issued_at: '2026-11-13T15:00:00+00:00',
+        snapshot,
+        treatments: snapshot.treatments,
+        products: [],
+        total_fees: '255.00',
+        total_products: '0',
+      }
+      const stored = await drawnTexts(await generateReceiptPdf(pdfDataFromReceipt(row, null), opts))
+
+      for (const texts of [preview, stored]) {
+        expect(texts.filter(t => t === '2026-11-10')).toHaveLength(2) // linha + assinatura
+        expect(texts).not.toContain('2026-11-13') // dia da emissão não sai
+        const all = texts.join(' ')
+        expect(all).not.toMatch(/Reçu/)
+        expect(all).not.toContain(number)
+        expect(all).not.toContain('PREVIA')
+      }
+      // Os dois caminhos desenham o mesmo texto
+      expect(stored).toEqual(preview)
+    }
+  })
+
+  it('tratamento depois da emissão é recusado pelo gerador (mesma regra do servidor)', async () => {
+    const snapshot = buildSnapshot(form(), { license: 'K-1', signaturePath: null })
+    // Prévia "no dia 07": o tratamento de 2026-11-08 ainda não aconteceu
+    const data = pdfDataFromSnapshot(snapshot, null, new Date('2026-11-07T15:00:00Z'))
+    const err = await generateReceiptPdf(data, { templateBytes: template('kinesitherapy') }).catch(e => e)
+    expect(err).toBeInstanceOf(Error)
+    expect(receiptErrorKey(err)).toBe('receipts.errors.futureDate')
   })
 
   it('total gravado diferente da soma é recusado pelo gerador', async () => {

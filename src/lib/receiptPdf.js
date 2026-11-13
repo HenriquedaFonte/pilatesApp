@@ -19,8 +19,17 @@
 // }
 //
 // options.templateBytes: bytes do template (testes); senão é baixado do bundle.
+//
+// O que sai no PDF (decisão do usuário, 2026-11-13):
+// - "Date" ao lado da assinatura = data do último tratamento (a maior data da
+//   lista), não a da emissão. `issuedAt` não é impresso: serve só para conferir
+//   que nenhum tratamento é depois da emissão (mesma regra do servidor).
+// - O número do recibo não é impresso (o formulário oficial da CPMDQ não tem
+//   número). `receiptNumber` continua obrigatório e conferido contra o tipo
+//   (K = kinesitherapy, N = naturopathy), para não misturar dados de outro
+//   recibo; no sistema o número continua existindo (banco, nome do arquivo).
 
-import { PDFDocument, PDFRef, PDFTextField, StandardFonts, TextAlignment, rgb } from 'pdf-lib'
+import { PDFDocument, PDFRef, PDFTextField, StandardFonts, TextAlignment } from 'pdf-lib'
 import kinesitherapieUrl from '@/assets/receipt-templates/kinesitherapie.pdf?url'
 import naturopathieUrl from '@/assets/receipt-templates/naturopathie.pdf?url'
 import { RECEIPT_FIELDS } from './receiptPdfFields'
@@ -137,6 +146,14 @@ function validate(data) {
     if (cents === 0) throw new Error(`Treatment ${i + 1} amount must be greater than zero`)
     return { date: formatDate(t?.date, `treatment ${i + 1} date`), cents }
   })
+  // Datas AAAA-MM-JJ: a comparação de texto é a comparação de datas.
+  const lastTreatmentDate = rows.reduce((max, r) => (r.date > max ? r.date : max), rows[0].date)
+  const issuedDate = formatDate(data.issuedAt ?? new Date(), 'issue date')
+  if (lastTreatmentDate > issuedDate) {
+    throw new Error(
+      `Treatment date cannot be in the future (${lastTreatmentDate} is after the issue date ${issuedDate})`
+    )
+  }
   const productRows = products.map((p, i) => {
     const name = clean(p?.name)
     if (!name) throw new Error(`Product ${i + 1} name is required`)
@@ -155,7 +172,7 @@ function validate(data) {
     throw new Error('Total products does not match the sum of products')
   }
 
-  return { map, receiptNumber, rows, productRows, feesCents, productsCents }
+  return { map, rows, productRows, feesCents, productsCents, lastTreatmentDate }
 }
 
 // ---- Geração ---------------------------------------------------------------
@@ -212,7 +229,7 @@ function isJpeg(bytes) {
 }
 
 export async function generateReceiptPdf(data, options = {}) {
-  const { map, receiptNumber, rows, productRows, feesCents, productsCents } = validate(data)
+  const { map, rows, productRows, feesCents, productsCents, lastTreatmentDate } = validate(data)
 
   const templateBytes = options.templateBytes ?? (await loadTemplate(map.template))
   const pdf = await PDFDocument.load(templateBytes)
@@ -278,7 +295,8 @@ export async function generateReceiptPdf(data, options = {}) {
       : data.practitioner.naturopathyLicense
   setField(map.practitionerName, data.practitioner.name)
   setField(map.practitionerLicense, license)
-  setField(map.signatureDate, formatDate(data.issuedAt ?? new Date(), 'issue date'))
+  // Data ao lado da assinatura = último tratamento (ver o topo do arquivo).
+  setField(map.signatureDate, lastTreatmentDate)
 
   // A área da assinatura fica sem texto; a imagem é desenhada por cima depois
   // do flatten (o campo de kinésithérapie não tem aparência própria, por isso
@@ -322,19 +340,6 @@ export async function generateReceiptPdf(data, options = {}) {
       height: h,
     })
   }
-
-  // Número do recibo no rodapé, abaixo do texto institucional do formulário.
-  const footerFont = await pdf.embedFont(StandardFonts.Helvetica)
-  const footer = toFontCharset(`Reçu nº ${receiptNumber}`, new Set(footerFont.getCharacterSet()))
-  const footerSize = 7
-  const { width } = page.getSize()
-  page.drawText(footer, {
-    x: width - 36 - footerFont.widthOfTextAtSize(footer, footerSize),
-    y: 18,
-    size: footerSize,
-    font: footerFont,
-    color: rgb(0.4, 0.4, 0.4),
-  })
 
   return pdf.save()
 }
