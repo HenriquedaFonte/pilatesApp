@@ -21,6 +21,7 @@ describe('modelo profileUpdate (pedido de atualização do cadastro)', () => {
     const l = locales[lang]
     for (const label of [
       l.nav.profile,
+      l.profile.fullName,
       l.profile.save,
       l.profile.dateOfBirth,
       l.insurance.save,
