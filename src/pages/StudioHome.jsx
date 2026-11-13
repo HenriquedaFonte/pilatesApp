@@ -355,7 +355,7 @@ const StudioHome = () => {
                 <Globe className="w-3.5 h-3.5 text-[var(--ink-3)]" />
                 <SelectValue placeholder={i18n.language.toUpperCase()} />
               </SelectTrigger>
-              <SelectContent className="bg-[var(--paper)] border border-[var(--line)] rounded-xl">
+              <SelectContent className="rounded-xl">
                 <SelectItem value="fr">FR</SelectItem>
                 <SelectItem value="en">EN</SelectItem>
                 <SelectItem value="pt">PT</SelectItem>
@@ -394,7 +394,7 @@ const StudioHome = () => {
                   <SelectTrigger className="border-none p-0 h-auto bg-transparent focus:ring-0 text-sm font-semibold uppercase">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-[var(--paper)] border border-[var(--line)] rounded-xl">
+                  <SelectContent className="rounded-xl">
                     <SelectItem value="fr">FR</SelectItem>
                     <SelectItem value="en">EN</SelectItem>
                     <SelectItem value="pt">PT</SelectItem>
