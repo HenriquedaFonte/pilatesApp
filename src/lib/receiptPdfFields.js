@@ -49,8 +49,8 @@ export const RECEIPT_FIELDS = {
     // linha: o traço que desce pode passar por cima da 1ª linha do rodapé,
     // como numa assinatura à mão (decisão do usuário, 2026-11-13).
     // Medido no template. A largura continua a do campo; altura até maxHeight.
-    // lift 6 pt (~2 mm): pedido do usuário depois de ver a prévia.
-    signatureLayout: { line: 97.3, lift: 6, bottom: 72, top: 138, maxHeight: 44 },
+    // lift 3 pt (~1 mm): pedido do usuário depois de ver a prévia.
+    signatureLayout: { line: 97.3, lift: 3, bottom: 72, top: 138, maxHeight: 44 },
   },
   naturopathy: {
     template: 'naturopathie',
