@@ -22,7 +22,8 @@ import {
   MessageSquare,
   CalendarDays,
   Receipt,
-  UserRound
+  UserRound,
+  ArrowLeft
 } from 'lucide-react'
 
 const TeacherLayout = ({ children }) => {
@@ -31,6 +32,15 @@ const TeacherLayout = ({ children }) => {
   const navigate = useNavigate()
   const { t } = useTranslation()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  // Botão "Voltar" só no celular (no computador a barra lateral já está à vista).
+  // Volta para a tela anterior; se a página foi aberta direto (sem histórico no site),
+  // vai para a Visão geral.
+  const isHome = location.pathname === '/teacher/dashboard'
+  const handleBack = () => {
+    if ((window.history.state?.idx ?? 0) > 0) navigate(-1)
+    else navigate('/teacher/dashboard')
+  }
 
   const handleSignOut = async () => {
     await signOut()
@@ -158,12 +168,23 @@ const TeacherLayout = ({ children }) => {
     <div className="flex flex-col md:flex-row min-h-screen bg-background">
       {/* Mobile Header Bar */}
       <header className="md:hidden flex items-center justify-between px-4 py-3 bg-card border-b border-border shrink-0 z-40 sticky top-0">
-        <div className="flex items-center gap-2">
-          <Logo className="h-8 w-8 object-contain" />
-          <span className="text-base font-extrabold tracking-tight">
-            Josi <span className="text-primary">Pilates</span>
-          </span>
-        </div>
+        {isHome ? (
+          <div className="flex items-center gap-2">
+            <Logo className="h-8 w-8 object-contain" />
+            <span className="text-base font-extrabold tracking-tight">
+              Josi <span className="text-primary">Pilates</span>
+            </span>
+          </div>
+        ) : (
+          <Button
+            variant="ghost"
+            onClick={handleBack}
+            className="-ml-2 h-10 px-2 rounded-xl text-foreground hover:bg-accent font-semibold"
+          >
+            <ArrowLeft className="h-5 w-5 mr-1.5" />
+            {t('common.back')}
+          </Button>
+        )}
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <LanguageToggle />
