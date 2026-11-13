@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest'
-import { findInkBounds, padBounds, trimSignatureImage } from '@/lib/signatureTrim'
+import { findInkBounds, inkMidlineY, padBounds, trimSignatureImage } from '@/lib/signatureTrim'
 
 // Imagem RGBA width x height com fundo (r,g,b,a) e pixels de tinta preta.
 function image(width, height, bg, inkPixels) {
@@ -37,5 +37,21 @@ describe('trimSignatureImage', () => {
   it('fora do navegador devolve a imagem original', async () => {
     const bytes = new Uint8Array([1, 2, 3])
     expect(await trimSignatureImage(bytes)).toBe(bytes)
+  })
+})
+
+describe('inkMidlineY', () => {
+  it('fica no corpo da escrita, não no meio da caixa', () => {
+    // linha grossa em y=10 (3 px de largura x 20) e um traço fino descendo até y=40
+    const ink = []
+    for (let x = 0; x < 20; x++) for (let y = 9; y <= 11; y++) ink.push([x, y])
+    for (let y = 12; y <= 40; y += 4) ink.push([5, y])
+    const mid = inkMidlineY(image(30, 50, [0, 0, 0, 0], ink), 30, 50)
+    expect(mid).toBeGreaterThan(10)
+    expect(mid).toBeLessThan(14)
+  })
+
+  it('devolve null sem tinta', () => {
+    expect(inkMidlineY(image(5, 5, [0, 0, 0, 0], []), 5, 5)).toBeNull()
   })
 })
