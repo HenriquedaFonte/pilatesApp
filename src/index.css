@@ -1290,3 +1290,27 @@ body {
     }
   }
 }
+
+/* Tailwind 4 tirou o cursor de mão dos botões: tudo que é clicável mostra a mão. */
+@layer base {
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']),
+  [role='checkbox'],
+  [role='radio'],
+  [role='switch'],
+  [role='tab'],
+  [role='option'],
+  [role='menuitem'],
+  [role='combobox'],
+  select,
+  summary,
+  label[for],
+  input[type='checkbox'],
+  input[type='radio'] {
+    cursor: pointer;
+  }
+  button:disabled,
+  [aria-disabled='true'] {
+    cursor: not-allowed;
+  }
+}

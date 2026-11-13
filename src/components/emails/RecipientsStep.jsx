@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { Loader2, Search, Users, X, Undo2 } from 'lucide-react'
+import { Loader2, Search, Users, Undo2 } from 'lucide-react'
 import {
   countByLanguage,
   searchStudents,
@@ -90,14 +90,26 @@ const RecipientsStep = ({
     setSelectedIds(prev =>
       prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
     )
-  const allRowsSelected = rows.length > 0 && rows.every(s => selected.has(s.id))
+  // Uma regra só para todas as listas: caixa marcada = recebe.
+  // Em "Escolher alunos" ninguém começa marcado; nos grupos, todos começam marcados.
+  const isChecked = id => (manual ? selected.has(id) : !excluded.has(id))
+  const toggleRow = id => (manual ? toggleSelected(id) : toggleExcluded(id))
+  const allRowsChecked = rows.length > 0 && rows.every(s => isChecked(s.id))
   const toggleAllRows = () => {
     const rowIds = rows.map(s => s.id)
-    setSelectedIds(prev =>
-      allRowsSelected
-        ? prev.filter(id => !rowIds.includes(id))
-        : [...new Set([...prev, ...rowIds])]
-    )
+    if (manual) {
+      setSelectedIds(prev =>
+        allRowsChecked
+          ? prev.filter(id => !rowIds.includes(id))
+          : [...new Set([...prev, ...rowIds])]
+      )
+    } else {
+      setExcludedIds(prev =>
+        allRowsChecked
+          ? [...new Set([...prev, ...rowIds])]
+          : prev.filter(id => !rowIds.includes(id))
+      )
+    }
   }
 
   return (
@@ -234,23 +246,23 @@ const RecipientsStep = ({
                 className="pl-10 rounded-xl h-11 w-full"
               />
             </div>
-            {manual && (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={toggleAllRows}
-                disabled={rows.length === 0}
-                className="rounded-xl h-11"
-              >
-                {allRowsSelected
-                  ? t('teacher.emails.recipients.clearAll')
-                  : t('teacher.emails.recipients.selectAll')}
-              </Button>
-            )}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={toggleAllRows}
+              disabled={rows.length === 0}
+              className="rounded-xl h-11"
+            >
+              {allRowsChecked
+                ? t('teacher.emails.recipients.clearAll')
+                : t('teacher.emails.recipients.selectAll')}
+            </Button>
           </div>
-          {manual && (
-            <p className="text-xs text-muted-foreground">{t('teacher.emails.recipients.selectHint')}</p>
-          )}
+          <p className="text-xs text-muted-foreground">
+            {manual
+              ? t('teacher.emails.recipients.selectHint')
+              : t('teacher.emails.recipients.groupHint')}
+          </p>
 
           <div className="max-h-[420px] overflow-y-auto rounded-xl border border-border divide-y divide-border/60 bg-background">
             {rows.length === 0 ? (
@@ -259,51 +271,25 @@ const RecipientsStep = ({
                   ? t('teacher.emails.recipients.emptySearch')
                   : t('teacher.emails.recipients.empty')}
               </p>
-            ) : manual ? (
-              rows.map(student => (
-                <label key={student.id} htmlFor={`pick-${student.id}`} className="block cursor-pointer hover:bg-muted/30">
-                  <StudentRow student={student}>
-                    <Checkbox
-                      id={`pick-${student.id}`}
-                      checked={selected.has(student.id)}
-                      onCheckedChange={() => toggleSelected(student.id)}
-                      className="h-5 w-5"
-                    />
-                    {null}
-                  </StudentRow>
-                </label>
-              ))
             ) : (
               rows.map(student => {
-                const isExcluded = excluded.has(student.id)
+                const checked = isChecked(student.id)
                 return (
-                  <StudentRow key={student.id} student={student} muted={isExcluded}>
-                    {null}
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => toggleExcluded(student.id)}
-                      className="h-10 px-3 shrink-0 text-xs"
-                      aria-label={
-                        isExcluded
-                          ? t('teacher.emails.recipients.restore')
-                          : t('teacher.emails.recipients.remove')
-                      }
-                    >
-                      {isExcluded ? (
-                        <>
-                          <Undo2 className="h-4 w-4 sm:mr-1.5" />
-                          <span className="hidden sm:inline">{t('teacher.emails.recipients.restore')}</span>
-                        </>
-                      ) : (
-                        <>
-                          <X className="h-4 w-4 sm:mr-1.5" />
-                          <span className="hidden sm:inline">{t('teacher.emails.recipients.remove')}</span>
-                        </>
-                      )}
-                    </Button>
-                  </StudentRow>
+                  <label
+                    key={student.id}
+                    htmlFor={`pick-${student.id}`}
+                    className="block cursor-pointer hover:bg-muted/30"
+                  >
+                    <StudentRow student={student} muted={!manual && !checked}>
+                      <Checkbox
+                        id={`pick-${student.id}`}
+                        checked={checked}
+                        onCheckedChange={() => toggleRow(student.id)}
+                        className="h-5 w-5"
+                      />
+                      {null}
+                    </StudentRow>
+                  </label>
                 )
               })
             )}
