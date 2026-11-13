@@ -1,15 +1,13 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Button } from '@/components/ui/button'
-import { AlertTriangle, Check, Globe, Paperclip, Plus } from 'lucide-react'
+import { AlertTriangle, Check, Globe, Paperclip } from 'lucide-react'
 import EmailTemplates from '../EmailTemplates'
 import { sendKindOf } from '../../lib/emailRecipients'
 import {
   LANGUAGES,
-  VARIABLES,
   isLanguageComplete,
   missingLanguages,
   unknownVariables
@@ -61,29 +59,8 @@ const ContentStep = ({
 }) => {
   const { t } = useTranslation()
   const kind = templateId ? sendKindOf(templateId) : null
-  const subjectRef = useRef(null)
-  const messageRef = useRef(null)
-  const lastFieldRef = useRef('message')
-
   const current = content[editLanguage]
   const unknown = unknownVariables(content)
-
-  // Insere {nome}/{creditos} onde está o cursor (no assunto ou na mensagem).
-  const insertVariable = variable => {
-    const field = lastFieldRef.current
-    const el = field === 'subject' ? subjectRef.current : messageRef.current
-    const value = current[field] || ''
-    const token = `{${variable}}`
-    const start = el?.selectionStart ?? value.length
-    const end = el?.selectionEnd ?? value.length
-    onContentChange(editLanguage, field, value.slice(0, start) + token + value.slice(end))
-    requestAnimationFrame(() => {
-      if (!el) return
-      el.focus()
-      const pos = start + token.length
-      el.setSelectionRange(pos, pos)
-    })
-  }
 
   return (
     <div className="space-y-6">
@@ -180,9 +157,7 @@ const ContentStep = ({
             </Label>
             <Input
               id="email-subject"
-              ref={subjectRef}
               value={current.subject}
-              onFocus={() => { lastFieldRef.current = 'subject' }}
               onChange={e => onContentChange(editLanguage, 'subject', e.target.value)}
               placeholder={t('teacher.emails.content.subjectPlaceholder')}
               className="rounded-xl h-11 w-full"
@@ -193,28 +168,9 @@ const ContentStep = ({
             <Label htmlFor="email-message" className="text-sm text-muted-foreground">
               {t('teacher.emails.content.messageLabel')} ({editLanguage.toUpperCase()})
             </Label>
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs text-muted-foreground">{t('teacher.emails.content.insertVariable')}</span>
-              {VARIABLES.map(variable => (
-                <Button
-                  key={variable}
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onMouseDown={e => e.preventDefault()}
-                  onClick={() => insertVariable(variable)}
-                  className="rounded-lg h-9"
-                >
-                  <Plus className="mr-1 h-3.5 w-3.5" />
-                  {`{${variable}}`}
-                </Button>
-              ))}
-            </div>
             <Textarea
               id="email-message"
-              ref={messageRef}
               value={current.message}
-              onFocus={() => { lastFieldRef.current = 'message' }}
               onChange={e => onContentChange(editLanguage, 'message', e.target.value)}
               placeholder={t('teacher.emails.content.messagePlaceholder')}
               rows={10}

@@ -1157,11 +1157,10 @@
         "languagesHint": "Write in each language. The ✓ shows the ones that are ready.",
         "studentsInLanguage_one": "{{count}} student",
         "studentsInLanguage_other": "{{count}} students",
-        "insertVariable": "Insert:",
-        "variablesHelp": "{nome} becomes the student's first name and {creditos} their total credits. \"Hello, Name!\" and the signature are added automatically.",
+        "variablesHelp": "\"Hello, Name!\" and the signature are added automatically.",
         "missingLanguage_one": "{{count}} student in {{lang}} will get the text in {{fallback}} (the {{lang}} text is empty).",
         "missingLanguage_other": "{{count}} students in {{lang}} will get the text in {{fallback}} (the {{lang}} text is empty).",
-        "unknownVariables": "These words in braces are not variables and will appear in the email as written: {{list}}. Replace them with the right text or use {nome} / {creditos}."
+        "unknownVariables": "These words in braces will appear in the email as written: {{list}}. Replace them with the right text before sending."
       },
       "review": {
         "title": "Review and send",
