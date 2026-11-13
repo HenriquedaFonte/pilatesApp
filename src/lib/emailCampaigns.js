@@ -124,3 +124,39 @@ export const pageRange = (page, size = HISTORY_PAGE_SIZE) => {
   const from = (Math.max(1, page) - 1) * size
   return [from, from + size - 1]
 }
+
+// ---- Story 4.5: envio pelo servidor ----
+
+// A tela relê a campanha a cada POLL_MS. Se o número de processados não mudar
+// por KICK_AFTER_MS, chama a send-campaign de novo (se ela já estiver
+// enviando, a chamada não faz nada; se tiver parado, continua de onde parou).
+export const POLL_MS = 3000
+export const KICK_AFTER_MS = 30000
+export const HISTORY_POLL_MS = 5000
+
+// Progresso lido de email_campaigns: processados (enviados + falhas), total e se acabou.
+export const campaignProgress = campaign => {
+  const total = campaign?.total || 0
+  const done = Math.min(total, (campaign?.sent || 0) + (campaign?.failed || 0))
+  return { done, total, finished: !!campaign && campaign.status !== 'sending' }
+}
+
+// Hora de chamar a send-campaign de novo?
+export const shouldKick = ({ lastChangeAt, lastKickAt, now, after = KICK_AFTER_MS }) =>
+  now - Math.max(lastChangeAt || 0, lastKickAt || 0) >= after
+
+// Envio pelo servidor ainda na fila (histórico: "Enviando" + "Continuar envio").
+export const isServerSending = campaign =>
+  campaign?.send_mode === 'server' && campaign?.status === 'sending'
+
+/**
+ * Resumo do fim do envio para a tela (mesmo formato do envio antigo):
+ * { success, failed: [{ name, error }] }. rows = linhas de email_notifications
+ * da campanha; names = Map id → nome.
+ */
+export const campaignResult = (campaign, rows, names) => ({
+  success: campaign?.sent || 0,
+  failed: (rows || [])
+    .filter(r => r.status === 'failed')
+    .map(r => ({ name: names?.get(r.student_id) || r.recipient_email || '', error: r.error_message || '' }))
+})

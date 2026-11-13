@@ -362,6 +362,17 @@ ${processedTemplate.tagline}
     return results;
   }
 
+  // Story 4.5: começa (ou continua) o envio de uma campanha pelo servidor.
+  // Só o id vai para a Edge Function send-campaign; destinatários e texto
+  // saem do banco. Devolve o status ('started' | 'running' | 'done' | 'failed').
+  async startCampaign(campaignId) {
+    const { data, error } = await supabase.functions.invoke('send-campaign', {
+      body: { campaign_id: campaignId }
+    });
+    if (error) throw new Error(data?.error || error.message || 'Failed to start sending');
+    return data?.status || null;
+  }
+
   // "Mandar teste para mim": o email de `sample` (variáveis e língua), mas para
   // `to`, com [TESTE] no assunto. Não grava no histórico.
   async sendCustomTest({ to, sample, content, senderName = 'Professora', language = 'pt' }) {

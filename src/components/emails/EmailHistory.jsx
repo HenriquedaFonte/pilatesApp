@@ -1,17 +1,21 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
+import emailService from '../../lib/emailService'
 import { groupEmailHistory, HISTORY_LIMIT } from '../../lib/emailRecipients'
 import {
   HISTORY_PAGE_SIZE,
   campaignSubject,
+  campaignProgress,
   failedStudentIds,
+  isServerSending,
   pageCount,
-  pageRange
+  pageRange,
+  HISTORY_POLL_MS
 } from '../../lib/emailCampaigns'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { ChevronDown, ChevronLeft, ChevronRight, Loader2, Mail, RotateCcw } from 'lucide-react'
+import { ChevronDown, ChevronLeft, ChevronRight, Loader2, Mail, Play, RotateCcw } from 'lucide-react'
 
 const locales = { en: 'en-US', fr: 'fr-CA', pt: 'pt-BR' }
 
@@ -114,7 +118,7 @@ const Pager = ({ page, pages, onChange, disabled }) => {
   )
 }
 
-const EntryHeader = ({ subject, timestamp, type, total, sent, failed, status, open, onToggle, panelId }) => {
+const EntryHeader = ({ subject, timestamp, type, total, sent, failed, status, server, open, onToggle, panelId }) => {
   const { t, i18n } = useTranslation()
   return (
     <button
@@ -136,7 +140,7 @@ const EntryHeader = ({ subject, timestamp, type, total, sent, failed, status, op
         <div className="flex flex-wrap items-center gap-2 shrink-0">
           {status === 'sending' && (
             <Badge variant="outline" className="text-[10px] font-semibold px-2 py-0.5 rounded-full">
-              {t('teacher.emails.history.statusSending')}
+              {server ? t('teacher.emails.history.statusQueued') : t('teacher.emails.history.statusSending')}
             </Badge>
           )}
           <CountBadges sent={sent} failed={failed} />
@@ -177,6 +181,11 @@ const EmailHistory = ({ students = [], reloadKey = 0, onResendFailed, resendDisa
   const [openId, setOpenId] = useState(null)
   const [details, setDetails] = useState({})
 
+  // Story 4.5: recarrega a lista enquanto houver envio pelo servidor em andamento.
+  const [tick, setTick] = useState(0)
+  const lastTickRef = useRef(0)
+  const [continuing, setContinuing] = useState({})
+
   const [legacy, setLegacy] = useState([])
   const [legacyPage, setLegacyPage] = useState(1)
   const [legacyOpen, setLegacyOpen] = useState(null)
@@ -187,12 +196,17 @@ const EmailHistory = ({ students = [], reloadKey = 0, onResendFailed, resendDisa
   useEffect(() => {
     let cancelled = false
     const load = async () => {
-      setLoading(true)
-      setError('')
       const [from, to] = pageRange(page)
+      // Releitura automática (tick): sem indicador de carregando.
+      const background = tick !== lastTickRef.current
+      lastTickRef.current = tick
+      if (!background) {
+        setLoading(true)
+        setError('')
+      }
       const { data, error: loadError, count } = await supabase
         .from('email_campaigns')
-        .select('id, created_at, email_type, subject_pt, subject_en, subject_fr, total, sent, failed, status', {
+        .select('id, created_at, email_type, subject_pt, subject_en, subject_fr, total, sent, failed, status, send_mode', {
           count: 'exact'
         })
         .order('created_at', { ascending: false })
@@ -200,8 +214,10 @@ const EmailHistory = ({ students = [], reloadKey = 0, onResendFailed, resendDisa
       if (cancelled) return
       if (loadError) {
         console.error('Error loading email campaigns:', loadError.code || loadError.message)
-        setError(t('teacher.emails.history.loadError'))
-        setCampaigns([])
+        if (!background) {
+          setError(t('teacher.emails.history.loadError'))
+          setCampaigns([])
+        }
       } else {
         setCampaigns(data || [])
         setTotalCampaigns(count || 0)
@@ -212,8 +228,29 @@ const EmailHistory = ({ students = [], reloadKey = 0, onResendFailed, resendDisa
     return () => {
       cancelled = true
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- recarrega ao trocar de página ou depois de um envio
-  }, [page, reloadKey])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- recarrega ao trocar de página, depois de um envio ou durante um envio pelo servidor
+  }, [page, reloadKey, tick])
+
+  // Envio pelo servidor em andamento nesta página: relê a cada HISTORY_POLL_MS.
+  const anyServerSending = campaigns.some(isServerSending)
+  useEffect(() => {
+    if (!anyServerSending) return
+    const timer = setInterval(() => setTick(n => n + 1), HISTORY_POLL_MS)
+    return () => clearInterval(timer)
+  }, [anyServerSending])
+
+  // "Continuar envio": chama a send-campaign de novo (quem já recebeu não recebe de novo).
+  const continueCampaign = async campaignId => {
+    setContinuing(prev => ({ ...prev, [campaignId]: 'loading' }))
+    try {
+      await emailService.startCampaign(campaignId)
+      setContinuing(prev => ({ ...prev, [campaignId]: 'ok' }))
+      setTick(n => n + 1)
+    } catch (err) {
+      console.error('Error resuming email campaign:', err.message)
+      setContinuing(prev => ({ ...prev, [campaignId]: 'error' }))
+    }
+  }
 
   // Emails antigos, sem envio registrado (agrupados como na 4.1).
   useEffect(() => {
@@ -321,16 +358,50 @@ const EmailHistory = ({ students = [], reloadKey = 0, onResendFailed, resendDisa
                   sent={campaign.sent}
                   failed={campaign.failed}
                   status={campaign.status}
+                  server={campaign.send_mode === 'server'}
                   open={open}
                   onToggle={() => toggleCampaign(campaign.id)}
                   panelId={panelId}
                 />
                 {open && (
                   <div id={panelId} className="border-t border-border/30 pt-3 space-y-3">
-                    {campaign.status === 'sending' && (
-                      <p className="text-xs text-amber-700 dark:text-amber-400">
-                        {t('teacher.emails.history.sendingNote')}
-                      </p>
+                    {isServerSending(campaign) ? (
+                      <div className="space-y-2">
+                        <p className="text-xs text-muted-foreground">
+                          {t('teacher.emails.history.serverNote', campaignProgress(campaign))}
+                        </p>
+                        <p className="text-xs text-muted-foreground">{t('teacher.emails.history.continueHint')}</p>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="rounded-xl w-full sm:w-auto"
+                          disabled={continuing[campaign.id] === 'loading'}
+                          onClick={() => continueCampaign(campaign.id)}
+                        >
+                          {continuing[campaign.id] === 'loading' ? (
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          ) : (
+                            <Play className="h-4 w-4 mr-2" />
+                          )}
+                          {t('teacher.emails.history.continueSend')}
+                        </Button>
+                        {continuing[campaign.id] === 'ok' && (
+                          <p className="text-xs text-emerald-700 dark:text-emerald-400">
+                            {t('teacher.emails.history.continueStarted')}
+                          </p>
+                        )}
+                        {continuing[campaign.id] === 'error' && (
+                          <p className="text-xs text-red-700 dark:text-red-400">
+                            {t('teacher.emails.history.continueError')}
+                          </p>
+                        )}
+                      </div>
+                    ) : (
+                      campaign.status === 'sending' && (
+                        <p className="text-xs text-amber-700 dark:text-amber-400">
+                          {t('teacher.emails.history.sendingNote')}
+                        </p>
+                      )
                     )}
                     {!detail || detail.loading ? (
                       <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />

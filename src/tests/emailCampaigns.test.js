@@ -145,3 +145,48 @@ describe('paginação', () => {
     expect(pageRange(3)).toEqual([40, 59])
   })
 })
+
+describe('Story 4.5: progresso do envio pelo servidor', () => {
+  it('campaignProgress: processados = enviados + falhas, nunca acima do total', async () => {
+    const { campaignProgress } = await import('../lib/emailCampaigns')
+    expect(campaignProgress({ total: 10, sent: 3, failed: 1, status: 'sending' })).toEqual({
+      done: 4,
+      total: 10,
+      finished: false
+    })
+    expect(campaignProgress({ total: 2, sent: 2, failed: 1, status: 'done' })).toEqual({
+      done: 2,
+      total: 2,
+      finished: true
+    })
+    expect(campaignProgress(null)).toEqual({ done: 0, total: 0, finished: false })
+  })
+
+  it('shouldKick: chama de novo só depois de um tempo sem mudança e sem chamada recente', async () => {
+    const { shouldKick, KICK_AFTER_MS } = await import('../lib/emailCampaigns')
+    expect(shouldKick({ lastChangeAt: 0, lastKickAt: 0, now: KICK_AFTER_MS })).toBe(true)
+    expect(shouldKick({ lastChangeAt: 1000, lastKickAt: 0, now: KICK_AFTER_MS })).toBe(false)
+    expect(shouldKick({ lastChangeAt: 0, lastKickAt: 5000, now: KICK_AFTER_MS })).toBe(false)
+  })
+
+  it('isServerSending e campaignResult', async () => {
+    const { isServerSending, campaignResult } = await import('../lib/emailCampaigns')
+    expect(isServerSending({ send_mode: 'server', status: 'sending' })).toBe(true)
+    expect(isServerSending({ send_mode: 'browser', status: 'sending' })).toBe(false)
+    expect(isServerSending({ send_mode: 'server', status: 'done' })).toBe(false)
+    const names = new Map([['s1', 'Ana']])
+    expect(
+      campaignResult({ sent: 4 }, [
+        { student_id: 's1', status: 'failed', error_message: 'resend_422:validation_error' },
+        { student_id: 's2', recipient_email: 'b@x.com', status: 'failed', error_message: null },
+        { student_id: 's3', status: 'sent' }
+      ], names)
+    ).toEqual({
+      success: 4,
+      failed: [
+        { name: 'Ana', error: 'resend_422:validation_error' },
+        { name: 'b@x.com', error: '' }
+      ]
+    })
+  })
+})

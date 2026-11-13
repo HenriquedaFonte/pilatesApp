@@ -8,7 +8,7 @@ export const emailTemplates = {
       message: 'Para continuar aproveitando nossas aulas de Pilates, recomendamos que você renove seus créditos em breve.',
       contactTitle: '💡 Como renovar seus créditos:',
       contactItems: [
-        'Entre em contato conosco pelo WhatsApp: {phone}',
+        'Mande uma mensagem pelo WhatsApp: {phone}',
         'Envie o valor do seu pacote de aulas para o interac pilatesmontreal@gmail.com',
         'Visite nosso studio durante o horário de funcionamento'
       ],
@@ -25,7 +25,7 @@ export const emailTemplates = {
       message: 'To continue enjoying your Pilates classes, we recommend renewing your credits soon.',
       contactTitle: '💡 How to renew your credits:',
       contactItems: [
-        'Contact us by WhatsApp: {phone}',
+        'Send us a message on WhatsApp: {phone}',
         'Send the amount for your class package via Interac to pilatesmontreal@gmail.com.',
         'Visit our studio during business hours'
       ],
@@ -42,7 +42,7 @@ export const emailTemplates = {
       message: 'Pour continuer à profiter de vos cours de Pilates sans interruption, nous vous recommandons de renouveler vos crédits bientôt.',
       contactTitle: '💡 Comment renouveler vos crédits:',
       contactItems: [
-        'Contactez-nous par WhatsApp: {phone}',
+        'Envoyez-nous un message sur WhatsApp : {phone}',
         'Envoyez le montant de votre forfait de cours via Interac à pilatesmontreal@gmail.com.',
         'Visitez notre studio pendant les heures d\'ouverture'
       ],
@@ -68,7 +68,7 @@ export const emailTemplates = {
         'Tire todas suas dúvidas conosco'
       ],
       contactTitle: '📞 Entre em contato:',
-      contactPhone: 'Telefone/WhatsApp: {phone}',
+      contactPhone: 'Mande uma mensagem pelo WhatsApp: {phone}',
       contactEmail: 'E-mail: {email}',
       excitementMessage: 'Estamos ansiosos para conhecer você pessoalmente e ajudar você a alcançar seus objetivos de saúde e bem-estar!',
       signature: 'Com carinho,',
@@ -89,7 +89,7 @@ export const emailTemplates = {
         'Ask us any questions you have'
       ],
       contactTitle: '📞 Contact us:',
-      contactPhone: 'Phone/WhatsApp: {phone}',
+      contactPhone: 'Send us a message on WhatsApp: {phone}',
       contactEmail: 'Email: {email}',
       excitementMessage: 'We are excited to meet you in person and help you achieve your health and wellness goals!',
       signature: 'With care,',
@@ -110,7 +110,7 @@ export const emailTemplates = {
         'Posez-nous toutes vos questions'
       ],
       contactTitle: '📞 Contactez-nous:',
-      contactPhone: 'Téléphone/WhatsApp: {phone}',
+      contactPhone: 'Envoyez-nous un message sur WhatsApp : {phone}',
       contactEmail: 'E-mail: {email}',
       excitementMessage: 'Nous sommes impatients de vous rencontrer en personne et de vous aider à atteindre vos objectifs de santé et de bien-être!',
       signature: 'Avec soin,',
@@ -330,7 +330,7 @@ Merci !`
       warning: 'Para continuar aproveitando nossas aulas de Pilates, é necessário adquirir novos créditos.',
       contactTitle: '💡 Como renovar seus créditos:',
       contactItems: [
-        'Entre em contato conosco pelo WhatsApp: {phone}',
+        'Mande uma mensagem pelo WhatsApp: {phone}',
         'Envie o valor do seu pacote de aulas para o interac pilatesmontreal@gmail.com',
         'Visite nosso studio durante o horário de funcionamento'
       ],
@@ -348,7 +348,7 @@ Merci !`
       warning: 'To continue enjoying our Pilates classes, you need to purchase new credits.',
       contactTitle: '💡 How to renew your credits:',
       contactItems: [
-        'Contact us by WhatsApp: {phone}',
+        'Send us a message on WhatsApp: {phone}',
         'Send the amount for your class package via Interac to pilatesmontreal@gmail.com.',
         'Visit our studio during business hours'
       ],
@@ -366,7 +366,7 @@ Merci !`
       warning: 'Pour continuer à profiter de nos cours de Pilates, vous devez acheter de nouveaux crédits.',
       contactTitle: '💡 Comment renouveler vos crédits:',
       contactItems: [
-        'Contactez-nous par WhatsApp: {phone}',
+        'Envoyez-nous un message sur WhatsApp : {phone}',
         'Envoyez le montant de votre forfait de cours via Interac à pilatesmontreal@gmail.com.',
         'Visitez notre studio pendant les heures d\'ouverture'
       ],
@@ -459,7 +459,7 @@ Merci !`
       ],
       contactTitle: '📞 Precisa de ajuda?',
       contactInfo: 'Entre em contato conosco:',
-      phone: 'WhatsApp: +1(438)274-8396',
+      phone: 'Mande uma mensagem pelo WhatsApp: +1(438)274-8396',
       email: 'E-mail: josi@josopilates.com',
       excitement: 'Estamos muito felizes em recebê-lo em nossa comunidade!',
       closing: 'Bem-vindo à família Josi Pilates!',
@@ -490,7 +490,7 @@ Merci !`
       ],
       contactTitle: '📞 Need help?',
       contactInfo: 'Contact us:',
-      phone: 'WhatsApp: +1(438)274-8396',
+      phone: 'Send us a message on WhatsApp: +1(438)274-8396',
       email: 'Email: josi@josopilates.com',
       excitement: 'We are very happy to welcome you to our community!',
       closing: 'Welcome to the Josi Pilates family!',
@@ -521,7 +521,7 @@ Merci !`
       ],
       contactTitle: '📞 Besoin d\'aide?',
       contactInfo: 'Contactez-nous:',
-      phone: 'WhatsApp: +1(438)274-8396',
+      phone: 'Envoyez-nous un message sur WhatsApp : +1(438)274-8396',
       email: 'E-mail: josi@josopilates.com',
       excitement: 'Nous sommes très heureux de vous accueillir dans notre communauté!',
       closing: 'Bienvenue dans la famille Josi Pilates!',
@@ -544,7 +544,7 @@ Merci !`
       ],
       contactTitle: '📞 Precisa de ajuda?',
       contactInfo: 'Entre em contato conosco:',
-      phone: 'WhatsApp: +1(438)274-8396',
+      phone: 'Mande uma mensagem pelo WhatsApp: +1(438)274-8396',
       email: 'E-mail: josi@josopilates.com',
       excitement: 'Estamos muito felizes em recebê-lo em nossa comunidade!',
       closing: 'Bem-vindo à família Josi Pilates!',
@@ -564,7 +564,7 @@ Merci !`
       ],
       contactTitle: '📞 Need help?',
       contactInfo: 'Contact us:',
-      phone: 'WhatsApp: +1(438)274-8396',
+      phone: 'Send us a message on WhatsApp: +1(438)274-8396',
       email: 'Email: josi@josopilates.com',
       excitement: 'We are very happy to welcome you to our community!',
       closing: 'Welcome to the Josi Pilates family!',
@@ -584,7 +584,7 @@ Merci !`
       ],
       contactTitle: '📞 Besoin d\'aide?',
       contactInfo: 'Contactez-nous:',
-      phone: 'WhatsApp: +1(438)274-8396',
+      phone: 'Envoyez-nous un message sur WhatsApp : +1(438)274-8396',
       email: 'E-mail: josi@josopilates.com',
       excitement: 'Nous sommes très heureux de vous accueillir dans notre communauté!',
       closing: 'Bienvenue dans la famille Josi Pilates!',

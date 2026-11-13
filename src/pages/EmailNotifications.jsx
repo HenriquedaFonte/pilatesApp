@@ -24,7 +24,16 @@ import {
   studentLanguage,
   LANGUAGES
 } from '../lib/emailRecipients'
-import { buildCampaignRow, buildCampaignFilter, buildResend, campaignSubject } from '../lib/emailCampaigns'
+import {
+  buildCampaignRow,
+  buildCampaignFilter,
+  buildResend,
+  campaignSubject,
+  campaignProgress,
+  campaignResult,
+  shouldKick,
+  POLL_MS
+} from '../lib/emailCampaigns'
 import { TEMPLATE_CARDS, templateContent, templateTitle } from '../lib/templateCards'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -50,7 +59,6 @@ import EmailHistory from '../components/emails/EmailHistory'
 
 const GROUPS = ['all', 'low_credits', 'zero_credits', 'class', 'selected']
 const DEFAULT_THRESHOLD = 3
-const SEND_DELAY_MS = 200
 
 // Assunto gravado no histórico para os emails automáticos (texto do modelo em pt).
 const LOG_SUBJECTS = {
@@ -107,6 +115,9 @@ const EmailNotifications = () => {
   const [progress, setProgress] = useState(null)
   const [result, setResult] = useState(null)
   const sendingRef = useRef(false)
+  // Story 4.5: envio em andamento no servidor (a tela acompanha lendo a campanha).
+  const [activeCampaignId, setActiveCampaignId] = useState(null)
+  const pollRef = useRef({ lastDone: 0, lastChangeAt: 0, lastKickAt: 0, finishing: false })
 
   useEffect(() => {
     loadData()
@@ -348,26 +359,6 @@ const EmailNotifications = () => {
   }
 
   // ---- Envio ----
-  const logNotification = async (campaignId, student, emailType, logSubject, status, errorMessage = null) => {
-    const { error } = await supabase.rpc('log_email_notification', {
-      p_student_id: student.id,
-      p_email_type: emailType,
-      p_recipient_email: student.email,
-      p_subject: logSubject,
-      p_status: status,
-      p_error_message: errorMessage,
-      p_credits_at_time: {
-        individual: student.individual_credits,
-        duo: student.duo_credits,
-        group: student.group_credits,
-        total: student.totalCredits
-      },
-      p_campaign_id: campaignId
-    })
-    // Sem dados do aluno no console.
-    if (error) console.error('Error logging email notification:', error.code || error.message)
-  }
-
   // Registra o envio (email_campaigns) antes de mandar qualquer email.
   const createCampaign = async (kind, targets) => {
     const filter = buildCampaignFilter({
@@ -447,7 +438,26 @@ const EmailNotifications = () => {
     runSend(sendKind, recipients)
   }
 
-  // Envia um a um (emails automáticos) ou pelo envio personalizado.
+  // Fim do envio (status done/failed lido da campanha): mostra o resumo.
+  const finishActiveCampaign = async campaign => {
+    const { data: rows, error } = await supabase
+      .from('email_notifications')
+      .select('student_id, recipient_email, status, error_message')
+      .eq('campaign_id', campaign.id)
+      .eq('status', 'failed')
+    if (error) console.error('Error loading campaign result:', error.code || error.message)
+    const names = new Map(students.map(s => [s.id, s.full_name]))
+    setResult(campaignResult(campaign, rows || [], names))
+    setActiveCampaignId(null)
+    sendingRef.current = false
+    setSending(false)
+    setProgress(null)
+    setHistoryReloadKey(key => key + 1)
+  }
+
+  // Story 4.5: o envio é feito pelo servidor (Edge Function send-campaign).
+  // A tela registra o envio, põe os alunos na fila e só manda o id; depois
+  // acompanha o progresso lendo a campanha. Pode fechar a página.
   const runSend = async (kind, targets) => {
     if (sendingRef.current) return
     sendingRef.current = true
@@ -455,8 +465,6 @@ const EmailNotifications = () => {
     setResult(null)
     setProgress({ done: 0, total: targets.length })
 
-    let success = 0
-    const failed = []
     let campaignId = null
     try {
       try {
@@ -465,48 +473,82 @@ const EmailNotifications = () => {
         console.error('Error creating email campaign:', error.code || error.message)
         throw new Error(t('teacher.emails.review.campaignError'))
       }
-      if (kind === 'custom') {
-        const results = await emailService.sendCustomNotification(targets, content, senderName, {
-          onProgress: (done, total) => setProgress({ done, total })
-        })
-        for (let i = 0; i < targets.length; i++) {
-          const r = results[i] || { success: false, error: 'no result' }
-          await logNotification(campaignId, targets[i], 'custom', mainSubject, r.success ? 'sent' : 'failed', r.error || null)
-          if (r.success) success++
-          else failed.push({ name: targets[i].full_name, error: r.error || '' })
-        }
-      } else {
-        const emailType = kind === 'consent' ? 'consent_form' : 'low_credits'
-        for (const student of targets) {
-          try {
-            if (kind === 'consent') await emailService.sendConsentFormEmail(student)
-            else await emailService.sendLowCreditsNotification(student, student.totalCredits)
-            await logNotification(campaignId, student, emailType, LOG_SUBJECTS[emailType], 'sent')
-            success++
-          } catch (error) {
-            console.error('Error sending email:', error.message)
-            await logNotification(campaignId, student, emailType, LOG_SUBJECTS[emailType], 'failed', error.message)
-            failed.push({ name: student.full_name, error: error.message })
-          }
-          setProgress({ done: success + failed.length, total: targets.length })
-          await new Promise(resolve => setTimeout(resolve, SEND_DELAY_MS))
-        }
-      }
-      setResult({ success, failed })
-    } catch (error) {
-      console.error('Error sending emails:', error.message)
-      setResult({ success, failed, error: error.message })
-    } finally {
-      if (campaignId) {
+      const { data: queued, error: queueError } = await supabase.rpc('queue_email_campaign', {
+        p_campaign_id: campaignId,
+        p_student_ids: targets.map(s => s.id)
+      })
+      if (queueError) {
+        console.error('Error queueing email campaign:', queueError.code || queueError.message)
+        // Nada foi enviado: o registro fica como falha.
         const { error } = await supabase.rpc('finish_email_campaign', { p_campaign_id: campaignId })
         if (error) console.error('Error finishing email campaign:', error.code || error.message)
+        throw new Error(t('teacher.emails.review.campaignError'))
       }
+      const now = Date.now()
+      pollRef.current = { lastDone: 0, lastChangeAt: now, lastKickAt: now, finishing: false }
+      setProgress({ done: 0, total: queued || targets.length })
+      setActiveCampaignId(campaignId)
+      try {
+        await emailService.startCampaign(campaignId)
+      } catch (error) {
+        // A campanha está na fila: a tela chama de novo sozinha (ver o efeito abaixo).
+        console.error('Error starting email campaign:', error.message)
+      }
+    } catch (error) {
+      console.error('Error sending emails:', error.message)
+      setResult({ success: 0, failed: [], error: error.message })
       sendingRef.current = false
       setSending(false)
       setProgress(null)
       setHistoryReloadKey(key => key + 1)
     }
   }
+
+  // Acompanha o envio em andamento: relê a campanha a cada POLL_MS; se parar
+  // de andar, chama a send-campaign de novo (continua de onde parou).
+  useEffect(() => {
+    if (!activeCampaignId) return
+    let cancelled = false
+    const tick = async () => {
+      const poll = pollRef.current
+      if (poll.finishing) return
+      const { data, error } = await supabase
+        .from('email_campaigns')
+        .select('id, total, sent, failed, status')
+        .eq('id', activeCampaignId)
+        .single()
+      if (cancelled || poll.finishing) return
+      if (error || !data) {
+        console.error('Error loading email campaign:', error?.code || error?.message)
+        return
+      }
+      const p = campaignProgress(data)
+      setProgress({ done: p.done, total: p.total })
+      const now = Date.now()
+      if (p.done !== poll.lastDone) {
+        poll.lastDone = p.done
+        poll.lastChangeAt = now
+      }
+      if (p.finished) {
+        poll.finishing = true
+        await finishActiveCampaign(data)
+        return
+      }
+      if (shouldKick({ lastChangeAt: poll.lastChangeAt, lastKickAt: poll.lastKickAt, now })) {
+        poll.lastKickAt = now
+        emailService
+          .startCampaign(activeCampaignId)
+          .catch(err => console.error('Error resuming email campaign:', err.message))
+      }
+    }
+    const timer = setInterval(tick, POLL_MS)
+    tick()
+    return () => {
+      cancelled = true
+      clearInterval(timer)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- só quando o envio em andamento muda
+  }, [activeCampaignId])
 
   // ---- Textos do resumo ----
   const className = classes.find(c => c.id === selectedClass)?.name
