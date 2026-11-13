@@ -29,7 +29,7 @@ const Harness = ({ initial }) => {
 }
 
 describe('passo 2: abas por língua e variáveis', () => {
-  it('mostra os 6 modelos, troca de aba, insere variável e avisa língua vazia', () => {
+  it('mostra os 6 modelos, troca de aba, sem botões de variável e avisa língua vazia', () => {
     render(<Harness initial={emptyContent()} />)
     expect(screen.getByText('Aviso geral')).toBeTruthy()
     expect(screen.getByText('Créditos zerados')).toBeTruthy()
@@ -37,11 +37,11 @@ describe('passo 2: abas por língua e variáveis', () => {
 
     fireEvent.change(screen.getByLabelText(/Assunto/), { target: { value: 'Oi' } })
     const message = screen.getByLabelText(/Mensagem/)
-    fireEvent.change(message, { target: { value: 'Olá ' } })
-    fireEvent.focus(message)
-    message.setSelectionRange(4, 4)
-    fireEvent.click(screen.getByRole('button', { name: /\{nome\}/ }))
-    expect(message.value).toBe('Olá {nome}')
+    fireEvent.change(message, { target: { value: 'Olá turma' } })
+    expect(message.value).toBe('Olá turma')
+    // Sem botões de inserir {nome}/{creditos}: a saudação e a assinatura entram sozinhas.
+    expect(screen.queryByRole('button', { name: /\{nome\}|\{creditos\}/ })).toBeNull()
+    expect(screen.getByText('"Olá, Nome!" e a assinatura entram sozinhos.')).toBeTruthy()
 
     expect(screen.getByText(/1 aluno em EN vai receber o texto em PT/)).toBeTruthy()
 
@@ -51,7 +51,7 @@ describe('passo 2: abas por língua e variáveis', () => {
 
   it('variável desconhecida gera aviso', () => {
     render(<Harness initial={templateContent('scheduleChangeNotice')} />)
-    expect(screen.getByText(/não são variáveis/)).toBeTruthy()
+    expect(screen.getByText(/entre chaves vão sair no email/)).toBeTruthy()
   })
 })
 

@@ -781,11 +781,10 @@
         "languagesHint": "Escreva em cada língua. O ✓ mostra as que estão prontas.",
         "studentsInLanguage_one": "{{count}} aluno",
         "studentsInLanguage_other": "{{count}} alunos",
-        "insertVariable": "Inserir:",
-        "variablesHelp": "{nome} vira o primeiro nome do aluno e {creditos} o total de créditos dele. \"Olá, Nome!\" e a assinatura entram sozinhos.",
+        "variablesHelp": "\"Olá, Nome!\" e a assinatura entram sozinhos.",
         "missingLanguage_one": "{{count}} aluno em {{lang}} vai receber o texto em {{fallback}} (o texto em {{lang}} está vazio).",
         "missingLanguage_other": "{{count}} alunos em {{lang}} vão receber o texto em {{fallback}} (o texto em {{lang}} está vazio).",
-        "unknownVariables": "Estas palavras entre chaves não são variáveis e vão sair no email do jeito que estão: {{list}}. Troque pelo texto certo ou use {nome} / {creditos}."
+        "unknownVariables": "Estas palavras entre chaves vão sair no email do jeito que estão: {{list}}. Troque pelo texto certo antes de enviar."
       },
       "review": {
         "title": "Revisar e enviar",
