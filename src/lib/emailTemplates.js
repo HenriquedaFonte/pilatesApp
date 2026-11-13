@@ -202,6 +202,7 @@ Merci de votre compréhension !`
 
 O studio sempre emitiu recibos para o seu seguro saúde, mas até agora era tudo feito à mão. Agora o processo fica automático: os recibos saem direto pelo sistema, com os dados do seu cadastro. Para isso, entre no Portal do Aluno em josipilates.com/login?lng=pt e clique em "Perfil". Lá, confira ou complete:
 
+• Nome Completo: tem de ser o seu nome completo, igual ao que deve aparecer no recibo do seguro. Se você se cadastrou com um nome abreviado ou apelido, corrija (depois clique em "Salvar Alterações")
 • Telefone (depois clique em "Salvar Alterações")
 • Data de Nascimento, se ainda estiver vazia (depois clique em "Salvar Alterações" e confirme). Confira bem a data: depois de salva, só a Josi pode corrigir.
 • Seguro saúde: nº da apólice e cidade/província (depois clique em "Salvar dados do seguro")
@@ -219,6 +220,7 @@ Obrigada!`
 
 The studio has always issued receipts for your health insurance, but until now it was all done by hand. From now on the process is automatic: receipts are generated directly by the system, using the details in your profile. To make this work, sign in to the Student Portal at josipilates.com/login?lng=en and click "Profile". There, check or complete:
 
+• Full Name: it must be your full name, exactly as it should appear on your insurance receipt. If you signed up with a shortened name or nickname, please correct it (then click "Save Changes")
 • Phone number (then click "Save Changes")
 • Date of Birth, if it is still empty (then click "Save Changes" and confirm). Check the date carefully: once saved, only Josi can correct it.
 • Health insurance: policy number and city/province (then click "Save insurance details")
@@ -236,6 +238,7 @@ Thank you!`
 
 Le studio a toujours émis des reçus pour votre assurance santé, mais jusqu'à présent tout se faisait à la main. Désormais, le processus est automatique : les reçus sortent directement du système, avec les informations de votre profil. Pour cela, connectez-vous au Portail de l'élève sur josipilates.com/login?lng=fr et cliquez sur « Profil ». Vérifiez ou complétez :
 
+• Nom Complet : il doit s'agir de votre nom complet, tel qu'il doit figurer sur votre reçu d'assurance. Si vous vous êtes inscrit(e) avec un nom abrégé ou un surnom, corrigez-le (puis cliquez sur « Sauvegarder les Modifications »)
 • Numéro de téléphone (puis cliquez sur « Sauvegarder les Modifications »)
 • Date de Naissance, si elle est encore vide (puis cliquez sur « Sauvegarder les Modifications » et confirmez). Vérifiez bien la date : une fois enregistrée, seule Josi pourra la corriger.
 • Assurance santé : numéro de police et ville/province (puis cliquez sur « Enregistrer l'assurance »)
