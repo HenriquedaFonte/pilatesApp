@@ -22,8 +22,12 @@ import {
   canAdvance,
   countByLanguage,
   studentLanguage,
+  sortSchedules,
+  studentsBySchedule,
+  countScheduleStudents,
   LANGUAGES
 } from '../lib/emailRecipients'
+import { getDayName, formatTime } from '../lib/format'
 import {
   buildCampaignRow,
   buildCampaignFilter,
@@ -75,7 +79,9 @@ const EmailNotifications = () => {
   const language = uiLang(i18n.language?.slice(0, 2))
 
   const [students, setStudents] = useState([])
-  const [classes, setClasses] = useState([])
+  // Turmas = horários (class_schedules) e os alunos de cada um.
+  const [schedules, setSchedules] = useState([])
+  const [scheduleStudents, setScheduleStudents] = useState({})
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
   // Muda depois de cada envio para o Histórico recarregar.
@@ -91,8 +97,6 @@ const EmailNotifications = () => {
   const [filterType, setFilterType] = useState('all')
   const [lowCreditsThreshold, setLowCreditsThreshold] = useState(DEFAULT_THRESHOLD)
   const [selectedClass, setSelectedClass] = useState('')
-  const [classStudentIds, setClassStudentIds] = useState(null)
-  const [classLoading, setClassLoading] = useState(false)
   const [includeInactive, setIncludeInactive] = useState(false)
   const [selectedIds, setSelectedIds] = useState([])
   const [excludedIds, setExcludedIds] = useState([])
@@ -160,11 +164,15 @@ const EmailNotifications = () => {
         .order('full_name')
       if (studentsError) throw studentsError
 
-      const { data: classesData, error: classesError } = await supabase
-        .from('classes')
-        .select('id, name, type')
-        .order('name')
-      if (classesError) throw classesError
+      const { data: schedulesData, error: schedulesError } = await supabase
+        .from('class_schedules')
+        .select('id, day_of_week, start_time, classes(name)')
+      if (schedulesError) throw schedulesError
+
+      const { data: linksData, error: linksError } = await supabase
+        .from('student_class_link')
+        .select('student_id, class_schedule_id')
+      if (linksError) throw linksError
 
       setStudents(
         (studentsData || []).map(student => ({
@@ -172,7 +180,8 @@ const EmailNotifications = () => {
           totalCredits: totalCredits(student)
         }))
       )
-      setClasses(classesData || [])
+      setSchedules(sortSchedules(schedulesData))
+      setScheduleStudents(studentsBySchedule(linksData))
     } catch (error) {
       console.error('Error loading data:', error)
       setLoadError(`${t('teacher.emails.messages.loadError')} ${error.message}`)
@@ -181,50 +190,23 @@ const EmailNotifications = () => {
     }
   }
 
-  // Alunos da turma escolhida (student_class_link → class_schedules da turma).
-  useEffect(() => {
-    if (filterType !== 'class' || !selectedClass) {
-      setClassStudentIds(null)
-      return
-    }
-    let cancelled = false
-    const loadClassStudents = async () => {
-      setClassLoading(true)
-      setClassStudentIds(null)
-      try {
-        const { data: schedules, error: schedulesError } = await supabase
-          .from('class_schedules')
-          .select('id')
-          .eq('class_id', selectedClass)
-        if (schedulesError) throw schedulesError
+  // Turma escolhida: os alunos ligados àquele horário.
+  const classStudentIds =
+    filterType === 'class' && selectedClass ? scheduleStudents[selectedClass] || [] : null
+  const classLoading = false
 
-        const scheduleIds = (schedules || []).map(sc => sc.id)
-        let ids = []
-        if (scheduleIds.length > 0) {
-          const { data: links, error: linksError } = await supabase
-            .from('student_class_link')
-            .select('student_id')
-            .in('class_schedule_id', scheduleIds)
-          if (linksError) throw linksError
-          ids = [...new Set((links || []).map(l => l.student_id))]
-        }
-        if (!cancelled) setClassStudentIds(ids)
-      } catch (error) {
-        console.error('Error loading class students:', error)
-        if (!cancelled) {
-          setClassStudentIds([])
-          setLoadError(`${t('teacher.emails.messages.loadError')} ${error.message}`)
-        }
-      } finally {
-        if (!cancelled) setClassLoading(false)
-      }
-    }
-    loadClassStudents()
-    return () => {
-      cancelled = true
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- recarrega só quando a turma ou o filtro mudam
-  }, [filterType, selectedClass])
+  // Nome da turma: dia e horário (ex.: "Segunda-feira 18:15"), com o tipo de aula ao lado.
+  const scheduleLabel = schedule =>
+    schedule
+      ? `${getDayName(schedule.day_of_week, language)} ${formatTime(schedule.start_time, language)}`
+      : ''
+  const classOptions = schedules.map(schedule => ({
+    id: schedule.id,
+    label: scheduleLabel(schedule),
+    type: schedule.classes?.name || '',
+    count: countScheduleStudents(students, scheduleStudents[schedule.id], includeInactive)
+  }))
+  const selectedSchedule = schedules.find(sc => sc.id === selectedClass)
 
   // ---- Destinatários ----
   const groupStudents = filterRecipients(students, {
@@ -365,7 +347,7 @@ const EmailNotifications = () => {
       filterType,
       lowCreditsThreshold,
       selectedClass,
-      className: classes.find(c => c.id === selectedClass)?.name,
+      className: scheduleLabel(selectedSchedule),
       includeInactive,
       excludedCount: excludedIds.length,
       templateId,
@@ -551,7 +533,7 @@ const EmailNotifications = () => {
   }, [activeCampaignId])
 
   // ---- Textos do resumo ----
-  const className = classes.find(c => c.id === selectedClass)?.name
+  const className = scheduleLabel(selectedSchedule)
   const groupLabel = [
     t(`teacher.emails.recipients.groups.${filterType}`),
     filterType === 'class' && className ? className : null,
@@ -637,7 +619,7 @@ const EmailNotifications = () => {
                       onFilterTypeChange={handleFilterTypeChange}
                       lowCreditsThreshold={lowCreditsThreshold}
                       setLowCreditsThreshold={setLowCreditsThreshold}
-                      classes={classes}
+                      classes={classOptions}
                       selectedClass={selectedClass}
                       setSelectedClass={setSelectedClass}
                       classLoading={classLoading}

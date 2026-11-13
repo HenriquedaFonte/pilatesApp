@@ -1120,8 +1120,8 @@
         },
         "thresholdLabel": "Low credits = up to",
         "thresholdUnit": "credits",
-        "selectClass": "Class:",
-        "selectClassPlaceholder": "Choose the class",
+        "selectClass": "Class (day and time):",
+        "selectClassPlaceholder": "Choose the day and time",
         "loadingClass": "Loading class students...",
         "emptyClass": "No active students in this class.",
         "count_one": "{{count}} student will receive it",
@@ -1137,7 +1137,9 @@
         "emptySearch": "No students match this search.",
         "inactiveBadge": "Inactive",
         "credits_one": "{{count}} credit",
-        "credits_other": "{{count}} credits"
+        "credits_other": "{{count}} credits",
+        "classStudents_one": "{{count}} student",
+        "classStudents_other": "{{count}} students"
       },
       "content": {
         "title": "What do you want to send?",

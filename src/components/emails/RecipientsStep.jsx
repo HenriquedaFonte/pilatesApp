@@ -175,7 +175,12 @@ const RecipientsStep = ({
             <SelectContent className="rounded-xl">
               {classes.map(cls => (
                 <SelectItem key={cls.id} value={cls.id}>
-                  {cls.name}
+                  <span className="font-medium">{cls.label}</span>
+                  <span className="text-muted-foreground">
+                    {cls.type ? ` · ${cls.type}` : ''}
+                    {' · '}
+                    {t('teacher.emails.recipients.classStudents', { count: cls.count })}
+                  </span>
                 </SelectItem>
               ))}
             </SelectContent>
