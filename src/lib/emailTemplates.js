@@ -121,8 +121,9 @@ export const emailTemplates = {
 
   // Mensagens escritas da tela Notificações por email (Story 4.3): assunto e
   // mensagem completos em pt/en/fr. A saudação ("Olá, Nome!") e a assinatura
-  // entram sozinhas. Entre chaves: {nome} e {creditos} são preenchidos; os
-  // outros (ex.: {horário novo}) a professora troca antes de enviar.
+  // entram sozinhas. Palavras entre chaves (ex.: {horário novo}) a professora
+  // troca antes de enviar. {nome}/{creditos} ainda são preenchidos no envio
+  // (compatibilidade com textos antigos), mas a tela não oferece mais botões.
   zeroCreditsNotice: {
     pt: {
       subject: 'Seus créditos acabaram - Josi Pilates',

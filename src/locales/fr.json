@@ -1252,11 +1252,10 @@
         "languagesHint": "Écrivez dans chaque langue. Le ✓ indique celles qui sont prêtes.",
         "studentsInLanguage_one": "{{count}} élève",
         "studentsInLanguage_other": "{{count}} élèves",
-        "insertVariable": "Insérer :",
-        "variablesHelp": "{nome} devient le prénom de l'élève et {creditos} son total de crédits. « Bonjour, Nom ! » et la signature sont ajoutés automatiquement.",
+        "variablesHelp": "« Bonjour, Nom ! » et la signature sont ajoutés automatiquement.",
         "missingLanguage_one": "{{count}} élève en {{lang}} recevra le texte en {{fallback}} (le texte en {{lang}} est vide).",
         "missingLanguage_other": "{{count}} élèves en {{lang}} recevront le texte en {{fallback}} (le texte en {{lang}} est vide).",
-        "unknownVariables": "Ces mots entre accolades ne sont pas des variables et apparaîtront tels quels dans le courriel : {{list}}. Remplacez-les par le bon texte ou utilisez {nome} / {creditos}."
+        "unknownVariables": "Ces mots entre accolades apparaîtront tels quels dans le courriel : {{list}}. Remplacez-les par le bon texte avant l'envoi."
       },
       "review": {
         "title": "Vérifier et envoyer",

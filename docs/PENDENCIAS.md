@@ -3,7 +3,7 @@
 > Memória entre sessões. Toda sessão nova começa lendo este arquivo.
 > No fim de cada tarefa: "Atualize o PENDENCIAS".
 
-_Última atualização: 2026-11-13 (data de nascimento preenchida pelo aluno + texto novo do "Atualizar cadastro")_
+_Última atualização: 2026-11-13 (data de nascimento preenchida pelo aluno + texto novo do "Atualizar cadastro"; mensagens sem botões {nome}/{creditos})_
 
 ## Estado atual
 - Produção: josipilates.com (Vercel, branch `main`).
@@ -17,6 +17,7 @@ _Última atualização: 2026-11-13 (data de nascimento preenchida pelo aluno + t
   4. **Professora:** abrir esse aluno de teste → Editar perfil → mudar a data de nascimento e salvar: muda. Apagar a data (deixar vazia) e salvar: o aluno volta a poder preencher. No fim, deixar o aluno de teste como estava.
   5. Conferir os passos 2 e 3 em pt, en e fr (trocar "Idioma Preferido").
   6. **Email:** Notificações por email → Nova mensagem → "Atualizar cadastro" → pré-visualização em PT/EN/FR: o texto fala que os recibos sempre saíram, mas eram feitos à mão e agora saem pelo sistema; não cita kinésithérapie/naturopathie; o item "Data de Nascimento" diz para preencher no Perfil e que depois só a Josi corrige. **Josi aprova o texto novo** antes do envio para todos.
+- [ ] **Teste depois do merge da remoção dos botões {nome}/{creditos} (sem SQL, sem deploy):** professora → Mensagens → "Nova mensagem" → passo "O quê" → "Aviso geral": não aparecem mais os botões "Inserir: {nome} {creditos}" acima da mensagem. Embaixo da mensagem, o texto de ajuda diz só que a saudação e a assinatura entram sozinhos — conferir em PT ("Olá, Nome!"…), EN ("Hello, Name!"…) e FR (« Bonjour, Nom ! »…). Escolher "Mudança de horário": o aviso amarelo das palavras entre chaves continua aparecendo (agora sem sugerir {nome}/{creditos}).
 - [ ] **Teste depois do merge da turma por horário (sem SQL, sem deploy):** professora → Mensagens → "Nova mensagem" → passo 1 → "Uma turma". A lista agora mostra os horários da semana, de segunda a domingo (ex.: "Segunda-feira 18:15 · Grupo · 5 alunos"), e não mais os tipos de aula. Escolher "Segunda-feira 18:15": aparecem só os alunos desse horário (conferir com a matrícula do aluno em Alunos → turmas); a contagem bate com o número ao lado do horário. Marcar "Incluir alunos inativos" aumenta o número se a turma tiver inativos. Conferir em PT, EN e FR (em francês o filtro se chama "Un groupe"). No histórico, o envio aparece com o nome da turma no formato dia + horário.
 - [ ] **Teste depois do merge da assinatura sobre a linha (sem SQL, sem deploy):** "Pré-visualizar" (não gasta número) em kinésithérapie e naturopathie, com a assinatura real: no kinésithérapie, as letras ficam logo acima da linha da assinatura (a perna do "J" pode passar por cima do "POUR" do rodapé, decidido assim); no naturopathie, as letras ficam na altura da palavra "Signature:". O tamanho é parecido com a prévia aprovada.
 - [ ] **Teste depois do merge da assinatura maior no recibo (sem SQL, sem deploy):** professora → aluno de teste → "Ver" → "Recibos de seguro" → "Emitir recibo" → **"Pré-visualizar"** (não gasta número), em kinésithérapie e em naturopathie: a assinatura agora ocupa a linha "Signature" (antes saía minúscula). Não precisa enviar a assinatura de novo. Se ainda ficar pequena, mandar o arquivo da assinatura para conferir.
