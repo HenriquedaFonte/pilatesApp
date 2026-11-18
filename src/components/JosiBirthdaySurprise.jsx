@@ -66,13 +66,20 @@ const playSong = () => {
     gain.gain.setValueAtTime(0.0001, t)
     gain.gain.exponentialRampToValueAtTime(0.9, t + 0.03)
     gain.gain.exponentialRampToValueAtTime(0.0001, t + dur * 0.95)
-    osc.connect(gain).connect(ctx.destination)
+    osc.connect(gain)
+    gain.connect(ctx.destination)
     osc.start(t)
     osc.stop(t + dur)
     t += dur
   })
   const total = t - ctx.currentTime
-  setTimeout(() => ctx.close(), (total + 0.5) * 1000)
+  setTimeout(() => {
+    try {
+      ctx.close()
+    } catch {
+      // ignora
+    }
+  }, (total + 0.5) * 1000)
   return total
 }
 
@@ -84,10 +91,15 @@ const JosiBirthdaySurprise = () => {
   const [playing, setPlaying] = useState(false)
 
   useEffect(() => {
+    // Qualquer erro aqui só faz a surpresa não aparecer; nunca derruba a tela.
     const check = () => {
-      const now = montrealNow()
-      if (now.date === BIRTHDAY && !seenThisHour(now.hour)) {
-        setHour(current => current ?? now.hour)
+      try {
+        const now = montrealNow()
+        if (now.date === BIRTHDAY && !seenThisHour(now.hour)) {
+          setHour(current => current ?? now.hour)
+        }
+      } catch {
+        // ignora
       }
     }
     check()
@@ -99,9 +111,16 @@ const JosiBirthdaySurprise = () => {
 
   const handlePlay = () => {
     setOpened(true)
-    setPlaying(true)
-    const seconds = playSong()
-    setTimeout(() => setPlaying(false), seconds * 1000)
+    let seconds = 0
+    try {
+      seconds = playSong()
+    } catch {
+      seconds = 0
+    }
+    if (seconds > 0) {
+      setPlaying(true)
+      setTimeout(() => setPlaying(false), seconds * 1000)
+    }
   }
 
   const handleClose = () => {
@@ -178,6 +197,24 @@ const JosiBirthdaySurprise = () => {
           color: '#831843'
         }}
       >
+        <button
+          type="button"
+          onClick={handleClose}
+          aria-label="Fechar"
+          style={{
+            position: 'absolute',
+            top: 12,
+            right: 16,
+            fontSize: 28,
+            lineHeight: 1,
+            border: 'none',
+            background: 'transparent',
+            color: '#9d174d',
+            cursor: 'pointer'
+          }}
+        >
+          ×
+        </button>
         <div style={{ fontSize: 64, lineHeight: 1 }}>💐</div>
         <h2
           style={{
