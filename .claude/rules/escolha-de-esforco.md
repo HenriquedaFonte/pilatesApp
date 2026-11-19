@@ -1,16 +1,33 @@
-# Escolha de esforço
+# Escolha de modelo e agentes
 
-A sessão roda em **medium**. Decida no início de cada tarefa:
+**Regra do dono (2026-11-19): todo planejamento é feito pelo Opus, em detalhe, para o Sonnet executar sem erro.**
+A sessão principal roda em **Sonnet** (esforço medium). Ela executa; não planeja tarefa que não seja trivial.
 
-## Faço direto (medium)
-- Visual e CSS da landing page (`StudioHome.jsx`, `src/index.css`)
-- Textos e traduções comuns em `src/locales/` (fora textos legais)
-- Layout e usabilidade da área interna (modais, cards, filtros, mensagens)
-- SEO, meta tags, imagens
-- Bugs de interface que não mexem em dados
-- Documentação e `docs/PENDENCIAS.md`
+| Quem | Modelo | Faz |
+|---|---|---|
+| Sessão principal | Sonnet | Executa passos [SONNET] do plano e tarefas triviais |
+| `planejador` | Opus | Planeja qualquer tarefa não trivial em `docs/planos/` |
+| `dev-critico` | Opus | Executa passos [OPUS] do plano |
 
-## Mando para o `dev-critico` (high)
+## 1. Trivial? Faço direto (sem plano)
+Só quando é **tudo** isso: 1 ou 2 arquivos, sem lógica nova, sem dados. Exemplos:
+- corrigir um texto ou tradução comum em `src/locales/` (fora textos legais);
+- ajuste de cor, espaçamento, fonte, imagem, meta tag;
+- atualizar documentação ou `docs/PENDENCIAS.md`.
+
+## 2. Qualquer outra coisa → `planejador` (Opus) primeiro
+Funcionalidade, bug com lógica, mudança em 3+ arquivos, refactor, ou qualquer item da lista crítica abaixo.
+1. Aviso o dono em uma linha: "Isso é [X] → planejador (Opus)."
+2. Passo ao `planejador` o pedido completo do dono (ele começa sem o histórico).
+3. Mostro ao dono um resumo do plano (passos e [SONNET]/[OPUS]) e espero o "ok" antes de executar.
+
+## 3. Execução do plano
+- **[SONNET]** → eu executo, exatamente como está escrito. Não invento, não amplio o escopo.
+- **[OPUS]** → `dev-critico`, passando o caminho do plano e o número do passo.
+- Se um passo estiver ambíguo, der erro que o plano não previu, ou exigir decisão: **paro e devolvo ao `planejador`**. Não improviso.
+- Ao terminar cada passo, marco `✅` no plano.
+
+## Lista crítica (sempre [OPUS])
 - Banco de dados: migrations, RLS, triggers, funções SQL, constraints
 - Autenticação, papéis (professor/aluno), permissões, criação de usuários
 - Check-in, créditos, pagamentos, histórico de créditos, relatórios
@@ -18,5 +35,14 @@ A sessão roda em **medium**. Decida no início de cada tarefa:
 - Segurança e dados pessoais dos alunos
 - Textos legais (Política de Privacidade, Termos de Uso, Regras do Estúdio)
 
-## Na dúvida
-Pergunto em uma linha: "Isso mexe em [X], mando para o dev-critico?"
+## Garantia de não quebrar
+- Antes do push: `npm run lint`, `npm test`, `npm run build`, com o resultado real. Falhou → não pusha.
+- Conferir o diff contra o plano: nenhum arquivo fora do plano.
+- Um assunto por PR. SQL separado de tela quando der.
+- O bloco "Próxima sessão" sempre tem a linha **"Se quebrar:"** — GitHub → PR mergeado → **Revert** → mergear o PR de reversão; ou Vercel → Deployments → deploy anterior → **Promote to Production**. Se tiver SQL, dizer qual SQL de reversão rodar.
+- A sessão só é encerrada depois de o dono testar o deploy. Se quebrou, corrige na mesma sessão.
+
+## Economia de tokens
+- Uma tarefa = uma sessão = um PR.
+- Sessão compactada 2 vezes → `docs/PENDENCIAS.md` atualizado e sessão nova.
+- O plano fica no repositório: numa sessão nova, basta ler `docs/PENDENCIAS.md` e o plano.
