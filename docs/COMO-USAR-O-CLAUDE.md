@@ -5,6 +5,7 @@
 - **`docs/PENDENCIAS.md`** — a "memória" entre conversas: estado atual, testes em aberto, SQL pendente, o que está por fazer.
 - **Agente `planejador`** (`.claude/agents/planejador.md`, **Opus**) — faz todo o planejamento de tarefas não triviais, em `docs/planos/`, detalhado para o Sonnet executar sem decidir nada. Você aprova o plano antes da execução.
 - **Agente `dev-critico`** (`.claude/agents/dev-critico.md`, **Opus**) — executa os passos [OPUS] do plano, usado quando a tarefa mexe em banco de dados, autenticação, créditos/pagamentos, Edge Functions, emails, segurança ou textos legais. Segue as regras do projeto e não faz push.
+- **Agente `revisor`** (`.claude/agents/revisor.md`, **Opus**) — revisa o diff contra o plano uma vez por PR, antes do push. Se reprovar, o código volta para correção.
 - **Regra de escolha** (`.claude/rules/escolha-de-esforco.md`) — o que é trivial (feito direto), o que vai para o `planejador` e o que vai para o `dev-critico`. Antes de trocar de agente, o Claude avisa em uma linha.
 
 ## Como seguir
