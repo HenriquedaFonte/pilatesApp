@@ -1,7 +1,7 @@
 # Josi Pilates — instruções para o Claude
 
 **Toda sessão nova começa do `main` atualizado (`git pull origin main`) e lendo `docs/PENDENCIAS.md`** (estado atual, testes em aberto, o que está por fazer).
-Regras de esforço e quando usar o agente `dev-critico`: `.claude/rules/escolha-de-esforco.md`.
+Modelos e agentes: a sessão roda em **Sonnet** e executa; **todo planejamento é do agente `planejador` (Opus)**, e passos críticos vão para o `dev-critico` (Opus). Regras completas: `.claude/rules/escolha-de-esforco.md` — seguir sempre.
 
 ## O projeto
 Aplicação web de um estúdio de Pilates em Montreal (josipilates.com).
@@ -32,9 +32,10 @@ Antes, atualizar `docs/PENDENCIAS.md` no mesmo PR. Depois, terminar com passos n
 2. SQL para rodar no Supabase, ou "não tem SQL". Se mudou Edge Function, o comando de deploy.
    Sempre dizer a ordem: **SQL antes do merge** (o código novo depende do banco alterado), **merge antes do SQL** (o SQL quebraria o site no ar) ou **tanto faz** (independentes), com o motivo.
 3. O que testar depois do deploy.
-4. Encerrar esta sessão.
-5. Abrir uma sessão nova no Claude Code, no repositório `HenriquedaFonte/pilatesApp`, com o esforço em medium.
-6. A primeira mensagem, pronta para colar (em bloco de código), sempre neste formato:
+4. **Se quebrar:** como voltar atrás (Revert do PR no GitHub, ou Promote to Production do deploy anterior na Vercel; e o SQL de reversão, se houver).
+5. Encerrar esta sessão (só depois do teste do passo 3).
+6. Abrir uma sessão nova no Claude Code, no repositório `HenriquedaFonte/pilatesApp`, com o modelo **Sonnet** (esforço medium).
+7. A primeira mensagem, pronta para colar (em bloco de código), sempre neste formato:
    ```
    Comece do main atualizado. Leia docs/PENDENCIAS.md. Quero fazer: [tarefa].
    ```
