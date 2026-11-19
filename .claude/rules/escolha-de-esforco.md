@@ -8,6 +8,7 @@ A sessão principal roda em **Sonnet** (esforço medium). Ela executa; não plan
 | Sessão principal | Sonnet | Executa passos [SONNET] do plano e tarefas triviais |
 | `planejador` | Opus | Planeja qualquer tarefa não trivial em `docs/planos/` |
 | `dev-critico` | Opus | Executa passos [OPUS] do plano |
+| `revisor` | Opus | Revisa o diff contra o plano, uma vez por PR, antes do push |
 
 ## 1. Trivial? Faço direto (sem plano)
 Só quando é **tudo** isso: 1 ou 2 arquivos, sem lógica nova, sem dados. Exemplos:
@@ -27,6 +28,14 @@ Funcionalidade, bug com lógica, mudança em 3+ arquivos, refactor, ou qualquer 
 - Se um passo estiver ambíguo, der erro que o plano não previu, ou exigir decisão: **paro e devolvo ao `planejador`**. Não improviso.
 - Ao terminar cada passo, marco `✅` no plano.
 
+## 4. Revisão do Opus antes do push
+- Toda tarefa que teve plano passa pelo agente `revisor` (Opus) **uma vez, antes do push** — nunca a cada passo. Tarefa trivial (sem plano) pula a revisão.
+- Ordem: execução completa → lint/testes/build ok → `revisor` com o caminho do plano e a branch → push.
+- O `revisor` só recebe o plano e o diff; não releia o projeto inteiro para ele.
+- **REPROVADO** ou problema grave/médio: corrige quem fez o passo (Sonnet para [SONNET], `dev-critico` para [OPUS]) e chama o `revisor` de novo. Máximo 2 voltas; depois disso, paro e mostro os problemas ao dono.
+- Problema leve: corrijo ou anoto em `docs/PENDENCIAS.md`, e digo ao dono qual escolhi.
+- No bloco "Próxima sessão", informar o resultado da revisão em uma linha.
+
 ## Lista crítica (sempre [OPUS])
 - Banco de dados: migrations, RLS, triggers, funções SQL, constraints
 - Autenticação, papéis (professor/aluno), permissões, criação de usuários
@@ -37,6 +46,7 @@ Funcionalidade, bug com lógica, mudança em 3+ arquivos, refactor, ou qualquer 
 
 ## Garantia de não quebrar
 - Antes do push: `npm run lint`, `npm test`, `npm run build`, com o resultado real. Falhou → não pusha.
+- Tarefa com plano: só pusha com o `revisor` aprovado (seção 4).
 - Conferir o diff contra o plano: nenhum arquivo fora do plano.
 - Um assunto por PR. SQL separado de tela quando der.
 - O bloco "Próxima sessão" sempre tem a linha **"Se quebrar:"** — GitHub → PR mergeado → **Revert** → mergear o PR de reversão; ou Vercel → Deployments → deploy anterior → **Promote to Production**. Se tiver SQL, dizer qual SQL de reversão rodar.

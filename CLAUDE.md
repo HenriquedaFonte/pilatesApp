@@ -1,7 +1,7 @@
 # Josi Pilates — instruções para o Claude
 
 **Toda sessão nova começa do `main` atualizado (`git pull origin main`) e lendo `docs/PENDENCIAS.md`** (estado atual, testes em aberto, o que está por fazer).
-Modelos e agentes: a sessão roda em **Sonnet** e executa; **todo planejamento é do agente `planejador` (Opus)**, e passos críticos vão para o `dev-critico` (Opus). Regras completas: `.claude/rules/escolha-de-esforco.md` — seguir sempre.
+Modelos e agentes: a sessão roda em **Sonnet** e executa; **todo planejamento é do agente `planejador` (Opus)**, passos críticos vão para o `dev-critico` (Opus), e o `revisor` (Opus) revisa o diff uma vez antes do push. Regras completas: `.claude/rules/escolha-de-esforco.md` — seguir sempre.
 
 ## O projeto
 Aplicação web de um estúdio de Pilates em Montreal (josipilates.com).
