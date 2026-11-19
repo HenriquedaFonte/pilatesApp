@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { Button } from '@/components/ui/button'
 import { formatTime } from '../lib/format'
-import JosiBirthdaySurprise from '../components/JosiBirthdaySurprise'
 import {
   Card,
   CardContent,
@@ -430,7 +429,6 @@ const { data: attendanceRecords, error: attendanceError } = await supabase
 
   return (
     <TeacherLayout>
-      <JosiBirthdaySurprise />
       <div className="space-y-8 animate-in fade-in duration-300">
         {/* Cabeçalho Editorial */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
