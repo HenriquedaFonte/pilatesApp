@@ -3,7 +3,7 @@
 > Memória entre sessões. Toda sessão nova começa lendo este arquivo.
 > No fim de cada tarefa: "Atualize o PENDENCIAS".
 
-_Última atualização: 2026-11-21 (relatório fiscal dos recibos em Excel: feito no código; falta o merge e o teste)_
+_Última atualização: 2026-11-21 (regra de esforço: plano enxuto e revisor só nas tarefas de risco)_
 
 ## Estado atual
 - Produção: josipilates.com (Vercel, branch `main`).
