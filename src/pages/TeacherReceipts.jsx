@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import TeacherLayout from '../components/TeacherLayout'
 import ReceiptsList from '../components/ReceiptsList'
+import ReceiptReportCard from '../components/ReceiptReportCard'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -69,6 +70,8 @@ const TeacherReceipts = () => {
           </h1>
           <p className="text-muted-foreground text-sm">{t('receipts.page.subtitle')}</p>
         </div>
+
+        <ReceiptReportCard studentNames={studentNames} />
 
         <Card className="rounded-2xl">
           <CardHeader>
