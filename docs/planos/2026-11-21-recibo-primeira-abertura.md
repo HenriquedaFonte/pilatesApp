@@ -788,7 +788,7 @@ Item de origem: `docs/PENDENCIAS.md` → "A fazer" → **"Recibos: registrar a p
      ```
 - Pronto quando: só essas 4 mudanças no arquivo; o item do relatório fiscal está igual ao do `main`.
 
-### 11. [SONNET] Verificação e revisão
+### 11. ✅ [SONNET] Verificação e revisão
 - Rodar `npm run lint`, `npm test`, `npm run build` e anotar o resultado real.
 - Conferir o diff: só estes arquivos — `supabase/migrations/20261121000000_receipt_first_opened_by_student.sql`, `docs/testes/recibo-primeira-abertura-teste.sql`, `docs/testes/recibo-primeira-abertura-reversao.sql`, `src/lib/receiptFiles.js`, `src/lib/receipts.js`, `src/pages/StudentReceipts.jsx`, `src/components/ReceiptsList.jsx`, `src/locales/{pt,en,fr}.json`, `src/tests/receiptOpen.test.js`, `src/tests/studentReceipts.test.js`, `docs/PENDENCIAS.md`, e este plano (com os ✅).
 - Chamar o `revisor` com este plano e a branch; só depois push e PR para `main`.
