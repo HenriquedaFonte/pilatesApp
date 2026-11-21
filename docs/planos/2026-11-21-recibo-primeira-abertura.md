@@ -35,7 +35,7 @@ Item de origem: `docs/PENDENCIAS.md` → "A fazer" → **"Recibos: registrar a p
 
 ## Passos
 
-### 1. [OPUS] Migration nova: coluna, guarda atualizada e RPC
+### 1. [OPUS] Migration nova: coluna, guarda atualizada e RPC ✅
 - Arquivo: `supabase/migrations/20261121000000_receipt_first_opened_by_student.sql` (novo)
 - Fazer: criar o arquivo exatamente com o conteúdo abaixo. Depois, se der, rodar localmente no Postgres 16 (`/usr/lib/postgresql/16`) com o estado simulado (stubs de `auth.uid()`, `is_staff()`, `storage.*` e a migration `20261112070000` antes), 2 vezes seguidas (idempotência), e o teste do passo 2 e o `3.3-recibos-teste.sql` em cima.
 - Código:
@@ -216,7 +216,7 @@ Item de origem: `docs/PENDENCIAS.md` → "A fazer" → **"Recibos: registrar a p
   ```
 - Pronto quando: o arquivo existe com esse conteúdo; (se rodado localmente) aplica 2 vezes sem erro e os testes dos passos 2 e o `3.3-recibos-teste.sql` passam sem "FALHOU".
 
-### 2. [OPUS] Teste SQL (ROLLBACK, nada fica gravado)
+### 2. [OPUS] Teste SQL (ROLLBACK, nada fica gravado) ✅
 - Arquivo: `docs/testes/recibo-primeira-abertura-teste.sql` (novo)
 - Fazer: criar com o conteúdo abaixo.
 - Código:
@@ -475,7 +475,7 @@ Item de origem: `docs/PENDENCIAS.md` → "A fazer" → **"Recibos: registrar a p
   ```
 - Pronto quando: o arquivo existe; (se testado localmente) roda sem "FALHOU" depois da migration e falha com "FALHOU: coluna ... não existe" sem ela.
 
-### 3. [OPUS] SQL de reversão
+### 3. [OPUS] SQL de reversão ✅
 - Arquivo: `docs/testes/recibo-primeira-abertura-reversao.sql` (novo)
 - Fazer: criar com o conteúdo abaixo (a guarda volta **exatamente** à da `20261112070000`).
 - Código:
@@ -547,7 +547,7 @@ Item de origem: `docs/PENDENCIAS.md` → "A fazer" → **"Recibos: registrar a p
   ```
 - Pronto quando: o arquivo existe; (se testado localmente) depois dele o `3.3-recibos-teste.sql` continua passando e a coluna/função não existem mais.
 
-### 4. [SONNET] Função que registra a abertura (cliente)
+### 4. ✅ [SONNET] Função que registra a abertura (cliente)
 - Arquivo: `src/lib/receiptFiles.js`
 - Fazer: acrescentar **no fim do arquivo** (depois de `shareReceipt`) exatamente:
   ```js
@@ -575,7 +575,7 @@ Item de origem: `docs/PENDENCIAS.md` → "A fazer" → **"Recibos: registrar a p
   ```
 - Pronto quando: `npm run lint` sem erro nesse arquivo.
 
-### 5. [SONNET] Ligar o registro nos botões de "Meus recibos"
+### 5. ✅ [SONNET] Ligar o registro nos botões de "Meus recibos"
 - Arquivo: `src/pages/StudentReceipts.jsx`
 - Fazer (só isto; nada de texto ou visual novo para o aluno):
   1. Linha 14: trocar o import por
@@ -605,7 +605,7 @@ Item de origem: `docs/PENDENCIAS.md` → "A fazer" → **"Recibos: registrar a p
      As linhas seguintes (`unsupported` / `retry`) ficam iguais.
 - Pronto quando: o diff do arquivo tem só essas 5 mudanças; lint ok.
 
-### 6. [SONNET] Função pura para o texto da professora
+### 6. ✅ [SONNET] Função pura para o texto da professora
 - Arquivo: `src/lib/receipts.js`
 - Fazer: acrescentar logo **depois** de `summarizeTreatmentDates` (antes de `moneyFormatter`):
   ```js
@@ -620,7 +620,7 @@ Item de origem: `docs/PENDENCIAS.md` → "A fazer" → **"Recibos: registrar a p
   ```
 - Pronto quando: lint ok.
 
-### 7. [SONNET] Mostrar na tabela da professora (ficha do aluno e Relatórios)
+### 7. ✅ [SONNET] Mostrar na tabela da professora (ficha do aluno e Relatórios)
 - Arquivo: `src/components/ReceiptsList.jsx` (o `TeacherReceipts.jsx` não muda)
 - Fazer:
   1. No import de `'../lib/receipts'` (linhas 5-13), acrescentar `studentOpenInfo,` em ordem alfabética, depois de `receiptErrorKey,` e antes de `summarizeTreatmentDates,`.
@@ -643,7 +643,7 @@ Item de origem: `docs/PENDENCIAS.md` → "A fazer" → **"Recibos: registrar a p
      ```
 - Pronto quando: lint ok; na ficha do aluno e em Relatórios → Recibos de seguro, cada linha mostra "Ainda não aberto" ou "Aberto pelo aluno em AAAA-MM-DD" embaixo do badge de status.
 
-### 8. [SONNET] Textos pt / en / fr
+### 8. ✅ [SONNET] Textos pt / en / fr
 - Arquivos: `src/locales/pt.json`, `src/locales/en.json`, `src/locales/fr.json`
 - Fazer: em `receipts.list`, depois de `shareReady` (o que tem 6 espaços de recuo e **sem vírgula** no fim; o outro `shareReady`, de `studentReceipts`, não muda), pôr vírgula e as duas chaves novas. Trecho a trocar em cada arquivo (é único):
   - pt — trocar
@@ -664,7 +664,7 @@ Item de origem: `docs/PENDENCIAS.md` → "A fazer" → **"Recibos: registrar a p
   - fr — trocar `      "shareReady": "PDF prêt. Touchez « Partager » de nouveau."\n    },\n    "void": {` por a mesma linha com vírgula + `"openedByStudent": "Ouvert par l'élève le {{date}}",` + `"notOpenedByStudent": "Pas encore ouvert"`.
 - Pronto quando: os 3 JSON são válidos (o build/test lê) e o teste do passo 9 passa.
 
-### 9. [SONNET] Testes unitários
+### 9. ✅ [SONNET] Testes unitários
 - Arquivo novo: `src/tests/receiptOpen.test.js` — conteúdo exato:
   ```js
   // @vitest-environment node
@@ -759,7 +759,7 @@ Item de origem: `docs/PENDENCIAS.md` → "A fazer" → **"Recibos: registrar a p
      ```
 - Pronto quando: `npm test` passa (todos os testes, inclusive os antigos).
 
-### 10. [SONNET] Atualizar `docs/PENDENCIAS.md`
+### 10. ✅ [SONNET] Atualizar `docs/PENDENCIAS.md`
 - Arquivo: `docs/PENDENCIAS.md`
 - Fazer:
   1. Linha `_Última atualização: ..._` → `_Última atualização: 2026-11-21 (recibos: registrar a primeira abertura pelo aluno)_`.
