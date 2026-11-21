@@ -66,7 +66,7 @@ clique** de "Baixar Excel" (vira um arquivo .js à parte no build; a tela não c
 
 ## Passos
 
-### 1. [SONNET] Instalar a biblioteca (versão exata, com pnpm)
+### 1. [SONNET] Instalar a biblioteca (versão exata, com pnpm) ✅
 - Arquivo(s): `package.json`, `pnpm-lock.yaml`
 - Fazer, na raiz do repositório:
   ```bash
@@ -81,7 +81,7 @@ clique** de "Baixar Excel" (vira um arquivo .js à parte no build; a tela não c
   não mostra nenhuma vulnerabilidade nova ligada a `write-excel-file` ou `fflate` (anotar o resultado
   real para o revisor; se aparecer alguma high/critical nelas, **parar e devolver ao planejador**).
 
-### 2. [SONNET] Textos em pt/en/fr
+### 2. [SONNET] Textos em pt/en/fr ✅
 - Arquivo(s): `src/locales/pt.json`, `src/locales/en.json`, `src/locales/fr.json`
 - Fazer: dentro de `"receipts"`, logo depois do objeto `"page": { ... }` (a última chave), pôr uma
   vírgula e o objeto `"report"` da seção "Textos" abaixo (mesmas chaves nas três línguas, valores da
@@ -90,7 +90,7 @@ clique** de "Baixar Excel" (vira um arquivo .js à parte no build; a tela não c
   (`node -e "for (const l of ['pt','en','fr']) JSON.parse(require('fs').readFileSync('src/locales/'+l+'.json','utf8'))"`)
   e `receipts.report.xlsx.sheetVoided` existe nos três.
 
-### 3. [OPUS] Regras puras do relatório: `src/lib/receiptReport.js` (arquivo novo)
+### 3. [OPUS] Regras puras do relatório: `src/lib/receiptReport.js` (arquivo novo) ✅
 - Arquivo(s): `src/lib/receiptReport.js`
 - Fazer: criar o arquivo com o código abaixo (sem Supabase aqui, testável).
 - Código:
@@ -299,7 +299,7 @@ clique** de "Baixar Excel" (vira um arquivo .js à parte no build; a tela não c
   ```
 - Pronto quando: `npm run lint` passa e os testes do passo 6 (parte "regras puras") passam.
 
-### 4. [OPUS] Leitura no Supabase e download: `src/lib/receiptReportService.js` (arquivo novo)
+### 4. [OPUS] Leitura no Supabase e download: `src/lib/receiptReportService.js` (arquivo novo) ✅
 - Arquivo(s): `src/lib/receiptReportService.js`
 - Fazer: criar com o código abaixo. Só SELECT com a sessão da professora (a RLS faz a permissão);
   pagina de 1000 em 1000 (limite padrão de linhas do Supabase), na ordem estável
@@ -346,7 +346,7 @@ clique** de "Baixar Excel" (vira um arquivo .js à parte no build; a tela não c
   ```
 - Pronto quando: lint passa e os testes do passo 6 (parte "serviço") passam.
 
-### 5. [OPUS] Cartão "Relatório fiscal" na tela de recibos
+### 5. [OPUS] Cartão "Relatório fiscal" na tela de recibos ✅
 - Arquivo(s): `src/components/ReceiptReportCard.jsx` (novo), `src/pages/TeacherReceipts.jsx`
 - Fazer:
   1. Criar `src/components/ReceiptReportCard.jsx` com o código abaixo.
@@ -568,7 +568,7 @@ clique** de "Baixar Excel" (vira um arquivo .js à parte no build; a tela não c
 - Pronto quando: lint e build passam; em `npm run dev` (se der para logar como professora) o cartão
   aparece acima de "Filtros", com o ano atual escolhido.
 
-### 6. [OPUS] Testes automáticos
+### 6. [OPUS] Testes automáticos ✅
 - Arquivo(s): `src/tests/receiptReport.test.js` (novo), `src/tests/receiptReportService.test.js` (novo)
 - Fazer: os dois arquivos começam com `// @vitest-environment node`. Usar um `t` falso:
   `const t = (k, o) => (o ? \`${k}|${JSON.stringify(o)}\` : k)`.
