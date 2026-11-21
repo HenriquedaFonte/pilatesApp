@@ -3,7 +3,7 @@
 > Memória entre sessões. Toda sessão nova começa lendo este arquivo.
 > No fim de cada tarefa: "Atualize o PENDENCIAS".
 
-_Última atualização: 2026-11-21 (regra de esforço: plano enxuto e revisor só nas tarefas de risco)_
+_Última atualização: 2026-11-21 (deploy da send-email do aviso de recibo confirmado; falta o teste do email)_
 
 ## Estado atual
 - Produção: josipilates.com (Vercel, branch `main`).
@@ -225,7 +225,7 @@ As três migrations de segurança (`20261112010000`, `20261112020000`, `20261112
 - [x] **Teste do backup sem `NODE_TLS_REJECT_UNAUTHORIZED`:** feito (2026-11-12). O usuário rodou de novo o workflow (run 43273699793, tentativa 2, mesmo arquivo do workflow que está no `main`): verde.
 
 ## SQL / deploys pendentes
-- [ ] **Deploy da Edge Function send-email (aviso de recibo ao aluno) — ANTES do merge do PR.** Comando: `supabase functions deploy send-email --project-ref kezfpyhsejhjcvlbmejq` (sem --no-verify-jwt: o verify_jwt continua ligado). Sem SQL. A função nova é compatível com o site no ar (só acrescenta o type receipt_notice). Reversão: fazer o deploy de novo a partir do main antes deste PR.
+- [x] **Deploy da Edge Function send-email (aviso de recibo ao aluno) — feito (versão 12 no ar, 2026-11-21, confirmado pelo usuário; verify_jwt ligado). O PR #78 já foi mergeado. Falta só o teste do email de recibo (ver "Testes em aberto").** Comando: `supabase functions deploy send-email --project-ref kezfpyhsejhjcvlbmejq` (sem --no-verify-jwt: o verify_jwt continua ligado). Sem SQL. A função nova é compatível com o site no ar (só acrescenta o type receipt_notice). Reversão: fazer o deploy de novo a partir do main antes deste PR.
 - [x] **Migration `supabase/migrations/20261121000000_receipt_first_opened_by_student.sql` — rodada em produção pelo usuário (2026-11-21); `recibo-primeira-abertura-teste.sql` (pelo usuário) e `3.3-recibos-teste.sql` (pelo Claude via API do Supabase, a pedido do usuário) passaram sem "FALHOU"; nada ficou gravado (1 recibo, 0 aberturas, contador igual). PR #76 mergeado (2026-11-21).** (primeira abertura do recibo pelo aluno: coluna `student_first_opened_at`, guarda atualizada, RPC `mark_receipt_opened_by_student`). **Ordem: SQL antes do merge** (o código novo lê a coluna nova; sem ela, as listas de recibos do portal, da ficha do aluno e de Relatórios param de carregar). O SQL sozinho não quebra o site que está no ar (só acrescenta coluna e função).
   1. Colar e rodar o conteúdo da migration (BEGIN/COMMIT, idempotente; se der erro, nada é aplicado).
   2. Rodar `docs/testes/recibo-primeira-abertura-teste.sql` e `docs/testes/3.3-recibos-teste.sql` (ver "Testes em aberto").
