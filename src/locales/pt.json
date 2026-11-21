@@ -1462,7 +1462,7 @@
       "back": "Voltar",
       "cancel": "Cancelar",
       "confirmTitle": "Emitir o recibo?",
-      "confirmText": "Depois de emitido o recibo não pode ser alterado, só anulado.",
+      "confirmText": "Depois de emitido o recibo não pode ser alterado, só anulado. O(a) aluno(a) recebe um e-mail avisando que o recibo está em \"Meus recibos\".",
       "confirmIssue": "Emitir recibo",
       "fixErrors": "Corrija os campos marcados antes de continuar."
     },
@@ -1527,13 +1527,18 @@
     },
     "void": {
       "title": "Anular recibo",
-      "description": "Recibo {{number}}. Ele continua no histórico, marcado como anulado. Para corrigir, anule e emita um novo.",
+      "description": "Recibo {{number}}. Ele continua no histórico, marcado como anulado. Para corrigir, anule e emita um novo. O(a) aluno(a) recebe um e-mail avisando da anulação (sem o motivo).",
       "reason": "Motivo (obrigatório)",
       "reasonPlaceholder": "Ex.: valor errado",
       "confirm": "Anular recibo",
       "voiding": "Anulando...",
       "cancel": "Cancelar",
       "success": "Recibo {{number}} anulado."
+    },
+    "notify": {
+      "sent": "Aviso enviado por e-mail ao(à) aluno(a).",
+      "noEmail": "O(a) aluno(a) não tem e-mail no cadastro: o aviso por e-mail não foi enviado.",
+      "failed": "Não foi possível enviar o e-mail de aviso ao(à) aluno(a). O recibo não muda; avise o(a) aluno(a) por outro meio, se precisar."
     },
     "page": {
       "title": "Recibos de seguro",

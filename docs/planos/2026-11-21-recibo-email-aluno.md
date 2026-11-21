@@ -43,7 +43,7 @@ Item de origem: `docs/PENDENCIAS.md` → "A fazer" → **"Recibos: email ao alun
 
 ## Passos
 
-### 1. [OPUS] Módulo do aviso no servidor: `receiptNotice.ts` (novo)
+### 1. [OPUS] Módulo do aviso no servidor: `receiptNotice.ts` (novo) ✅
 - Arquivo: `supabase/functions/send-email/receiptNotice.ts` (novo)
 - Fazer: criar o arquivo exatamente com o conteúdo abaixo (módulo puro, sem Deno nem rede).
 - Código:
@@ -323,7 +323,7 @@ Item de origem: `docs/PENDENCIAS.md` → "A fazer" → **"Recibos: email ao alun
 - Conferir antes: `signupWelcome.ts` exporta `cleanWelcomeName`, `normalizeLanguage` e o tipo `SignupLanguage` (exporta hoje; se não, exportar sem mudar mais nada). `policy.ts` exporta `escapeHtml`, `normalizeEmail`, `STUDIO_FROM`, `Caller`, `OutgoingEmail` (exporta hoje). `receiptNotice.ts` importa de `policy.ts`, e `policy.ts` **não** importa `receiptNotice.ts` (sem import circular).
 - Pronto quando: o arquivo existe, os testes do passo 3 passam.
 
-### 2. [OPUS] Ligar o aviso na `send-email` (`policy.ts` e `index.ts`)
+### 2. [OPUS] Ligar o aviso na `send-email` (`policy.ts` e `index.ts`) ✅
 - Arquivos: `supabase/functions/send-email/policy.ts`, `supabase/functions/send-email/index.ts`
 - Fazer em `policy.ts`:
   1. No comentário do topo, depois do item do "aluno logado (cadastro público)", acrescentar:
@@ -434,7 +434,7 @@ Item de origem: `docs/PENDENCIAS.md` → "A fazer" → **"Recibos: email ao alun
   - Nada mais muda no `index.ts` (o log `Email sent: id=... mode=receipt_notice caller=staff recipients=1` sai sozinho, sem email nem nome).
 - Pronto quando: `npm test` passa (inclusive os testes antigos de `sendEmailPolicy.test.js`); se o Deno estiver instalado, `deno check supabase/functions/send-email/index.ts` sem erro (se não estiver, dizer isso no resultado; não instalar).
 
-### 3. [OPUS] Testes do servidor
+### 3. [OPUS] Testes do servidor ✅
 - Arquivos: `src/tests/receiptNotice.test.js` (novo); `src/tests/sendEmailPolicy.test.js` (acrescentar 1 teste)
 - Fazer em `sendEmailPolicy.test.js`, no `describe('send-email: professora e service_role', ...)`:
   ```js
@@ -629,7 +629,7 @@ Item de origem: `docs/PENDENCIAS.md` → "A fazer" → **"Recibos: email ao alun
   ```
 - Pronto quando: `npx vitest run src/tests/receiptNotice.test.js src/tests/sendEmailPolicy.test.js` passa; `npm run lint` sem erro nesses arquivos.
 
-### 4. [OPUS] Função do site que pede o aviso
+### 4. [OPUS] Função do site que pede o aviso ✅
 - Arquivo: `src/lib/receiptService.js`
 - Fazer: acrescentar no fim do arquivo:
   ```js
@@ -673,7 +673,7 @@ Item de origem: `docs/PENDENCIAS.md` → "A fazer" → **"Recibos: email ao alun
 - **Não** chamar `notifyStudentAboutReceipt` dentro de `issueReceipt`, `ensureReceiptPdf` nem `voidReceipt` (essas funções continuam iguais).
 - Pronto quando: testes do passo 8 passam.
 
-### 5. [OPUS] Emitir: avisar o aluno depois da emissão dar certo
+### 5. [OPUS] Emitir: avisar o aluno depois da emissão dar certo ✅
 - Arquivo: `src/components/IssueReceiptDialog.jsx`
 - Fazer:
   1. Import (linha 18): `import { downloadReceipt, issueReceipt, loadSignatureBytes, NOTIFY_TOASTS, notifyStudentInBackground } from '../lib/receiptService'`
@@ -690,7 +690,7 @@ Item de origem: `docs/PENDENCIAS.md` → "A fazer" → **"Recibos: email ao alun
   - Nada mais muda: o aviso fica **depois** de `issueReceipt` (só roda se a RPC deu certo; se ela der erro, o `catch` mostra o erro e nenhum aviso sai).
 - Pronto quando: emitir um recibo fecha a tela na mesma hora (sem esperar o email) e aparece o toast do aviso em seguida.
 
-### 6. [OPUS] Anular: avisar o aluno depois da anulação dar certo
+### 6. [OPUS] Anular: avisar o aluno depois da anulação dar certo ✅
 - Arquivo: `src/components/ReceiptsList.jsx`
 - Fazer:
   1. Import (linha 15): `import { ensureReceiptPdf, fetchReceipt, NOTIFY_TOASTS, notifyStudentInBackground, voidReceipt } from '../lib/receiptService'`
@@ -741,7 +741,7 @@ Item de origem: `docs/PENDENCIAS.md` → "A fazer" → **"Recibos: email ao alun
   const get = (obj, path) => path.split('.').reduce((o, k) => (o == null ? undefined : o[k]), obj)
 
   describe('notifyStudentAboutReceipt', () => {
-    beforeEach(() => invoke.mockReset())
+    beforeEach(() => { invoke.mockReset() })
 
     it('manda só o type, o id e o evento para a send-email', async () => {
       invoke.mockResolvedValue({ data: { success: true, data: { id: 'x' } }, error: null })
@@ -765,7 +765,7 @@ Item de origem: `docs/PENDENCIAS.md` → "A fazer" → **"Recibos: email ao alun
   })
 
   describe('notifyStudentInBackground', () => {
-    beforeEach(() => invoke.mockReset())
+    beforeEach(() => { invoke.mockReset() })
 
     it('nunca rejeita: erro vira "failed"', async () => {
       invoke.mockRejectedValue(new Error('rede'))

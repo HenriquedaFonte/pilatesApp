@@ -15,7 +15,7 @@ import {
   todayMontreal,
   validateReceiptForm,
 } from '../lib/receipts'
-import { downloadReceipt, issueReceipt, loadSignatureBytes } from '../lib/receiptService'
+import { downloadReceipt, issueReceipt, loadSignatureBytes, NOTIFY_TOASTS, notifyStudentInBackground } from '../lib/receiptService'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -305,6 +305,13 @@ const IssueReceiptDialog = ({ open, onOpenChange, student, teacherId, onIssued }
         })
       }
       if (profileSaveFailed) toast.error(t('receipts.issue.saveProfileError'))
+      // Aviso ao aluno por email, sem await: a emissão já deu certo e não
+      // depende do email. Sai também com o PDF pendente ("Gerar PDF" depois não
+      // manda outro).
+      notifyStudentInBackground(receipt.id, 'issued', result => {
+        const { type, key } = NOTIFY_TOASTS[result]
+        toast[type](t(key))
+      })
     } catch (err) {
       setError(receiptErrorKey(err))
     } finally {

@@ -1473,7 +1473,7 @@
       "back": "Retour",
       "cancel": "Annuler",
       "confirmTitle": "Émettre le reçu?",
-      "confirmText": "Une fois émis, le reçu ne peut pas être modifié, seulement annulé.",
+      "confirmText": "Une fois émis, le reçu ne peut pas être modifié, seulement annulé. L'élève reçoit un courriel l'avisant que le reçu est dans « Mes reçus ».",
       "confirmIssue": "Émettre le reçu",
       "fixErrors": "Corrigez les champs indiqués avant de continuer."
     },
@@ -1538,13 +1538,18 @@
     },
     "void": {
       "title": "Annuler le reçu",
-      "description": "Reçu {{number}}. Il reste dans l'historique, marqué comme annulé. Pour le corriger, annulez-le et émettez-en un nouveau.",
+      "description": "Reçu {{number}}. Il reste dans l'historique, marqué comme annulé. Pour le corriger, annulez-le et émettez-en un nouveau. L'élève reçoit un courriel l'avisant de l'annulation (sans le motif).",
       "reason": "Motif (obligatoire)",
       "reasonPlaceholder": "Ex. : montant erroné",
       "confirm": "Annuler le reçu",
       "voiding": "Annulation...",
       "cancel": "Fermer",
       "success": "Reçu {{number}} annulé."
+    },
+    "notify": {
+      "sent": "Avis envoyé par courriel à l'élève.",
+      "noEmail": "L'élève n'a pas de courriel au dossier : l'avis par courriel n'a pas été envoyé.",
+      "failed": "Impossible d'envoyer l'avis par courriel à l'élève. Le reçu n'est pas touché ; prévenez l'élève autrement au besoin."
     },
     "page": {
       "title": "Reçus d'assurance",

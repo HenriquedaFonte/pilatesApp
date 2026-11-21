@@ -12,7 +12,7 @@ import {
   summarizeTreatmentDates,
   todayMontreal,
 } from '../lib/receipts'
-import { ensureReceiptPdf, fetchReceipt, voidReceipt } from '../lib/receiptService'
+import { ensureReceiptPdf, fetchReceipt, NOTIFY_TOASTS, notifyStudentInBackground, voidReceipt } from '../lib/receiptService'
 import { downloadReceipt, openReceiptPdf, shareReceipt } from '../lib/receiptFiles'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -166,6 +166,11 @@ const ReceiptsList = ({ filters = {}, refreshKey = 0, showStudent = false, stude
     try {
       await voidReceipt(voidTarget.id, reason)
       toast.success(t('receipts.void.success', { number: voidTarget.receipt_number }))
+      // Aviso ao aluno por email (sem o motivo), sem await: a anulação já deu certo.
+      notifyStudentInBackground(voidTarget.id, 'voided', result => {
+        const { type, key } = NOTIFY_TOASTS[result]
+        toast[type](t(key))
+      })
       setVoidTarget(null)
       setReload(r => r + 1)
     } catch (err) {

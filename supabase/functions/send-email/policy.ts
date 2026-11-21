@@ -14,6 +14,10 @@
 //     próprio email do login, nos 30 minutos depois de criar a conta e uma vez
 //     só (marca em app_metadata, gravada pelo index.ts). Assunto/HTML livres,
 //     outro destinatário, anexo ou Reply-To: recusado.
+//   - aviso de recibo ao aluno (type: 'receipt_notice'): só professora/admin;
+//     tratado no index.ts com receiptNotice.ts (lê o recibo e o perfil no
+//     servidor). buildEmail() recusa esse type (400) para ele nunca cair no
+//     envio livre da professora.
 //   - sem login, fora do contato: recusado.
 // O remetente é sempre STUDIO_FROM; o "from" que vem do cliente é ignorado.
 
@@ -63,7 +67,7 @@ export interface OutgoingEmail {
 }
 
 export type BuildResult =
-  | { ok: true; mode: 'staff' | 'contact' | 'signup_welcome'; email: OutgoingEmail }
+  | { ok: true; mode: 'staff' | 'contact' | 'signup_welcome' | 'receipt_notice'; email: OutgoingEmail }
   | { ok: false; status: number; error: string }
 
 const EMAIL_RE = /^[^\s@<>,;"'()\\]+@[^\s@<>,;"'()\\]+\.[^\s@<>,;"'()\\]+$/
@@ -219,6 +223,9 @@ export function buildEmail(body: Body, caller: Caller, now: number = Date.now())
   if (caller.kind === 'anonymous') return fail(401, 'Unauthorized')
 
   if (body.type === 'signup_welcome') return buildSignupWelcomeEmail(caller, now)
+
+  // Aviso de recibo: só pelo caminho do index.ts (receiptNotice.ts), nunca como envio livre.
+  if (body.type === 'receipt_notice') return fail(400, 'Invalid request')
 
   // Conta sem papel de professora: nada além dos dois casos acima.
   if (caller.kind !== 'service' && caller.kind !== 'staff') return fail(403, 'Forbidden')
