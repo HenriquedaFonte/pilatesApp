@@ -712,7 +712,7 @@ Item de origem: `docs/PENDENCIAS.md` → "A fazer" → **"Recibos: email ao alun
   - `handleGeneratePdf` **não muda** (não manda email).
 - Pronto quando: anular fecha a janela na mesma hora e aparece o toast do aviso em seguida; "Gerar PDF" não mostra toast de aviso.
 
-### 7. [SONNET] Textos pt / en / fr
+### 7. [SONNET] Textos pt / en / fr ✅
 - Arquivos: `src/locales/pt.json`, `src/locales/en.json`, `src/locales/fr.json`
 - Fazer, em cada arquivo, dentro de `"receipts"`:
   1. Trocar o valor de `receipts.dialog.confirmText` e de `receipts.void.description` pelos da tabela "Textos" abaixo (o texto antigo continua igual, só ganha a frase do email no fim).
@@ -720,7 +720,7 @@ Item de origem: `docs/PENDENCIAS.md` → "A fazer" → **"Recibos: email ao alun
 - Não mexer em nenhuma outra chave. Conferir que os 3 arquivos continuam JSON válido (`node -e "for (const l of ['pt','en','fr']) JSON.parse(require('fs').readFileSync('src/locales/'+l+'.json','utf8'))"`).
 - Pronto quando: os testes do passo 8 (chaves nas 3 línguas) passam.
 
-### 8. [SONNET] Testes do site
+### 8. [SONNET] Testes do site ✅
 - Arquivo: `src/tests/receiptNotify.test.js` (novo)
 - Fazer: criar com este conteúdo:
   ```js
@@ -808,14 +808,14 @@ Item de origem: `docs/PENDENCIAS.md` → "A fazer" → **"Recibos: email ao alun
   ```
 - Pronto quando: `npx vitest run src/tests/receiptNotify.test.js` passa.
 
-### 9. [SONNET] Prévia do texto para o dono (antes do revisor e do merge)
+### 9. [SONNET] Prévia do texto para o dono (antes do revisor e do merge) ✅
 - Fazer:
   1. Gerar os arquivos: `RECEIPT_NOTICE_PREVIEW_DIR=<pasta de rascunho da sessão>/previa-recibo npx vitest run src/tests/receiptNotice.test.js` (a pasta de rascunho da sessão, **fora do repositório**; nada disso é commitado).
   2. Mostrar ao dono: publicar uma página privada (Artifact) com os 6 emails (emitido e anulado × pt, en, fr), cada um com o assunto em cima e o HTML do `.html` correspondente embaixo (por exemplo em `<iframe srcdoc>`); nome de exemplo "Maria Exemplo", recibo "K-2026-0007". Se não der para publicar, colar na conversa os 6 `.txt`.
   3. **Esperar o "ok" do dono no texto.** Se ele pedir mudança, mudar **só** `NOTICE_TEXTS` em `receiptNotice.ts` (e o assunto esperado nos testes do passo 3, se mudar o assunto), rodar o passo 9.1 de novo e mostrar outra vez.
 - Pronto quando: o dono aprovou o texto (anotar a data da aprovação no PENDENCIAS, passo 10).
 
-### 10. [SONNET] Atualizar `docs/PENDENCIAS.md`
+### 10. [SONNET] Atualizar `docs/PENDENCIAS.md` ✅
 - Arquivo: `docs/PENDENCIAS.md`
 - Fazer:
   1. Linha `_Última atualização: ..._` → `_Última atualização: 2026-11-21 (email ao aluno quando o recibo é emitido/anulado: feito no código; falta o deploy da send-email, o merge e o teste)_`.
@@ -825,7 +825,7 @@ Item de origem: `docs/PENDENCIAS.md` → "A fazer" → **"Recibos: email ao alun
   5. "Testes em aberto": item novo (aberto) com os passos de "Manual depois do deploy" (seção "Testes" abaixo).
 - Pronto quando: o PENDENCIAS reflete o estado e nada foi marcado `[x]` sem o dono confirmar (só o item de "A fazer" do código).
 
-### 11. [SONNET] Verificação e revisão
+### 11. [SONNET] Verificação e revisão ✅
 - Fazer: `npm run lint`, `npm test`, `npm run build` (informar o resultado real). Conferir `git diff --stat main`: só os arquivos deste plano (`supabase/functions/send-email/{receiptNotice.ts,policy.ts,index.ts}`, `src/lib/receiptService.js`, `src/components/IssueReceiptDialog.jsx`, `src/components/ReceiptsList.jsx`, `src/locales/{pt,en,fr}.json`, `src/tests/{receiptNotice,receiptNotify,sendEmailPolicy}.test.js`, `docs/PENDENCIAS.md`, este plano). Chamar o `revisor` com o caminho deste plano e a branch. Só então push e PR.
 - Pronto quando: lint/testes/build ok, revisor aprovou, PR aberto com o bloco "Próxima sessão".
 
