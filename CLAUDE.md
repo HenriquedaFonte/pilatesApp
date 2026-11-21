@@ -1,7 +1,7 @@
 # Josi Pilates — instruções para o Claude
 
 **Toda sessão nova começa do `main` atualizado (`git pull origin main`) e lendo `docs/PENDENCIAS.md`** (estado atual, testes em aberto, o que está por fazer).
-Modelos e agentes: a sessão roda em **Sonnet** e executa; **todo planejamento é do agente `planejador` (Opus)**, passos críticos vão para o `dev-critico` (Opus), e o `revisor` (Opus) revisa o diff uma vez antes do push. Regras completas: `.claude/rules/escolha-de-esforco.md` — seguir sempre.
+Modelos e agentes: a sessão roda em **Sonnet** e executa; **todo planejamento é do agente `planejador` (Opus)**, passos críticos vão para o `dev-critico` (Opus), e o `revisor` (Opus) revisa o diff uma vez antes do push, só nas tarefas de risco (banco, auth, créditos/pagamentos, emails, dados pessoais, textos legais). Regras completas: `.claude/rules/escolha-de-esforco.md` — seguir sempre.
 **Primeira coisa de toda sessão, antes da tarefa: conferir o modelo da sessão principal** (ferramenta `get_session` do claude-code-remote, sem `session_id`: campo `session_context.model`; sem essa ferramenta, o modelo informado no prompt do sistema). Se não for Sonnet, avisar o dono em uma linha ("Esta sessão está em [modelo], não em Sonnet: reabra em Sonnet para economizar, ou diga para seguir assim") e esperar a resposta antes de começar. Os agentes `planejador`, `dev-critico` e `revisor` rodam sempre em Opus (fixado em `.claude/agents/`), seja qual for o modelo da sessão.
 
 ## O projeto

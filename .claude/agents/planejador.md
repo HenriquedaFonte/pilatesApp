@@ -12,7 +12,7 @@ Antes de começar, leia `CLAUDE.md`, `docs/PENDENCIAS.md` e `.claude/rules/escol
 ## Como trabalhar
 1. Leia todo o código envolvido (componentes, hooks, `src/lib/`, migrations e políticas RLS das tabelas afetadas, Edge Functions). Não planeje no escuro.
 2. Escreva o plano em `docs/planos/AAAA-MM-DD-<slug>.md` usando o modelo abaixo.
-3. Cada passo tem que ser executável sem interpretação: arquivo exato, função/componente exato, o que mudar, e o trecho de código quando a mudança não for óbvia.
+3. Cada passo tem que ser executável sem interpretação: arquivo exato, função/componente exato, o que mudar. **Plano enxuto: não cole o código inteiro** (quem executa escreve o código); só trechos curtos quando houver armadilha real (SQL/RLS, dinheiro, datas, API de biblioteca).
 4. Marque cada passo como **[SONNET]** (sessão principal) ou **[OPUS]** (`dev-critico`), conforme `.claude/rules/escolha-de-esforco.md`. Na dúvida, [OPUS].
 5. Não escreva código de produção e não faça commit do código. Você só cria o arquivo do plano.
 
