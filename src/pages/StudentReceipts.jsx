@@ -11,7 +11,7 @@ import {
   summarizeTreatmentDates,
   todayMontreal,
 } from '../lib/receipts'
-import { downloadReceipt, openReceiptPdf, shareReceipt } from '../lib/receiptFiles'
+import { downloadReceipt, openReceiptPdf, recordReceiptOpen, shareReceipt } from '../lib/receiptFiles'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
@@ -27,7 +27,7 @@ import { LanguageToggle } from '../components/LanguageToggle'
 // Outros: "Baixar PDF". Celular (iOS/Android): também "Compartilhar" (Web Share).
 
 const COLUMNS =
-  'id, receipt_number, receipt_type, issued_at, treatments, total_fees, total_products, pdf_path, status'
+  'id, receipt_number, receipt_type, issued_at, treatments, total_fees, total_products, pdf_path, status, student_first_opened_at'
 
 const StudentReceipts = () => {
   const { profile, signOut } = useAuth()
@@ -37,6 +37,7 @@ const StudentReceipts = () => {
   const [loadError, setLoadError] = useState(false)
   const [busy, setBusy] = useState(null) // { id, action }
   const files = useRef({}) // PDFs já baixados para compartilhar (por id)
+  const opened = useRef(new Set()) // recibos cuja primeira abertura já foi registrada (por id)
 
   const apple = isAppleMobileDevice()
   const mobile = isMobileDevice()
@@ -76,6 +77,8 @@ const StudentReceipts = () => {
     try {
       if (apple) await openReceiptPdf(receipt)
       else await downloadReceipt(receipt)
+      // Sem await: registrar a primeira abertura não pode atrasar nem quebrar a ação.
+      recordReceiptOpen(receipt, opened.current)
     } catch {
       toast.error(t('studentReceipts.errors.open'))
     } finally {
@@ -89,6 +92,8 @@ const StudentReceipts = () => {
     setBusy({ id: receipt.id, action: 'share' })
     try {
       const result = await shareReceipt(receipt, files.current)
+      // A folha de compartilhar abriu (compartilhou ou fechou): o aluno teve o PDF.
+      if (result === 'shared' || result === 'cancelled') recordReceiptOpen(receipt, opened.current)
       if (result === 'unsupported') toast.error(t('studentReceipts.errors.shareUnsupported'))
       else if (result === 'retry') toast.info(t('studentReceipts.shareReady'))
     } catch {

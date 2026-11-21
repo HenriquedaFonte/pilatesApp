@@ -82,3 +82,24 @@ export async function shareReceipt(receipt, cache = {}) {
     throw err
   }
 }
+
+// Primeira abertura pelo aluno ("Meus recibos"): grava a data/hora da primeira
+// vez que o aluno abre, baixa ou compartilha o PDF. A RPC só aceita o recibo do
+// próprio aluno logado e só grava se estiver vazio (aberturas seguintes não
+// mudam nada). Nunca atrapalha a ação do aluno: qualquer erro é ignorado e o
+// próximo toque tenta de novo. `seen` (Set de ids) evita chamar de novo na
+// mesma página. Devolve a data gravada (ISO) ou null.
+export async function recordReceiptOpen(receipt, seen = new Set()) {
+  if (!receipt?.id || receipt.student_first_opened_at || seen.has(receipt.id)) return null
+  seen.add(receipt.id)
+  try {
+    const { data, error } = await supabase.rpc('mark_receipt_opened_by_student', {
+      p_receipt_id: receipt.id,
+    })
+    if (error) throw error
+    return data ?? null
+  } catch {
+    seen.delete(receipt.id)
+    return null
+  }
+}

@@ -1448,7 +1448,9 @@
       "void": "Void",
       "open": "Open PDF",
       "share": "Share",
-      "shareReady": "PDF ready. Tap \"Share\" again."
+      "shareReady": "PDF ready. Tap \"Share\" again.",
+      "openedByStudent": "Opened by the student on {{date}}",
+      "notOpenedByStudent": "Not opened yet"
     },
     "void": {
       "title": "Void receipt",
