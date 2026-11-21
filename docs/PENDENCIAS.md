@@ -3,11 +3,12 @@
 > Memória entre sessões. Toda sessão nova começa lendo este arquivo.
 > No fim de cada tarefa: "Atualize o PENDENCIAS".
 
-_Última atualização: 2026-11-21 (recibos: registrar a primeira abertura pelo aluno)_
+_Última atualização: 2026-11-21 (recibos: registrar a primeira abertura pelo aluno; antes: aviso automático quando a sessão não abre em Sonnet)_
 
 ## Estado atual
 - Produção: josipilates.com (Vercel, branch `main`).
 - Processo de trabalho com o Claude configurado: `CLAUDE.md`, agente `dev-critico`, regra de esforço e este arquivo.
+- Toda sessão confere o próprio modelo no início e avisa se não estiver em Sonnet (regra no topo do `CLAUDE.md`, 2026-11-21). O modelo da sessão principal é o escolhido no app ao abrir; os agentes Opus não dependem dele.
 
 ## Testes em aberto (usuário)
 - [ ] **Teste depois da migration `20261121000000` e do merge (primeira abertura do recibo pelo aluno):** precisa de um recibo **emitido com PDF** para um **aluno de teste** (e de preferência um 2º aluno de teste). Conferir os textos em pt, en e fr.
