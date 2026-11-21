@@ -640,7 +640,7 @@ clique** de "Baixar Excel" (vira um arquivo .js à parte no build; a tela não c
   (Zerar `pages` e os `mockClear()` no `beforeEach`.)
 - Pronto quando: `npm test` passa com os testes novos e os antigos.
 
-### 7. [SONNET] Conferência final (antes do revisor)
+### 7. [SONNET] Conferência final (antes do revisor) ✅
 - Fazer: `npm run lint`, `npm test`, `npm run build` e anotar o resultado real. Conferir que o build
   gerou um arquivo .js separado com a biblioteca (`grep -l "sharedStrings" dist/assets/*.js` lista um
   arquivo que **não** é o `index-*.js` principal). Conferir `git diff --stat main`: só os arquivos
@@ -649,7 +649,7 @@ clique** de "Baixar Excel" (vira um arquivo .js à parte no build; a tela não c
   `src/pages/TeacherReceipts.jsx`, 2 testes, `docs/PENDENCIAS.md`, este plano).
 - Pronto quando: os três comandos passam; então chamar o `revisor` com este plano e a branch.
 
-### 8. [SONNET] Atualizar `docs/PENDENCIAS.md`
+### 8. [SONNET] Atualizar `docs/PENDENCIAS.md` ✅
 - Arquivo(s): `docs/PENDENCIAS.md`
 - Fazer:
   1. Linha `_Última atualização: ..._` → `_Última atualização: 2026-11-21 (relatório fiscal dos recibos em Excel: feito no código; falta o merge e o teste)_`.
