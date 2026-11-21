@@ -71,6 +71,11 @@ describe('send-email: professora e service_role', () => {
     const r = buildEmail({ ...generic, subject: 'a\r\nBcc: x@y.com' }, staff, NOW)
     expect(r.email.subject).toBe('a Bcc: x@y.com')
   })
+
+  it('type receipt_notice nunca vira envio livre (vai pelo receiptNotice.ts)', () => {
+    const r = buildEmail({ ...generic, type: 'receipt_notice' }, staff, NOW)
+    expect(r).toEqual({ ok: false, status: 400, error: 'Invalid request' })
+  })
 })
 
 describe('send-email: sem login', () => {

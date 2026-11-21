@@ -1389,7 +1389,7 @@
       "back": "Back",
       "cancel": "Cancel",
       "confirmTitle": "Issue the receipt?",
-      "confirmText": "Once issued, the receipt cannot be changed, only voided.",
+      "confirmText": "Once issued, the receipt cannot be changed, only voided. The student gets an email saying the receipt is in \"My receipts\".",
       "confirmIssue": "Issue receipt",
       "fixErrors": "Please fix the highlighted fields before continuing."
     },
@@ -1454,13 +1454,18 @@
     },
     "void": {
       "title": "Void receipt",
-      "description": "Receipt {{number}}. It stays in the history, marked as voided. To correct it, void it and issue a new one.",
+      "description": "Receipt {{number}}. It stays in the history, marked as voided. To correct it, void it and issue a new one. The student gets an email about the voiding (without the reason).",
       "reason": "Reason (required)",
       "reasonPlaceholder": "E.g.: wrong amount",
       "confirm": "Void receipt",
       "voiding": "Voiding...",
       "cancel": "Cancel",
       "success": "Receipt {{number}} voided."
+    },
+    "notify": {
+      "sent": "Email notice sent to the student.",
+      "noEmail": "The student has no email on file: the email notice was not sent.",
+      "failed": "Could not send the email notice to the student. The receipt is not affected; let the student know another way if needed."
     },
     "page": {
       "title": "Insurance receipts",

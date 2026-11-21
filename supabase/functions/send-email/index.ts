@@ -1,5 +1,13 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import { ALLOWED_ATTACHMENTS, buildEmail, type Caller } from './policy.ts'
+import { ALLOWED_ATTACHMENTS, buildEmail, type BuildResult, type Caller } from './policy.ts'
+import {
+  authorizeReceiptNotice,
+  buildReceiptNotice,
+  isReceiptNoticeBody,
+  readReceiptNoticeRequest,
+  type NoticeStudent,
+  type ReceiptNoticeResult,
+} from './receiptNotice.ts'
 
 // Quem pode mandar o quê: ver policy.ts.
 
@@ -79,6 +87,43 @@ async function loadAttachment(name: string) {
   return { filename: name, content: btoa(binary), type: spec.contentType }
 }
 
+// Aviso de recibo ao aluno: lê o recibo e o perfil com service_role (o
+// destinatário vem do banco, nunca do pedido). Ver receiptNotice.ts.
+// deno-lint-ignore no-explicit-any
+async function handleReceiptNotice(body: any, caller: Caller): Promise<ReceiptNoticeResult> {
+  const denied = authorizeReceiptNotice(caller)
+  if (denied) return denied
+  const request = readReceiptNoticeRequest(body)
+  if (!request) return { kind: 'fail', status: 400, error: 'Invalid request' }
+
+  const adminClient = createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '')
+  const { data: receipt, error: receiptError } = await adminClient
+    .from('insurance_receipts')
+    .select('id, receipt_number, student_id, status, issued_at, voided_at')
+    .eq('id', request.receiptId)
+    .maybeSingle()
+  if (receiptError) {
+    console.error('send-email: receipt_notice could not read the receipt')
+    return { kind: 'fail', status: 500, error: 'Internal server error' }
+  }
+
+  let student: NoticeStudent | null = null
+  if (receipt) {
+    const { data, error } = await adminClient
+      .from('profiles')
+      .select('email, full_name, preferred_language, deleted_at')
+      .eq('id', receipt.student_id)
+      .maybeSingle()
+    if (error) {
+      console.error('send-email: receipt_notice could not read the student profile')
+      return { kind: 'fail', status: 500, error: 'Internal server error' }
+    }
+    student = data
+  }
+
+  return buildReceiptNotice({ request, receipt, student, now: Date.now() })
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
@@ -96,8 +141,25 @@ Deno.serve(async (req) => {
     }
 
     const caller = await resolveCaller(req.headers.get('Authorization') ?? '')
-    // deno-lint-ignore no-explicit-any
-    const result = buildEmail(body as any, caller)
+    let result: BuildResult
+    let idempotencyKey: string | null = null
+    if (isReceiptNoticeBody(body)) {
+      const notice = await handleReceiptNotice(body, caller)
+      if (notice.kind === 'fail') {
+        console.warn(`send-email refused: caller=${caller.kind} mode=receipt_notice status=${notice.status} reason=${notice.error}`)
+        return json({ error: notice.error }, notice.status)
+      }
+      if (notice.kind === 'skip') {
+        // Sem email no cadastro (ou perfil na lixeira): nada sai. Sem email/nome no log.
+        console.log(`send-email: receipt_notice skipped reason=${notice.reason}`)
+        return json({ success: false, skipped: notice.reason }, 200)
+      }
+      result = { ok: true, mode: 'receipt_notice', email: notice.email }
+      idempotencyKey = notice.idempotencyKey
+    } else {
+      // deno-lint-ignore no-explicit-any
+      result = buildEmail(body as any, caller)
+    }
     if (!result.ok) {
       console.warn(`send-email refused: caller=${caller.kind} status=${result.status} reason=${result.error}`)
       return json({ error: result.error }, result.status)
@@ -147,6 +209,8 @@ Deno.serve(async (req) => {
       headers: {
         'Authorization': `Bearer ${resendApiKey}`,
         'Content-Type': 'application/json',
+        // Aviso de recibo: o mesmo recibo/evento em 24 h não manda outro email.
+        ...(idempotencyKey && { 'Idempotency-Key': idempotencyKey }),
       },
       body: JSON.stringify(resendPayload),
     })

@@ -110,3 +110,40 @@ export async function voidReceipt(receiptId, reason) {
   })
   if (error) throw error
 }
+
+// Aviso ao aluno por email (recibo emitido ou anulado). O servidor (send-email,
+// type 'receipt_notice') lê o recibo e o perfil e monta o email na língua do
+// aluno; daqui só vão o id e o evento. Devolve 'sent' ou 'no_email' (aluno sem
+// email no cadastro); erro → exceção.
+export async function notifyStudentAboutReceipt(receiptId, event) {
+  const { data, error } = await supabase.functions.invoke('send-email', {
+    body: { type: 'receipt_notice', receipt_id: receiptId, event },
+  })
+  if (error) throw new Error(data?.error || error.message || 'Failed to send email')
+  if (data?.skipped === 'no_email') return 'no_email'
+  if (!data?.success) throw new Error(data?.error || 'Failed to send email')
+  return 'sent'
+}
+
+// Para a tela: chama sem travar quem chamou (quem chama NÃO usa await) e nunca
+// rejeita. onResult recebe 'sent' | 'no_email' | 'failed'. Falha no email não
+// desfaz nem trava a emissão/anulação.
+export function notifyStudentInBackground(receiptId, event, onResult) {
+  return notifyStudentAboutReceipt(receiptId, event)
+    .catch(() => 'failed')
+    .then(result => {
+      try {
+        onResult?.(result)
+      } catch {
+        // o aviso na tela nunca quebra nada
+      }
+      return result
+    })
+}
+
+// Toast da professora para cada resultado do aviso.
+export const NOTIFY_TOASTS = {
+  sent: { type: 'success', key: 'receipts.notify.sent' },
+  no_email: { type: 'info', key: 'receipts.notify.noEmail' },
+  failed: { type: 'warning', key: 'receipts.notify.failed' },
+}
