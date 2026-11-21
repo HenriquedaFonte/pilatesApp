@@ -3,11 +3,12 @@
 > Memória entre sessões. Toda sessão nova começa lendo este arquivo.
 > No fim de cada tarefa: "Atualize o PENDENCIAS".
 
-_Última atualização: 2026-11-21 (dois pedidos novos da Josi sobre recibos, em "A fazer")_
+_Última atualização: 2026-11-21 (aviso automático quando a sessão não abre em Sonnet)_
 
 ## Estado atual
 - Produção: josipilates.com (Vercel, branch `main`).
 - Processo de trabalho com o Claude configurado: `CLAUDE.md`, agente `dev-critico`, regra de esforço e este arquivo.
+- Toda sessão confere o próprio modelo no início e avisa se não estiver em Sonnet (regra no topo do `CLAUDE.md`, 2026-11-21). O modelo da sessão principal é o escolhido no app ao abrir; os agentes Opus não dependem dele.
 
 ## Testes em aberto (usuário)
 - [ ] **Teste depois do merge da rolagem da lista de turmas (sem SQL, sem deploy):** no celular, professora → Alunos → um aluno de teste → matricular em turmas ("Enroll … in Classes"): a lista de horários rola dentro da janela e os botões "Cancel" e "Enroll Student" ficam sempre visíveis embaixo. Marcar uma turma e clicar em "Enroll Student": a matrícula é salva. No computador, a janela continua normal.
