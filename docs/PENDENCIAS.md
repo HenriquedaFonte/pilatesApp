@@ -3,13 +3,14 @@
 > Memória entre sessões. Toda sessão nova começa lendo este arquivo.
 > No fim de cada tarefa: "Atualize o PENDENCIAS".
 
-_Última atualização: 2026-11-19 (remoção da surpresa de aniversário da Josi)_
+_Última atualização: 2026-11-21 (rolagem da lista de turmas ao matricular aluno)_
 
 ## Estado atual
 - Produção: josipilates.com (Vercel, branch `main`).
 - Processo de trabalho com o Claude configurado: `CLAUDE.md`, agente `dev-critico`, regra de esforço e este arquivo.
 
 ## Testes em aberto (usuário)
+- [ ] **Teste depois do merge da rolagem da lista de turmas (sem SQL, sem deploy):** no celular, professora → Alunos → um aluno de teste → matricular em turmas ("Enroll … in Classes"): a lista de horários rola dentro da janela e os botões "Cancel" e "Enroll Student" ficam sempre visíveis embaixo. Marcar uma turma e clicar em "Enroll Student": a matrícula é salva. No computador, a janela continua normal.
 - [x] **Surpresa de aniversário da Josi (PR #69) deu certo (confirmado pelo usuário, 2026-11-19).** Ficou no ar só em 18/11/2026.
 - [ ] **Teste depois do merge da remoção da surpresa (sem SQL, sem deploy):** abrir a tela de **Check-in**: abre normal, sem a tela de parabéns, e o check-in funciona como antes.
 - [ ] **Teste depois do merge do nome e licença no naturopathie (sem SQL, sem deploy):** "Pré-visualizar" (não gasta número) um recibo de **naturopathie**: o nome da praticante e o nº da licença ficam na mesma linha de "Nom/Name:" e "Licence/License No." (antes ficavam um pouco acima). A assinatura e a data continuam no mesmo lugar. No kinésithérapie, nada muda.
