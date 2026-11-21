@@ -1363,7 +1363,7 @@ const TeacherStudents = () => {
         </Dialog>
 
         <Dialog open={isEnrollDialogOpen} onOpenChange={setIsEnrollDialogOpen}>
-          <DialogContent>
+          <DialogContent className="max-h-[90dvh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>
                 Enroll {selectedStudent?.full_name} in Classes
@@ -1373,7 +1373,7 @@ const TeacherStudents = () => {
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleEnrollStudent} className="space-y-4">
-              <div className="space-y-2">
+              <div className="max-h-[55dvh] space-y-2 overflow-y-auto pr-1">
                 {schedules.map(schedule => (
                   <div
                     key={schedule.id}
