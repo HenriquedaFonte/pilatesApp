@@ -11,7 +11,7 @@ _Última atualização: 2026-11-21 (recibos: registrar a primeira abertura pelo 
 
 ## Testes em aberto (usuário)
 - [ ] **Teste depois da migration `20261121000000` e do merge (primeira abertura do recibo pelo aluno):** precisa de um recibo **emitido com PDF** para um **aluno de teste** (e de preferência um 2º aluno de teste). Conferir os textos em pt, en e fr.
-  1. **SQL:** no SQL Editor, rodar `docs/testes/recibo-primeira-abertura-teste.sql` e de novo `docs/testes/3.3-recibos-teste.sql` (os dois terminam em ROLLBACK, nada fica gravado): deu certo se não aparecer erro "FALHOU".
+  1. ~~**SQL**~~ **feito (2026-11-21):** `recibo-primeira-abertura-teste.sql` e `3.3-recibos-teste.sql` passaram em produção sem "FALHOU".
   2. **Professora, antes:** ficha do aluno de teste ("Ver" → "Recibos de seguro") e Relatórios → "Recibos de seguro": embaixo do status do recibo aparece "Ainda não aberto" (en "Not opened yet", fr « Pas encore ouvert »).
   3. **Professora abre/compartilha:** a Josi toca em "Baixar"/"Abrir PDF" (e "Compartilhar" no celular) na tela dela → recarregar a página: continua "Ainda não aberto".
   4. **Aluno abre:** entrar como o aluno de teste → "Meus recibos" → "Baixar PDF" (computador) ou "Abrir PDF" (iPhone): o PDF abre/baixa como antes. Na tela da professora (recarregar): "Aberto pelo aluno em AAAA-MM-DD" (data de hoje; en "Opened by the student on ...", fr « Ouvert par l'élève le ... »).
@@ -215,7 +215,7 @@ As três migrations de segurança (`20261112010000`, `20261112020000`, `20261112
 - [x] **Teste do backup sem `NODE_TLS_REJECT_UNAUTHORIZED`:** feito (2026-11-12). O usuário rodou de novo o workflow (run 43273699793, tentativa 2, mesmo arquivo do workflow que está no `main`): verde.
 
 ## SQL / deploys pendentes
-- [ ] **Migration `supabase/migrations/20261121000000_receipt_first_opened_by_student.sql`** (primeira abertura do recibo pelo aluno: coluna `student_first_opened_at`, guarda atualizada, RPC `mark_receipt_opened_by_student`). **Ordem: SQL antes do merge** (o código novo lê a coluna nova; sem ela, as listas de recibos do portal, da ficha do aluno e de Relatórios param de carregar). O SQL sozinho não quebra o site que está no ar (só acrescenta coluna e função).
+- [x] **Migration `supabase/migrations/20261121000000_receipt_first_opened_by_student.sql` — rodada em produção pelo usuário (2026-11-21); `recibo-primeira-abertura-teste.sql` (pelo usuário) e `3.3-recibos-teste.sql` (pelo Claude via API do Supabase, a pedido do usuário) passaram sem "FALHOU"; nada ficou gravado (1 recibo, 0 aberturas, contador igual). Falta o merge do PR #76.** (primeira abertura do recibo pelo aluno: coluna `student_first_opened_at`, guarda atualizada, RPC `mark_receipt_opened_by_student`). **Ordem: SQL antes do merge** (o código novo lê a coluna nova; sem ela, as listas de recibos do portal, da ficha do aluno e de Relatórios param de carregar). O SQL sozinho não quebra o site que está no ar (só acrescenta coluna e função).
   1. Colar e rodar o conteúdo da migration (BEGIN/COMMIT, idempotente; se der erro, nada é aplicado).
   2. Rodar `docs/testes/recibo-primeira-abertura-teste.sql` e `docs/testes/3.3-recibos-teste.sql` (ver "Testes em aberto").
   - Reversão (só emergência; **primeiro** o Revert do PR, **depois** o SQL): `docs/testes/recibo-primeira-abertura-reversao.sql` (apaga a função e a coluna, e as datas de abertura gravadas; volta a guarda da `20261112070000`; não mexe nos recibos).
