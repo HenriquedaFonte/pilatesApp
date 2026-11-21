@@ -1521,7 +1521,9 @@
       "void": "Anular",
       "open": "Abrir PDF",
       "share": "Compartilhar",
-      "shareReady": "PDF pronto. Toque em \"Compartilhar\" de novo."
+      "shareReady": "PDF pronto. Toque em \"Compartilhar\" de novo.",
+      "openedByStudent": "Aberto pelo aluno em {{date}}",
+      "notOpenedByStudent": "Ainda não aberto"
     },
     "void": {
       "title": "Anular recibo",

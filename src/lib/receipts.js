@@ -221,6 +221,15 @@ export function summarizeTreatmentDates(treatments = []) {
   return `${dates[0]} – ${dates[dates.length - 1]} (${dates.length})`
 }
 
+// Primeira abertura pelo aluno, para a tela da professora: chave i18n e a data
+// (AAAA-MM-DD, dia de Montréal, como a "Emissão"). Vazia ou inválida → "Ainda não aberto".
+export function studentOpenInfo(receipt) {
+  const iso = receipt?.student_first_opened_at
+  const d = iso ? new Date(iso) : null
+  if (!d || Number.isNaN(d.getTime())) return { key: 'receipts.list.notOpenedByStudent', date: null }
+  return { key: 'receipts.list.openedByStudent', date: todayMontreal(d) }
+}
+
 // Valores em dólar canadense, no formato da língua da tela.
 export const moneyFormatter = lang =>
   new Intl.NumberFormat(lang === 'en' ? 'en-CA' : lang === 'fr' ? 'fr-CA' : 'pt-BR', {

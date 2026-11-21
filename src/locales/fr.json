@@ -1532,7 +1532,9 @@
       "void": "Annuler",
       "open": "Ouvrir le PDF",
       "share": "Partager",
-      "shareReady": "PDF prêt. Touchez « Partager » de nouveau."
+      "shareReady": "PDF prêt. Touchez « Partager » de nouveau.",
+      "openedByStudent": "Ouvert par l'élève le {{date}}",
+      "notOpenedByStudent": "Pas encore ouvert"
     },
     "void": {
       "title": "Annuler le reçu",

@@ -8,6 +8,7 @@ import {
   isMobileDevice,
   moneyFormatter,
   receiptErrorKey,
+  studentOpenInfo,
   summarizeTreatmentDates,
   todayMontreal,
 } from '../lib/receipts'
@@ -43,7 +44,7 @@ import { Loader2, Download, ExternalLink, FileWarning, Ban, Share2 } from 'lucid
 // Celular (iOS/Android): também "Compartilhar" (Web Share), como no portal do aluno.
 
 const COLUMNS =
-  'id, receipt_number, receipt_type, student_id, issued_at, treatments, consultations_count, total_fees, total_products, pdf_path, status, voided_at, void_reason'
+  'id, receipt_number, receipt_type, student_id, issued_at, treatments, consultations_count, total_fees, total_products, pdf_path, status, voided_at, void_reason, student_first_opened_at'
 
 // Início do dia (hora local do navegador) em ISO, para filtrar issued_at.
 const startOfDayIso = (dateStr, addDays = 0) => {
@@ -216,6 +217,7 @@ const ReceiptsList = ({ filters = {}, refreshKey = 0, showStudent = false, stude
               const isVoid = r.status === 'void'
               const busy = busyId === r.id
               const total = Number(r.total_fees) + Number(r.total_products || 0)
+              const openInfo = studentOpenInfo(r)
               return (
                 <TableRow key={r.id} className={isVoid ? 'opacity-70' : ''}>
                   <TableCell className="font-mono text-xs whitespace-nowrap">
@@ -242,6 +244,11 @@ const ReceiptsList = ({ filters = {}, refreshKey = 0, showStudent = false, stude
                           {t('receipts.list.pdfPending')}
                         </Badge>
                       )}
+                      <span
+                        className={`text-xs ${openInfo.date ? 'text-foreground' : 'text-muted-foreground'}`}
+                      >
+                        {t(openInfo.key, { date: openInfo.date })}
+                      </span>
                       {isVoid && r.void_reason && (
                         <span className="text-xs text-muted-foreground">
                           {t('receipts.list.voidReason', { reason: r.void_reason })}
