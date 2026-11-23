@@ -47,7 +47,7 @@ A Josi passa a ter, na ficha de cada aluno, uma **modalidade online** independen
 
 ## PR A — Banco (migration, testes SQL, backup)
 
-### 1. [OPUS] Migration das tabelas, RLS e RPCs
+### 1. [OPUS] Migration das tabelas, RLS e RPCs ✅
 - Arquivo: `supabase/migrations/20261123000000_create_online_memberships.sql` (BEGIN/COMMIT, idempotente).
 - Fazer:
   - Checagens iniciais copiadas da `20261112070000` (`is_staff()` com comentário `josi-pilates:%`; `audit_log` com as 5 colunas). Se faltar, `RAISE EXCEPTION` e nada é aplicado.
@@ -80,7 +80,7 @@ A Josi passa a ter, na ficha de cada aluno, uma **modalidade online** independen
   - Bloco de ROLLBACK comentado no fim, apontando para o arquivo de reversão.
 - Pronto quando: roda 2x seguidas sem erro num Postgres 16 local com o estado de produção simulado (como nas migrations anteriores) e o teste do passo 2 passa.
 
-### 2. [OPUS] Teste e reversão SQL
+### 2. [OPUS] Teste e reversão SQL ✅
 - Arquivos: `docs/testes/online-modalidade-teste.sql`, `docs/testes/online-modalidade-reversao.sql`.
 - Fazer: teste no padrão de `docs/testes/3.3-recibos-teste.sql` (BEGIN … ROLLBACK, `SET LOCAL ROLE authenticated`, `request.jwt.claims`, `RAISE EXCEPTION 'FALHOU: …'`), escolhendo uma professora e 2 alunos reais por SELECT (sem ids escritos). Cobrir: aluno A pede (ok), pede de novo (`online_plan_exists`), lê só a própria linha, não lê a do B, não faz INSERT/UPDATE/DELETE direto nas tabelas, não chama `set_online_membership`/`register_online_payment`/`void_online_payment`; anon não lê nada nem chama RPC; professora aprova, registra mensalidade, recusa sobreposição, aceita período seguinte, registra drop-in, recusa drop-in repetido, recusa valor com 3 casas e data futura, anula (motivo obrigatório; anular de novo dá erro); UPDATE direto como `postgres` em `amount` é barrado pela guarda; `DELETE FROM profiles` de um aluno com pagamentos (dentro da transação) apaga em cascata; `audit_log` ganhou as linhas esperadas.
   Reversão: `DROP FUNCTION` das 4 RPCs e da guarda, `DROP TABLE online_payments, online_memberships` — **recusa** (RAISE) se existir algum pagamento, a menos que a pessoa troque uma variável `v_forcar` para `true` no topo (dados financeiros).

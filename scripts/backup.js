@@ -55,6 +55,8 @@ const TABLES = [
   'practitioner_credentials',
   'insurance_receipts',
   'receipt_counters',
+  'online_memberships',
+  'online_payments',
 ];
 
 // ── Buckets do Storage (privados) para copiar ───────────────────────────────
