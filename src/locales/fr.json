@@ -1722,7 +1722,7 @@
       "empty": "Aucun paiement en ligne.",
       "valid": "Valide",
       "void": "Annulé",
-      "voidAction": "Annuler",
+      "voidAction": "Annuler le paiement",
       "voidReason": "Motif de l'annulation",
       "voided": "Paiement annulé.",
       "voidHint": "L'élève peut voir ce motif. N'y écrivez rien de sensible."
