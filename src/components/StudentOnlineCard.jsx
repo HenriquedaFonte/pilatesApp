@@ -70,6 +70,7 @@ const StudentOnlineCard = ({ membership, loaded, onChanged }) => {
   const { t, i18n } = useTranslation()
   const [payments, setPayments] = useState([])
   const [loadError, setLoadError] = useState(false)
+  const [paymentsLoaded, setPaymentsLoaded] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [chosen, setChosen] = useState(null)
   const [sending, setSending] = useState(false)
@@ -90,6 +91,8 @@ const StudentOnlineCard = ({ membership, loaded, onChanged }) => {
         }
       } catch {
         if (!cancelled) setLoadError(true)
+      } finally {
+        if (!cancelled) setPaymentsLoaded(true)
       }
     })()
     return () => {
@@ -102,6 +105,10 @@ const StudentOnlineCard = ({ membership, loaded, onChanged }) => {
   const money = moneyFormatter(i18n.language?.slice(0, 2))
   const planName = plan => t(`online.plans.${plan}`)
   const status = onlineStatus({ membership, payments, today: todayMontreal() })
+  // Situação por pagamento só aparece depois de carregar os pagamentos (e se
+  // a leitura não falhou): antes disso "Sem pagamento" seria informação falsa.
+  const needsPayments = membership?.status === 'active'
+  const showStatus = !needsPayments || (paymentsLoaded && !loadError)
 
   const openDialog = () => {
     setChosen(null)
@@ -200,11 +207,15 @@ const StudentOnlineCard = ({ membership, loaded, onChanged }) => {
       <CardContent className="space-y-3">
         <div className="flex flex-wrap items-center gap-2">
           <span className="font-semibold">{planName(membership.plan)}</span>
-          <Badge variant="outline" className={`whitespace-normal ${STATE_STYLE[status.state] || GRAY}`}>
-            {statusText(t, status)}
-          </Badge>
+          {showStatus ? (
+            <Badge variant="outline" className={`whitespace-normal ${STATE_STYLE[status.state] || GRAY}`}>
+              {statusText(t, status)}
+            </Badge>
+          ) : (
+            !loadError && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+          )}
         </div>
-        {status.state === 'overdue' && (
+        {showStatus && status.state === 'overdue' && (
           <p className="text-sm text-muted-foreground">{t('online.student.overdueHint')}</p>
         )}
         {status.state === 'requested' && (
