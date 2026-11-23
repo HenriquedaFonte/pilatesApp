@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import emailService from '../lib/emailService'
@@ -23,8 +24,12 @@ import {
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Loader2, Phone, Globe } from 'lucide-react'
 import Logo from '../components/Logo'
+import { requestOnlinePlan } from '../lib/onlineService'
+import { ONLINE_PLANS } from '../lib/onlinePlans'
 
 const Signup = () => {
+  const { t } = useTranslation()
+  const [onlinePlan, setOnlinePlan] = useState('none')
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -123,6 +128,15 @@ const Signup = () => {
       } catch {
         // O cadastro não falha se o email não sair.
         console.warn('Welcome email failed to send')
+      }
+      // Pedido de aulas online (opcional). Falha não impede o cadastro: o
+      // aluno pode pedir depois pelo painel.
+      if (ONLINE_PLANS.includes(onlinePlan)) {
+        try {
+          await requestOnlinePlan(onlinePlan)
+        } catch {
+          console.warn('Online plan request failed')
+        }
       }
     }
 
@@ -244,6 +258,23 @@ const Signup = () => {
               </p>
             </div>
             
+            <div className="space-y-2">
+              <Label htmlFor="onlinePlan">{t('online.signup.label')}</Label>
+              <Select value={onlinePlan} onValueChange={setOnlinePlan} disabled={loading}>
+                <SelectTrigger id="onlinePlan" className="rounded-xl border-border bg-background">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl">
+                  <SelectItem value="none">{t('online.signup.none')}</SelectItem>
+                  {ONLINE_PLANS.map(plan => (
+                    <SelectItem key={plan} value={plan}>
+                      {t(`online.plans.${plan}`)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="password">Senha</Label>
               <PasswordInput

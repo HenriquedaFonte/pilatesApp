@@ -74,11 +74,28 @@ export function defaultMonthlyPeriod(payments, today = todayMontreal()) {
 
 // Situação online do aluno (decisão 5). Pagamentos anulados não contam.
 // state: 'none' | 'requested' | 'ended' | 'dropin' | 'paid' | 'expiring' | 'overdue' | 'unpaid'
-// Para mensalidade: só contam as válidas com period_start <= hoje; paidThrough
-// é o maior period_end delas.
+// Para mensalidade: contam as válidas com period_start <= hoje, mais os
+// períodos adiantados que continuam sem buraco (começam até o dia seguinte ao
+// fim do pago); paidThrough é o maior period_end da cadeia.
 export function onlineStatus({ membership, payments, today = todayMontreal() } = {}) {
   const started = validMonthly(payments).filter(p => p.period_start <= today)
-  const paidThrough = maxDate(started.map(p => p.period_end))
+  let paidThrough = maxDate(started.map(p => p.period_end))
+  // Pagamento adiantado: períodos futuros que começam até o dia seguinte ao
+  // fim do pago continuam a cadeia (renovar antes de vencer não deixa a
+  // situação em "Vence em N dias").
+  if (paidThrough) {
+    const future = validMonthly(payments).filter(p => p.period_start > today)
+    let extended = true
+    while (extended) {
+      extended = false
+      for (const p of future) {
+        if (p.period_start <= addDays(paidThrough, 1) && p.period_end > paidThrough) {
+          paidThrough = p.period_end
+          extended = true
+        }
+      }
+    }
+  }
   const dropins = validDropins(payments)
   const month = today.slice(0, 7)
 

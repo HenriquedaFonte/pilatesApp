@@ -176,6 +176,18 @@ describe('onlineStatus (decisão 5)', () => {
     })
   })
 
+  it('pagamento adiantado continua a cadeia (sem buraco)', () => {
+    const payments = [monthly('2026-11-01', '2026-11-25'), monthly('2026-11-26', '2026-12-25')]
+    expect(status(active('coached'), payments)).toMatchObject({ state: 'paid', paidThrough: '2026-12-25' })
+    const chain = [...payments, monthly('2026-12-26', '2027-01-25')]
+    expect(status(active('coached'), chain).paidThrough).toBe('2027-01-25')
+  })
+
+  it('pagamento futuro com buraco não conta', () => {
+    const payments = [monthly('2026-11-01', '2026-11-25'), monthly('2026-11-27', '2026-12-26')]
+    expect(status(active('coached'), payments)).toMatchObject({ state: 'expiring', paidThrough: '2026-11-25' })
+  })
+
   it('anulado é ignorado', () => {
     const payments = [
       monthly('2026-10-01', '2026-10-31'),
