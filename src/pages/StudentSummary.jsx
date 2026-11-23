@@ -58,6 +58,7 @@ import TeacherLayout from '../components/TeacherLayout'
 import InsuranceFields from '../components/InsuranceFields'
 import IssueReceiptDialog from '../components/IssueReceiptDialog'
 import ReceiptsList from '../components/ReceiptsList'
+import OnlinePlanCard from '../components/OnlinePlanCard'
 
 const profileSchema = z.object({
   full_name: z.string().min(1, 'Full name is required'),
@@ -487,6 +488,11 @@ const StudentSummary = () => {
         {/* Seguro saúde do aluno (editável pela professora) */}
         {profile?.role === 'teacher' && studentId && (
           <InsuranceFields studentId={studentId} className="mb-6" />
+        )}
+
+        {/* Aulas online: modalidade e pagamentos (plano 2026-11-23-online-modalidades) */}
+        {profile?.role === 'teacher' && studentId && (
+          <OnlinePlanCard studentId={studentId} className="mb-6" />
         )}
 
         {/* Recibos de seguro (Story 3.5): emissão e histórico */}

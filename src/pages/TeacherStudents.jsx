@@ -5,6 +5,10 @@ import { supabase } from '../lib/supabase'
 import emailService from '../lib/emailService'
 import { getUpcomingBirthdays } from '../lib/birthdays'
 import BirthdayBanner from '../components/BirthdayBanner'
+import OnlinePaymentDialog from '../components/OnlinePaymentDialog'
+import { fetchOnlineOverview } from '../lib/onlineService'
+import { onlineStatus, isOnlineOnly } from '../lib/onlinePlans'
+import { todayMontreal } from '../lib/receipts'
 import { getDayName as getDayNameLocale, formatTime as formatTimeLocale } from '../lib/format'
 import { Button } from '@/components/ui/button'
 import {
@@ -48,6 +52,7 @@ import {
   MessageSquare,
   Loader2,
   Hash,
+  Banknote,
   Info,
   Cake,
   UserX,
@@ -134,6 +139,13 @@ const TeacherStudents = () => {
   }
 
   const [upcomingBirthdays, setUpcomingBirthdays] = useState([])
+  // Aulas online: falha ao carregar não derruba a lista (fica vazio)
+  const [onlineData, setOnlineData] = useState({
+    memberships: {},
+    payments: {},
+    studioIds: new Set()
+  })
+  const [onlinePaymentStudent, setOnlinePaymentStudent] = useState(null)
   const [newUser, setNewUser] = useState({
     email: '',
     fullName: '',
@@ -264,6 +276,31 @@ const TeacherStudents = () => {
       setSchedules(schedulesData || [])
       const birthdays = getUpcomingBirthdays(studentsData || [])
       setUpcomingBirthdays(birthdays)
+
+      // Aulas online (modalidade, pagamentos e turmas presenciais): opcional
+      try {
+        const [overview, linksResult] = await Promise.all([
+          fetchOnlineOverview(),
+          supabase.from('student_class_link').select('student_id')
+        ])
+        if (linksResult.error) throw linksResult.error
+        const memberships = {}
+        overview.memberships.forEach(m => {
+          memberships[m.student_id] = m
+        })
+        const payments = {}
+        overview.payments.forEach(pay => {
+          ;(payments[pay.student_id] ||= []).push(pay)
+        })
+        setOnlineData({
+          memberships,
+          payments,
+          studioIds: new Set((linksResult.data || []).map(l => l.student_id))
+        })
+      } catch (onlineError) {
+        console.error('Error fetching online data:', onlineError)
+        setOnlineData({ memberships: {}, payments: {}, studioIds: new Set() })
+      }
 
       // Fetch last check-ins for each student
       if (studentsData && studentsData.length > 0) {
@@ -636,6 +673,31 @@ const TeacherStudents = () => {
     return formatTimeLocale(time, i18n.language)
   }
 
+  const hasOnlinePlan = studentId => {
+    const m = onlineData.memberships[studentId]
+    return m?.status === 'requested' || m?.status === 'active'
+  }
+  const onlineRequests = students.filter(
+    st => onlineData.memberships[st.id]?.status === 'requested'
+  )
+  const onlineBadgeClass = {
+    paid: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-400 border-emerald-200/50',
+    dropin: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-400 border-emerald-200/50',
+    expiring: 'bg-amber-50 text-amber-700 dark:bg-amber-950/20 dark:text-amber-400 border-amber-200/50',
+    requested: 'bg-amber-50 text-amber-700 dark:bg-amber-950/20 dark:text-amber-400 border-amber-200/50',
+    overdue: 'bg-rose-50 text-rose-700 dark:bg-rose-950/20 dark:text-rose-400 border-rose-200/50',
+    unpaid: 'bg-rose-50 text-rose-700 dark:bg-rose-950/20 dark:text-rose-400 border-rose-200/50'
+  }
+  const today = todayMontreal()
+  const onlineStatusText = info => {
+    const params = {
+      date: info.paidThrough || info.overdueSince || info.lastDropin || '',
+      count: info.state === 'dropin' ? info.dropinsThisMonth : info.daysLeft ?? 0
+    }
+    if (info.state === 'dropin' && !info.lastDropin) return t('online.status.noDropin')
+    return t(`online.status.${info.state}`, params)
+  }
+
   const filteredStudents = students
     .filter(student => {
       const matchesSearch =
@@ -646,6 +708,9 @@ const TeacherStudents = () => {
 
       const isStudentActive = student.is_active !== false
 
+      if (statusFilter === 'online') {
+        return hasOnlinePlan(student.id)
+      }
       if (statusFilter === 'active') {
         return isStudentActive
       } else if (statusFilter === 'inactive') {
@@ -809,6 +874,22 @@ const TeacherStudents = () => {
 
         <BirthdayBanner birthdays={upcomingBirthdays} className="mb-6" />
 
+        {onlineRequests.length > 0 && (
+          <Alert className="mb-6 rounded-2xl border-amber-200/50 bg-amber-50/50 text-amber-800 dark:bg-amber-950/20 dark:text-amber-400">
+            <AlertDescription className="font-medium">
+              {t('online.list.requestsBanner', { count: onlineRequests.length })}{' '}
+              {onlineRequests.map((st, i) => (
+                <span key={st.id}>
+                  {i > 0 && ', '}
+                  <Link to={`/teacher/student-summary/${st.id}`} className="underline">
+                    {st.full_name}
+                  </Link>
+                </span>
+              ))}
+            </AlertDescription>
+          </Alert>
+        )}
+
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -828,6 +909,7 @@ const TeacherStudents = () => {
                 <SelectItem value="active">Ativos</SelectItem>
                 <SelectItem value="inactive">Inativos</SelectItem>
                 <SelectItem value="all">Todos</SelectItem>
+                <SelectItem value="online">{t('online.list.filter')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -866,6 +948,21 @@ const TeacherStudents = () => {
               )
             }
 
+            // Aulas online: badge e regra "só online"
+            const membership = onlineData.memberships[student.id]
+            const studentOnlinePayments = onlineData.payments[student.id] || []
+            const showOnlineBadge = hasOnlinePlan(student.id)
+            const onlineInfo = showOnlineBadge
+              ? onlineStatus({ membership, payments: studentOnlinePayments, today })
+              : null
+            const onlineOnly =
+              student.is_active !== false &&
+              isOnlineOnly({
+                membership,
+                totalCredits: totalBalance,
+                hasStudioClasses: onlineData.studioIds.has(student.id)
+              })
+
             return (
               <Card 
                 key={student.id}
@@ -889,7 +986,20 @@ const TeacherStudents = () => {
                       </CardDescription>
                     </div>
                     <div className="flex flex-col items-end gap-1.5 shrink-0">
-                      {statusBadge}
+                      {showOnlineBadge && (
+                        <Link
+                          to={`/teacher/student-summary/${student.id}`}
+                          title={onlineStatusText(onlineInfo)}
+                        >
+                          <Badge
+                            variant="outline"
+                            className={onlineBadgeClass[onlineInfo.state] || onlineBadgeClass.paid}
+                          >
+                            {t('online.badge')} · {t(`online.plans.${membership.plan}`)}
+                          </Badge>
+                        </Link>
+                      )}
+                      {!onlineOnly && statusBadge}
                       <span className="text-[11px] font-semibold bg-muted/60 dark:bg-muted/20 px-2 py-0.5 rounded-full text-foreground border border-border/50">
                         Total: {totalBalance}
                       </span>
@@ -986,6 +1096,13 @@ const TeacherStudents = () => {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-48 bg-card border border-border rounded-xl shadow-md p-1">
+                        <DropdownMenuItem
+                          onClick={() => setOnlinePaymentStudent(student)}
+                          className="cursor-pointer flex items-center gap-2 hover:bg-muted py-2 px-3 rounded-lg text-sm"
+                        >
+                          <Banknote className="h-4 w-4 text-muted-foreground" />
+                          <span>{t('online.actions.paymentShortcut')}</span>
+                        </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => {
                             setSelectedStudent(student)
@@ -1632,6 +1749,16 @@ const TeacherStudents = () => {
           </AlertDialogContent>
         </AlertDialog>
       </div>
+      <OnlinePaymentDialog
+        student={onlinePaymentStudent}
+        membership={onlinePaymentStudent ? onlineData.memberships[onlinePaymentStudent.id] || null : null}
+        payments={onlinePaymentStudent ? onlineData.payments[onlinePaymentStudent.id] || [] : []}
+        open={!!onlinePaymentStudent}
+        onOpenChange={open => {
+          if (!open) setOnlinePaymentStudent(null)
+        }}
+        onSaved={fetchData}
+      />
     </TeacherLayout>
   )
 }

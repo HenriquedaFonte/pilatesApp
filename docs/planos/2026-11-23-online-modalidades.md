@@ -97,25 +97,25 @@ Ordem do PR A: **SQL antes do merge** (o backup do `main` passaria a pedir tabel
 
 ## PR B — Professora: modalidade e pagamentos na ficha + lista de alunos (sessão nova, depois do SQL)
 
-### 4. [OPUS] Lógica pura e serviço
+### 4. [OPUS] Lógica pura e serviço ✅
 - Arquivos: `src/lib/onlinePlans.js` (novo, sem supabase), `src/lib/onlineService.js` (novo), `src/tests/onlinePlans.test.js` (novo).
 - Fazer em `onlinePlans.js`: constantes `ONLINE_PLANS`, `MONTHLY_PLANS`, `PAYMENT_METHODS` (as 4 do presencial), `SUGGESTED_PRICES = { coached: 58, recorded: 26, dropin: 14 }`, `EXPIRING_DAYS = 5`; `addDays(dateStr, n)` e `addMonthsClamped(dateStr, n)` **só com `Date.UTC`/strings `AAAA-MM-DD`** (nunca `new Date('AAAA-MM-DD')` local, que vira o dia anterior em Montréal); `defaultMonthlyPeriod(payments, today)` (decisão 6); `onlineStatus({ membership, payments, today })` → `{ state, plan, paidThrough, daysLeft, overdueSince, lastDropin, dropinsThisMonth }` com `state` em `'none' | 'requested' | 'ended' | 'dropin' | 'paid' | 'expiring' | 'overdue' | 'unpaid'` (decisão 5; ignora anulados); `isOnlineOnly({ membership, totalCredits, hasStudioClasses })` (decisão 9); `validatePaymentForm(form, today)` (mesmas regras do servidor; valor via `parseAmountToCents`; devolve erros por campo com chaves i18n); `onlineErrorKey(err)` (mapeia os códigos `online_*` do servidor para `online.errors.<código sem prefixo>`, senão `online.errors.generic`). Reusar `todayMontreal`, `isValidDateString`, `parseAmountToCents`, `centsToNumber` de `src/lib/receipts.js`.
 - Fazer em `onlineService.js`: `fetchMembership(studentId)`, `fetchPayments(studentId)` (ordenado por `paid_on` desc, `created_at` desc), `fetchOnlineOverview()` (todas as modalidades + mensalidades válidas `student_id, plan, period_start, period_end` + drop-ins válidos `student_id, class_date`, para a lista), `requestOnlinePlan(plan)`, `setMembership(studentId, plan, status)`, `registerPayment(form)` (converte o valor com `centsToNumber(parseAmountToCents(...))`; campos não usados pelo tipo vão `null`), `voidPayment(id, reason)`. Erros sobem como estão (a tela usa `onlineErrorKey`).
 - Testes: períodos (15/01→14/02; 31/01→27/02; 30/01/2028→28/02/2028; 01/12→31/12; sem pagamento → hoje; fim há 40 dias → hoje; fim ontem → hoje); status (paid, expiring no limite de 5 dias, overdue com `overdueSince`, unpaid, pagamento futuro ignorado, anulado ignorado, requested, ended, dropin com contagem do mês); `isOnlineOnly` (os 4 casos); validação (vírgula, 3 casas, data futura, fim < início, > 366 dias); `onlineErrorKey`.
 - Pronto quando: testes novos e antigos verdes.
 
-### 5. [SONNET] Textos pt/en/fr
+### 5. [SONNET] Textos pt/en/fr ✅
 - Arquivos: `src/locales/pt.json`, `en.json`, `fr.json`.
 - Fazer: novo bloco de topo `"online"` com as chaves da tabela "Textos" (todas as do PR B, C e D de uma vez, para os PRs seguintes só usarem). Teste de chaves iguais nas 3 línguas: acrescentar ao padrão de `src/tests/privacyPolicy.test.js` um teste novo `src/tests/onlineLocales.test.js` que confere que `online` tem as mesmas chaves em pt/en/fr.
 - Pronto quando: teste verde.
 
-### 6. [OPUS] Card "Aulas online" na ficha do aluno
+### 6. [OPUS] Card "Aulas online" na ficha do aluno ✅
 - Arquivos: `src/components/OnlinePlanCard.jsx` (novo), `src/components/OnlinePaymentDialog.jsx` (novo), `src/pages/StudentSummary.jsx` (só inserir `<OnlinePlanCard studentId={studentId} className="mb-6" />` logo depois de `<InsuranceFields … />`).
 - `OnlinePlanCard`: carrega modalidade e pagamentos; mostra plano + badge de situação (`onlineStatus`, cores: verde em dia, âmbar vence/pedido, vermelho vencida/sem pagamento, cinza encerrada). Botões conforme o estado: sem linha/encerrada → "Atribuir modalidade" (diálogo com o select dos 3 planos → `setMembership(…, 'active')`); `requested` → "Aprovar pedido" (mesmo diálogo, plano pré-escolhido) e "Recusar pedido" (`'ended'`, com confirmação); `active` → "Mudar modalidade" e "Encerrar" (confirmação). Sempre: "Registrar pagamento" (abre `OnlinePaymentDialog`). Tabela de pagamentos (data do pagamento, tipo, período ou data da aula, valor com `moneyFormatter`, forma, status) com "Anular" nos válidos (diálogo com motivo obrigatório; mostra o motivo embaixo dos anulados). Celular: tabela com rolagem horizontal dentro do card (não da página).
 - `OnlinePaymentDialog` (props `student`, `membership`, `payments`, `open`, `onOpenChange`, `onSaved`): tipo (Mensalidade | Drop-in); mensalidade → plano (só os 2 mensais; padrão = plano ativo se for mensal, senão `coached`), início/fim (padrão `defaultMonthlyPeriod`), valor (padrão `SUGGESTED_PRICES[plan]`, muda junto com o plano enquanto a Josi não tiver digitado); drop-in → data da aula (padrão hoje), valor 14; os dois → forma de pagamento (padrão `interac`), data do pagamento (padrão hoje, `max` = hoje). Caixa "Atribuir também a modalidade …" conforme a decisão 4 (marcada por padrão; chama `setMembership` antes de `registerPayment`). Validar com `validatePaymentForm`; botão desabilitado enquanto grava (evita duplo clique); confirmação com o resumo antes de gravar; erros via `onlineErrorKey`. Nenhum email é enviado.
 - Pronto quando: na ficha de um aluno de teste dá para atribuir, aprovar, mudar, encerrar, registrar mensalidade e drop-in, ver a situação mudar e anular; textos nas 3 línguas.
 
-### 7. [SONNET] Lista de alunos: badge, filtro, pedidos e atalho de pagamento
+### 7. [SONNET] Lista de alunos: badge, filtro, pedidos e atalho de pagamento ✅
 - Arquivo: `src/pages/TeacherStudents.jsx`.
 - Fazer:
   - Em `fetchData`, carregar também `fetchOnlineOverview()` e `student_class_link` (`select('student_id')`) e guardar mapas por aluno (modalidade, pagamentos, `hasStudioClasses`). Falha nessa carga **não** derruba a lista (mostrar a lista sem os dados online).
