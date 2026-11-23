@@ -5,6 +5,7 @@ import { useAuth } from '../hooks/useAuth'
 import { ThemeToggle } from './ThemeToggle'
 import { LanguageToggle } from './LanguageToggle'
 import Logo from './Logo'
+import { goBack } from '../lib/navigation'
 import { Button } from '@/components/ui/button'
 import {
   LayoutDashboard,
@@ -26,7 +27,7 @@ import {
   ArrowLeft
 } from 'lucide-react'
 
-const TeacherLayout = ({ children }) => {
+const TeacherLayout = ({ children, backTo }) => {
   const { profile, signOut } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
@@ -37,10 +38,7 @@ const TeacherLayout = ({ children }) => {
   // Volta para a tela anterior; se a página foi aberta direto (sem histórico no site),
   // vai para a Visão geral.
   const isHome = location.pathname === '/teacher/dashboard'
-  const handleBack = () => {
-    if ((window.history.state?.idx ?? 0) > 0) navigate(-1)
-    else navigate('/teacher/dashboard')
-  }
+  const handleBack = () => goBack(navigate, backTo || '/teacher/dashboard')
 
   const handleSignOut = async () => {
     await signOut()

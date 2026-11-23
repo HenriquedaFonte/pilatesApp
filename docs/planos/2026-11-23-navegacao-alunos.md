@@ -65,7 +65,7 @@ tem um "voltar" só (o "← Voltar" do topo). Abrir Alunos pelo menu (ou pelo pa
   o efeito de busca recarrega `searchTerm` da URL (vazio) e o de rolagem leva ao topo.
 
 ## Passos
-### 1. [SONNET] Funções puras dos params e do voltar
+### 1. [SONNET] Funções puras dos params e do voltar ✅
 - Arquivos novos: `src/lib/studentListParams.js`, `src/lib/navigation.js`.
 - Fazer:
   - `STUDENT_STATUS_FILTERS = ['active', 'inactive', 'all', 'online']`.
@@ -76,13 +76,13 @@ tem um "voltar" só (o "← Voltar" do topo). Abrir Alunos pelo menu (ou pelo pa
   - `goBack(navigate, fallback = '/teacher/dashboard')` com a regra do `idx` acima.
 - Pronto quando: as funções existem, sem React, e os testes do passo 5 passam.
 
-### 2. [SONNET] TeacherLayout usa `goBack` e aceita `backTo`
+### 2. [SONNET] TeacherLayout usa `goBack` e aceita `backTo` ✅
 - Arquivo: `src/components/TeacherLayout.jsx`.
 - Fazer: assinatura `({ children, backTo })`; `handleBack = () => goBack(navigate, backTo || '/teacher/dashboard')`.
   Nada mais muda (botão, `md:hidden`, textos).
 - Pronto quando: telas que não passam `backTo` se comportam como hoje.
 
-### 3. [SONNET] Ficha do aluno: um só voltar, pelo histórico
+### 3. [SONNET] Ficha do aluno: um só voltar, pelo histórico ✅
 - Arquivo: `src/pages/StudentSummary.jsx`.
 - Fazer: `const backTo = `/teacher/students?student=${studentId}``; passar `backTo={backTo}` aos **dois**
   `<TeacherLayout>` (o de "não encontrado" e o principal). Trocar o `<Link to="/teacher/students"><Button…>`
@@ -92,7 +92,7 @@ tem um "voltar" só (o "← Voltar" do topo). Abrir Alunos pelo menu (ou pelo pa
 - Pronto quando: no celular só aparece o "← Voltar" do topo; no computador só a seta da página; as duas
   voltam no histórico.
 
-### 4. [SONNET] Lista: busca/filtro na URL, marcar o card e rolar
+### 4. [SONNET] Lista: busca/filtro na URL, marcar o card e rolar ✅
 - Arquivos: `src/pages/TeacherStudents.jsx`, `src/components/BirthdayBanner.jsx`.
 - Fazer em `TeacherStudents.jsx`:
   - `const [searchParams, setSearchParams] = useSearchParams()`, `useLocation()`, `useNavigationType()`;
@@ -124,7 +124,7 @@ tem um "voltar" só (o "← Voltar" do topo). Abrir Alunos pelo menu (ou pelo pa
   busca e filtro com o card do aluno no meio da tela; menu "Alunos" abre no topo e limpa busca/filtro;
   `?search=` vindo do Check-in continua funcionando.
 
-### 5. [SONNET] Testes automáticos
+### 5. [SONNET] Testes automáticos ✅
 - Arquivo novo: `src/tests/studentListParams.test.js` (vitest, no estilo de `birthdays.test.js`).
 - Casos: ler params vazios → `{ search: '', status: 'active', student: null }`; `status=xyz` → `active`;
   montar só com padrão → string vazia; com tudo → `search=…&status=online&student=…` (com espaço/acento

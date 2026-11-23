@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { useState, useEffect, useLayoutEffect, useRef } from 'react'
+import { Link, useLocation, useNavigate, useNavigationType, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import emailService from '../lib/emailService'
@@ -9,6 +9,7 @@ import OnlinePaymentDialog from '../components/OnlinePaymentDialog'
 import { fetchOnlineOverview } from '../lib/onlineService'
 import { onlineStatus, isOnlineOnly } from '../lib/onlinePlans'
 import { todayMontreal } from '../lib/receipts'
+import { readStudentListParams, buildStudentListParams } from '../lib/studentListParams'
 import { getDayName as getDayNameLocale, formatTime as formatTimeLocale } from '../lib/format'
 import { Button } from '@/components/ui/button'
 import {
@@ -84,13 +85,17 @@ import {
 const TeacherStudents = () => {
   const navigate = useNavigate()
   const { t, i18n } = useTranslation()
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const location = useLocation()
+  const navigationType = useNavigationType()
+  const { status: statusFilter, student: focusStudentId } = readStudentListParams(searchParams)
+  const handledKeyRef = useRef(null)
   const [students, setStudents] = useState([])
   // const [classes, setClasses] = useState([])
   const [schedules, setSchedules] = useState([])
   const [lastCheckIns, setLastCheckIns] = useState({})
   const [loading, setLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState(() => searchParams.get('search') ?? '')
+  const [searchTerm, setSearchTerm] = useState(() => readStudentListParams(searchParams).search)
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [selectedObservations, setSelectedObservations] = useState('')
   const [isBalanceDialogOpen, setIsBalanceDialogOpen] = useState(false)
@@ -108,7 +113,6 @@ const TeacherStudents = () => {
   const [creatingUser, setCreatingUser] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
-  const [statusFilter, setStatusFilter] = useState('active')
   const [isActiveConfirmOpen, setIsActiveConfirmOpen] = useState(false)
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false)
   const [deleteLoading, setDeleteLoading] = useState(false)
@@ -160,6 +164,33 @@ const TeacherStudents = () => {
     paymentMethod: '',
     amountPaid: ''
   })
+
+  const writeListParams = next =>
+    setSearchParams(buildStudentListParams(next), { replace: true })
+
+  // Marca o aluno na URL antes de abrir a ficha, para a lista voltar rolada até o card.
+  const rememberStudent = id =>
+    writeListParams({ search: searchTerm, status: statusFilter, student: id })
+
+  // Nova entrada no histórico (menu, voltar da ficha): recarrega a busca da URL.
+  useEffect(() => {
+    if (navigationType !== 'REPLACE') {
+      setSearchTerm(readStudentListParams(searchParams).search)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- só quando entra uma nova localização
+  }, [location.key])
+
+  // Depois que os cards aparecem: rola até o aluno marcado ou vai para o topo.
+  useLayoutEffect(() => {
+    if (loading) return
+    if (handledKeyRef.current !== null && navigationType === 'REPLACE') return
+    if (handledKeyRef.current === location.key) return
+    handledKeyRef.current = location.key
+    const el = focusStudentId && document.getElementById(`student-card-${focusStudentId}`)
+    if (el) el.scrollIntoView({ block: 'center' })
+    else window.scrollTo(0, 0)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- depende só do carregamento e da localização
+  }, [loading, location.key])
 
   useEffect(() => {
     fetchData()
@@ -872,7 +903,7 @@ const TeacherStudents = () => {
           </Alert>
         )}
 
-        <BirthdayBanner birthdays={upcomingBirthdays} className="mb-6" />
+        <BirthdayBanner birthdays={upcomingBirthdays} onStudentClick={rememberStudent} className="mb-6" />
 
         {onlineRequests.length > 0 && (
           <Alert className="mb-6 rounded-2xl border-amber-200/50 bg-amber-50/50 text-amber-800 dark:bg-amber-950/20 dark:text-amber-400">
@@ -881,7 +912,11 @@ const TeacherStudents = () => {
               {onlineRequests.map((st, i) => (
                 <span key={st.id}>
                   {i > 0 && ', '}
-                  <Link to={`/teacher/student-summary/${st.id}`} className="underline">
+                  <Link
+                    to={`/teacher/student-summary/${st.id}`}
+                    onClick={() => rememberStudent(st.id)}
+                    className="underline"
+                  >
                     {st.full_name}
                   </Link>
                 </span>
@@ -896,12 +931,18 @@ const TeacherStudents = () => {
             <Input
               placeholder="Search students by name or email..."
               value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
+              onChange={e => {
+                setSearchTerm(e.target.value)
+                writeListParams({ search: e.target.value, status: statusFilter })
+              }}
               className="pl-10 rounded-xl h-10 border-border bg-background focus-visible:ring-primary"
             />
           </div>
           <div className="w-full sm:w-48">
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <Select
+              value={statusFilter}
+              onValueChange={v => writeListParams({ search: searchTerm, status: v })}
+            >
               <SelectTrigger className="rounded-xl border-border bg-background focus-visible:ring-primary h-10 w-full">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
@@ -964,8 +1005,9 @@ const TeacherStudents = () => {
               })
 
             return (
-              <Card 
+              <Card
                 key={student.id}
+                id={`student-card-${student.id}`}
                 className={`flex flex-col h-full rounded-2xl border border-border bg-card shadow-sm transition-all hover:shadow-md ${
                   hasUpcomingBirthday 
                     ? 'bg-emerald-50/10 dark:bg-emerald-950/5 border-l-4 border-l-emerald-500' 
@@ -989,6 +1031,7 @@ const TeacherStudents = () => {
                       {showOnlineBadge && (
                         <Link
                           to={`/teacher/student-summary/${student.id}`}
+                          onClick={() => rememberStudent(student.id)}
                           title={onlineStatusText(onlineInfo)}
                         >
                           <Badge
@@ -1055,7 +1098,10 @@ const TeacherStudents = () => {
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => navigate(`/teacher/student-summary/${student.id}`)}
+                        onClick={() => {
+                          rememberStudent(student.id)
+                          navigate(`/teacher/student-summary/${student.id}`)
+                        }}
                         className="rounded-lg h-8 px-2.5 text-xs"
                       >
                         <Info className="h-3.5 w-3.5 mr-1 text-muted-foreground" />
