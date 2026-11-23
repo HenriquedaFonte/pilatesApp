@@ -34,6 +34,9 @@ import {
   Receipt
 } from 'lucide-react'
 import Logo from '../components/Logo'
+import StudentOnlineCard from '../components/StudentOnlineCard'
+import { fetchMembership } from '../lib/onlineService'
+import { isOnlineOnly } from '../lib/onlinePlans'
 import { ThemeToggle } from '../components/ThemeToggle'
 import { LanguageToggle } from '../components/LanguageToggle'
 import { TableSkeleton } from '../components/ui/skeleton'
@@ -54,6 +57,23 @@ const StudentDashboard = () => {
   const [recentAttendance, setRecentAttendance] = useState([])
   const [loading, setLoading] = useState(true)
   const [receiptCount, setReceiptCount] = useState(0)
+  const [membership, setMembership] = useState(null)
+  const [onlineLoaded, setOnlineLoaded] = useState(false)
+
+  const loadMembership = useCallback(async () => {
+    if (!profile?.id) return
+    try {
+      setMembership(await fetchMembership(profile.id))
+    } catch {
+      setMembership(null) // sem dados online: painel igual ao de antes
+    } finally {
+      setOnlineLoaded(true)
+    }
+  }, [profile?.id])
+
+  useEffect(() => {
+    loadMembership()
+  }, [loadMembership])
 
   const fetchStudentData = useCallback(async () => {
     try {
@@ -338,7 +358,11 @@ const StudentDashboard = () => {
           </p>
         </div>
 
-        {/* Card de Saldo e Chips em Grid */}
+        {/* Aulas online (modalidade, situação e pagamentos) */}
+        <StudentOnlineCard membership={membership} loaded={onlineLoaded} onChanged={loadMembership} />
+
+        {/* Card de Saldo e Chips em Grid (some para aluno só online) */}
+        {!isOnlineOnly({ membership, totalCredits: getTotalBalance(), hasStudioClasses: myClasses.length > 0 }) && (
         <div className="space-y-4">
           <Card className="bg-gradient-to-br from-emerald-600 to-teal-700 dark:from-emerald-700 dark:to-teal-800 text-white shadow-lg border-0 rounded-3xl p-6 overflow-hidden relative">
             {/* Efeito de círculo decorativo no fundo */}
@@ -374,6 +398,7 @@ const StudentDashboard = () => {
             </Card>
           </div>
         </div>
+        )}
 
         {/* Acesso Rápido (Compacto e Altamente Visível) */}
         <div className="space-y-2">
