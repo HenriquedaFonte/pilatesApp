@@ -37,7 +37,7 @@ A Josi passa a ter, na ficha de cada aluno, uma **modalidade online** independen
 5. **Situação da mensalidade (calculada no site, dia de Montréal):** consideram-se só mensalidades válidas com `period_start <= hoje`; `pagoAté` = maior `period_end` delas. `pagoAté >= hoje` → "Em dia até …" (ou "Vence em N dias" se faltam ≤ 5 dias); `pagoAté < hoje` → "Vencida desde …" (dia seguinte ao `pagoAté`); nenhuma → "Sem pagamento". Drop-in: mostra a última aula paga e quantos no mês.
 6. **Período padrão da mensalidade:** início = dia seguinte ao fim da última mensalidade, se esse fim for de no máximo 31 dias atrás; senão, hoje. Fim = início + 1 mês − 1 dia, com o mês "travado" no último dia (31/01 → 27/02; 15/01 → 14/02). A Josi pode mudar as duas datas. Máximo 366 dias por pagamento (aceita pagar vários meses de uma vez).
 7. **O servidor recusa** mensalidade que se sobrepõe a outra válida do mesmo aluno e drop-in repetido na mesma data (evita duplo clique e lançamento em dobro). Para trocar de plano no meio do mês: anular e lançar de novo, ou começar o período novo depois do antigo.
-8. **Valores sugeridos** (editáveis, vêm da landing page): acompanhado 58, gravadas 26, drop-in 14. Constante única em `src/lib/onlinePlans.js`.
+8. **Valores sugeridos** (editáveis, vêm da landing page): acompanhado 58, gravadas 26, drop-in 16.10 (com impostos, decidido pelo dono em 2026-11-23). Constante única em `src/lib/onlinePlans.js`.
 9. **Aluno "só online"** = modalidade `active` **e** 0 créditos presenciais **e** nenhuma turma em `student_class_link`. Para ele: na lista de alunos, o badge "Online" substitui "Sem créditos"/"Saldo baixo"; no painel, o card de créditos some; nos grupos de email "Créditos baixos/zerados" e no relatório de créditos baixos, ele fica de fora. Aluno presencial + online continua com tudo do presencial.
 10. **Pedido do aluno** só por RPC (`request_online_plan`): cria/reabre a linha como `requested`. Não pode pedir se já tem `requested` ou `active`. A Josi aprova (vira `active`) ou recusa (vira `ended`) na ficha. Sem email.
 11. **Aluno lê** só a própria modalidade e os próprios pagamentos (o motivo de anulação não aparece na tela dele, igual aos recibos). Sem campo de observação livre nessas tabelas (o aluno conseguiria ler pela API).
@@ -276,7 +276,7 @@ Os textos da **Josi** (nomes dos planos) são os mesmos da landing page; se ela 
 - Voltar atrás: PRs B/C/D → Revert do PR no GitHub (ou Promote to Production do deploy anterior na Vercel); os dados ficam no banco. PR A → primeiro o Revert dos PRs de tela, depois `docs/testes/online-modalidade-reversao.sql` (só se ainda não houver pagamentos reais).
 - Revisão do `revisor` (Opus): **sim nos 4 PRs** (banco; pagamentos; dados do aluno/cadastro; relatório financeiro e emails).
 
-## Perguntas ao dono (nenhuma bloqueia o PR A)
-1. **Aulas gravadas:** confirmar que o sistema só controla quem pagou (os vídeos continuam no Instagram/Zoom). Se quiser os links/vídeos dentro do portal, é outro plano.
-2. **Presença nas aulas online:** a Josi quer marcar presença das aulas ao vivo (quarta/sexta) no check-in? O plano diz que não por enquanto.
-3. **Valor do drop-in:** registrar 14 ou o valor com impostos (~16,10)? Só muda o valor sugerido.
+## Perguntas ao dono — respondidas (2026-11-23)
+1. Aulas gravadas: **sim**, o sistema só controla quem pagou.
+2. Presença nas aulas online: **não**.
+3. Drop-in: **16,10** (com impostos).
