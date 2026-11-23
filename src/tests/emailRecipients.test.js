@@ -53,6 +53,39 @@ describe('filterRecipients', () => {
     expect(ids(getLowCreditsStudents(students, 3, true))).toEqual(['a', 'b', 'd'])
   })
 
+  describe('alunos só online (onlineOnlyIds)', () => {
+    // e: só online (0 créditos); a: presencial + online fica de fora da lista
+    // onlineOnlyIds (quem decide é isOnlineOnly na tela).
+    const withOnline = [
+      ...students,
+      { id: 'e', full_name: 'Eva', individual_credits: 0, duo_credits: 0, group_credits: 0, is_active: true }
+    ]
+    const opts = { onlineOnlyIds: ['e'] }
+
+    it('só online sai de créditos baixos e zerados', () => {
+      expect(ids(filterRecipients(withOnline, { filterType: 'low_credits', lowCreditsThreshold: 3 }))).toEqual(['a', 'b', 'e'])
+      expect(ids(filterRecipients(withOnline, { filterType: 'low_credits', lowCreditsThreshold: 3, ...opts }))).toEqual(['a', 'b'])
+      expect(ids(filterRecipients(withOnline, { filterType: 'zero_credits' }))).toEqual(['a', 'e'])
+      expect(ids(filterRecipients(withOnline, { filterType: 'zero_credits', ...opts }))).toEqual(['a'])
+    })
+
+    it('presencial + online (fora de onlineOnlyIds) continua nos avisos de créditos', () => {
+      expect(ids(filterRecipients(withOnline, { filterType: 'zero_credits', ...opts }))).toContain('a')
+      expect(ids(filterRecipients(withOnline, { filterType: 'low_credits', lowCreditsThreshold: 3, ...opts }))).toContain('b')
+    })
+
+    it('grupos todos, turma e seleção não mudam', () => {
+      expect(ids(filterRecipients(withOnline, { filterType: 'all', ...opts }))).toEqual(['a', 'b', 'c', 'e'])
+      expect(ids(filterRecipients(withOnline, { filterType: 'class', classStudentIds: ['b', 'e'], ...opts }))).toEqual(['b', 'e'])
+      expect(ids(filterRecipients(withOnline, { filterType: 'selected', selectedIds: ['e'], ...opts }))).toEqual(['e'])
+    })
+
+    it('lista vazia ou nula = comportamento de antes', () => {
+      expect(ids(filterRecipients(withOnline, { filterType: 'zero_credits', onlineOnlyIds: null }))).toEqual(['a', 'e'])
+      expect(ids(filterRecipients(withOnline, { filterType: 'zero_credits', onlineOnlyIds: [] }))).toEqual(['a', 'e'])
+    })
+  })
+
   it('resumo: 5 primeiros nomes e "mais X"', () => {
     const many = Array.from({ length: 8 }, (_, i) => ({ full_name: `A${i}` }))
     expect(summarizeRecipients(many)).toEqual({ names: ['A0', 'A1', 'A2', 'A3', 'A4'], more: 3 })

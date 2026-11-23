@@ -25,6 +25,8 @@ export const getLowCreditsStudents = (
  * Destinatários do email conforme o filtro.
  * - class: só os ids em `classStudentIds` (alunos da turma); sem turma → [].
  * - selected: só os ids marcados.
+ * - low_credits / zero_credits: sem os alunos só online (`onlineOnlyIds`),
+ *   que pagam mensalidade online e não usam créditos.
  * Inativos ficam fora em todos os filtros, salvo `includeInactive`.
  */
 export const filterRecipients = (
@@ -34,18 +36,21 @@ export const filterRecipients = (
     lowCreditsThreshold = 3,
     classStudentIds = null,
     selectedIds = [],
-    includeInactive = false
+    includeInactive = false,
+    onlineOnlyIds = []
   } = {}
 ) => {
   const base = activeOnly(students, includeInactive)
+  const onlineOnly = new Set(onlineOnlyIds || [])
+  const withCredits = list => list.filter(s => !onlineOnly.has(s.id))
 
   switch (filterType) {
     case 'all':
       return base
     case 'low_credits':
-      return base.filter(s => creditsOf(s) <= lowCreditsThreshold)
+      return withCredits(base).filter(s => creditsOf(s) <= lowCreditsThreshold)
     case 'zero_credits':
-      return base.filter(s => creditsOf(s) === 0)
+      return withCredits(base).filter(s => creditsOf(s) === 0)
     case 'class': {
       if (!classStudentIds || classStudentIds.length === 0) return []
       const ids = new Set(classStudentIds)

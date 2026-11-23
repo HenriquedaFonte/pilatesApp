@@ -21,6 +21,13 @@ import {
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import {
   ArrowLeft,
   CreditCard,
   Search,
@@ -30,6 +37,29 @@ import {
 } from 'lucide-react'
 import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, LabelList } from 'recharts'
 import TeacherLayout from '../components/TeacherLayout'
+
+const ONLINE_TYPES = { monthly: 'online_monthly', dropin: 'online_dropin' }
+
+// Pagamento online (online_payments) → linha no formato do balance_history.
+// paid_on é `date` (AAAA-MM-DD): vira meio-dia local só para ordenar e mostrar
+// o dia certo (nunca new Date('AAAA-MM-DD'), que em Montréal vira o dia anterior).
+const onlineToRow = p => {
+  const [y, m, d] = p.paid_on.split('-').map(Number)
+  return {
+    id: `online-${p.id}`,
+    student_id: p.student_id,
+    type: ONLINE_TYPES[p.kind] || p.kind,
+    change_amount: null,
+    created_at: new Date(y, m - 1, d, 12, 0, 0, 0).toISOString(),
+    payment_method: p.payment_method,
+    amount_paid: Number(p.amount),
+    source: 'online',
+    kind: p.kind,
+    period_start: p.period_start,
+    period_end: p.period_end,
+    class_date: p.class_date
+  }
+}
 
 const FinancialReport = () => {
   const { t, i18n } = useTranslation()
@@ -41,7 +71,9 @@ const FinancialReport = () => {
   const [dateEnd, setDateEnd] = useState('')
   const [hasSearched, setHasSearched] = useState(false)
   const [students, setStudents] = useState({})
-  const [summary, setSummary] = useState({})
+  // Origem: 'all' | 'studio' (balance_history) | 'online' (online_payments)
+  const [origin, setOrigin] = useState('all')
+  const [onlineWarning, setOnlineWarning] = useState(false)
 
   const fetchStudents = async () => {
     const { data, error } = await supabase
@@ -68,10 +100,33 @@ const FinancialReport = () => {
     return [localStart.toISOString(), localEnd.toISOString()]
   }
 
+  // Pagamentos online válidos do período. paid_on é `date`: filtra direto
+  // pelas strings AAAA-MM-DD (sem fuso).
+  const fetchOnlinePayments = async () => {
+    let query = supabase
+      .from('online_payments')
+      .select('id, student_id, kind, period_start, period_end, class_date, amount, payment_method, paid_on')
+      .eq('status', 'valid')
+      .order('paid_on', { ascending: false })
+      .limit(500)
+    if (dateStart) query = query.gte('paid_on', dateStart)
+    if (dateEnd) query = query.lte('paid_on', dateEnd)
+    const { data, error } = await query
+    if (error) throw error
+    return (data || []).map(onlineToRow)
+  }
+
   const fetchHistory = async () => {
     setLoading(true)
     setError('')
+    setOnlineWarning(false)
     setHasSearched(true)
+
+    // Falha no online não esconde o presencial (mostra um aviso).
+    const onlinePromise = fetchOnlinePayments().catch(err => {
+      console.error('Error fetching online payments:', err)
+      return null
+    })
 
     let query = supabase
       .from('balance_history')
@@ -91,37 +146,62 @@ const FinancialReport = () => {
       query = query.lte('created_at', utcEnd)
     }
 
-    const { data, error } = await query
+    const [{ data, error }, onlineRows] = await Promise.all([query, onlinePromise])
 
     if (error) setError('Error fetching financial report: ' + error.message)
     else {
-      setHistory(data || [])
-      // Compute summary by payment method
-      const summaryData = {}
-      ;(data || []).forEach(row => {
-        const method = row.payment_method || 'unknown'
-        if (!summaryData[method]) {
-          summaryData[method] = { totalAmount: 0, transactionCount: 0, totalCredits: 0 }
-        }
-        if (row.amount_paid) {
-          summaryData[method].totalAmount += row.amount_paid
-        }
-        summaryData[method].transactionCount += 1
-        summaryData[method].totalCredits += row.change_amount
-      })
-      setSummary(summaryData)
+      if (onlineRows === null) setOnlineWarning(true)
+      const studioRows = (data || []).map(row => ({ ...row, source: 'studio' }))
+      setHistory(
+        [...studioRows, ...(onlineRows || [])].sort(
+          (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        )
+      )
     }
     setLoading(false)
   }
 
-  const filteredHistory = history.filter(
-    row =>
-      (students[row.student_id] || '')
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      (row.description || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (row.payment_method || '').toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  // Descrição das linhas online na língua da tela (período ou data da aula).
+  const describe = row => {
+    if (row.source !== 'online') return row.description
+    if (row.kind === 'monthly') return `${row.period_start} → ${row.period_end}`
+    return `${t('online.payment.classDate')}: ${row.class_date}`
+  }
+
+  const isOnlineRow = row => row.source === 'online'
+
+  const typeLabel = type => {
+    if (type === 'online_monthly') return t('online.report.typeMonthly')
+    if (type === 'online_dropin') return t('online.report.typeDropin')
+    return type
+  }
+
+  const filteredHistory = history
+    .filter(row => origin === 'all' || row.source === origin)
+    .map(row => ({ ...row, description: describe(row) }))
+    .filter(
+      row =>
+        (students[row.student_id] || '')
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        (row.description || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (row.payment_method || '').toLowerCase().includes(searchTerm.toLowerCase())
+    )
+
+  // Resumo por forma de pagamento, a partir das linhas filtradas (origem e
+  // busca): os totais batem com a tabela. Online não tem créditos (soma 0).
+  const summary = {}
+  filteredHistory.forEach(row => {
+    const method = row.payment_method || 'unknown'
+    if (!summary[method]) {
+      summary[method] = { totalAmount: 0, transactionCount: 0, totalCredits: 0 }
+    }
+    if (row.amount_paid) {
+      summary[method].totalAmount += row.amount_paid
+    }
+    summary[method].transactionCount += 1
+    summary[method].totalCredits += row.change_amount || 0
+  })
 
   const exportToCSV = (detailed = false) => {
     if (filteredHistory.length === 0) return
@@ -156,7 +236,7 @@ const FinancialReport = () => {
         csvContent += `${t('teacher.reports.financial.table.student')},${t('teacher.reports.financial.table.type')},${t('teacher.reports.financial.table.creditsAdded')},${t('teacher.reports.financial.table.date')},${t('teacher.reports.financial.table.description')},${t('teacher.reports.financial.table.amountPaid')}\n`
 
         transactions.forEach(row => {
-          csvContent += `"${students[row.student_id] || ''}","${row.type}",${row.change_amount},"${new Date(row.created_at).toLocaleDateString()}","${row.description || ''}",${row.amount_paid ? row.amount_paid.toFixed(2) : ''}\n`
+          csvContent += `"${students[row.student_id] || ''}","${typeLabel(row.type)}",${isOnlineRow(row) ? '' : row.change_amount},"${new Date(row.created_at).toLocaleDateString()}","${row.description || ''}",${row.amount_paid ? row.amount_paid.toFixed(2) : ''}\n`
         })
         csvContent += '\n'
       })
@@ -176,8 +256,8 @@ const FinancialReport = () => {
         ...filteredHistory.map(row =>
           [
             `"${students[row.student_id] || ''}"`,
-            `"${row.type}"`,
-            row.change_amount,
+            `"${typeLabel(row.type)}"`,
+            isOnlineRow(row) ? '' : row.change_amount,
             `"${new Date(row.created_at).toLocaleDateString()}"`,
             `"${row.description || ''}"`,
             row.amount_paid ? row.amount_paid.toFixed(2) : '',
@@ -219,6 +299,13 @@ const FinancialReport = () => {
             {t('teacher.studentSummary.group')}
           </Badge>
         )
+      case 'online_monthly':
+      case 'online_dropin':
+        return (
+          <Badge variant="outline" className="text-teal-700 border-teal-300">
+            {typeLabel(type)}
+          </Badge>
+        )
       default:
         return <Badge variant="secondary">{type}</Badge>
     }
@@ -248,12 +335,14 @@ const FinancialReport = () => {
     if (!typeSummary[type]) {
       typeSummary[type] = { credits: 0, amount: 0 }
     }
-    typeSummary[type].credits += row.change_amount
+    typeSummary[type].credits += row.change_amount || 0
     if (row.amount_paid) typeSummary[type].amount += row.amount_paid
   })
 
   const barData = Object.entries(typeSummary).map(([type, data]) => ({
-    type: type.charAt(0).toUpperCase() + type.slice(1),
+    type: type.startsWith('online_')
+      ? typeLabel(type)
+      : type.charAt(0).toUpperCase() + type.slice(1),
     credits: data.credits,
     amount: data.amount
   }))
@@ -273,6 +362,11 @@ const FinancialReport = () => {
         {error && (
           <Alert variant="destructive" className="mb-6">
             <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+        {onlineWarning && !error && (
+          <Alert className="mb-6 border-amber-300 bg-amber-50 text-amber-800 dark:bg-amber-950/20 dark:text-amber-300">
+            <AlertDescription>{t('online.report.loadWarning')}</AlertDescription>
           </Alert>
         )}
 
@@ -333,6 +427,21 @@ const FinancialReport = () => {
                 <Search className="h-4 w-4 mr-2" />
                 {t('teacher.reports.financial.search')}
               </Button>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  {t('online.report.origin')}
+                </label>
+                <Select value={origin} onValueChange={setOrigin}>
+                  <SelectTrigger className="w-44 h-10">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">{t('online.report.all')}</SelectItem>
+                    <SelectItem value="studio">{t('online.report.studio')}</SelectItem>
+                    <SelectItem value="online">{t('online.report.online')}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
               <div className="flex-1" />
               <div className="relative">
                 <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" />
@@ -392,9 +501,13 @@ const FinancialReport = () => {
                           </TableCell>
                           <TableCell>{getTypeBadge(row.type)}</TableCell>
                           <TableCell>
-                            <Badge variant="outline" className="text-green-700 border-green-300">
-                              +{row.change_amount}
-                            </Badge>
+                            {isOnlineRow(row) ? (
+                              '—'
+                            ) : (
+                              <Badge variant="outline" className="text-green-700 border-green-300">
+                                +{row.change_amount}
+                              </Badge>
+                            )}
                           </TableCell>
                           <TableCell>
                             {row.created_at

@@ -28,6 +28,8 @@ import {
   LANGUAGES
 } from '../lib/emailRecipients'
 import { getDayName, formatTime } from '../lib/format'
+import { fetchOnlineOverview } from '../lib/onlineService'
+import { isOnlineOnly } from '../lib/onlinePlans'
 import {
   buildCampaignRow,
   buildCampaignFilter,
@@ -82,6 +84,8 @@ const EmailNotifications = () => {
   // Turmas = horários (class_schedules) e os alunos de cada um.
   const [schedules, setSchedules] = useState([])
   const [scheduleStudents, setScheduleStudents] = useState({})
+  // Alunos só online: ficam fora de "Créditos baixos"/"Créditos zerados".
+  const [onlineOnlyIds, setOnlineOnlyIds] = useState([])
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
   // Muda depois de cada envio para o Histórico recarregar.
@@ -182,6 +186,27 @@ const EmailNotifications = () => {
       )
       setSchedules(sortSchedules(schedulesData))
       setScheduleStudents(studentsBySchedule(linksData))
+
+      // Aulas online: falha aqui não impede a tela (lista vazia = como antes).
+      try {
+        const { memberships } = await fetchOnlineOverview()
+        const studioIds = new Set((linksData || []).map(l => l.student_id))
+        const byStudent = new Map(memberships.map(m => [m.student_id, m]))
+        setOnlineOnlyIds(
+          (studentsData || [])
+            .filter(s =>
+              isOnlineOnly({
+                membership: byStudent.get(s.id),
+                totalCredits: totalCredits(s),
+                hasStudioClasses: studioIds.has(s.id)
+              })
+            )
+            .map(s => s.id)
+        )
+      } catch (onlineError) {
+        console.error('Error loading online data:', onlineError)
+        setOnlineOnlyIds([])
+      }
     } catch (error) {
       console.error('Error loading data:', error)
       setLoadError(`${t('teacher.emails.messages.loadError')} ${error.message}`)
@@ -214,7 +239,8 @@ const EmailNotifications = () => {
     lowCreditsThreshold,
     classStudentIds,
     selectedIds,
-    includeInactive
+    includeInactive,
+    onlineOnlyIds
   })
   const recipients =
     filterType === 'selected' ? groupStudents : excludeStudents(groupStudents, excludedIds)

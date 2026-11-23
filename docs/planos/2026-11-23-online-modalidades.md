@@ -147,12 +147,12 @@ Ordem do PR C: **SQL do PR A antes do merge**. Tanto faz em relação ao PR B, m
 
 ## PR D — Relatórios e emails (sessão nova, depois do PR B)
 
-### 10. [OPUS] Relatório Financeiro com os pagamentos online
+### 10. [OPUS] Relatório Financeiro com os pagamentos online ✅
 - Arquivo: `src/pages/FinancialReport.jsx`.
 - Fazer: em `fetchHistory`, buscar também `online_payments` com `status = 'valid'`, filtrando `paid_on` direto pelas strings `dateStart`/`dateEnd` (`gte`/`lte`; é `date`, sem fuso), `limit(500)`. Converter cada uma numa linha `{ id: 'online-<id>', student_id, type: 'online_monthly' | 'online_dropin', change_amount: null, created_at: <paid_on ao meio-dia local, para ordenar>, description: <período "AAAA-MM-DD → AAAA-MM-DD" ou "Aula AAAA-MM-DD">, payment_method, amount_paid: amount, source: 'online' }` e juntar com as de `balance_history`, ordenando por data. Resumo por forma de pagamento: somar valores e transações das online; créditos somam `change_amount || 0`. `getTypeBadge` e `barData`: rótulos traduzidos para os 2 tipos novos. Tabela e CSVs: coluna de créditos vazia ("—" na tela) para online; tipo com o rótulo traduzido. Novo select "Origem: Tudo / Presencial / Online" que filtra `filteredHistory` **e** o resumo (recalcular o resumo a partir das linhas filtradas, não do fetch). Se a busca online falhar, mostrar o presencial com um aviso (não esconder tudo).
 - Pronto quando: um período com pagamentos presenciais e online mostra os dois, os totais batem com a soma da tabela em cada origem, e os CSVs trazem as linhas online.
 
-### 11. [OPUS] Alunos só online fora dos avisos de créditos
+### 11. [OPUS] Alunos só online fora dos avisos de créditos ✅
 - Arquivos: `src/lib/emailRecipients.js`, `src/pages/EmailNotifications.jsx`, `src/pages/lowCreditsReport.jsx`, `src/tests/emailRecipients.test.js`.
 - Fazer: `filterRecipients` ganha a opção `onlineOnlyIds = []` que tira esses ids **só** de `low_credits` e `zero_credits` (os outros grupos não mudam). `EmailNotifications`: carregar `fetchOnlineOverview()` (já carrega os links) e montar `onlineOnlyIds` com `isOnlineOnly`; falha na carga online → lista vazia (comportamento de hoje). Mesmo filtro em `getLowCreditsStudents` se a tela usar. `lowCreditsReport`: tirar das duas listas os alunos só online (carregar modalidades + links), com a linha "N alunos só online não aparecem aqui".
 - Testes: só online sai de low/zero; presencial + online continua; grupos all/class/selected iguais.
