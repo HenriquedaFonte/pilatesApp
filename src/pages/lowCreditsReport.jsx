@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { getDayName } from '../lib/format'
+import { fetchOnlineOverview } from '../lib/onlineService'
+import { isOnlineOnly } from '../lib/onlinePlans'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -54,6 +56,8 @@ const LowCreditsReport = () => {
   const navigate = useNavigate()
   const [lowCreditsData, setLowCreditsData] = useState([])
   const [zeroCreditsData, setZeroCreditsData] = useState([])
+  // Alunos só online tirados das duas listas (pagam mensalidade online).
+  const [hiddenOnlineOnly, setHiddenOnlineOnly] = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
@@ -81,8 +85,39 @@ const LowCreditsReport = () => {
 
       if (zeroCreditsError) throw zeroCreditsError
 
-      setLowCreditsData(lowCredits || [])
-      setZeroCreditsData(zeroCredits || [])
+      let low = lowCredits || []
+      let zero = zeroCredits || []
+      let hidden = 0
+      // Aulas online: falha aqui mostra as listas completas (como antes).
+      try {
+        const [{ memberships }, linksResult] = await Promise.all([
+          fetchOnlineOverview(),
+          supabase.from('student_class_link').select('student_id')
+        ])
+        if (linksResult.error) throw linksResult.error
+        const byStudent = new Map(memberships.map(m => [m.student_id, m]))
+        const studioIds = new Set((linksResult.data || []).map(l => l.student_id))
+        const hiddenIds = new Set(
+          [...low, ...zero]
+            .filter(row =>
+              isOnlineOnly({
+                membership: byStudent.get(row.student_id),
+                totalCredits: row.total_credits,
+                hasStudioClasses: studioIds.has(row.student_id)
+              })
+            )
+            .map(row => row.student_id)
+        )
+        low = low.filter(row => !hiddenIds.has(row.student_id))
+        zero = zero.filter(row => !hiddenIds.has(row.student_id))
+        hidden = hiddenIds.size
+      } catch (onlineError) {
+        console.error('Error loading online data:', onlineError)
+      }
+
+      setLowCreditsData(low)
+      setZeroCreditsData(zero)
+      setHiddenOnlineOnly(hidden)
     } catch (error) {
       setError('Error generating report: ' + error.message)
     } finally {
@@ -360,6 +395,12 @@ const LowCreditsReport = () => {
             </CardContent>
           </Card>
         </div>
+
+        {hiddenOnlineOnly > 0 && (
+          <p className="text-xs text-muted-foreground">
+            {t('online.report.hiddenOnlineOnly', { count: hiddenOnlineOnly })}
+          </p>
+        )}
 
         {/* Barra de Busca */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
