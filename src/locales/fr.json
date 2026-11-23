@@ -1670,5 +1670,117 @@
       "invalidPhone": "Entrez un numéro de téléphone valide au format international (ex. : +1 555 555 5555).",
       "updateFailed": "Impossible d'enregistrer votre profil. Veuillez réessayer."
     }
+  },
+  "online": {
+    "title": "Cours en ligne",
+    "plans": {
+      "coached": "Groupe accompagné",
+      "recorded": "Cours enregistrés",
+      "dropin": "Drop-in groupe en ligne"
+    },
+    "badge": "En ligne",
+    "status": {
+      "paid": "Payé jusqu'au {{date}}",
+      "expiring": "Échéance dans {{count}} jour(s) ({{date}})",
+      "overdue": "En retard depuis le {{date}}",
+      "unpaid": "Aucun paiement",
+      "requested": "Demande en attente",
+      "ended": "Terminée",
+      "dropin": "Dernier cours payé : {{date}} · {{count}} ce mois-ci",
+      "noDropin": "Aucun cours payé pour l'instant"
+    },
+    "none": "Aucune formule en ligne",
+    "actions": {
+      "assign": "Attribuer une formule",
+      "change": "Changer de formule",
+      "end": "Terminer",
+      "approve": "Approuver la demande",
+      "reject": "Refuser la demande",
+      "registerPayment": "Enregistrer un paiement",
+      "paymentShortcut": "Paiement en ligne"
+    },
+    "confirm": {
+      "end": "Terminer la formule en ligne de {{name}} ? Les paiements restent dans l'historique.",
+      "reject": "Refuser la demande de {{name}} ?"
+    },
+    "payment": {
+      "kind": "Type",
+      "monthly": "Mensualité",
+      "dropin": "Drop-in",
+      "plan": "Formule",
+      "periodStart": "Début de la période",
+      "periodEnd": "Fin de la période",
+      "classDate": "Date du cours",
+      "amount": "Montant payé",
+      "method": "Mode de paiement",
+      "paidOn": "Date du paiement",
+      "alsoAssign": "Attribuer aussi la formule {{plan}}",
+      "confirmTitle": "Confirmer le paiement",
+      "saved": "Paiement enregistré.",
+      "period": "du {{start}} au {{end}}",
+      "history": "Paiements en ligne",
+      "empty": "Aucun paiement en ligne.",
+      "valid": "Valide",
+      "void": "Annulé",
+      "voidAction": "Annuler",
+      "voidReason": "Motif de l'annulation",
+      "voided": "Paiement annulé.",
+      "voidHint": "L'élève peut voir ce motif. N'y écrivez rien de sensible."
+    },
+    "methods": {
+      "cash": "Comptant",
+      "interac": "Interac",
+      "credit_card": "Carte de crédit",
+      "other": "Autre"
+    },
+    "list": {
+      "filter": "En ligne",
+      "requestsBanner": "{{count}} demande(s) de cours en ligne :"
+    },
+    "student": {
+      "overdueHint": "Parlez à Josi pour renouveler.",
+      "requestedHint": "Demande envoyée : Josi va confirmer.",
+      "cta": "Envie de cours en ligne ?",
+      "requestTitle": "Choisissez votre formule en ligne",
+      "requestSend": "Envoyer la demande",
+      "requestSent": "Demande envoyée ! Josi va confirmer avec vous.",
+      "lastPayments": "Derniers paiements"
+    },
+    "signup": {
+      "label": "Cours en ligne (facultatif)",
+      "none": "Non, en studio seulement"
+    },
+    "report": {
+      "origin": "Origine",
+      "all": "Tout",
+      "studio": "En studio",
+      "online": "En ligne",
+      "typeMonthly": "Mensualité en ligne",
+      "typeDropin": "Drop-in en ligne",
+      "loadWarning": "Impossible de charger les paiements en ligne.",
+      "hiddenOnlineOnly": "{{count}} élève(s) uniquement en ligne non affiché(s) ici."
+    },
+    "errors": {
+      "not_allowed": "Vous n'avez pas la permission.",
+      "invalid_student": "Élève introuvable.",
+      "invalid_plan": "Formule invalide.",
+      "invalid_kind": "Type de paiement invalide.",
+      "plan_exists": "Il y a déjà une demande ou une formule active.",
+      "invalid_period": "Période invalide (fin avant le début ou plus d'un an).",
+      "period_overlap": "Cette période chevauche une mensualité déjà enregistrée.",
+      "dropin_duplicate": "Il y a déjà un drop-in à cette date.",
+      "invalid_date": "Date invalide ou dans le futur.",
+      "invalid_amount": "Montant invalide.",
+      "invalid_method": "Choisissez le mode de paiement.",
+      "reason_required": "Indiquez le motif.",
+      "payment_not_found": "Paiement introuvable.",
+      "already_void": "Ce paiement est déjà annulé.",
+      "generic": "Une erreur est survenue. Réessayez.",
+      "load": "Impossible de charger les cours en ligne.",
+      "invalid_status": "Statut invalide."
+    },
+    "membership": {
+      "saved": "Statut de la formule mis à jour."
+    }
   }
 }

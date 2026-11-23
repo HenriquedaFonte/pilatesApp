@@ -1659,5 +1659,117 @@
       "invalidPhone": "Digite um telefone válido no formato internacional (ex.: +1 555 555 5555).",
       "updateFailed": "Não foi possível salvar o perfil. Tente de novo."
     }
+  },
+  "online": {
+    "title": "Aulas online",
+    "plans": {
+      "coached": "Grupo acompanhado",
+      "recorded": "Aulas gravadas",
+      "dropin": "Drop-in grupo online"
+    },
+    "badge": "Online",
+    "status": {
+      "paid": "Em dia até {{date}}",
+      "expiring": "Vence em {{count}} dia(s) ({{date}})",
+      "overdue": "Vencida desde {{date}}",
+      "unpaid": "Sem pagamento",
+      "requested": "Pedido pendente",
+      "ended": "Encerrada",
+      "dropin": "Última aula paga: {{date}} · {{count}} no mês",
+      "noDropin": "Nenhuma aula paga ainda"
+    },
+    "none": "Sem modalidade online",
+    "actions": {
+      "assign": "Atribuir modalidade",
+      "change": "Mudar modalidade",
+      "end": "Encerrar",
+      "approve": "Aprovar pedido",
+      "reject": "Recusar pedido",
+      "registerPayment": "Registrar pagamento",
+      "paymentShortcut": "Pagamento online"
+    },
+    "confirm": {
+      "end": "Encerrar a modalidade online de {{name}}? Os pagamentos continuam no histórico.",
+      "reject": "Recusar o pedido de {{name}}?"
+    },
+    "payment": {
+      "kind": "Tipo",
+      "monthly": "Mensalidade",
+      "dropin": "Drop-in",
+      "plan": "Modalidade",
+      "periodStart": "Início do período",
+      "periodEnd": "Fim do período",
+      "classDate": "Data da aula",
+      "amount": "Valor pago",
+      "method": "Forma de pagamento",
+      "paidOn": "Data do pagamento",
+      "alsoAssign": "Atribuir também a modalidade {{plan}}",
+      "confirmTitle": "Confirmar pagamento",
+      "saved": "Pagamento registrado.",
+      "period": "{{start}} a {{end}}",
+      "history": "Pagamentos online",
+      "empty": "Nenhum pagamento online.",
+      "valid": "Válido",
+      "void": "Anulado",
+      "voidAction": "Anular",
+      "voidReason": "Motivo da anulação",
+      "voided": "Pagamento anulado.",
+      "voidHint": "O aluno consegue ver este motivo. Não escreva nada sensível."
+    },
+    "methods": {
+      "cash": "Dinheiro",
+      "interac": "Interac",
+      "credit_card": "Cartão de crédito",
+      "other": "Outro"
+    },
+    "list": {
+      "filter": "Online",
+      "requestsBanner": "{{count}} pedido(s) de aulas online:"
+    },
+    "student": {
+      "overdueHint": "Fale com a Josi para renovar.",
+      "requestedHint": "Pedido enviado: a Josi vai confirmar.",
+      "cta": "Quer fazer aulas online?",
+      "requestTitle": "Escolha a modalidade online",
+      "requestSend": "Enviar pedido",
+      "requestSent": "Pedido enviado! A Josi vai confirmar com você.",
+      "lastPayments": "Últimos pagamentos"
+    },
+    "signup": {
+      "label": "Aulas online (opcional)",
+      "none": "Não, só presencial"
+    },
+    "report": {
+      "origin": "Origem",
+      "all": "Tudo",
+      "studio": "Presencial",
+      "online": "Online",
+      "typeMonthly": "Mensalidade online",
+      "typeDropin": "Drop-in online",
+      "loadWarning": "Não foi possível carregar os pagamentos online.",
+      "hiddenOnlineOnly": "{{count}} aluno(s) só online não aparece(m) aqui."
+    },
+    "errors": {
+      "not_allowed": "Você não tem permissão para isso.",
+      "invalid_student": "Aluno não encontrado.",
+      "invalid_plan": "Modalidade inválida.",
+      "invalid_kind": "Tipo de pagamento inválido.",
+      "plan_exists": "Já existe um pedido ou modalidade ativa.",
+      "invalid_period": "Período inválido (fim antes do início ou mais de 1 ano).",
+      "period_overlap": "Este período se sobrepõe a uma mensalidade já registrada.",
+      "dropin_duplicate": "Já existe um drop-in nesta data.",
+      "invalid_date": "Data inválida ou no futuro.",
+      "invalid_amount": "Valor inválido.",
+      "invalid_method": "Escolha a forma de pagamento.",
+      "reason_required": "Escreva o motivo.",
+      "payment_not_found": "Pagamento não encontrado.",
+      "already_void": "Este pagamento já foi anulado.",
+      "generic": "Algo deu errado. Tente de novo.",
+      "load": "Não foi possível carregar as aulas online.",
+      "invalid_status": "Situação inválida."
+    },
+    "membership": {
+      "saved": "Situação da modalidade atualizada."
+    }
   }
 }

@@ -1586,5 +1586,117 @@
       "invalidPhone": "Enter a valid phone number in international format (e.g. +1 555 555 5555).",
       "updateFailed": "Could not save your profile. Please try again."
     }
+  },
+  "online": {
+    "title": "Online classes",
+    "plans": {
+      "coached": "Accompanied group",
+      "recorded": "Recorded classes",
+      "dropin": "Online group drop-in"
+    },
+    "badge": "Online",
+    "status": {
+      "paid": "Paid through {{date}}",
+      "expiring": "Due in {{count}} day(s) ({{date}})",
+      "overdue": "Overdue since {{date}}",
+      "unpaid": "No payment yet",
+      "requested": "Request pending",
+      "ended": "Ended",
+      "dropin": "Last paid class: {{date}} · {{count}} this month",
+      "noDropin": "No paid class yet"
+    },
+    "none": "No online plan",
+    "actions": {
+      "assign": "Assign plan",
+      "change": "Change plan",
+      "end": "End",
+      "approve": "Approve request",
+      "reject": "Decline request",
+      "registerPayment": "Record payment",
+      "paymentShortcut": "Online payment"
+    },
+    "confirm": {
+      "end": "End {{name}}'s online plan? Payments stay in the history.",
+      "reject": "Decline {{name}}'s request?"
+    },
+    "payment": {
+      "kind": "Type",
+      "monthly": "Monthly fee",
+      "dropin": "Drop-in",
+      "plan": "Plan",
+      "periodStart": "Period start",
+      "periodEnd": "Period end",
+      "classDate": "Class date",
+      "amount": "Amount paid",
+      "method": "Payment method",
+      "paidOn": "Payment date",
+      "alsoAssign": "Also assign the {{plan}} plan",
+      "confirmTitle": "Confirm payment",
+      "saved": "Payment recorded.",
+      "period": "{{start}} to {{end}}",
+      "history": "Online payments",
+      "empty": "No online payments.",
+      "valid": "Valid",
+      "void": "Voided",
+      "voidAction": "Void",
+      "voidReason": "Reason for voiding",
+      "voided": "Payment voided.",
+      "voidHint": "The student can see this reason. Do not write anything sensitive."
+    },
+    "methods": {
+      "cash": "Cash",
+      "interac": "Interac",
+      "credit_card": "Credit card",
+      "other": "Other"
+    },
+    "list": {
+      "filter": "Online",
+      "requestsBanner": "{{count}} online class request(s):"
+    },
+    "student": {
+      "overdueHint": "Talk to Josi to renew.",
+      "requestedHint": "Request sent: Josi will confirm.",
+      "cta": "Want to take online classes?",
+      "requestTitle": "Choose your online plan",
+      "requestSend": "Send request",
+      "requestSent": "Request sent! Josi will confirm with you.",
+      "lastPayments": "Latest payments"
+    },
+    "signup": {
+      "label": "Online classes (optional)",
+      "none": "No, in-studio only"
+    },
+    "report": {
+      "origin": "Source",
+      "all": "All",
+      "studio": "In-studio",
+      "online": "Online",
+      "typeMonthly": "Online monthly fee",
+      "typeDropin": "Online drop-in",
+      "loadWarning": "Could not load online payments.",
+      "hiddenOnlineOnly": "{{count}} online-only student(s) not shown here."
+    },
+    "errors": {
+      "not_allowed": "You don't have permission to do this.",
+      "invalid_student": "Student not found.",
+      "invalid_plan": "Invalid plan.",
+      "invalid_kind": "Invalid payment type.",
+      "plan_exists": "There is already a request or active plan.",
+      "invalid_period": "Invalid period (end before start or longer than 1 year).",
+      "period_overlap": "This period overlaps a monthly fee already recorded.",
+      "dropin_duplicate": "There is already a drop-in on this date.",
+      "invalid_date": "Invalid or future date.",
+      "invalid_amount": "Invalid amount.",
+      "invalid_method": "Choose the payment method.",
+      "reason_required": "Enter the reason.",
+      "payment_not_found": "Payment not found.",
+      "already_void": "This payment is already voided.",
+      "generic": "Something went wrong. Try again.",
+      "load": "Could not load online classes.",
+      "invalid_status": "Invalid status."
+    },
+    "membership": {
+      "saved": "Plan status updated."
+    }
   }
 }
