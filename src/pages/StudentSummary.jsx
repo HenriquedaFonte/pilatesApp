@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+import { goBack } from '../lib/navigation'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import { useTranslation } from 'react-i18next'
@@ -73,6 +74,8 @@ const StudentSummary = () => {
   const { t, i18n } = useTranslation()
   const { profile } = useAuth()
   const { studentId } = useParams()
+  const navigate = useNavigate()
+  const backTo = `/teacher/students?student=${studentId}`
   const [student, setStudent] = useState(null)
   const [creditHistory, setCreditHistory] = useState([])
   const [loading, setLoading] = useState(true)
@@ -289,7 +292,7 @@ const StudentSummary = () => {
 
   if (!student) {
     return (
-      <TeacherLayout>
+      <TeacherLayout backTo={backTo}>
         <div className="space-y-6">
           <Alert variant="destructive">
             <AlertDescription>{t('teacher.studentSummary.notFound', 'Student not found.')}</AlertDescription>
@@ -300,14 +303,18 @@ const StudentSummary = () => {
   }
 
   return (
-    <TeacherLayout>
+    <TeacherLayout backTo={backTo}>
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <Link to="/teacher/students">
-            <Button variant="outline" size="icon" className="rounded-xl h-9 w-9">
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-          </Link>
+          <Button
+            variant="outline"
+            size="icon"
+            className="rounded-xl h-9 w-9 hidden md:inline-flex"
+            aria-label={t('common.back')}
+            onClick={() => goBack(navigate, backTo)}
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
           <div className="flex flex-col">
             <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
               {t('teacher.studentSummary.title', 'Resumo do Aluno')}

@@ -10,7 +10,7 @@ import {
 
 // Faixa de aniversários próximos (tela inicial e Alunos da professora).
 // O "ocultar até amanhã" vale para as duas telas.
-const BirthdayBanner = ({ birthdays, className = '' }) => {
+const BirthdayBanner = ({ birthdays, className = '', onStudentClick }) => {
   const { t } = useTranslation()
   const [visible, setVisible] = useState(false)
   const idsKey = (birthdays || []).map(b => b.id).join(',')
@@ -59,6 +59,7 @@ const BirthdayBanner = ({ birthdays, className = '' }) => {
           <li key={student.id}>
             <Link
               to={`/teacher/student-summary/${student.id}`}
+              onClick={() => onStudentClick?.(student.id)}
               className="inline-block rounded-full bg-background/80 dark:bg-background/40 border border-emerald-200/60 dark:border-emerald-900/40 px-3 py-1 text-xs hover:border-emerald-400 transition-colors"
             >
               <span className="font-medium text-foreground">
