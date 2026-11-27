@@ -882,7 +882,8 @@
         "observations": "Observations",
         "resetPassword": "Réinitialiser le mot de passe",
         "deactivate": "Désactiver l'élève",
-        "activate": "Activer l'élève"
+        "activate": "Activer l'élève",
+        "zeroCreditsEmail": "Courriel crédits épuisés"
       },
       "statusBadge": {
         "upToDate": "À jour",
@@ -1010,6 +1011,19 @@
         "inDays_other": "dans {{count}} jours",
         "dismiss": "Masquer jusqu'à demain",
         "cakeTitle": "Anniversaire bientôt !"
+      },
+      "zeroCreditsEmail": {
+        "title": "Envoyer le courriel de crédits épuisés à {{name}} ?",
+        "description": "Le courriel part en {{language}} (la langue de l'élève), avec le texte du modèle « Crédits épuisés », et il est enregistré dans l'historique des courriels.",
+        "inactiveNote": "Attention : cet élève est inactif.",
+        "cancel": "Annuler",
+        "send": "Envoyer le courriel",
+        "sending": "Envoi du courriel à {{name}}...",
+        "sent": "Courriel de crédits épuisés envoyé à {{name}}.",
+        "failed": "Le courriel à {{name}} a échoué. Voyez pourquoi dans l'historique des courriels.",
+        "pending": "Le courriel à {{name}} est encore en cours d'envoi. Vérifiez l'historique des courriels.",
+        "error": "Impossible d'envoyer le courriel. Rien n'a été envoyé ; réessayez.",
+        "openHistory": "Voir l'historique"
       }
     },
     "reports": {

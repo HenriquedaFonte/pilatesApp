@@ -1,8 +1,15 @@
 import { useState, useEffect, useLayoutEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate, useNavigationType, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'sonner'
 import { supabase } from '../lib/supabase'
 import emailService from '../lib/emailService'
+import { useAuth } from '../hooks/useAuth'
+import {
+  ZERO_CREDITS_TEMPLATE,
+  canSendZeroCreditsEmail,
+  sendTemplateToStudent
+} from '../lib/studentQuickEmail'
 import { getUpcomingBirthdays } from '../lib/birthdays'
 import BirthdayBanner from '../components/BirthdayBanner'
 import OnlinePaymentDialog from '../components/OnlinePaymentDialog'
@@ -61,7 +68,8 @@ import {
   Trash2,
   MoreVertical,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Mail
 } from 'lucide-react'
 import TeacherLayout from '../components/TeacherLayout'
 import {
@@ -85,6 +93,7 @@ import {
 const TeacherStudents = () => {
   const navigate = useNavigate()
   const { t, i18n } = useTranslation()
+  const { profile } = useAuth()
   const [searchParams, setSearchParams] = useSearchParams()
   const location = useLocation()
   const navigationType = useNavigationType()
@@ -125,6 +134,10 @@ const TeacherStudents = () => {
   const [hardDeleteConfirmText, setHardDeleteConfirmText] = useState('')
   const [hardDeleteLoading, setHardDeleteLoading] = useState(false)
   const HARD_DELETE_PHRASE = 'EXCLUIR PERMANENTEMENTE'
+  // Email de créditos zerados pelo menu ⋮ do card
+  const [zeroEmailStudent, setZeroEmailStudent] = useState(null)
+  const [zeroEmailSendingId, setZeroEmailSendingId] = useState(null)
+  const zeroEmailSendingRef = useRef(false)
 
   const showSuccess = msg => {
     setSuccess(msg)
@@ -288,7 +301,7 @@ const TeacherStudents = () => {
       const { data: studentsData, error: studentsError } = await supabase
         .from('profiles')
         .select(
-          'id, email, full_name, role, individual_credits, duo_credits, group_credits, created_at, observations, date_of_birth, is_active'
+          'id, email, full_name, role, individual_credits, duo_credits, group_credits, created_at, observations, date_of_birth, is_active, preferred_language'
         )
         .eq('role', 'student')
         .is('deleted_at', null)
@@ -676,6 +689,60 @@ const TeacherStudents = () => {
       (student.duo_credits || 0) +
       (student.group_credits || 0)
     )
+  }
+
+  // Língua do aluno mostrada no diálogo (o servidor escolhe a língua sozinho).
+  const zeroEmailLanguage = student =>
+    ['pt', 'en', 'fr'].includes(student?.preferred_language) ? student.preferred_language : 'pt'
+
+  // Email de créditos zerados para um aluno: mesmo fluxo da tela E-mails
+  // (registro → fila → send-campaign), fica no Histórico de E-mails.
+  const confirmZeroCreditsEmail = async () => {
+    if (zeroEmailSendingRef.current) return
+    const student = zeroEmailStudent
+    if (!student) return
+    zeroEmailSendingRef.current = true
+    setZeroEmailSendingId(student.id)
+    setZeroEmailStudent(null)
+    const name = student.full_name
+    const toastId = toast.loading(t('teacher.students.zeroCreditsEmail.sending', { name }))
+    const historyAction = {
+      label: t('teacher.students.zeroCreditsEmail.openHistory'),
+      onClick: () => navigate('/teacher/email-notifications?tab=history')
+    }
+    try {
+      const result = await sendTemplateToStudent({
+        db: supabase,
+        startCampaign: id => emailService.startCampaign(id),
+        student,
+        templateId: ZERO_CREDITS_TEMPLATE,
+        senderName: profile?.full_name || 'Professora',
+        sleep: ms => new Promise(resolve => setTimeout(resolve, ms))
+      })
+      if (result.status === 'sent') {
+        toast.success(t('teacher.students.zeroCreditsEmail.sent', { name }), { id: toastId })
+      } else if (result.status === 'failed') {
+        toast.error(t('teacher.students.zeroCreditsEmail.failed', { name }), {
+          id: toastId,
+          action: historyAction,
+          duration: 10000
+        })
+      } else if (result.status === 'pending') {
+        toast.info(t('teacher.students.zeroCreditsEmail.pending', { name }), {
+          id: toastId,
+          action: historyAction,
+          duration: 10000
+        })
+      } else {
+        toast.error(t('teacher.students.zeroCreditsEmail.error'), { id: toastId })
+      }
+    } catch (err) {
+      console.error('Error sending zero-credits email:', err?.code || err?.name || 'unknown')
+      toast.error(t('teacher.students.zeroCreditsEmail.error'), { id: toastId })
+    } finally {
+      zeroEmailSendingRef.current = false
+      setZeroEmailSendingId(null)
+    }
   }
 
   const getDayName = dayOfWeek => {
@@ -1142,6 +1209,16 @@ const TeacherStudents = () => {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-48 bg-card border border-border rounded-xl shadow-md p-1">
+                        {canSendZeroCreditsEmail({ totalBalance, onlineOnly }) && (
+                          <DropdownMenuItem
+                            disabled={zeroEmailSendingId === student.id}
+                            onClick={() => setZeroEmailStudent(student)}
+                            className="cursor-pointer flex items-center gap-2 hover:bg-muted py-2 px-3 rounded-lg text-sm"
+                          >
+                            <Mail className="h-4 w-4 text-muted-foreground" />
+                            <span>{t('teacher.students.card.zeroCreditsEmail')}</span>
+                          </DropdownMenuItem>
+                        )}
                         <DropdownMenuItem
                           onClick={() => setOnlinePaymentStudent(student)}
                           className="cursor-pointer flex items-center gap-2 hover:bg-muted py-2 px-3 rounded-lg text-sm"
@@ -1651,6 +1728,43 @@ const TeacherStudents = () => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        <AlertDialog
+          open={!!zeroEmailStudent}
+          onOpenChange={open => {
+            if (!open) setZeroEmailStudent(null)
+          }}
+        >
+          <AlertDialogContent className="rounded-2xl">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-base font-bold">
+                {t('teacher.students.zeroCreditsEmail.title', { name: zeroEmailStudent?.full_name })}
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-xs text-muted-foreground">
+                {t('teacher.students.zeroCreditsEmail.description', {
+                  language: t(`teacher.emails.languageNames.${zeroEmailLanguage(zeroEmailStudent)}`)
+                })}
+                {zeroEmailStudent?.is_active === false && (
+                  <span className="block mt-2 font-semibold text-amber-600">
+                    {t('teacher.students.zeroCreditsEmail.inactiveNote')}
+                  </span>
+                )}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="rounded-xl">
+                {t('teacher.students.zeroCreditsEmail.cancel')}
+              </AlertDialogCancel>
+              <AlertDialogAction
+                className="rounded-xl"
+                disabled={!!zeroEmailSendingId}
+                onClick={confirmZeroCreditsEmail}
+              >
+                {t('teacher.students.zeroCreditsEmail.send')}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
         <AlertDialog open={isActiveConfirmOpen} onOpenChange={setIsActiveConfirmOpen}>
           <AlertDialogContent className="rounded-2xl">

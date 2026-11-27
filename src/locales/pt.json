@@ -359,7 +359,8 @@
         "observations": "Observações",
         "resetPassword": "Resetar Senha",
         "deactivate": "Inativar Aluno",
-        "activate": "Ativar Aluno"
+        "activate": "Ativar Aluno",
+        "zeroCreditsEmail": "Email de créditos zerados"
       },
       "statusBadge": {
         "upToDate": "Em dia",
@@ -411,6 +412,19 @@
         "inDays_other": "em {{count}} dias",
         "dismiss": "Ocultar até amanhã",
         "cakeTitle": "Aniversário chegando!"
+      },
+      "zeroCreditsEmail": {
+        "title": "Enviar o email de créditos zerados para {{name}}?",
+        "description": "O email sai em {{language}} (a língua do aluno), com o texto do modelo \"Créditos zerados\", e fica no Histórico de E-mails.",
+        "inactiveNote": "Atenção: este aluno está inativo.",
+        "cancel": "Cancelar",
+        "send": "Enviar email",
+        "sending": "Enviando o email para {{name}}...",
+        "sent": "Email de créditos zerados enviado para {{name}}.",
+        "failed": "O email para {{name}} falhou. Veja o motivo no Histórico de E-mails.",
+        "pending": "O email para {{name}} ainda está sendo enviado. Confira no Histórico de E-mails.",
+        "error": "Não foi possível enviar o email. Nada foi enviado; tente de novo.",
+        "openHistory": "Ver histórico"
       }
     },
     "classes": {

@@ -657,7 +657,8 @@
         "observations": "Observations",
         "resetPassword": "Reset Password",
         "deactivate": "Deactivate Student",
-        "activate": "Activate Student"
+        "activate": "Activate Student",
+        "zeroCreditsEmail": "No-credits email"
       },
       "statusBadge": {
         "upToDate": "Up to date",
@@ -709,6 +710,19 @@
         "inDays_other": "in {{count}} days",
         "dismiss": "Hide until tomorrow",
         "cakeTitle": "Birthday coming up!"
+      },
+      "zeroCreditsEmail": {
+        "title": "Send the no-credits email to {{name}}?",
+        "description": "The email goes out in {{language}} (the student's language), with the \"No credits left\" template text, and is saved in the Email history.",
+        "inactiveNote": "Note: this student is inactive.",
+        "cancel": "Cancel",
+        "send": "Send email",
+        "sending": "Sending the email to {{name}}...",
+        "sent": "No-credits email sent to {{name}}.",
+        "failed": "The email to {{name}} failed. See why in the Email history.",
+        "pending": "The email to {{name}} is still being sent. Check the Email history.",
+        "error": "Could not send the email. Nothing was sent; please try again.",
+        "openHistory": "View history"
       }
     },
     "checkin": {
