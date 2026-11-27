@@ -55,7 +55,7 @@ Data: 2026-11-27 · Branch: `feat/email-creditos-zerados` (criar a partir do `ma
 - Fazer: novo `it` para `zeroCreditsNotice`: as 3 mensagens contêm `pilatesmontreal@gmail.com` e `josipilates.com/login`; nenhuma contém `438` nem `{`; pt contém "12 ou 6 aulas", en contém "Interac e-Transfer", fr contém "virement Interac". Se versão A: nenhuma mensagem começa com "Boa tarde"/"Good afternoon"/"Bonjour".
 - Pronto quando: `npm test` verde.
 
-### 3. [OPUS] Envio rápido de um modelo para um aluno (lógica, sem React)
+### 3. ✅ [OPUS] Envio rápido de um modelo para um aluno (lógica, sem React)
 - Arquivo novo: `src/lib/studentQuickEmail.js`; testes novos: `src/tests/studentQuickEmail.test.js`
 - Fazer:
   - `ZERO_CREDITS_TEMPLATE = 'zeroCreditsNotice'`.
@@ -70,7 +70,7 @@ Data: 2026-11-27 · Branch: `feat/email-creditos-zerados` (criar a partir do `ma
 - Testes (com `db` falso e `sleep` que resolve na hora): linha gravada tem `email_type: 'custom'`, `subject_*`/`message_*` iguais a `templateContent('zeroCreditsNotice')`, `recipient_filter` com `group: 'selected'`, `template: 'zeroCreditsNotice'`, `source: 'student_card'`, `total: 1`, sem `created_by`; RPC chamada com `[student.id]`; caminho feliz → `sent`; campanha `failed` com `sent: 0` → `failed`; erro na fila → chama `finish_email_campaign` e devolve `error`/`queue`, sem chamar `startCampaign`; `startCampaign` falha 1× e depois funciona → 2 chamadas; tempo esgotado com `status: 'sending'` → `pending`; `canSendZeroCreditsEmail` com 0, −1, 3 e `onlineOnly`.
 - Pronto quando: testes novos verdes; nenhum arquivo além destes dois.
 
-### 4. [OPUS] Item no menu ⋮ e confirmação em `TeacherStudents.jsx`
+### 4. ✅ [OPUS] Item no menu ⋮ e confirmação em `TeacherStudents.jsx`
 - Arquivo: `src/pages/TeacherStudents.jsx`
 - Fazer:
   - `fetchData`: acrescentar `preferred_language` ao select de `profiles` (só para mostrar a língua no diálogo; o servidor lê a língua sozinho).

@@ -127,33 +127,36 @@ export const emailTemplates = {
   zeroCreditsNotice: {
     pt: {
       subject: 'Seus créditos acabaram - Josi Pilates',
-      message: `Seus créditos de aulas acabaram.
+      message: `Este email é para informar que os seus créditos de aulas de Pilates acabaram.
 
-Para continuar vindo às aulas sem interrupção, é só renovar o seu pacote. Fale com a gente na próxima aula ou pelo telefone +1 (438) 274-8396.
+Para renovar o seu pacote, basta enviar o Interac com o valor correspondente ao seu pacote (12 ou 6 aulas) para o e-mail: pilatesmontreal@gmail.com
 
 Seu saldo aparece sempre no Portal do Aluno, em josipilates.com/login.
 
-Até breve!`
+Agradecemos a confiança e a preferência.
+Até breve e muito obrigada!`
     },
     en: {
       subject: 'Your credits have run out - Josi Pilates',
-      message: `Your class credits have run out.
+      message: `This email is to let you know that your Pilates class credits have run out.
 
-To keep coming to class without a break, just renew your package. Talk to us at your next class or call +1 (438) 274-8396.
+To renew your package, just send an Interac e-Transfer for the amount of your package (12 or 6 classes) to: pilatesmontreal@gmail.com
 
 You can always see your balance in the Student Portal at josipilates.com/login.
 
-See you soon!`
+Thank you for your trust and for choosing us.
+See you soon, and thank you so much!`
     },
     fr: {
       subject: 'Vos crédits sont épuisés - Josi Pilates',
-      message: `Vos crédits de cours sont épuisés.
+      message: `Ce courriel vise à vous informer que vos crédits de cours de Pilates sont épuisés.
 
-Pour continuer à venir aux cours sans interruption, il suffit de renouveler votre forfait. Parlez-nous-en à votre prochain cours ou appelez le +1 (438) 274-8396.
+Pour renouveler votre forfait, il suffit d'envoyer un virement Interac du montant correspondant à votre forfait (12 ou 6 cours) à l'adresse : pilatesmontreal@gmail.com
 
 Votre solde est toujours affiché dans le Portail de l'élève, sur josipilates.com/login.
 
-À bientôt !`
+Merci de votre confiance et de votre fidélité.
+À bientôt et merci beaucoup !`
     }
   },
 
@@ -318,63 +321,6 @@ Merci !`
       signature: 'Cordialement,',
       teamName: 'Équipe Josi Pilates',
       footer: '© 2024 Josi Pilates. Tous droits réservés.'
-    }
-  },
-
-  zeroCredits: {
-    pt: {
-      id: 'zero_credits',
-      title: 'Sem Créditos - Compra Necessária',
-      subject: 'Aviso: Você não possui créditos - Josi Pilates',
-      greeting: (name) => `Olá, ${name}!`,
-      message: 'Notamos que você não possui créditos disponíveis para aulas.',
-      warning: 'Para continuar aproveitando nossas aulas de Pilates, é necessário adquirir novos créditos.',
-      contactTitle: '💡 Como renovar seus créditos:',
-      contactItems: [
-        'Mande uma mensagem pelo WhatsApp: {phone}',
-        'Envie o valor do seu pacote de aulas para o interac pilatesmontreal@gmail.com',
-        'Visite nosso studio durante o horário de funcionamento'
-      ],
-      closing: 'Estamos aqui para ajudar você a manter sua rotina de exercícios e bem-estar!',
-      signature: 'Atenciosamente,',
-      teamName: 'Equipe Josi Pilates',
-      tagline: 'Cuidando do seu bem-estar com carinho e profissionalismo'
-    },
-    en: {
-      id: 'zero_credits',
-      title: 'Zero Credits - Purchase Required',
-      subject: 'Notice: You have no credits remaining - Josi Pilates',
-      greeting: (name) => `Hello, ${name}!`,
-      message: 'We notice that you have no credits available for classes.',
-      warning: 'To continue enjoying our Pilates classes, you need to purchase new credits.',
-      contactTitle: '💡 How to renew your credits:',
-      contactItems: [
-        'Send us a message on WhatsApp: {phone}',
-        'Send the amount for your class package via Interac to pilatesmontreal@gmail.com.',
-        'Visit our studio during business hours'
-      ],
-      closing: 'We are here to help you maintain your exercise routine and well-being!',
-      signature: 'Best regards,',
-      teamName: 'Josi Pilates Team',
-      tagline: 'Caring for your well-being with care and professionalism'
-    },
-    fr: {
-      id: 'zero_credits',
-      title: 'Sans Crédits - Achat Requis',
-      subject: 'Avis: Vous n\'avez plus de crédits - Josi Pilates',
-      greeting: (name) => `Bonjour, ${name}!`,
-      message: 'Nous remarquons que vous n\'avez plus de crédits disponibles pour les cours.',
-      warning: 'Pour continuer à profiter de nos cours de Pilates, vous devez acheter de nouveaux crédits.',
-      contactTitle: '💡 Comment renouveler vos crédits:',
-      contactItems: [
-        'Envoyez-nous un message sur WhatsApp : {phone}',
-        'Envoyez le montant de votre forfait de cours via Interac à pilatesmontreal@gmail.com.',
-        'Visitez notre studio pendant les heures d\'ouverture'
-      ],
-      closing: 'Nous sommes là pour vous aider à maintenir votre routine d\'exercice et votre bien-être!',
-      signature: 'Cordialement,',
-      teamName: 'Équipe Josi Pilates',
-      tagline: 'Prendre soin de votre bien-être avec soin et professionnalisme'
     }
   },
 

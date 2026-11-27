@@ -133,6 +133,20 @@ describe('modelos do passo 2', () => {
       expect(new Set(['pt', 'en', 'fr'].map(l => c[l].subject)).size).toBe(3)
     }
   )
+  it('zeroCreditsNotice: texto da Josi, sem telefone e sem saudação própria', () => {
+    const c = templateContent('zeroCreditsNotice')
+    for (const lang of ['pt', 'en', 'fr']) {
+      const m = c[lang].message
+      expect(m).toContain('pilatesmontreal@gmail.com')
+      expect(m).toContain('josipilates.com/login')
+      expect(m).not.toContain('438')
+      expect(m).not.toContain('{')
+      expect(m).not.toMatch(/^(Boa tarde|Good afternoon|Bonjour)/)
+    }
+    expect(c.pt.message).toContain('12 ou 6 aulas')
+    expect(c.en.message).toContain('Interac e-Transfer')
+    expect(c.fr.message).toContain('virement Interac')
+  })
   it('aviso geral e modelos automáticos não preenchem texto', () => {
     expect(templateContent('blank')).toEqual(emptyContent())
     expect(templateContent('lowCredits')).toEqual(emptyContent())
