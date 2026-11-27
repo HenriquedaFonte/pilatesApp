@@ -956,7 +956,7 @@ const TeacherStudents = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,20rem),1fr))] gap-6">
           {filteredStudents.map(student => {
             const totalBalance = getTotalBalance(student)
             const hasUpcomingBirthday = upcomingBirthdays.some(
@@ -1008,15 +1008,15 @@ const TeacherStudents = () => {
               <Card
                 key={student.id}
                 id={`student-card-${student.id}`}
-                className={`flex flex-col h-full rounded-2xl border border-border bg-card shadow-sm transition-all hover:shadow-md ${
+                className={`flex flex-col h-full min-w-0 rounded-2xl border border-border bg-card shadow-sm transition-all hover:shadow-md ${
                   hasUpcomingBirthday 
                     ? 'bg-emerald-50/10 dark:bg-emerald-950/5 border-l-4 border-l-emerald-500' 
                     : ''
                 }`}
               >
                 <CardHeader className="pb-3 pt-4 px-4">
-                  <div className="flex justify-between items-start gap-2">
-                    <div className="space-y-0.5">
+                  <div className="flex flex-wrap justify-between items-start gap-x-2 gap-y-2">
+                    <div className="space-y-0.5 flex-1 min-w-[11rem]">
                       <CardTitle className="text-base font-bold text-foreground flex items-center gap-1.5 flex-wrap">
                         {student.full_name}
                         {hasUpcomingBirthday && (
@@ -1027,7 +1027,7 @@ const TeacherStudents = () => {
                         {student.email}
                       </CardDescription>
                     </div>
-                    <div className="flex flex-col items-end gap-1.5 shrink-0">
+                    <div className="flex flex-col items-end gap-1.5 shrink-0 ml-auto">
                       {showOnlineBadge && (
                         <Link
                           to={`/teacher/student-summary/${student.id}`}
