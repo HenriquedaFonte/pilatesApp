@@ -44,13 +44,13 @@ Data: 2026-11-27 · Branch: `feat/email-creditos-zerados` (criar a partir do `ma
 7. **Pontuação miúda (versão A):** vírgula em "Para renovar o seu pacote, basta…" e ponto final em "…e a preferência." (opcional).
 
 ## Passos
-### 1. [SONNET] Texto novo do modelo "Créditos zerados"
+### 1. ✅ [SONNET] Texto novo do modelo "Créditos zerados"
 - Arquivo: `src/lib/emailTemplates.js`
 - Fazer: em `zeroCreditsNotice`, trocar **só** o `message` de pt, en e fr pelo texto da versão escolhida pelo dono (tabela "Textos", versão A por padrão se o dono aprovar). Assuntos ficam iguais (salvo resposta diferente à pergunta 6). Manter as quebras de linha exatamente como na tabela (linha em branco entre parágrafos; "Agradecemos…" e "Até breve…" em linhas seguidas, sem linha em branco). Sem `{…}` no texto.
 - Fazer também: apagar o bloco morto `zeroCredits` (o modelo antigo, `id: 'zero_credits'`). Antes, conferir com `grep -rn "zeroCredits\b\|'zeroCredits'\|getTemplate('zeroCredits" src` que nada usa `emailTemplates.zeroCredits` (o `normalizeTemplateParam('zeroCredits')` de `emailRecipients.js` é outra coisa e fica). Se aparecer uso, **não apagar** e avisar.
 - Pronto quando: a pré-visualização do modelo em E-mails → Nova mensagem mostra o texto novo nas 3 abas; nenhum outro modelo mudou.
 
-### 2. [SONNET] Testes do texto
+### 2. ✅ [SONNET] Testes do texto
 - Arquivo: `src/tests/customEmail.test.js` (bloco "modelos do passo 2")
 - Fazer: novo `it` para `zeroCreditsNotice`: as 3 mensagens contêm `pilatesmontreal@gmail.com` e `josipilates.com/login`; nenhuma contém `438` nem `{`; pt contém "12 ou 6 aulas", en contém "Interac e-Transfer", fr contém "virement Interac". Se versão A: nenhuma mensagem começa com "Boa tarde"/"Good afternoon"/"Bonjour".
 - Pronto quando: `npm test` verde.
@@ -82,12 +82,12 @@ Data: 2026-11-27 · Branch: `feat/email-creditos-zerados` (criar a partir do `ma
   - Não mexer no layout do rodapé do card nem em outros itens.
 - Pronto quando: aluno com 0 créditos mostra o item; aluno com créditos e aluno só online não mostram; confirmar duas vezes rápido gera **uma** linha no Histórico; lint sem aviso novo.
 
-### 5. [SONNET] Textos da tela (pt/en/fr)
+### 5. ✅ [SONNET] Textos da tela (pt/en/fr)
 - Arquivos: `src/locales/pt.json`, `en.json`, `fr.json`
 - Fazer: `teacher.students.card.zeroCreditsEmail` e o bloco novo `teacher.students.zeroCreditsEmail` (chaves da tabela "Textos da tela"), nas 3 línguas, mesmas chaves nos 3 arquivos.
 - Pronto quando: `npm test` (inclui o teste de chaves dos locales, se houver) e `npm run build` verdes.
 
-### 6. [SONNET] `docs/PENDENCIAS.md`
+### 6. ✅ [SONNET] `docs/PENDENCIAS.md`
 - Fazer: em "Testes em aberto", item novo com a lista de "Manual depois do deploy" (abaixo). No item antigo da Story 4.3 (passo 1, "Pedir para a Josi ler e aprovar os textos de Créditos zerados"), anotar que o texto de "Créditos zerados" foi trocado pelo da Josi neste PR. Atualizar a linha "_Última atualização_".
 
 ## Textos do email (modelo `zeroCreditsNotice`, campo `message`)
