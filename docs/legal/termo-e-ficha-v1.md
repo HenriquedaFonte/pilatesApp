@@ -1,6 +1,6 @@
-# RASCUNHO — pendente de aprovação da Josi
+# Texto aprovado em 28/11/2026 — aguardando publicação (PR B2)
 
-**Aprovado por:** ____________________ **em:** ____/____/________
+**Aprovado por:** Josi (aprovação informada pelo dono na sessão do Claude, não assinada pela própria Josi) **em:** 28/11/2026
 
 Termo das aulas, consentimento de saúde e trechos novos da Política de Privacidade, em francês, português e inglês.
 Plano: `docs/planos/2026-11-28-perfil-e-consentimento-digital.md` (PR B1, passo 4c).
@@ -14,11 +14,12 @@ Plano: `docs/planos/2026-11-28-perfil-e-consentimento-digital.md` (PR B1, passo 
 - **Prazo de guarda da ficha de saúde: 5 anos** (ponto 1, já aplicado na Política, seção 7, nas 3 línguas). Os pontos 2 e 3 seguem abertos.
 - **Item 4 do termo (responsabilidade): manter o rascunho**, mais estreito que a isenção total do papel antigo (`PilatesLessonsPolices`); a seguradora ou um advogado valida a redação. Isto não é parecer jurídico.
 - **Nome nos textos: sempre "Josi Pilates"** (não "Point d'Équilibre"/"Ponto de Equilíbrio" do papel antigo).
-- **Aprovação por escrito da Josi (linha do topo): ainda não registrada.**
+- **Prazo de guarda do registro do termo aceito: 5 anos** (ponto 2, aplicado na seção 7 nas 3 línguas).
+- **Aprovação do texto: dada pelo dono em 2026-11-28** (registrada na linha do topo). Falta só a validação da seguradora ou do advogado (item 4 e francês), que não bloqueia o B2 se o dono decidir publicar assim.
 
 ## Pontos a confirmar (colchetes no texto)
 1. ~~`[N anos]`~~ **resolvido: 5 anos** — prazo de guarda da ficha de saúde depois que o aluno sai do estúdio ou retira o consentimento (associação profissional / seguradora). Política, seção 7. Se no B2 ainda não houver resposta, a frase sai sem o número e o item 7 continua aberto em `docs/PENDENCIAS.md`.
-2. `[prazo de guarda do registro do termo aceito — confirmar com a Josi]` — a associação/seguradora também exige guardar o registro do termo assinado (aceites) depois que o aluno sai? (Pergunta aberta do plano; hoje "Excluir permanentemente" apaga os aceites.) Política, seção 7.
+2. ~~`[prazo do registro do termo]`~~ **resolvido: 5 anos** — a associação/seguradora também exige guardar o registro do termo assinado (aceites) depois que o aluno sai? (Pergunta aberta do plano; hoje "Excluir permanentemente" apaga os aceites.) Política, seção 7.
 3. `[cópias de segurança: confirmar depois do PR E]` — onde ficam os backups e com que proteção (hoje: GitHub, EUA, 90 dias). Política, seção 10. O consentimento de saúde (imutável) só remete à Política e não diz onde ficam os backups.
 4. **Nota para o B2:** o texto provisório do prazo (seção 7) diz que a ficha fica "somente leitura" também depois que o aluno **deixa o estúdio**. No sistema, a ficha só congela quando a Josi registra a **retirada do consentimento**; aluno que sai sem retirar continua com a ficha editável pela Josi. Decidir no B2: ajustar a frase ou registrar a retirada quando o aluno sai.
 5. **Numeração da Política:** a seção nova entra como **9** e as seções 9 a 13 atuais viram 10 a 14 (atualizar as remissões: "seção 8" nas seções 6 e 7 continua; "seção 13" na seção 8 vira "seção 14"). Abaixo os números já estão na numeração nova.
@@ -208,7 +209,7 @@ L'accès à la fiche santé est limité à vous et à Josi (et, pour la maintena
 - (novo) Retirer en tout temps votre consentement à la conservation de votre fiche santé : il suffit de le demander à Josi (section 9)
 
 **7. Conservation des données** (novo, depois do texto atual)
-Fiche santé : nous la conservons tant que vous êtes élève et, après votre départ du studio ou le retrait de votre consentement, pendant la durée exigée par les obligations légales et d'assurance du studio, 5 ans; pendant cette période, la fiche est en lecture seule et n'est consultée que pour ces obligations; ensuite, elle est détruite et retirée des copies de sécurité dans les 90 jours. Registre de l'acceptation de l'entente et du consentement : [prazo de guarda do registro do termo aceito — confirmar com a Josi].
+Fiche santé : nous la conservons tant que vous êtes élève et, après votre départ du studio ou le retrait de votre consentement, pendant la durée exigée par les obligations légales et d'assurance du studio, 5 ans; pendant cette période, la fiche est en lecture seule et n'est consultée que pour ces obligations; ensuite, elle est détruite et retirée des copies de sécurité dans les 90 jours. Registre de l'acceptation de l'entente et du consentement : 5 ans.
 
 **9. Fiche santé et entente des cours** (seção nova)
 - Ce que c'est : la fiche santé (section 2.1) est facultative et n'est conservée qu'avec votre consentement distinct, donné dans l'application ou sur papier. L'entente des cours (risques, responsabilités et politique d'annulation) est acceptée dans l'application ou sur papier.
@@ -243,7 +244,7 @@ O acesso à ficha de saúde é limitado a você e à Josi (e, para a manutençã
 - (novo) Retirar a qualquer momento o seu consentimento para guardarmos a sua ficha de saúde: basta pedir à Josi (seção 9)
 
 **7. Retenção de dados** (novo, depois do texto atual)
-Ficha de saúde: guardamos enquanto você for aluno(a) e, depois que deixar o estúdio ou retirar o consentimento, pelo tempo exigido pelas obrigações legais e de seguro do estúdio, 5 anos; nesse período a ficha fica somente leitura e só é consultada para essas obrigações; depois disso, é destruída e sai das cópias de segurança em até 90 dias. Registro do aceite do termo e do consentimento: [prazo de guarda do registro do termo aceito — confirmar com a Josi].
+Ficha de saúde: guardamos enquanto você for aluno(a) e, depois que deixar o estúdio ou retirar o consentimento, pelo tempo exigido pelas obrigações legais e de seguro do estúdio, 5 anos; nesse período a ficha fica somente leitura e só é consultada para essas obrigações; depois disso, é destruída e sai das cópias de segurança em até 90 dias. Registro do aceite do termo e do consentimento: 5 anos.
 
 **9. Ficha de saúde e termo das aulas** (seção nova)
 - O que é: a ficha de saúde (seção 2.1) é opcional e só é guardada com o seu consentimento separado, dado no aplicativo ou em papel. O termo das aulas (riscos, responsabilidades e política de cancelamento) é aceito no aplicativo ou em papel.
@@ -278,7 +279,7 @@ Access to the health profile is limited to you and Josi (and, for technical main
 - (novo) Withdraw at any time your consent to our keeping your health profile: just ask Josi (section 9)
 
 **7. Data retention** (novo, depois do texto atual)
-Health profile: we keep it while you are a student and, after you leave the studio or withdraw your consent, for the time required by the studio's legal and insurance obligations, 5 years; during that period the profile is read-only and is viewed only for those obligations; after that, it is destroyed and removed from backup copies within 90 days. Record of the acceptance of the agreement and of the consent: [prazo de guarda do registro do termo aceito — confirmar com a Josi].
+Health profile: we keep it while you are a student and, after you leave the studio or withdraw your consent, for the time required by the studio's legal and insurance obligations, 5 years; during that period the profile is read-only and is viewed only for those obligations; after that, it is destroyed and removed from backup copies within 90 days. Record of the acceptance of the agreement and of the consent: 5 years.
 
 **9. Health profile and class agreement** (seção nova)
 - What it is: the health profile (section 2.1) is optional and is kept only with your separate consent, given in the app or on paper. The class agreement (risks, responsibilities and cancellation policy) is accepted in the app or on paper.
