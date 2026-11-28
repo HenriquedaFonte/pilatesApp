@@ -5,7 +5,7 @@
 Termo das aulas, consentimento de saúde e trechos novos da Política de Privacidade, em francês, português e inglês.
 Plano: `docs/planos/2026-11-28-perfil-e-consentimento-digital.md` (PR B1, passo 4c).
 
-- Este arquivo **não aparece no site**. Nada daqui é publicado antes da aprovação por escrito da Josi (PR B2).
+- Este arquivo **não aparece no site**. A Política de Privacidade foi publicada no PR B2 com este texto (aprovação do dono, 2026-11-28); o termo e o consentimento só entram no banco quando rodar a migration de publicação, no lançamento.
 - **A versão em francês faz fé** e vem primeiro. O francês deve ser revisado por alguém nativo (ou pela seguradora/advogado).
 - A Josi deve validar o texto com a **seguradora de responsabilidade civil** (ou um advogado), principalmente o item 4 do termo (responsabilidade). Isto não é parecer jurídico.
 - O termo e o consentimento viram as versões 1 no banco (`consent_versions`): depois de aceitos, **não podem mais ser alterados** (só publicando uma versão 2, e todos aceitam de novo). Por isso o prazo de guarda aparece só na Política de Privacidade, que pode mudar.
