@@ -38,7 +38,7 @@ Funcionalidade, bug com lógica, mudança em 3+ arquivos, refactor, ou qualquer 
 - **Pula a revisão** (basta lint + testes + build + conferir o diff contra o plano): tarefa trivial, tela ou relatório **somente leitura** que não exponha dado pessoal novo, e mudança de interface/texto sem lógica de dados. Na dúvida se toca algum item acima, chamar o `revisor`.
 - Ordem: execução completa → lint/testes/build ok → `revisor` com o caminho do plano e a branch → push.
 - O `revisor` só recebe o plano e o diff; não releia o projeto inteiro para ele.
-- **REPROVADO** ou problema grave/médio: corrige quem fez o passo (Sonnet para [SONNET], `dev-critico` para [OPUS]) e chama o `revisor` de novo. Máximo 2 voltas; depois disso, paro e mostro os problemas ao dono.
+- **REPROVADO** ou problema grave/médio: corrige quem fez o passo (Sonnet para [SONNET], `dev-critico` para [OPUS]) e chama o `revisor` de novo **só se a correção mexeu em SQL ou código**. Se a correção foi só em texto, comentário ou documentação, a sessão principal confere o diff contra a lista do revisor e segue, sem segunda volta. Máximo 2 voltas; depois disso, paro e mostro os problemas ao dono.
 - Problema leve: corrijo ou anoto em `docs/PENDENCIAS.md`, e digo ao dono qual escolhi.
 - No bloco "Próxima sessão", informar o resultado da revisão em uma linha (ou "revisão do Opus dispensada: [motivo]").
 
@@ -60,5 +60,9 @@ Funcionalidade, bug com lógica, mudança em 3+ arquivos, refactor, ou qualquer 
 
 ## Economia de tokens
 - Uma tarefa = uma sessão = um PR.
+- **Perguntas ao dono antes de planejar:** se a tarefa depende de decisão do dono, o `planejador` lista as perguntas na primeira chamada e o plano só é detalhado depois das respostas. Evita replanejar a cada resposta.
+- **Ajuste de plano** (resposta do dono ou erro previsto em poucas linhas): manda ao `planejador` só o trecho afetado e pede edição mínima; não reler o projeto.
+- `docs/PENDENCIAS.md` guarda só o que está em aberto; item `[x]` vai para `docs/PENDENCIAS-HISTORICO.md`. Agentes leem só a parte do PENDENCIAS que toca a tarefa.
+- Não montar banco local para testar SQL, salvo se o plano pedir: o teste que vale é o do dono no Supabase.
 - Sessão compactada 2 vezes → `docs/PENDENCIAS.md` atualizado e sessão nova.
 - O plano fica no repositório: numa sessão nova, basta ler `docs/PENDENCIAS.md` e o plano.
