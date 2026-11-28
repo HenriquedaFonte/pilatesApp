@@ -80,7 +80,7 @@ Alternativa descartada: serviço externo de assinatura (DocuSign, Jotform etc.):
 
 ## PR A — Banco (migration, testes SQL, backup) · revisor: sim
 
-### 1. [OPUS] Migration das tabelas, RLS e RPCs
+### 1. [OPUS] Migration das tabelas, RLS e RPCs ✅
 - Arquivo: `supabase/migrations/20261128000000_create_consents_and_health_profiles.sql` (BEGIN/COMMIT, idempotente, checagens iniciais como na `20261123000000`).
 - Fazer:
   - `consent_versions`: `id uuid PK`, `kind text CHECK (kind IN ('class_policies','health_data'))`, `version int`, `title_pt/en/fr`, `body_pt/en/fr text NOT NULL` (texto puro, parágrafos com `\n`), `published_at timestamptz NOT NULL DEFAULT now()`, `UNIQUE (kind, version)`. **Esta migration não insere nenhuma versão** (sem versão publicada, ninguém fica pendente).
@@ -110,7 +110,7 @@ Alternativa descartada: serviço externo de assinatura (DocuSign, Jotform etc.):
   - Bloco de ROLLBACK comentado no fim.
 - Pronto quando: a migration roda duas vezes seguidas sem erro num banco de teste e o script do passo 2 passa.
 
-### 2. [OPUS] Testes SQL e reversão
+### 2. [OPUS] Testes SQL e reversão ✅
 - Arquivos: `docs/testes/consentimento-teste.sql` (padrão `set_config('request.jwt.claims', …)` + ROLLBACK, igual a `online-modalidade-teste.sql`) e `docs/testes/consentimento-reversao.sql`.
 - Cobrir: aluno não lê aceite/ficha de outro; aluno não faz INSERT direto em `consent_acceptances`; não aceita versão antiga; aceite duplo devolve o mesmo id; aluno sem consentimento de saúde não grava ficha; com, grava só a própria e não troca `student_id`; aluno não apaga ficha; professora lê tudo, registra papel, apaga ficha; `anon` não lê nada; `staff_consent_overview` recusa aluno; `profiles` apagado leva aceites e ficha junto.
 - Pronto quando: o script termina sem "FALHOU".
@@ -223,3 +223,11 @@ Alternativa descartada: serviço externo de assinatura (DocuSign, Jotform etc.):
 9. **Conteúdo do texto:** marca "Josi Pilates" (e não Point d'Équilibre), endereço atual, "cancelamento tardio = perda do crédito" como nas Regras, e cláusula de isenção reescrita como reconhecimento de riscos. A Josi confirma e valida com a seguradora.
 
 **Respostas do dono (2026-11-28):** recomendações aceitas em 1, 2, 3, 4, 5, 8 e 9. **6: não há alunos menores de idade**, então a v1 não trata responsável (se aparecer um menor, termo em papel registrado pela Josi). **9: endereço continua 10145 Av Hamel.** **7:** fica com a Josi (associação/seguradora); não bloqueia os PRs A, C e D, só entra na Política de Privacidade (PR B).
+
+## Ressalvas da revisão do PR A (2026-11-28, revisor: aprovado com ressalvas leves)
+1. **Trava em `consent_versions` (PR B, passo 6):** a migration de publicação da v1 cria, antes do primeiro aceite, um trigger BEFORE UPDATE em `consent_versions` que dá erro se a versão já tem aceite (hoje só a API é bloqueada; pelo SQL Editor dá para alterar um texto aceito).
+2. **Ordem do PR E:** o backup criptografado (PR E) entra **antes do merge do PR D** (a professora já pode criar fichas de saúde no PR D, mesmo sem a v1), não só antes do lançamento.
+3. **Retirada do consentimento de saúde (Loi 25) — `planejador` decide antes dos PRs B e C:** hoje os aceites são imutáveis e não há como retirar. Opções: a Josi apaga a ficha e registra a retirada, ou coluna de revogação numa migration futura. O texto legal do PR B só promete o que existir.
+4. **`x-forwarded-for`:** é registro, não prova forte; a Política de Privacidade (PR B) não deve tratá-lo como prova.
+5. Só registro: aluno na lixeira (`deleted_at`) ainda lê e grava a própria ficha pela RLS, igual às outras tabelas.
+6. Códigos de erro novos para o passo 7 traduzir: `consent_not_allowed`, `consent_invalid_language`, `consent_version_not_found`, `consent_version_outdated`, `consent_invalid_name`, `consent_invalid_student`, `consent_invalid_date`, `consent_already_accepted`.
