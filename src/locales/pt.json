@@ -1785,5 +1785,113 @@
     "membership": {
       "saved": "Situação da modalidade atualizada."
     }
+  },
+  "consent": {
+    "title": "Termo das aulas",
+    "checkRisks": "Li e aceito os riscos e responsabilidades",
+    "checkCancellation": "Li e aceito a política de cancelamento",
+    "typedName": "Digite seu nome completo",
+    "accept": "Aceito",
+    "healthConsent": "Autorizo o estúdio a guardar minhas informações de saúde para adaptar as aulas",
+    "later": "Fazer depois",
+    "pendingBadge": "Termo pendente",
+    "withdraw": "Registrar retirada",
+    "withdrawConfirm": "Registrar que o aluno retirou o consentimento de saúde? A ficha deixa de ser usada nas aulas, ninguém poderá alterá-la e ela fica guardada, só para leitura, pelo prazo exigido pelo seguro.",
+    "withdrawHowTo": "Para retirar este consentimento, basta pedir à Josi.",
+    "withdrawnOn": "Consentimento retirado em {{date}}",
+    "noHealthConsent": "Sem consentimento de saúde",
+    "versionLabel": "Versão {{version}}",
+    "frenchPrevails": "Em caso de divergência, a versão em francês prevalece.",
+    "stepLabel": "Passo {{current}} de {{total}}",
+    "profileNameHint": "Nome no seu perfil: {{name}}",
+    "authorize": "Autorizar",
+    "authorizeAgain": "Autorizar de novo",
+    "continueToPanel": "Ir para o painel",
+    "healthTab": "Saúde e termos",
+    "fillHealthProfile": "Preencher a ficha de saúde",
+    "acceptedTitle": "Termos aceitos",
+    "acceptedNone": "Nenhum termo aceito ainda.",
+    "kind": {
+      "class_policies": "Termo das aulas",
+      "health_data": "Consentimento de saúde"
+    },
+    "method": {
+      "digital": "Online",
+      "paper": "Em papel"
+    },
+    "viewText": "Ver texto",
+    "hideText": "Ocultar texto",
+    "errors": {
+      "generic": "Não foi possível concluir. Tente de novo.",
+      "not_allowed": "Você não tem permissão para esta ação.",
+      "invalid_language": "Idioma inválido.",
+      "version_not_found": "Versão do texto não encontrada.",
+      "version_outdated": "O texto foi atualizado. Recarregue a página e leia a versão nova.",
+      "invalid_name": "Digite seu nome completo (de 2 a 200 caracteres).",
+      "invalid_student": "Aluno inválido.",
+      "invalid_date": "Data inválida.",
+      "already_accepted": "Este texto já foi aceito.",
+      "immutable": "Este registro não pode ser alterado.",
+      "version_locked": "Esta versão do texto não pode ser alterada.",
+      "invalid_reason": "Motivo inválido.",
+      "invalid_weeks": "As semanas de gestação devem ser um número inteiro de 1 a 42."
+    }
+  },
+  "healthProfile": {
+    "title": "Ficha de saúde",
+    "banner": "Complete sua ficha de saúde",
+    "bannerAction": "Completar",
+    "retainedNote": "Ficha guardada, somente leitura, pelo prazo exigido pelo seguro do estúdio.",
+    "retainedBadge": "Consentimento retirado em {{date}} · ficha guardada, somente leitura",
+    "viewRetained": "Consultar ficha guardada",
+    "reasonPrompt": "Motivo da consulta (fica registrado)",
+    "reason": {
+      "insurance": "Seguro",
+      "legal": "Obrigação legal",
+      "student_request": "Pedido do aluno"
+    },
+    "deleteRetentionWarning": "Só apague depois do prazo de guarda exigido pelo seguro.",
+    "loading": "Carregando...",
+    "saving": "Salvando...",
+    "save": "Salvar ficha",
+    "saveSuccess": "Ficha de saúde salva.",
+    "updatedAt": "Atualizada em {{date}}",
+    "emergencyHint": "Recomendamos preencher o contato de emergência. Todas as perguntas são opcionais.",
+    "conditionsTitle": "Você tem ou já teve:",
+    "fields": {
+      "occupation": "Profissão",
+      "emergency_contact_name": "Contato de emergência (nome)",
+      "emergency_contact_phone": "Contato de emergência (telefone)",
+      "main_goal": "Queixa ou objetivo principal",
+      "conditions_details": "Explique, se quiser (inclusive se toma remédio para o coração ou a pressão)",
+      "medications": "Medicamentos atuais",
+      "current_treatment": "Tratamento de saúde atual",
+      "surgeries": "Cirurgias (quando e qual)",
+      "physical_activities": "Atividades físicas (tempo e frequência)",
+      "sleep_quality": "Sono",
+      "diet_quality": "Alimentação",
+      "pregnant": "Estou grávida",
+      "pregnancy_weeks": "Semanas de gestação"
+    },
+    "conditions": {
+      "cardiac_hypertension": "Doença cardíaca ou hipertensão",
+      "respiratory": "Problemas respiratórios (asma, rinite)",
+      "digestive": "Problemas digestivos",
+      "back_neck_shoulder": "Dores nas costas, pescoço ou ombros",
+      "hip_knee_foot": "Dores nos quadris, joelhos ou pés",
+      "frequent_headache": "Dor de cabeça frequente"
+    },
+    "quality": {
+      "excellent": "Excelente",
+      "good": "Bom",
+      "fair": "Regular",
+      "poor": "Ruim"
+    },
+    "alerts": {
+      "pregnantWeeks": "Gestante: {{weeks}} semanas (informado em {{date}})",
+      "pregnant": "Gestante (informado em {{date}})",
+      "cardiac": "Coração ou pressão",
+      "surgeries": "Cirurgias"
+    }
   }
 }

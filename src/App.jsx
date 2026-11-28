@@ -31,6 +31,7 @@ const StudentHistory = lazy(() => import('./pages/StudentHistory'))
 const StudentReceipts = lazy(() => import('./pages/StudentReceipts'))
 const StudioRules = lazy(() => import('./pages/StudioRules'))
 const StudentProfile = lazy(() => import('./pages/StudentProfile'))
+const StudentConsent = lazy(() => import('./pages/StudentConsent'))
 const TeacherProfile = lazy(() => import('./pages/TeacherProfile'))
 const StudentSummary = lazy(() => import('./pages/StudentSummary'))
 const AttendanceReport = lazy(() => import('./pages/AttendanceReport'))
@@ -196,10 +197,19 @@ function AppRoutes() {
           }
         />
 
+        {/* Assistente do termo: sem requireConsent (é para onde o bloqueio leva). */}
+        <Route
+          path="/student/consent"
+          element={
+            <ProtectedRoute requireRole="student" requireCompleteProfile={true}>
+              <StudentConsent />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/student/dashboard"
           element={
-            <ProtectedRoute requireRole="student" requireCompleteProfile={true}>
+            <ProtectedRoute requireRole="student" requireCompleteProfile={true} requireConsent={true}>
               <StudentDashboard />
             </ProtectedRoute>
           }
@@ -207,7 +217,7 @@ function AppRoutes() {
         <Route
           path="/student/history"
           element={
-            <ProtectedRoute requireRole="student" requireCompleteProfile={true}>
+            <ProtectedRoute requireRole="student" requireCompleteProfile={true} requireConsent={true}>
               <StudentHistory />
             </ProtectedRoute>
           }
@@ -215,7 +225,7 @@ function AppRoutes() {
         <Route
           path="/student/receipts"
           element={
-            <ProtectedRoute requireRole="student" requireCompleteProfile={true}>
+            <ProtectedRoute requireRole="student" requireCompleteProfile={true} requireConsent={true}>
               <StudentReceipts />
             </ProtectedRoute>
           }
@@ -223,7 +233,7 @@ function AppRoutes() {
         <Route
           path="/student/rules"
           element={
-            <ProtectedRoute requireRole="student" requireCompleteProfile={true}>
+            <ProtectedRoute requireRole="student" requireCompleteProfile={true} requireConsent={true}>
               <StudioRules />
             </ProtectedRoute>
           }
@@ -231,7 +241,7 @@ function AppRoutes() {
         <Route
           path="/student/profile"
           element={
-            <ProtectedRoute requireRole="student" requireCompleteProfile={true}>
+            <ProtectedRoute requireRole="student" requireCompleteProfile={true} requireConsent={true}>
               <StudentProfile />
             </ProtectedRoute>
           }

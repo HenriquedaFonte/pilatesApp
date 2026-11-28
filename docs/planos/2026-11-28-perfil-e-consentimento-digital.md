@@ -205,25 +205,25 @@ Regras (revistas em 2026-11-28: a associação/seguradora da Josi exige guardar 
 
 ## PR C — Aluno (assistente, bloqueio, Meu perfil) · revisor: sim · depende do SQL do PR A **e do SQL 4a**
 
-### 7. [OPUS] Serviço e regras puras
+### 7. [OPUS] Serviço e regras puras ✅
 - Arquivos: `src/lib/consents.js` (novo) + `src/tests/consents.test.js`.
 - Fazer: funções puras `validateTypedName`, `healthAlerts(profile)` (chips: gestante N sem. em data, cardíaco/hipertensão, cirurgias preenchidas), `formatAcceptance` (data/hora em `America/Montreal`); `healthConsentState(acceptances, hasProfile)` → `'active' | 'retained' | 'withdrawn_no_profile' | 'none'` (retained = ficha existe e nenhum aceite `health_data` ativo); chamadas `fetchMyPendingConsents`, `fetchCurrentVersions`, `acceptConsent`, `fetchMyAcceptances` (inclui `withdrawn_at`), `fetchHealthProfile(studentId)`, `saveHealthProfile(studentId, data)` (campos vazios → `null`; `pregnancy_reported_on` = hoje em Montréal quando `pregnant`/`pregnancy_weeks` mudar), tradução dos códigos de erro `consent_*`.
 - Pronto quando: testes das funções puras passam.
 
-### 8. [OPUS] Bloqueio das rotas do aluno
+### 8. [OPUS] Bloqueio das rotas do aluno ✅
 - Arquivos: `src/hooks/useAuth.jsx` (para aluno: carregar `my_pending_consents` depois do perfil; expor `pendingConsents`, `consentsLoading`, `refreshConsents`), `src/components/ProtectedRoute.jsx` (prop `requireConsent`: aluno com `class_policies` pendente → `Navigate` para `/student/consent`; spinner enquanto carrega; erro de rede **não** bloqueia), `src/App.jsx` (rota `/student/consent` com `requireRole="student" requireCompleteProfile` e **sem** `requireConsent`; demais rotas do aluno com `requireConsent`).
 - Pronto quando: sem versão publicada nada muda; com versão publicada e sem aceite, qualquer rota do aluno leva ao assistente; professora nunca é bloqueada.
 
-### 9. [SONNET] Assistente `/student/consent` e componentes
+### 9. [SONNET] Assistente `/student/consent` e componentes ✅
 - Arquivos: `src/pages/StudentConsent.jsx` (novo), `src/components/ConsentDocument.jsx` (renderiza título e corpo como **texto puro** com `whitespace-pre-line`, nunca HTML; abas PT/EN/FR, começa na língua do aluno), `src/components/HealthProfileForm.jsx` (como `InsuranceFields`: `studentId`, modo aluno/professora; caixas das 6 condições, campos de texto, sono/dieta em 4 opções, gestante + semanas).
 - Fazer: passo 1 = `ConsentDocument` de `class_policies` + 2 caixas + nome digitado (com o nome do perfil ao lado) + "Aceito" (desabilitado até tudo marcado; um clique só) → `refreshConsents`; passo 2 = consentimento `health_data` (caixa) + `HealthProfileForm`; "Fazer depois" → painel. Se o passo 1 já está aceito, abre no 2. Erros traduzidos.
 - Pronto quando: fluxo completo em pt/en/fr no celular sem rolagem lateral.
 
-### 10. [SONNET] Meu perfil e faixa no painel
+### 10. [SONNET] Meu perfil e faixa no painel ✅
 - Arquivos: `src/pages/StudentProfile.jsx` (aba "Saúde e termos": `HealthProfileForm` se há consentimento de saúde **ativo**, senão botão para o passo 2; **sem botão de retirada**: no estado `active`, só a linha `consent.withdrawHowTo`; estado `retained` (a Josi registrou a retirada): "Consentimento retirado em …" + a ficha **somente leitura** (`HealthProfileForm` em modo leitura, sem "Salvar") + `healthProfile.retainedNote` + "Autorizar de novo"; lista dos aceites com versão, data/hora, método, retirada e "Ver texto"), `src/pages/StudentDashboard.jsx` (faixa "Complete sua ficha de saúde" quando não há ficha **e** o aluno não retirou o consentimento).
 - Pronto quando: aluno edita a ficha, vê o texto exato que aceitou, não vê botão de retirada; depois que a Josi registra a retirada, vê a ficha só leitura (sem salvar, faixa não aparece) e autoriza de novo (volta a editar a mesma ficha).
 
-### 11. [SONNET] Textos da interface
+### 11. [SONNET] Textos da interface ✅
 - Arquivos: `src/locales/*.json` (chaves `consent.*` e `healthProfile.*`, tabela abaixo + o resto nas 3 línguas) e teste de chaves nas 3 línguas (como `onlineLocales.test.js`).
 
 ---

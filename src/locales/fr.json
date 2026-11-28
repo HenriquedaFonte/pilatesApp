@@ -1796,5 +1796,113 @@
     "membership": {
       "saved": "Statut de la formule mis à jour."
     }
+  },
+  "consent": {
+    "title": "Entente des cours",
+    "checkRisks": "J'ai lu et j'accepte les risques et responsabilités",
+    "checkCancellation": "J'ai lu et j'accepte la politique d'annulation",
+    "typedName": "Écrivez votre nom complet",
+    "accept": "J'accepte",
+    "healthConsent": "J'autorise le studio à conserver mes renseignements de santé pour adapter mes cours",
+    "later": "Plus tard",
+    "pendingBadge": "Entente en attente",
+    "withdraw": "Consigner le retrait",
+    "withdrawConfirm": "Consigner que l'élève a retiré son consentement santé? La fiche ne sera plus utilisée pour les cours, personne ne pourra la modifier et elle sera conservée en lecture seule pendant la durée exigée par l'assurance.",
+    "withdrawHowTo": "Pour retirer ce consentement, il suffit de le demander à Josi.",
+    "withdrawnOn": "Consentement retiré le {{date}}",
+    "noHealthConsent": "Aucun consentement santé",
+    "versionLabel": "Version {{version}}",
+    "frenchPrevails": "En cas de divergence, la version française prévaut.",
+    "stepLabel": "Étape {{current}} sur {{total}}",
+    "profileNameHint": "Nom dans votre profil : {{name}}",
+    "authorize": "Autoriser",
+    "authorizeAgain": "Autoriser à nouveau",
+    "continueToPanel": "Aller au tableau de bord",
+    "healthTab": "Santé et ententes",
+    "fillHealthProfile": "Remplir la fiche santé",
+    "acceptedTitle": "Ententes acceptées",
+    "acceptedNone": "Aucune entente acceptée pour l'instant.",
+    "kind": {
+      "class_policies": "Entente des cours",
+      "health_data": "Consentement santé"
+    },
+    "method": {
+      "digital": "En ligne",
+      "paper": "Sur papier"
+    },
+    "viewText": "Voir le texte",
+    "hideText": "Masquer le texte",
+    "errors": {
+      "generic": "Impossible de terminer. Veuillez réessayer.",
+      "not_allowed": "Vous n'avez pas la permission pour cette action.",
+      "invalid_language": "Langue invalide.",
+      "version_not_found": "Version du texte introuvable.",
+      "version_outdated": "Le texte a été mis à jour. Rechargez la page et lisez la nouvelle version.",
+      "invalid_name": "Écrivez votre nom complet (de 2 à 200 caractères).",
+      "invalid_student": "Élève invalide.",
+      "invalid_date": "Date invalide.",
+      "already_accepted": "Ce texte a déjà été accepté.",
+      "immutable": "Ce registre ne peut pas être modifié.",
+      "version_locked": "Cette version du texte ne peut pas être modifiée.",
+      "invalid_reason": "Motif invalide.",
+      "invalid_weeks": "Les semaines de grossesse doivent être un nombre entier de 1 à 42."
+    }
+  },
+  "healthProfile": {
+    "title": "Fiche santé",
+    "banner": "Complétez votre fiche santé",
+    "bannerAction": "Compléter",
+    "retainedNote": "Fiche conservée, en lecture seule, pendant la durée exigée par l'assurance du studio.",
+    "retainedBadge": "Consentement retiré le {{date}} · fiche conservée, lecture seule",
+    "viewRetained": "Consulter la fiche conservée",
+    "reasonPrompt": "Motif de la consultation (consigné)",
+    "reason": {
+      "insurance": "Assurance",
+      "legal": "Obligation légale",
+      "student_request": "Demande de l'élève"
+    },
+    "deleteRetentionWarning": "Ne supprimez qu'après la durée de conservation exigée par l'assurance.",
+    "loading": "Chargement...",
+    "saving": "Enregistrement...",
+    "save": "Enregistrer la fiche",
+    "saveSuccess": "Fiche santé enregistrée.",
+    "updatedAt": "Mise à jour le {{date}}",
+    "emergencyHint": "Nous recommandons de remplir le contact d'urgence. Toutes les questions sont facultatives.",
+    "conditionsTitle": "Avez-vous ou avez-vous déjà eu :",
+    "fields": {
+      "occupation": "Profession",
+      "emergency_contact_name": "Contact d'urgence (nom)",
+      "emergency_contact_phone": "Contact d'urgence (téléphone)",
+      "main_goal": "Plainte ou objectif principal",
+      "conditions_details": "Expliquez si vous le souhaitez (y compris médicaments pour le cœur ou la pression)",
+      "medications": "Médicaments actuels",
+      "current_treatment": "Traitement de santé actuel",
+      "surgeries": "Chirurgies (quand et laquelle)",
+      "physical_activities": "Activités physiques (durée et fréquence)",
+      "sleep_quality": "Sommeil",
+      "diet_quality": "Alimentation",
+      "pregnant": "Je suis enceinte",
+      "pregnancy_weeks": "Semaines de grossesse"
+    },
+    "conditions": {
+      "cardiac_hypertension": "Maladie cardiaque ou hypertension",
+      "respiratory": "Problèmes respiratoires (asthme, rhinite)",
+      "digestive": "Problèmes digestifs",
+      "back_neck_shoulder": "Douleurs au dos, au cou ou aux épaules",
+      "hip_knee_foot": "Douleurs aux hanches, genoux ou pieds",
+      "frequent_headache": "Maux de tête fréquents"
+    },
+    "quality": {
+      "excellent": "Excellent",
+      "good": "Bon",
+      "fair": "Moyen",
+      "poor": "Mauvais"
+    },
+    "alerts": {
+      "pregnantWeeks": "Enceinte : {{weeks}} semaines (déclaré le {{date}})",
+      "pregnant": "Enceinte (déclaré le {{date}})",
+      "cardiac": "Cœur ou pression",
+      "surgeries": "Chirurgies"
+    }
   }
 }

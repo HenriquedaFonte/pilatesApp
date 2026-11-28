@@ -35,6 +35,7 @@ import {
 } from 'lucide-react'
 import Logo from '../components/Logo'
 import StudentOnlineCard from '../components/StudentOnlineCard'
+import HealthProfileBanner from '../components/HealthProfileBanner'
 import { fetchMembership } from '../lib/onlineService'
 import { isOnlineOnly } from '../lib/onlinePlans'
 import { ThemeToggle } from '../components/ThemeToggle'
@@ -42,7 +43,7 @@ import { LanguageToggle } from '../components/LanguageToggle'
 import { TableSkeleton } from '../components/ui/skeleton'
 
 const StudentDashboard = () => {
-  const { profile, signOut } = useAuth()
+  const { user, profile, signOut } = useAuth()
   const navigate = useNavigate()
   const { t, i18n } = useTranslation()
 
@@ -357,6 +358,8 @@ const StudentDashboard = () => {
             })()}
           </p>
         </div>
+
+        <HealthProfileBanner studentId={user?.id} />
 
         {/* Aulas online (modalidade, situação e pagamentos) */}
         <StudentOnlineCard membership={membership} loaded={onlineLoaded} onChanged={loadMembership} />
