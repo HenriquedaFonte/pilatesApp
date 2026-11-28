@@ -1,6 +1,11 @@
 -- Migration: termo de consentimento digital (versões + aceites) e ficha de saúde
 -- Plano: docs/planos/2026-11-28-perfil-e-consentimento-digital.md (PR A, passo 1)
 --
+-- ATENÇÃO: NÃO rodar de novo depois da 20261128010000_consent_withdrawal_and_locks.sql,
+-- salvo na reversão (docs/testes/consentimento-retirada-reversao.sql manda
+-- rodar esta logo depois). Rodada sozinha por cima da 20261128010000, ela
+-- devolveria as policies antigas da ficha e as RPCs sem a retirada.
+--
 -- DEPENDE de:
 --   • 20261112010000_fix_profiles_privilege_escalation_and_rls.sql (public.is_staff())
 --   • 20260617100000_create_audit_log.sql (public.audit_log)
