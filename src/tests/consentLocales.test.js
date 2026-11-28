@@ -46,4 +46,10 @@ describe('exclusão permanente com ficha de saúde (PR D, 12b)', () => {
       expect(String(locale.teacher.students.hardDeleteDialog.hasHealthProfile || '').trim()).not.toBe('')
     }
   })
+
+  it('texto do erro STUDENT_HAS_CONSENT_RECORDS nas três línguas', () => {
+    for (const locale of [pt, en, fr]) {
+      expect(String(locale.teacher.students.hardDeleteDialog.hasConsentRecords || '').trim()).not.toBe('')
+    }
+  })
 })

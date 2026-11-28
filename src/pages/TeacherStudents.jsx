@@ -271,6 +271,10 @@ const TeacherStudents = () => {
           showError(t('teacher.students.hardDeleteDialog.hasHealthProfile'))
           return
         }
+        if (code === 'STUDENT_HAS_CONSENT_RECORDS') {
+          showError(t('teacher.students.hardDeleteDialog.hasConsentRecords'))
+          return
+        }
         throw new Error(error.message)
       }
       showSuccess(`Aluno(a) ${selectedStudent.full_name} excluído(a) permanentemente.`)

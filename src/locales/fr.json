@@ -923,7 +923,8 @@
         "confirm": "Supprimer définitivement",
         "deleting": "Suppression...",
         "hasReceipts": "Cet(te) élève a des reçus d'assurance émis et ne peut pas être supprimé(e) définitivement. Les données restent dans la corbeille.",
-        "hasHealthProfile": "Cet élève a une fiche santé conservée. Supprimez-la (après la durée de conservation) avant la suppression définitive."
+        "hasHealthProfile": "Cet élève a une fiche santé conservée. Supprimez-la (après la durée de conservation) avant la suppression définitive.",
+        "hasConsentRecords": "Cet élève a un consentement accepté enregistré, que le studio conserve pendant au moins 5 ans (ou la durée exigée par la loi du Québec). La suppression définitive n'est pas possible ; gardez l'élève archivé."
       },
       "dialogCommon": {
         "confirm": "Confirmer"

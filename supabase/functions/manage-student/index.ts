@@ -182,6 +182,26 @@ serve(async (req) => {
         )
       }
 
+      // Aceites do termo são guardados por pelo menos 5 anos (ou o prazo da
+      // lei do Québec), mesmo depois que o aluno sai: o FK em CASCADE os
+      // apagaria. Recusar até existir uma purga no fim do prazo. Só a contagem.
+      const { count: consentCount, error: consentErr } = await supabaseClient
+        .from('consent_acceptances')
+        .select('id', { count: 'exact', head: true })
+        .eq('student_id', studentId)
+      if (consentErr || typeof consentCount !== 'number') {
+        throw new Error('Could not check consent records; student was not deleted')
+      }
+      if (consentCount > 0) {
+        return new Response(
+          JSON.stringify({
+            error: 'Student has consent records and cannot be permanently deleted',
+            code: 'STUDENT_HAS_CONSENT_RECORDS',
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 409 }
+        )
+      }
+
       console.log(`Starting HARD DELETE for student: ${studentId}`)
 
       const snapshot = await fetchProfileSnapshot()
