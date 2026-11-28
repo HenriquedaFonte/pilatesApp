@@ -192,11 +192,11 @@ Regras (revistas em 2026-11-28: a associação/seguradora da Josi exige guardar 
 
 ### B2 (sessão nova, só depois da aprovação por escrito da Josi; anotar data no arquivo e em `docs/PENDENCIAS.md`)
 
-### 5. [OPUS] Política de Privacidade
+### 5. [OPUS] Política de Privacidade ✅
 - Arquivos: `src/locales/pt.json`, `en.json`, `fr.json` (`privacyPolicy.*` conforme o texto aprovado, `lastUpdatedDate`); `src/pages/PrivacyPolicy.jsx` se a seção nova precisar de bloco; `src/tests/privacyPolicy.test.js` (seção nova e responsável nas 3 línguas).
 - Pronto quando: testes passam e o texto é idêntico ao aprovado.
 
-### 6. [OPUS] Migration de publicação da v1 (entra no B2; **só roda no lançamento**)
+### 6. [OPUS] Migration de publicação da v1 (entra no B2; **só roda no lançamento**) ✅ (arquivo `20261128030000_publish_consent_v1.sql`; seção 10 = Transferências, Crianças virou 11)
 - Arquivo: `supabase/migrations/AAAAMMDD000000_publish_consent_v1.sql` — só `INSERT` de `class_policies` v1 e `health_data` v1 com os textos aprovados (`ON CONFLICT (kind, version) DO NOTHING`); checagem inicial de que a trava da 4a existe. Reversão: `DELETE` das duas versões só se ninguém aceitou (senão publicar v2).
 - Pronto quando: os textos no SQL são idênticos aos aprovados (`diff` depois de extrair).
 - Ordem do B2: merge **depois** dos merges de C e D (a Política cita "Meu perfil → Saúde e termos") e **antes** do SQL de publicação.

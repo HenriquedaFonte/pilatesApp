@@ -171,7 +171,7 @@
   "privacyPolicy": {
     "title": "Privacy Policy",
     "lastUpdated": "Last updated",
-    "lastUpdatedDate": "November 12, 2026",
+    "lastUpdatedDate": "November 28, 2026",
     "introduction": {
       "title": "1. Introduction",
       "content": "Welcome to Josi Pilates Studio. This Privacy Policy explains how we collect, use, disclose and protect your information when you use our application and services."
@@ -187,7 +187,9 @@
           "Profile information (language preferences, etc.)",
           "Class and scheduling information",
           "Payment information for class purchases",
-          "Health insurance details, if you want receipts for your insurance (optional): policy or contract number, city/province and, if the policyholder is someone else, the policyholder's name, city/province, employer, occupation and phone numbers"
+          "Health insurance details, if you want receipts for your insurance (optional): policy or contract number, city/province and, if the policyholder is someone else, the policyholder's name, city/province, employer, occupation and phone numbers",
+          "Health profile (optional, only with your separate consent): occupation, emergency contact, main goal, health conditions, medications, current treatment, surgeries, physical activities, sleep, diet and pregnancy. See section 9.",
+          "Acceptance of the class agreement and of the health consent: version and language of the text, date and time, typed name and, as a technical record of the acceptance, the IP address and browser reported by the connection (for an agreement signed on paper: the signing date and the signer's name)."
         ]
       },
       "autoCollected": {
@@ -216,6 +218,8 @@
         "Provide and manage your pilates services",
         "Process enrollments and payments",
         "Issue the health insurance receipts (kinésithérapie and naturopathie) you request to claim reimbursement from your insurance",
+        "Adapting classes to your health and looking after your safety (health profile, with your consent)",
+        "Keeping a record of your acceptance of the class agreement and of the health consent",
         "Send important notifications about classes and schedule changes",
         "Send push notifications (with your permission)",
         "Improve our app and services through analytics",
@@ -237,7 +241,8 @@
     },
     "dataSecurity": {
       "title": "5. Data Security",
-      "content": "We implement appropriate technical and organizational security measures to protect your personal information against unauthorized access, alteration, disclosure or destruction."
+      "content": "We implement appropriate technical and organizational security measures to protect your personal information against unauthorized access, alteration, disclosure or destruction.",
+      "healthContent": "Access to the health profile is limited to you and Josi (and, for technical maintenance, the person who administers the app). After consent is withdrawn, the profile is read-only and each viewing by Josi is logged, with its reason. These logs never contain the content of the profile."
     },
     "userRights": {
       "title": "6. Your Rights",
@@ -245,13 +250,15 @@
       "items": [
         "Access your personal information",
         "Correct inaccurate information",
-        "Request deletion of your data (except health insurance receipts during their retention period; see section 8)",
+        "Request deletion of your data (except health insurance receipts during their retention period, section 8, and the health profile during the retention period required by the studio's insurance and legal obligations, sections 7 and 9)",
+        "Withdraw at any time your consent to our keeping your health profile: just ask Josi (section 9)",
         "Opt out of marketing communications"
       ]
     },
     "dataRetention": {
       "title": "7. Data Retention",
-      "content": "We retain your personal information for as long as necessary to provide our services and comply with legal obligations. Account data is retained while your account is active and for a reasonable period thereafter. You can request deletion of your data at any time. Health insurance receipts have their own retention period, described in section 8."
+      "content": "We retain your personal information for as long as necessary to provide our services and comply with legal obligations. Account data is retained while your account is active and for a reasonable period thereafter. You can request deletion of your data at any time. Health insurance receipts have their own retention period, described in section 8.",
+      "healthContent": "Health profile: we keep it while you are a student and, after you leave the studio or withdraw your consent, for the time required by the studio's legal and insurance obligations, 5 years; during that period the profile is viewed only for those obligations (and, if you have withdrawn your consent, it is read-only); after that, it is destroyed and removed from backup copies within 90 days. Record of the acceptance of the agreement and of the consent: 5 years."
     },
     "insuranceReceipts": {
       "title": "8. Health Insurance Data and Receipts",
@@ -265,32 +272,44 @@
         "An issued receipt is never changed or deleted. If it contains an error, it is voided (with the reason recorded) and, if needed, a new receipt is issued; the voided receipt remains on file, marked as voided.",
         "Retention period: receipts are tax records and are kept for 6 years after the end of the year in which they were issued.",
         "Account deletion: deleting or deactivating your account does not delete receipts already issued or the data printed on them; they remain on file for as long as the retention period lasts. The insurance details in your profile (policy and policyholder) can be deleted at your request.",
-        "Correction: you can correct the policy number and the policyholder's details at any time in \"My Profile\". To correct a receipt that has already been issued, or for any other request about this data, contact us using the details in section 13."
+        "Correction: you can correct the policy number and the policyholder's details at any time in \"My Profile\". To correct a receipt that has already been issued, or for any other request about this data, contact us using the details in section 14."
       ]
     },
-    "childrenPrivacy": {
-      "title": "9. Children's Privacy",
-      "content": "Our app is not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13. If you are a parent or guardian and believe your child has provided us with personal information, please contact us."
+    "healthProfileAndAgreement": {
+      "title": "9. Health profile and class agreement",
+      "items": [
+        "What it is: the health profile (section 2.1) is optional and is kept only with your separate consent, given in the app or on paper. The class agreement (risks, responsibilities and cancellation policy) is accepted in the app or on paper.",
+        "Why: the profile is used only to adapt your classes to your health, for your safety, and to contact your emergency contact. The acceptance record keeps track of what you accepted, the version and the date.",
+        "Who sees it: only you and Josi (and, for technical maintenance, the person who administers the app). You see your profile and the texts you accepted in \"My profile\"; no student sees another student's data. It is not sold or shared with anyone else, unless the law requires it, and it is not sent to your insurer.",
+        "Where: in the app's database, located in Canada (Montréal, Québec).",
+        "Withdrawal: you can withdraw your health consent at any time; just ask Josi, by email or in person, and she records the withdrawal. After the withdrawal, the profile is no longer used or changed for classes, but it is kept read-only for the period in section 7; only Josi can view it, only for the studio's insurance and legal obligations, and each viewing is logged; you can still view it. Withdrawing does not prevent you from taking classes, and you can give your consent again.",
+        "New version: if the text of the agreement or of the consent changes, you are asked to accept it again. The texts are offered in French, Portuguese and English; the French version prevails."
+      ]
     },
     "internationalTransfers": {
       "title": "10. International Data Transfers",
-      "content": "Your information may be transferred to and processed in countries other than your own. We ensure appropriate safeguards are in place to protect your data during such transfers."
+      "content": "The app's database, including your health profile, is hosted in Canada (Montréal, Québec). Some service providers process data outside Québec and Canada: sending emails (Resend), hosting the website (Vercel) and backup copies (GitHub, United States, kept for 90 days)."
+    },
+    "childrenPrivacy": {
+      "title": "11. Children's Privacy",
+      "content": "Our app is not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13. If you are a parent or guardian and believe your child has provided us with personal information, please contact us."
     },
     "cookies": {
-      "title": "11. Cookies and Tracking Technologies",
+      "title": "12. Cookies and Tracking Technologies",
       "content": "We may use cookies and similar technologies to enhance your app experience, remember your preferences, and analyze app usage. You can manage these through your device settings."
     },
     "policyChanges": {
-      "title": "12. Changes to This Policy",
+      "title": "13. Changes to This Policy",
       "content": "We may update this Privacy Policy periodically. We will notify you about significant changes through the app or by email."
     },
     "contact": {
-      "title": "13. Contact",
+      "title": "14. Contact",
       "content": "If you have questions about this Privacy Policy, please contact us:",
       "items": [
+        "Person in charge of the protection of personal information: Josiane da Silveira Malamud, owner — josipilatesmontreal@gmail.com",
         "Email: josipilatesmontreal@gmail.com",
         "Phone: +1(438)274-8396",
-        "Address: Josi Pilates Studio, Montreal"
+        "Address: Josi Pilates, 10145, avenue Hamel, Montréal (Québec)"
       ]
     },
     "backToHome": "Back to Home"

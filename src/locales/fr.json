@@ -171,7 +171,7 @@
   "privacyPolicy": {
     "title": "Politique de Confidentialité",
     "lastUpdated": "Dernière mise à jour",
-    "lastUpdatedDate": "12 novembre 2026",
+    "lastUpdatedDate": "28 novembre 2026",
     "introduction": {
       "title": "1. Introduction",
       "content": "Bienvenue au Studio Josi Pilates. Cette Politique de Confidentialité explique comment nous collectons, utilisons, divulguons et protégeons vos informations lorsque vous utilisez notre application et nos services."
@@ -187,7 +187,9 @@
           "Informations de profil (préférences de langue, etc.)",
           "Informations de cours et de planification",
           "Informations de paiement pour les achats de cours",
-          "Informations d'assurance santé, si vous souhaitez des reçus pour votre assurance (facultatives) : numéro de police ou de contrat, ville/province et, si le titulaire de la police est une autre personne, le nom, la ville/province, l'employeur, la profession et les numéros de téléphone du titulaire"
+          "Informations d'assurance santé, si vous souhaitez des reçus pour votre assurance (facultatives) : numéro de police ou de contrat, ville/province et, si le titulaire de la police est une autre personne, le nom, la ville/province, l'employeur, la profession et les numéros de téléphone du titulaire",
+          "Fiche santé (facultative, seulement avec votre consentement distinct) : profession, personne à joindre en cas d'urgence, objectif principal, problèmes de santé, médicaments, traitement en cours, chirurgies, activités physiques, sommeil, alimentation et grossesse. Voir la section 9.",
+          "Acceptation de l'entente des cours et du consentement santé : version et langue du texte, date et heure, nom écrit et, comme registre technique de l'acceptation, l'adresse IP et le navigateur indiqués par la connexion (pour une entente signée sur papier : la date de signature et le nom du signataire)."
         ]
       },
       "autoCollected": {
@@ -216,6 +218,8 @@
         "Fournir et gérer vos services de pilates",
         "Traiter les inscriptions et paiements",
         "Émettre les reçus d'assurance santé (kinésithérapie et naturopathie) que vous demandez pour obtenir un remboursement de votre assurance",
+        "Adapter les cours à votre santé et veiller à votre sécurité (fiche santé, avec votre consentement)",
+        "Garder un registre de votre acceptation de l'entente des cours et du consentement santé",
         "Envoyer des notifications importantes sur les cours et changements d'horaire",
         "Envoyer des notifications push (avec votre permission)",
         "Améliorer notre application et nos services grâce aux analyses",
@@ -237,7 +241,8 @@
     },
     "dataSecurity": {
       "title": "5. Sécurité des Données",
-      "content": "Nous mettons en œuvre des mesures de sécurité techniques et organisationnelles appropriées pour protéger vos informations personnelles contre l'accès non autorisé, l'altération, la divulgation ou la destruction."
+      "content": "Nous mettons en œuvre des mesures de sécurité techniques et organisationnelles appropriées pour protéger vos informations personnelles contre l'accès non autorisé, l'altération, la divulgation ou la destruction.",
+      "healthContent": "L'accès à la fiche santé est limité à vous et à Josi (et, pour la maintenance technique, à la personne qui administre l'application). Après le retrait du consentement, la fiche est en lecture seule et chaque consultation par Josi est enregistrée, avec son motif. Ces registres ne contiennent jamais le contenu de la fiche."
     },
     "userRights": {
       "title": "6. Vos Droits",
@@ -245,13 +250,15 @@
       "items": [
         "Accéder à vos informations personnelles",
         "Corriger des informations inexactes",
-        "Demander la suppression de vos données (sauf les reçus d'assurance santé pendant leur durée de conservation; voir la section 8)",
+        "Demander la suppression de vos données (sauf les reçus d'assurance santé pendant leur durée de conservation, section 8, et la fiche santé pendant la durée de conservation exigée par les obligations d'assurance et légales du studio, sections 7 et 9)",
+        "Retirer en tout temps votre consentement à la conservation de votre fiche santé : il suffit de le demander à Josi (section 9)",
         "Vous désabonner des communications marketing"
       ]
     },
     "dataRetention": {
       "title": "7. Conservation des Données",
-      "content": "Nous conservons vos informations personnelles aussi longtemps que nécessaire pour fournir nos services et nous conformer aux obligations légales. Les données de compte sont conservées tant que votre compte est actif et pendant une période raisonnable par la suite. Vous pouvez demander la suppression de vos données à tout moment. Les reçus d'assurance santé ont leur propre durée de conservation, décrite à la section 8."
+      "content": "Nous conservons vos informations personnelles aussi longtemps que nécessaire pour fournir nos services et nous conformer aux obligations légales. Les données de compte sont conservées tant que votre compte est actif et pendant une période raisonnable par la suite. Vous pouvez demander la suppression de vos données à tout moment. Les reçus d'assurance santé ont leur propre durée de conservation, décrite à la section 8.",
+      "healthContent": "Fiche santé : nous la conservons tant que vous êtes élève et, après votre départ du studio ou le retrait de votre consentement, pendant la durée exigée par les obligations légales et d'assurance du studio, 5 ans; pendant cette période, la fiche n'est consultée que pour ces obligations (et, si vous avez retiré votre consentement, elle est en lecture seule); ensuite, elle est détruite et retirée des copies de sécurité dans les 90 jours. Registre de l'acceptation de l'entente et du consentement : 5 ans."
     },
     "insuranceReceipts": {
       "title": "8. Données d'Assurance Santé et Reçus",
@@ -265,32 +272,44 @@
         "Un reçu émis n'est jamais modifié ni supprimé. S'il contient une erreur, il est annulé (avec le motif enregistré) et, au besoin, un nouveau reçu est émis; le reçu annulé reste conservé, marqué comme annulé.",
         "Durée de conservation : les reçus sont des documents fiscaux et sont conservés pendant 6 ans après la fin de l'année au cours de laquelle ils ont été émis.",
         "Suppression du compte : la suppression ou la désactivation de votre compte n'efface pas les reçus déjà émis ni les données qui y sont imprimées; ils restent conservés pendant toute la durée de conservation. Les informations d'assurance de votre profil (police et titulaire) peuvent être supprimées à votre demande.",
-        "Correction : vous pouvez corriger le numéro de police et les informations du titulaire en tout temps dans « Mon Profil ». Pour corriger un reçu déjà émis, ou pour toute autre demande concernant ces données, contactez-nous aux coordonnées de la section 13."
+        "Correction : vous pouvez corriger le numéro de police et les informations du titulaire en tout temps dans « Mon Profil ». Pour corriger un reçu déjà émis, ou pour toute autre demande concernant ces données, contactez-nous aux coordonnées de la section 14."
       ]
     },
-    "childrenPrivacy": {
-      "title": "9. Confidentialité des Enfants",
-      "content": "Notre application n'est pas destinée aux enfants de moins de 13 ans. Nous ne collectons pas sciemment d'informations personnelles auprès d'enfants de moins de 13 ans. Si vous êtes un parent ou tuteur et que vous croyez que votre enfant nous a fourni des informations personnelles, veuillez nous contacter."
+    "healthProfileAndAgreement": {
+      "title": "9. Fiche santé et entente des cours",
+      "items": [
+        "Ce que c'est : la fiche santé (section 2.1) est facultative et n'est conservée qu'avec votre consentement distinct, donné dans l'application ou sur papier. L'entente des cours (risques, responsabilités et politique d'annulation) est acceptée dans l'application ou sur papier.",
+        "Pourquoi : la fiche sert uniquement à adapter vos cours à votre santé, à votre sécurité et à joindre votre personne à joindre en cas d'urgence. Le registre d'acceptation sert à garder la trace de ce que vous avez accepté, de la version et de la date.",
+        "Qui les voit : seulement vous et Josi (et, pour la maintenance technique, la personne qui administre l'application). Vous voyez votre fiche et les textes acceptés dans « Mon profil »; aucun élève ne voit les données d'un autre. Ils ne sont ni vendus ni communiqués à d'autres personnes, sauf si la loi l'exige, et ne sont pas envoyés à votre assureur.",
+        "Où : dans la base de données de l'application, située au Canada (Montréal, Québec).",
+        "Retrait : vous pouvez retirer votre consentement santé en tout temps; il suffit de le demander à Josi, par courriel ou en personne, et elle consigne le retrait. Après le retrait, la fiche n'est plus utilisée ni modifiée pour les cours, mais elle est conservée en lecture seule pendant la durée indiquée à la section 7; seule Josi peut la consulter, uniquement pour les obligations d'assurance et légales du studio, et chaque consultation est enregistrée; vous pouvez toujours la consulter. Le retrait ne vous empêche pas de suivre les cours, et vous pouvez consentir de nouveau.",
+        "Nouvelle version : si le texte de l'entente ou du consentement change, une nouvelle acceptation vous est demandée. Les textes sont offerts en français, en portugais et en anglais; la version française prévaut."
+      ]
     },
     "internationalTransfers": {
       "title": "10. Transferts Internationaux de Données",
-      "content": "Vos informations peuvent être transférées et traitées dans des pays autres que le vôtre. Nous nous assurons que des garanties appropriées sont en place pour protéger vos données lors de tels transferts."
+      "content": "La base de données de l'application, y compris votre fiche santé, est hébergée au Canada (Montréal, Québec). Certains fournisseurs de services traitent des données hors du Québec et du Canada : l'envoi des courriels (Resend), l'hébergement du site (Vercel) et les copies de sécurité (GitHub, États-Unis, conservées 90 jours)."
+    },
+    "childrenPrivacy": {
+      "title": "11. Confidentialité des Enfants",
+      "content": "Notre application n'est pas destinée aux enfants de moins de 13 ans. Nous ne collectons pas sciemment d'informations personnelles auprès d'enfants de moins de 13 ans. Si vous êtes un parent ou tuteur et que vous croyez que votre enfant nous a fourni des informations personnelles, veuillez nous contacter."
     },
     "cookies": {
-      "title": "11. Cookies et Technologies de Suivi",
+      "title": "12. Cookies et Technologies de Suivi",
       "content": "Nous pouvons utiliser des cookies et des technologies similaires pour améliorer votre expérience d'application, mémoriser vos préférences et analyser l'utilisation de l'application. Vous pouvez les gérer via les paramètres de votre appareil."
     },
     "policyChanges": {
-      "title": "12. Modifications de Cette Politique",
+      "title": "13. Modifications de Cette Politique",
       "content": "Nous pouvons mettre à jour cette Politique de Confidentialité périodiquement. Nous vous informerons des changements importants via l'application ou par e-mail."
     },
     "contact": {
-      "title": "13. Contact",
+      "title": "14. Contact",
       "content": "Si vous avez des questions sur cette Politique de Confidentialité, veuillez nous contacter:",
       "items": [
+        "Responsable de la protection des renseignements personnels : Josiane da Silveira Malamud, propriétaire — josipilatesmontreal@gmail.com",
         "E-mail: josipilatesmontreal@gmail.com",
         "Téléphone: +1(438)274-8396",
-        "Adresse: Studio Josi Pilates, Montréal"
+        "Adresse : Josi Pilates, 10145, avenue Hamel, Montréal (Québec)"
       ]
     },
     "backToHome": "Retour à l'Accueil"
