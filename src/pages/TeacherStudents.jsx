@@ -101,6 +101,7 @@ const TeacherStudents = () => {
   const navigationType = useNavigationType()
   const { status: statusFilter, student: focusStudentId } = readStudentListParams(searchParams)
   const handledKeyRef = useRef(null)
+  const searchInputRef = useRef(null)
   const [students, setStudents] = useState([])
   // const [classes, setClasses] = useState([])
   const [schedules, setSchedules] = useState([])
@@ -205,7 +206,15 @@ const TeacherStudents = () => {
     handledKeyRef.current = location.key
     const el = focusStudentId && document.getElementById(`student-card-${focusStudentId}`)
     if (el) el.scrollIntoView({ block: 'center' })
-    else window.scrollTo(0, 0)
+    else {
+      window.scrollTo(0, 0)
+      // Só no computador (tela larga com mouse): o teclado do celular/iPad cobriria a lista.
+      // Não roda ao voltar da ficha de um aluno (aí há card marcado) nem ao filtrar (REPLACE).
+      if (window.matchMedia('(min-width: 1024px) and (hover: hover) and (pointer: fine)').matches) {
+        searchInputRef.current?.focus({ preventScroll: true })
+        searchInputRef.current?.select()
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- depende só do carregamento e da localização
   }, [loading, location.key])
 
@@ -1018,6 +1027,7 @@ const TeacherStudents = () => {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
+              ref={searchInputRef}
               placeholder="Search students by name or email..."
               value={searchTerm}
               onChange={e => {
