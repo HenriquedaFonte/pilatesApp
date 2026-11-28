@@ -63,6 +63,7 @@ const AttendanceReport = () => {
         .from('profiles')
         .select('id, full_name')
         .eq('role', 'student')
+        .is('deleted_at', null)
         .order('full_name')
 
       if (error) throw error

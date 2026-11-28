@@ -32,10 +32,10 @@ const TeacherReceipts = () => {
 
   useEffect(() => {
     let cancelled = false
-    // Todos os alunos, inclusive os da lixeira (podem ter recibos).
+    // Todos os alunos, inclusive os arquivados (podem ter recibos).
     supabase
       .from('profiles')
-      .select('id, full_name')
+      .select('id, full_name, deleted_at')
       .eq('role', 'student')
       .order('full_name', { ascending: true })
       .then(({ data }) => {
@@ -94,7 +94,7 @@ const TeacherReceipts = () => {
                     <SelectItem value={ALL}>{t('receipts.page.allStudents')}</SelectItem>
                     {students.map(s => (
                       <SelectItem key={s.id} value={s.id}>
-                        {s.full_name || '—'}
+                        {s.full_name || '—'}{s.deleted_at ? ` ${t('teacher.students.archivedTag')}` : ''}
                       </SelectItem>
                     ))}
                   </SelectContent>

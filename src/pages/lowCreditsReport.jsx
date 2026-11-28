@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase'
 import { getDayName } from '../lib/format'
 import { fetchOnlineOverview } from '../lib/onlineService'
 import { isOnlineOnly } from '../lib/onlinePlans'
+import { fetchArchivedStudentIds, withoutArchived } from '../lib/archivedStudents'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -87,6 +88,14 @@ const LowCreditsReport = () => {
 
       let low = lowCredits || []
       let zero = zeroCredits || []
+      // Aluno arquivado não entra (relatório do estado atual): falha aqui mostra as listas como vêm.
+      try {
+        const archivedIds = await fetchArchivedStudentIds()
+        low = withoutArchived(low, archivedIds)
+        zero = withoutArchived(zero, archivedIds)
+      } catch (archivedError) {
+        console.error('Error loading archived students:', archivedError)
+      }
       let hidden = 0
       // Aulas online: falha aqui mostra as listas completas (como antes).
       try {

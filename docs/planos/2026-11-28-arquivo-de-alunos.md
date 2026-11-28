@@ -31,7 +31,7 @@ A Josi arquiva o aluno que saiu. Ele some de listas, contagens, check-in, emails
 
 ## Passos
 
-### 1. [OPUS] Migration: overview inclui arquivados + bloqueio dos que já estão na lixeira
+### 1. ✅ [OPUS] Migration: overview inclui arquivados + bloqueio dos que já estão na lixeira
 - Arquivo: `supabase/migrations/20261128020000_archive_students.sql` (BEGIN/COMMIT, idempotente), + `docs/testes/arquivo-alunos-teste.sql` e `docs/testes/arquivo-alunos-reversao.sql`.
 - Fazer:
   - a) `CREATE OR REPLACE FUNCTION public.staff_consent_overview()` **idêntica** à de `20261128010000` (mesma assinatura, `SECURITY DEFINER`, `search_path`, checagem `is_staff()`), só trocando o `WHERE` para `p.role = 'student'`. Reaplicar o mesmo REVOKE/GRANT. Atualizar o COMMENT ("por aluno, inclusive arquivado").
@@ -47,7 +47,7 @@ A Josi arquiva o aluno que saiu. Ele some de listas, contagens, check-in, emails
   - Reversão: função com o filtro de volta (copiar a de `20261128010000`) e `UPDATE auth.users SET banned_until = NULL` para os alunos com `deleted_at IS NOT NULL`.
 - Pronto quando: o teste passa no SQL Editor (feito pelo dono).
 
-### 2. [OPUS] `manage-student`: arquivar bloqueia, restaurar desbloqueia
+### 2. ✅ [OPUS] `manage-student`: arquivar bloqueia, restaurar desbloqueia
 - Arquivo: `supabase/functions/manage-student/index.ts`.
 - Fazer:
   - `delete` e `restore`: recusar se o snapshot não tiver `role === 'student'` (400, `code: 'NOT_A_STUDENT'`); sem isso, dava para bloquear uma professora.
@@ -58,17 +58,17 @@ A Josi arquiva o aluno que saiu. Ele some de listas, contagens, check-in, emails
 - Deploy: `supabase functions deploy manage-student --project-ref kezfpyhsejhjcvlbmejq`.
 - Pronto quando: arquivar um aluno de teste deixa `banned_until` no futuro em `auth.users` e ele não consegue entrar; restaurar zera e ele entra.
 
-### 3. [SONNET] Login: mensagem de conta arquivada
+### 3. ✅ [SONNET] Login: mensagem de conta arquivada
 - Arquivo: `src/pages/Login.jsx` (~59-60).
 - Fazer: se `error.code === 'user_banned'` ou `/banned/i.test(error.message)`, mostrar `t('login.archivedAccount')`. Manter o mapeamento atual de credenciais inválidas. Se `src/pages/AuthCallback.jsx` mostrar erro vindo da URL (`error_description`/`error_code`), aplicar o mesmo mapeamento; se não mostrar, só anotar o limite no PENDENCIAS.
 - Pronto quando: aluno arquivado vê a mensagem nas 3 línguas.
 
-### 4. [SONNET] Helper de arquivados + testes
+### 4. ✅ [SONNET] Helper de arquivados + testes
 - Arquivos: `src/lib/archivedStudents.js`, `src/tests/archivedStudents.test.js`.
 - Fazer: `isArchived(profile)` (`!!profile?.deleted_at`); `fetchArchivedStudentIds()` (select `id` de `profiles` com `role = 'student'` e `deleted_at` não nulo → `Set`; em erro lança); `withoutArchived(rows, ids, key = 'student_id')` (função pura).
 - Pronto quando: testes cobrem lista vazia, chave ausente, set vazio.
 
-### 5. [SONNET] Alunos: "Arquivar" e seção "Arquivo"
+### 5. ✅ [SONNET] Alunos: "Arquivar" e seção "Arquivo"
 - Arquivo: `src/pages/TeacherStudents.jsx`.
 - Fazer:
   - Botão do card "Mover para Lixeira" → `archive.archive` (ícone `Archive` do lucide no lugar de `Trash2`).
@@ -78,17 +78,17 @@ A Josi arquiva o aluno que saiu. Ele some de listas, contagens, check-in, emails
   - Recusa `NOT_A_STUDENT` (passo 2): `archive.notAStudent`.
 - Pronto quando: nenhum texto "Lixeira"/"90 dias" sobra na tela; avisos aparecem só quando se aplicam.
 
-### 6. [SONNET] Ficha do aluno em modo arquivado
+### 6. ✅ [SONNET] Ficha do aluno em modo arquivado
 - Arquivos: `src/pages/StudentSummary.jsx`, `src/components/OnlinePlanCard.jsx`.
 - Fazer: `const archived = isArchived(student)`. Se arquivado: faixa no topo `teacher.studentSummary.archivedBanner` com a data; esconder "Editar" (~348); passar `archived` para `StudentConsentCard` (passo 7) e `readOnly` para `OnlinePlanCard` (esconde registrar pagamento e mudar/encerrar plano; o resumo continua). Recibos: tudo continua (lista, PDF, anular, **emitir**), conforme a resposta 4.
 - Pronto quando: ficha de arquivado não tem nenhum botão que grave, fora recibos e as ações mantidas no passo 7.
 
-### 7. [OPUS] Card "Termo e ficha de saúde" em modo arquivado
+### 7. ✅ [OPUS] Card "Termo e ficha de saúde" em modo arquivado
 - Arquivo: `src/components/StudentConsentCard.jsx`.
 - Fazer: prop `archived` (default `false`). Se `true`, esconder "Registrar em papel" (termo e saúde) e "Editar" da ficha. **Manter:** imprimir, histórico/detalhes, "Registrar retirada" (direito do aluno mesmo depois de sair), "ver ficha guardada" com motivo e "Apagar ficha de saúde" (o apagamento manual do fim do prazo). Com o passo 1, "tem ficha" passa a vir certo para arquivado; o "Limite conhecido" do PR D no PENDENCIAS sai.
 - Pronto quando: nenhum dado de saúde é logado; sem o SQL do passo 1 o card continua funcionando como hoje (overview sem a linha → `hasProfile` nulo).
 
-### 8. [SONNET] Contagens e relatórios sem arquivados
+### 8. ✅ [SONNET] Contagens e relatórios sem arquivados
 - Arquivos: `src/pages/TeacherDashboard.jsx`, `src/pages/AttendanceReport.jsx`, `src/pages/lowCreditsReport.jsx`, `src/pages/TeacherReceipts.jsx`.
 - Fazer:
   - Painel: `fetchDashboardStats` ganha `.is('deleted_at', null)`.
@@ -97,7 +97,7 @@ A Josi arquiva o aluno que saiu. Ele some de listas, contagens, check-in, emails
   - Recibos: selecionar também `deleted_at` e mostrar `teacher.students.archivedTag` depois do nome do arquivado na lista de escolha.
 - Pronto quando: aluno arquivado com créditos não entra no total do painel nem no relatório de créditos baixos.
 
-### 9. [SONNET] Textos e PENDENCIAS
+### 9. ✅ [SONNET] Textos e PENDENCIAS
 - Arquivos: `src/locales/pt.json`, `en.json`, `fr.json`; `docs/PENDENCIAS.md`.
 - Fazer: trocar o bloco `teacher.students.trash` por `teacher.students.archive` e `deleteDialog` por `archiveDialog` (apagar as chaves antigas e o `reversible` de 90 dias; conferir com grep que nenhum `t('...trash...')`/`deleteDialog` sobra); atualizar `restoreDialog.warning`, `hardDeleteDialog.hasReceipts` e `hasConsentRecords`; chaves novas da tabela abaixo. PENDENCIAS: item de teste deste PR, SQL e deploy pendentes, limite do Google se houver.
 

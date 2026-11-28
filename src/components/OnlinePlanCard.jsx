@@ -92,7 +92,7 @@ function onlineStatusText(t, status) {
   }
 }
 
-const OnlinePlanCard = ({ studentId, className = '' }) => {
+const OnlinePlanCard = ({ studentId, readOnly = false, className = '' }) => {
   const { t, i18n } = useTranslation()
   const [student, setStudent] = useState(null)
   const [membership, setMembershipRow] = useState(null)
@@ -223,7 +223,7 @@ const OnlinePlanCard = ({ studentId, className = '' }) => {
           <Video className="h-5 w-5 mr-2" />
           {t('online.title')}
         </CardTitle>
-        {student && !loadError && (
+        {student && !loadError && !readOnly && (
           <Button size="sm" className="rounded-xl" onClick={() => setPaymentOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
             {t('online.actions.registerPayment')}
@@ -275,7 +275,7 @@ const OnlinePlanCard = ({ studentId, className = '' }) => {
               <span className="text-sm text-muted-foreground">{t('online.none')}</span>
             )}
           </div>
-          <div className="flex gap-2 flex-wrap">
+          {!readOnly && <div className="flex gap-2 flex-wrap">
             {(!membership || state === 'ended') && (
               <Button size="sm" variant="outline" className="rounded-xl" disabled={busy}
                 onClick={() => openPlanDialog('assign')}>
@@ -306,7 +306,7 @@ const OnlinePlanCard = ({ studentId, className = '' }) => {
                 </Button>
               </>
             )}
-          </div>
+          </div>}
         </div>
 
         <div className="space-y-2">
@@ -361,7 +361,7 @@ const OnlinePlanCard = ({ studentId, className = '' }) => {
                           </div>
                         </TableCell>
                         <TableCell className="text-right">
-                          {!isVoid && (
+                          {!isVoid && !readOnly && (
                             <Button size="sm" variant="outline"
                               className="rounded-xl text-destructive hover:text-destructive"
                               onClick={() => openVoid(p)}>

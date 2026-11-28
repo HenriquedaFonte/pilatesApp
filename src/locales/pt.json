@@ -368,27 +368,36 @@
         "noCredits": "Sem créditos",
         "lowBalance": "Saldo baixo"
       },
-      "trash": {
-        "title": "Lixeira",
-        "empty": "Nenhum aluno na lixeira.",
-        "deletedOn": "Excluído em",
-        "daysRemaining": "dias restantes",
+      "archive": {
+        "title": "Arquivo",
+        "empty": "Nenhum aluno arquivado.",
+        "archive": "Arquivar",
+        "archivedOn": "Arquivado em",
+        "retention": "Registros guardados por pelo menos 5 anos.",
+        "view": "Ver",
         "restore": "Restaurar",
-        "deleteForever": "Excluir Para Sempre",
-        "moveToTrash": "Mover para Lixeira"
+        "deleteForever": "Excluir para sempre",
+        "success": "{{name}} foi arquivado(a).",
+        "restored": "{{name}} foi restaurado(a).",
+        "deleted": "{{name}} foi excluído(a) para sempre.",
+        "archiveError": "Erro ao arquivar: {{message}}",
+        "restoreError": "Erro ao restaurar: {{message}}",
+        "deleteError": "Erro ao excluir: {{message}}",
+        "notAStudent": "Só alunos podem ser arquivados."
       },
-      "deleteDialog": {
-        "title": "Mover Aluno para a Lixeira?",
-        "description": "Tem certeza que deseja mover o(a) aluno(a) {{name}} para a lixeira?",
-        "warning": "O perfil ficará inativo, mas o histórico de aulas e créditos será preservado.",
-        "reversible": "Esta ação pode ser revertida em até 90 dias.",
-        "confirm": "Mover para Lixeira",
-        "moving": "Movendo..."
+      "archiveDialog": {
+        "title": "Arquivar aluno?",
+        "description": "{{name}} sai da lista de alunos, das contagens, do check-in e dos emails, e não consegue mais entrar no site. Histórico, recibos, termo e ficha de saúde ficam guardados.",
+        "reversible": "Você pode restaurar quando quiser, em Alunos → Arquivo.",
+        "creditsWarning": "Ainda tem {{count}} crédito(s): ficam guardados e voltam se você restaurar.",
+        "onlineWarning": "Tem plano online ativo: ele não é encerrado e volta como está se você restaurar.",
+        "confirm": "Arquivar",
+        "moving": "Arquivando..."
       },
       "restoreDialog": {
         "title": "Restaurar Aluno?",
         "description": "Deseja restaurar o(a) aluno(a) {{name}}?",
-        "warning": "O perfil voltará a aparecer na lista de alunos ativos. As turmas precisarão ser rematriculadas manualmente.",
+        "warning": "O aluno volta à lista e consegue entrar no site de novo. As turmas precisam ser rematriculadas manualmente.",
         "confirm": "Restaurar"
       },
       "hardDeleteDialog": {
@@ -399,9 +408,9 @@
         "placeholder": "Digite EXCLUIR PERMANENTEMENTE para confirmar",
         "confirm": "Excluir Permanentemente",
         "deleting": "Excluindo...",
-        "hasReceipts": "Este(a) aluno(a) tem recibo de seguro emitido e não pode ser excluído(a) permanentemente. Os dados ficam na lixeira.",
+        "hasReceipts": "Este(a) aluno(a) tem recibo de seguro emitido e não pode ser excluído(a) permanentemente. Ele(a) fica no Arquivo.",
         "hasHealthProfile": "Este aluno tem ficha de saúde guardada. Apague a ficha (depois do prazo de guarda) antes de excluir permanentemente.",
-        "hasConsentRecords": "Este aluno tem registro de termo aceito, que o estúdio guarda por pelo menos 5 anos (ou o prazo da lei do Québec). Não é possível excluir permanentemente; mantenha o aluno arquivado."
+        "hasConsentRecords": "Este aluno tem registro de termo aceito, que o estúdio guarda por pelo menos 5 anos (ou o prazo da lei do Québec). Não é possível excluir permanentemente; ele fica no Arquivo."
       },
       "dialogCommon": {
         "confirm": "Confirmar"
@@ -427,7 +436,8 @@
         "pending": "O email para {{name}} ainda está sendo enviado. Confira no Histórico de E-mails.",
         "error": "Não foi possível enviar o email. Nada foi enviado; tente de novo.",
         "openHistory": "Ver histórico"
-      }
+      },
+      "archivedTag": "(arquivado)"
     },
     "classes": {
       "title": "Turmas e",
@@ -940,7 +950,8 @@
         "pt": "Português",
         "en": "Inglês",
         "fr": "Francês"
-      }
+      },
+      "archivedBanner": "Aluno arquivado em {{date}}. Somente leitura: para editar, restaure em Alunos → Arquivo."
     }
   },
   "privacyPolicy": {
@@ -1647,6 +1658,7 @@
     "submit": "Entrar",
     "submitting": "Entrando...",
     "invalidCredentials": "E-mail ou senha incorretos.",
+    "archivedAccount": "Sua conta está arquivada. Fale com o estúdio para reativá-la.",
     "noAccount": "Não tem uma conta?",
     "signup": "Cadastre-se como aluno",
     "privacy": "Política de Privacidade",

@@ -44,6 +44,9 @@ import {
 // - Ficha congelada: só pela RPC read_retained_health_profile, com motivo;
 //   o resultado não fica em cache (cada abertura = nova consulta registrada).
 // - Dados de saúde nunca vão para console/log.
+// - archived (aluno no Arquivo, plano 2026-11-28-arquivo-de-alunos.md, passo 7):
+//   sem "Registrar em papel" e sem editar a ficha. Ficam: imprimir, histórico,
+//   registrar retirada, ver ficha guardada e apagar ficha.
 
 const DELETE_PHRASE = 'APAGAR FICHA'
 
@@ -69,7 +72,7 @@ function policiesStatus(acceptances, currentVersion) {
   return policies.length > 0 ? 'outdated' : 'none'
 }
 
-const StudentConsentCard = ({ studentId, className = '' }) => {
+const StudentConsentCard = ({ studentId, archived = false, className = '' }) => {
   const { t, i18n } = useTranslation()
   const cardRef = useRef(null)
   const retainedRef = useRef(null)
@@ -81,7 +84,7 @@ const StudentConsentCard = ({ studentId, className = '' }) => {
   const [acceptances, setAcceptances] = useState([])
   const [versions, setVersions] = useState({ class_policies: null, health_data: null })
   // true/false pela visão da professora; null quando ela não traz o aluno
-  // (ex.: aluno na lixeira) ou falhou.
+  // (ex.: arquivado, antes da migration 20261128020000) ou falhou.
   const [hasProfile, setHasProfile] = useState(null)
   const [profile, setProfile] = useState(null)
   const [editing, setEditing] = useState(false)
@@ -229,9 +232,11 @@ const StudentConsentCard = ({ studentId, className = '' }) => {
             {t('consent.staff.title')}
           </CardTitle>
           <div className="flex gap-2 flex-wrap no-print">
-            <Button variant="outline" size="sm" onClick={() => openPaper('class_policies')}>
-              {t('consent.staff.registerPaper')}
-            </Button>
+            {!archived && (
+              <Button variant="outline" size="sm" onClick={() => openPaper('class_policies')}>
+                {t('consent.staff.registerPaper')}
+              </Button>
+            )}
             <Button variant="outline" size="sm" onClick={() => printElement(cardRef.current)}>
               <Printer className="h-4 w-4 mr-1" />
               {t('consent.staff.print')}
@@ -314,13 +319,15 @@ const StudentConsentCard = ({ studentId, className = '' }) => {
                     {!profile && !editing && (
                       <p className="text-sm text-muted-foreground">{t('healthProfile.notFilled')}</p>
                     )}
-                    <Button variant="outline" size="sm" className="no-print" onClick={() => setEditing(e => !e)}>
-                      {editing ? t('healthProfile.stopEdit') : t('healthProfile.edit')}
-                    </Button>
+                    {!archived && (
+                      <Button variant="outline" size="sm" className="no-print" onClick={() => setEditing(e => !e)}>
+                        {editing ? t('healthProfile.stopEdit') : t('healthProfile.edit')}
+                      </Button>
+                    )}
                     <HealthProfileForm
                       key={reloadKey}
                       studentId={studentId}
-                      readOnly={!editing}
+                      readOnly={archived || !editing}
                       authorStudentId={studentId}
                       onLoaded={setProfile}
                       onSaved={row => {
@@ -354,7 +361,7 @@ const StudentConsentCard = ({ studentId, className = '' }) => {
                   </>
                 )}
 
-                {(state === 'none' || state === 'withdrawn_no_profile') && (
+                {!archived && (state === 'none' || state === 'withdrawn_no_profile') && (
                   <Button variant="outline" size="sm" className="no-print" onClick={() => openPaper('health_data')}>
                     {t('consent.staff.registerPaper')}
                   </Button>

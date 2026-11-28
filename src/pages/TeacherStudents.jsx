@@ -67,6 +67,7 @@ import {
   UserX,
   UserCheck,
   Trash2,
+  Archive,
   MoreVertical,
   ChevronDown,
   ChevronUp,
@@ -224,24 +225,17 @@ const TeacherStudents = () => {
     if (!error) setDeletedStudents(data || [])
   }
 
-  const getDaysUntilHardDelete = (deletedAt) => {
-    const hardDeleteDate = new Date(deletedAt)
-    hardDeleteDate.setDate(hardDeleteDate.getDate() + 90)
-    const diffMs = hardDeleteDate - new Date()
-    return Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)))
-  }
-
   const handleRestoreStudent = async () => {
     try {
       const { error } = await supabase.functions.invoke('manage-student', {
         body: { action: 'restore', studentId: selectedStudent.id }
       })
       if (error) throw new Error(error.message)
-      showSuccess(`Aluno(a) ${selectedStudent.full_name} restaurado(a) com sucesso!`)
+      showSuccess(t('teacher.students.archive.restored', { name: selectedStudent.full_name }))
       await fetchData()
       await fetchDeletedStudents()
     } catch (err) {
-      showError('Erro ao restaurar aluno: ' + err.message)
+      showError(t('teacher.students.archive.restoreError', { message: err.message }))
     } finally {
       setIsRestoreConfirmOpen(false)
       setSelectedStudent(null)
@@ -277,10 +271,10 @@ const TeacherStudents = () => {
         }
         throw new Error(error.message)
       }
-      showSuccess(`Aluno(a) ${selectedStudent.full_name} excluído(a) permanentemente.`)
+      showSuccess(t('teacher.students.archive.deleted', { name: selectedStudent.full_name }))
       await fetchDeletedStudents()
     } catch (err) {
-      showError('Erro ao excluir permanentemente: ' + err.message)
+      showError(t('teacher.students.archive.deleteError', { message: err.message }))
     } finally {
       setIsHardDeleteConfirmOpen(false)
       setHardDeleteConfirmText('')
@@ -660,6 +654,11 @@ const TeacherStudents = () => {
     }
   }
 
+  const archiveCredits = selectedStudent
+    ? (selectedStudent.individual_credits || 0) + (selectedStudent.duo_credits || 0) + (selectedStudent.group_credits || 0)
+    : 0
+  const archiveHasOnline = !!selectedStudent && onlineData.memberships[selectedStudent.id]?.status === 'active'
+
   const handleDeleteStudent = async () => {
     setError('')
     setSuccess('')
@@ -670,11 +669,13 @@ const TeacherStudents = () => {
       })
 
       if (error) {
-        let errMsg = 'Falha ao excluir aluno';
+        let errMsg = 'Falha ao arquivar aluno';
         if (error.context) {
           try {
             const body = await error.context.json();
-            errMsg = body.error || body.message || errMsg;
+            errMsg = body.code === 'NOT_A_STUDENT'
+              ? t('teacher.students.archive.notAStudent')
+              : (body.error || body.message || errMsg);
           } catch {
             try {
               errMsg = await error.context.text() || errMsg;
@@ -688,7 +689,7 @@ const TeacherStudents = () => {
         throw new Error(errMsg);
       }
 
-      showSuccess(`Aluno(a) ${selectedStudent.full_name} movido(a) para a lixeira com sucesso!`)
+      showSuccess(t('teacher.students.archive.success', { name: selectedStudent.full_name }))
       await fetchData()
       await fetchDeletedStudents()
     } catch (err) {
@@ -696,7 +697,7 @@ const TeacherStudents = () => {
       console.error(err)
       console.error('Message:', err.message)
       console.error('--------------------------------------')
-      showError('Erro ao excluir aluno: ' + err.message)
+      showError(t('teacher.students.archive.archiveError', { message: err.message }))
     } finally {
       setIsDeleteConfirmOpen(false)
       setSelectedStudent(null)
@@ -1300,8 +1301,8 @@ const TeacherStudents = () => {
                           }}
                           className="cursor-pointer flex items-center gap-2 hover:bg-red-50 focus:bg-red-50 text-red-600 focus:text-red-600 py-2 px-3 rounded-lg text-sm"
                         >
-                          <Trash2 className="h-4 w-4" />
-                          <span>{t('teacher.students.trash.moveToTrash', 'Mover para Lixeira')}</span>
+                          <Archive className="h-4 w-4" />
+                          <span>{t('teacher.students.archive.archive')}</span>
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -1328,21 +1329,21 @@ const TeacherStudents = () => {
           </Card>
         )}
 
-        {/* Seção Lixeira — Story 2.1 */}
+        {/* Seção Arquivo */}
         <div className="mt-8 border-t border-border/50 pt-6">
           <button
             onClick={() => setShowDeletedSection(!showDeletedSection)}
             className="flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
           >
-            <Trash2 className="h-4 w-4" />
-            {t('teacher.students.trash.title', 'Lixeira')} ({deletedStudents.length})
+            <Archive className="h-4 w-4" />
+            {t('teacher.students.archive.title')} ({deletedStudents.length})
             {showDeletedSection ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </button>
 
           {showDeletedSection && (
             <div className="mt-4 space-y-3">
               {deletedStudents.length === 0 ? (
-                <p className="text-sm text-muted-foreground italic">{t('teacher.students.trash.empty', 'Nenhum aluno na lixeira.')}</p>
+                <p className="text-sm text-muted-foreground italic">{t('teacher.students.archive.empty')}</p>
               ) : (
                 deletedStudents.map(student => (
                   <div
@@ -1353,11 +1354,22 @@ const TeacherStudents = () => {
                       <p className="text-sm font-semibold">{student.full_name}</p>
                       <p className="text-xs text-muted-foreground">{student.email}</p>
                       <p className="text-xs text-amber-600 mt-0.5">
-                        {t('teacher.students.trash.deletedOn', 'Excluído em')} {new Date(student.deleted_at).toLocaleDateString(i18n.language === 'pt' ? 'pt-BR' : i18n.language === 'fr' ? 'fr-CA' : 'en-CA')} •{' '}
-                        {getDaysUntilHardDelete(student.deleted_at)} {t('teacher.students.trash.daysRemaining', 'dias restantes')}
+                        {t('teacher.students.archive.archivedOn')} {new Date(student.deleted_at).toLocaleDateString(i18n.language === 'pt' ? 'pt-BR' : i18n.language === 'fr' ? 'fr-CA' : 'en-CA')}
                       </p>
+                      <p className="text-xs text-muted-foreground">{t('teacher.students.archive.retention')}</p>
                     </div>
                     <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          rememberStudent(student.id)
+                          navigate(`/teacher/student-summary/${student.id}`)
+                        }}
+                        className="rounded-lg h-8 px-3 text-xs"
+                      >
+                        {t('teacher.students.archive.view')}
+                      </Button>
                       <Button
                         size="sm"
                         variant="outline"
@@ -1365,7 +1377,7 @@ const TeacherStudents = () => {
                         className="rounded-lg h-8 px-3 text-xs text-emerald-600 border-emerald-200 hover:bg-emerald-50"
                       >
                         <UserCheck className="h-3.5 w-3.5 mr-1" />
-                        {t('teacher.students.trash.restore', 'Restaurar')}
+                        {t('teacher.students.archive.restore')}
                       </Button>
                       <Button
                         size="sm"
@@ -1374,7 +1386,7 @@ const TeacherStudents = () => {
                         className="rounded-lg h-8 px-3 text-xs text-destructive border-destructive/30 hover:bg-destructive/5"
                       >
                         <Trash2 className="h-3.5 w-3.5 mr-1" />
-                        {t('teacher.students.trash.deleteForever', 'Excluir Para Sempre')}
+                        {t('teacher.students.archive.deleteForever')}
                       </Button>
                     </div>
                   </div>
@@ -1825,12 +1837,17 @@ const TeacherStudents = () => {
           <AlertDialogContent className="rounded-2xl">
             <AlertDialogHeader>
               <AlertDialogTitle className="text-base font-bold text-amber-600">
-                {t('teacher.students.deleteDialog.title', 'Mover Aluno para a Lixeira?')}
+                {t('teacher.students.archiveDialog.title')}
               </AlertDialogTitle>
               <AlertDialogDescription className="text-xs text-muted-foreground">
-                {t('teacher.students.deleteDialog.description', 'Tem certeza que deseja mover o(a) aluno(a) {{name}} para a lixeira?', { name: selectedStudent?.full_name })}
-                {' '}{t('teacher.students.deleteDialog.warning', 'O perfil ficará inativo, mas o histórico de aulas e créditos será preservado.')}
-                <strong> {t('teacher.students.deleteDialog.reversible', 'Esta ação pode ser revertida em até 90 dias.')}</strong>
+                {t('teacher.students.archiveDialog.description', { name: selectedStudent?.full_name })}
+                {' '}<strong>{t('teacher.students.archiveDialog.reversible')}</strong>
+                {archiveCredits > 0 && (
+                  <span className="block mt-2 text-amber-700">{t('teacher.students.archiveDialog.creditsWarning', { count: archiveCredits })}</span>
+                )}
+                {archiveHasOnline && (
+                  <span className="block mt-2 text-amber-700">{t('teacher.students.archiveDialog.onlineWarning')}</span>
+                )}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -1845,7 +1862,7 @@ const TeacherStudents = () => {
                 onClick={handleDeleteStudent}
                 disabled={deleteLoading}
               >
-                {deleteLoading ? t('teacher.students.deleteDialog.moving', 'Movendo...') : t('teacher.students.deleteDialog.confirm', 'Mover para Lixeira')}
+                {deleteLoading ? t('teacher.students.archiveDialog.moving') : t('teacher.students.archiveDialog.confirm')}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

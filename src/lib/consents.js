@@ -314,7 +314,7 @@ export function activeHealthSince(acceptances) {
 
 // Status do termo das aulas por aluno: [{ student_id, policies_status
 // ('current' | 'outdated' | 'none'), health_consent, health_profile }].
-// Só alunos não excluídos. Sem versão publicada, todos vêm 'current'.
+// Todos os alunos, inclusive arquivados. Sem versão publicada, todos vêm 'current'.
 export async function fetchConsentOverview() {
   const { data, error } = await supabase.rpc('staff_consent_overview')
   if (error) throw error

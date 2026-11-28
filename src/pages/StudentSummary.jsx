@@ -61,6 +61,7 @@ import StudentConsentCard from '../components/StudentConsentCard'
 import IssueReceiptDialog from '../components/IssueReceiptDialog'
 import ReceiptsList from '../components/ReceiptsList'
 import OnlinePlanCard from '../components/OnlinePlanCard'
+import { isArchived } from '../lib/archivedStudents'
 
 const profileSchema = z.object({
   full_name: z.string().min(1, 'Full name is required'),
@@ -303,9 +304,19 @@ const StudentSummary = () => {
     )
   }
 
+  const archived = isArchived(student)
+  const archivedDate = archived
+    ? new Date(student.deleted_at).toLocaleDateString(i18n.language === 'en' ? 'en-CA' : i18n.language === 'fr' ? 'fr-CA' : 'pt-BR')
+    : ''
+
   return (
     <TeacherLayout backTo={backTo}>
       <div className="space-y-6">
+        {archived && (
+          <Alert>
+            <AlertDescription>{t('teacher.studentSummary.archivedBanner', { date: archivedDate })}</AlertDescription>
+          </Alert>
+        )}
         <div className="flex items-center gap-4">
           <Button
             variant="outline"
@@ -344,7 +355,7 @@ const StudentSummary = () => {
                   {t('teacher.studentSummary.infoDesc')}
                 </CardDescription>
               </div>
-              {profile?.role === 'teacher' && (
+              {profile?.role === 'teacher' && !archived && (
                 <Button variant="outline" size="sm" onClick={handleEditProfile}>
                   <Edit className="h-4 w-4 mr-2" />
                   {t('teacher.studentSummary.editProfile')}
@@ -500,12 +511,12 @@ const StudentSummary = () => {
 
         {/* Termo e ficha de saúde (plano 2026-11-28-perfil-e-consentimento-digital, PR D) */}
         {profile?.role === 'teacher' && studentId && (
-          <StudentConsentCard studentId={studentId} className="mb-6" />
+          <StudentConsentCard studentId={studentId} archived={archived} className="mb-6" />
         )}
 
         {/* Aulas online: modalidade e pagamentos (plano 2026-11-23-online-modalidades) */}
         {profile?.role === 'teacher' && studentId && (
-          <OnlinePlanCard studentId={studentId} className="mb-6" />
+          <OnlinePlanCard studentId={studentId} readOnly={archived} className="mb-6" />
         )}
 
         {/* Recibos de seguro (Story 3.5): emissão e histórico */}
