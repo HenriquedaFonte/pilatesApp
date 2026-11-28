@@ -230,7 +230,7 @@ Regras (revistas em 2026-11-28: a associação/seguradora da Josi exige guardar 
 
 ## PR D — Professora · revisor: sim · depende do SQL do PR A **e do SQL 4a** · Edge Function `manage-student` (12b)
 
-### 12. [OPUS] Card "Termo e ficha de saúde" na ficha do aluno
+### 12. [OPUS] Card "Termo e ficha de saúde" na ficha do aluno ✅
 - Arquivos: `src/components/StudentConsentCard.jsx` (novo), `src/pages/StudentSummary.jsx` (abaixo do card de seguro).
 - Fazer: status do termo atual (Aceito / Versão antiga / Pendente), histórico de aceites (versão, data/hora em Montréal, digital/papel, nome digitado, responsável, IP só no detalhe), "Registrar em papel" (diálogo: tipo = termo das aulas ou consentimento de saúde, versão = a atual desse tipo, data da assinatura, nome de quem assinou, responsável opcional → `register_paper_consent`), status do consentimento de saúde (ativo desde … / retirado em … / não dado), botão "Registrar retirada" (`consent.withdraw`, só no estado `active`; diálogo de confirmação com `consent.withdrawConfirm` → `withdrawHealthConsent(studentId)` (acrescentar em `src/lib/consents.js`, RPC `withdraw_health_consent` com `p_student_id`) → recarrega o card), e por estado (`healthConsentState`; o "tem ficha" vem de `staff_consent_overview().health_profile`, porque a SELECT de staff não vê a ficha congelada):
   - `active`: chips de `healthAlerts` + `HealthProfileForm` em modo professora (ver por padrão, "Editar", "atualizada pelo aluno/pela Josi em …").
@@ -239,13 +239,13 @@ Regras (revistas em 2026-11-28: a associação/seguradora da Josi exige guardar 
   - "Apagar ficha de saúde" (estados `active` e `retained`) → `deleteHealthProfile(studentId)` (acrescentar em `src/lib/consents.js`, RPC `delete_health_profile`; **nunca** `.from('student_health_profiles').delete()`, que dá 42501), com confirmação digitada e o aviso `healthProfile.deleteRetentionWarning` ("só apague depois do prazo de guarda exigido pelo seguro").
 - Pronto quando: a Josi vê e registra tudo sem SQL, inclusive a retirada (só depois de confirmar); com consentimento retirado, ela não vê a ficha sem escolher um motivo.
 
-### 12b. [OPUS] "Excluir permanentemente" recusa aluno com ficha de saúde
+### 12b. [OPUS] "Excluir permanentemente" recusa aluno com ficha de saúde ✅
 - Arquivos: `supabase/functions/manage-student/index.ts` (ação `hard-delete`), `src/pages/TeacherStudents.jsx` (tratamento do erro), `src/locales/*.json` (`teacher.students.hardDeleteDialog.hasHealthProfile`).
 - Fazer: mesma forma da checagem de recibos que já existe (antes do `audit_log` e de qualquer delete, porque os deletes não estão em transação): `count` em `student_health_profiles` do aluno; erro na checagem → recusa; `> 0` → 409 `code: 'STUDENT_HAS_HEALTH_PROFILE'`. Na tela, mostrar a mensagem traduzida como já se faz com `STUDENT_HAS_RECEIPTS`.
 - Pronto quando: aluno de teste com ficha não é apagado (nada some: aulas, créditos, ficha); depois de "Apagar ficha de saúde", a exclusão permanente passa.
 - Deploy: `supabase functions deploy manage-student --project-ref kezfpyhsejhjcvlbmejq`.
 
-### 13. [SONNET] Badge na lista e impressão
+### 13. [SONNET] Badge na lista e impressão ✅
 - Arquivos: `src/pages/TeacherStudents.jsx` (uma chamada a `staff_consent_overview()` junto com o carregamento; badge "Termo pendente" quando `policies_status <> 'current'`, sem alterar os outros badges), `src/components/StudentConsentCard.jsx` (botão "Imprimir": `window.print()` com CSS `@media print` que mostra só o card).
 - Pronto quando: sem versão publicada nenhum badge aparece; a impressão sai legível em A4/Letter.
 
