@@ -697,7 +697,9 @@
         "placeholder": "Type EXCLUIR PERMANENTEMENTE to confirm",
         "confirm": "Delete Permanently",
         "deleting": "Deleting...",
-        "hasReceipts": "This student has issued insurance receipts and cannot be permanently deleted. The data stays in the trash."
+        "hasReceipts": "This student has issued insurance receipts and cannot be permanently deleted. The data stays in the trash.",
+        "hasHealthProfile": "This student has a kept health profile. Delete it (after the retention period) before permanently deleting the student.",
+        "hasConsentRecords": "This student has an accepted consent record, which the studio keeps for at least 5 years (or the period required by Québec law). Permanent deletion is not possible; keep the student archived."
       },
       "dialogCommon": {
         "confirm": "Confirm"
@@ -1762,6 +1764,42 @@
       "version_locked": "This text version cannot be changed.",
       "invalid_reason": "Invalid reason.",
       "invalid_weeks": "Weeks of pregnancy must be a whole number from 1 to 42."
+    },
+    "staff": {
+      "title": "Agreement and health profile",
+      "policiesLabel": "Class agreement",
+      "status": {
+        "current": "Accepted",
+        "outdated": "Older version",
+        "none": "Pending",
+        "unknown": "No information"
+      },
+      "healthLabel": "Health consent",
+      "activeSince": "Active since {{date}}",
+      "history": "Acceptance history",
+      "typedName": "Typed name: {{name}}",
+      "signer": "Signed by: {{name}}",
+      "guardian": "Guardian: {{name}}",
+      "signedOn": "Signed on {{date}}",
+      "details": "Details",
+      "hideDetails": "Hide details",
+      "ip": "IP: {{ip}}",
+      "userAgent": "Browser: {{agent}}",
+      "registerPaper": "Record paper form",
+      "paperTitle": "Record a signed paper form",
+      "paperKind": "Type",
+      "paperNoVersion": "No version of this type has been published yet.",
+      "paperSignedOn": "Signature date",
+      "paperSigner": "Name of the signer",
+      "paperGuardian": "Guardian (optional)",
+      "paperSuccess": "Paper form recorded.",
+      "save": "Record",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "close": "Close",
+      "withdrawSuccess": "Withdrawal recorded.",
+      "overviewError": "Could not load the agreement status.",
+      "print": "Print"
     }
   },
   "healthProfile": {
@@ -1819,6 +1857,18 @@
       "pregnant": "Pregnant (reported on {{date}})",
       "cardiac": "Heart or blood pressure",
       "surgeries": "Surgeries"
-    }
+    },
+    "edit": "Edit",
+    "stopEdit": "Stop editing",
+    "updatedByStudent": "Updated by the student on {{date}}",
+    "updatedByStaff": "Updated by Josi on {{date}}",
+    "notFilled": "Profile not filled in yet.",
+    "retainedNotFound": "No kept profile found.",
+    "viewRetainedAction": "View",
+    "delete": "Delete health profile",
+    "deleteTitle": "Delete the health profile?",
+    "deleteTypeHint": "Type {{phrase}} to confirm",
+    "deleteSuccess": "Health profile deleted.",
+    "deleting": "Deleting..."
   }
 }

@@ -230,7 +230,7 @@ Regras (revistas em 2026-11-28: a associação/seguradora da Josi exige guardar 
 
 ## PR D — Professora · revisor: sim · depende do SQL do PR A **e do SQL 4a** · Edge Function `manage-student` (12b)
 
-### 12. [OPUS] Card "Termo e ficha de saúde" na ficha do aluno
+### 12. [OPUS] Card "Termo e ficha de saúde" na ficha do aluno ✅
 - Arquivos: `src/components/StudentConsentCard.jsx` (novo), `src/pages/StudentSummary.jsx` (abaixo do card de seguro).
 - Fazer: status do termo atual (Aceito / Versão antiga / Pendente), histórico de aceites (versão, data/hora em Montréal, digital/papel, nome digitado, responsável, IP só no detalhe), "Registrar em papel" (diálogo: tipo = termo das aulas ou consentimento de saúde, versão = a atual desse tipo, data da assinatura, nome de quem assinou, responsável opcional → `register_paper_consent`), status do consentimento de saúde (ativo desde … / retirado em … / não dado), botão "Registrar retirada" (`consent.withdraw`, só no estado `active`; diálogo de confirmação com `consent.withdrawConfirm` → `withdrawHealthConsent(studentId)` (acrescentar em `src/lib/consents.js`, RPC `withdraw_health_consent` com `p_student_id`) → recarrega o card), e por estado (`healthConsentState`; o "tem ficha" vem de `staff_consent_overview().health_profile`, porque a SELECT de staff não vê a ficha congelada):
   - `active`: chips de `healthAlerts` + `HealthProfileForm` em modo professora (ver por padrão, "Editar", "atualizada pelo aluno/pela Josi em …").
@@ -239,13 +239,14 @@ Regras (revistas em 2026-11-28: a associação/seguradora da Josi exige guardar 
   - "Apagar ficha de saúde" (estados `active` e `retained`) → `deleteHealthProfile(studentId)` (acrescentar em `src/lib/consents.js`, RPC `delete_health_profile`; **nunca** `.from('student_health_profiles').delete()`, que dá 42501), com confirmação digitada e o aviso `healthProfile.deleteRetentionWarning` ("só apague depois do prazo de guarda exigido pelo seguro").
 - Pronto quando: a Josi vê e registra tudo sem SQL, inclusive a retirada (só depois de confirmar); com consentimento retirado, ela não vê a ficha sem escolher um motivo.
 
-### 12b. [OPUS] "Excluir permanentemente" recusa aluno com ficha de saúde
+### 12b. [OPUS] "Excluir permanentemente" recusa aluno com ficha de saúde ou com aceite do termo ✅
 - Arquivos: `supabase/functions/manage-student/index.ts` (ação `hard-delete`), `src/pages/TeacherStudents.jsx` (tratamento do erro), `src/locales/*.json` (`teacher.students.hardDeleteDialog.hasHealthProfile`).
 - Fazer: mesma forma da checagem de recibos que já existe (antes do `audit_log` e de qualquer delete, porque os deletes não estão em transação): `count` em `student_health_profiles` do aluno; erro na checagem → recusa; `> 0` → 409 `code: 'STUDENT_HAS_HEALTH_PROFILE'`. Na tela, mostrar a mensagem traduzida como já se faz com `STUDENT_HAS_RECEIPTS`.
-- Pronto quando: aluno de teste com ficha não é apagado (nada some: aulas, créditos, ficha); depois de "Apagar ficha de saúde", a exclusão permanente passa.
+- Acréscimo (decisão do dono, 2026-11-28, ver "Pergunta aberta"): segunda checagem igual em `consent_acceptances` (`student_id`) → 409 `code: 'STUDENT_HAS_CONSENT_RECORDS'` (texto `teacher.students.hardDeleteDialog.hasConsentRecords`). ✅
+- Pronto quando: aluno de teste com ficha ou com aceite não é apagado (nada some: aulas, créditos, ficha, aceites); só passa aluno sem ficha e sem aceite.
 - Deploy: `supabase functions deploy manage-student --project-ref kezfpyhsejhjcvlbmejq`.
 
-### 13. [SONNET] Badge na lista e impressão
+### 13. [SONNET] Badge na lista e impressão ✅
 - Arquivos: `src/pages/TeacherStudents.jsx` (uma chamada a `staff_consent_overview()` junto com o carregamento; badge "Termo pendente" quando `policies_status <> 'current'`, sem alterar os outros badges), `src/components/StudentConsentCard.jsx` (botão "Imprimir": `window.print()` com CSS `@media print` que mostra só o card).
 - Pronto quando: sem versão publicada nenhum badge aparece; a impressão sai legível em A4/Letter.
 
@@ -333,4 +334,4 @@ Regras (revistas em 2026-11-28: a associação/seguradora da Josi exige guardar 
 3. **Região do Supabase:** `ca-central-1` (Montréal) → a Política pode dizer que a base de dados fica no Canadá/Québec; sem EFVP para o banco. Backups no GitHub continuam fora (PR E).
 4. **Retirada simplificada (2026-11-28): só a Josi registra.** O aluno pede à Josi (email ou pessoalmente) e ela clica em "Registrar retirada" na ficha do aluno (PR D); o aluno não tem botão em Meu perfil; o texto legal diz "basta pedir à Josi". `withdraw_health_consent(p_student_id)` é só staff. O resto da ficha congelada fica igual. Com isso, "ok" para começar o B1.
 
-**Pergunta aberta (não bloqueia B1 nem C; responder antes do PR D):** a associação/seguradora também exige guardar o **registro do termo assinado** (aceites) depois que o aluno sai? Hoje "Excluir permanentemente" apaga os aceites junto (cascata). Se sim, o 12b passa a recusar também aluno com aceite, o que na prática desliga a exclusão permanente de quase todos os alunos depois do lançamento até existir uma purga no fim do prazo (plano novo).
+**Pergunta aberta (respondida pelo dono em 2026-11-28):** os aceites do termo são guardados depois que o aluno sai, por pelo menos 5 anos ou o prazo da lei do Québec (a Josi, com a seguradora/advogado, confirma o prazo exato). O 12b recusa também aluno com aceite (`STUDENT_HAS_CONSENT_RECORDS`); na prática a exclusão permanente fica desligada para quase todos os alunos depois do lançamento, até existir uma purga no fim do prazo (plano novo). Pelo SQL Editor a cascata ainda apaga os aceites (só o dono tem acesso).

@@ -160,6 +160,48 @@ serve(async (req) => {
         )
       }
 
+      // Ficha de saúde guardada (inclusive congelada após a retirada do
+      // consentimento) tem prazo de guarda exigido pelo seguro: o FK em
+      // CASCADE a destruiria junto. Recusar até a professora apagá-la pelo
+      // botão "Apagar ficha de saúde" (RPC delete_health_profile, auditada).
+      // Só a contagem: nenhum dado de saúde é lido nem registrado em log.
+      const { count: healthCount, error: healthErr } = await supabaseClient
+        .from('student_health_profiles')
+        .select('student_id', { count: 'exact', head: true })
+        .eq('student_id', studentId)
+      if (healthErr || typeof healthCount !== 'number') {
+        throw new Error('Could not check health profile; student was not deleted')
+      }
+      if (healthCount > 0) {
+        return new Response(
+          JSON.stringify({
+            error: 'Student has a kept health profile and cannot be permanently deleted',
+            code: 'STUDENT_HAS_HEALTH_PROFILE',
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 409 }
+        )
+      }
+
+      // Aceites do termo são guardados por pelo menos 5 anos (ou o prazo da
+      // lei do Québec), mesmo depois que o aluno sai: o FK em CASCADE os
+      // apagaria. Recusar até existir uma purga no fim do prazo. Só a contagem.
+      const { count: consentCount, error: consentErr } = await supabaseClient
+        .from('consent_acceptances')
+        .select('id', { count: 'exact', head: true })
+        .eq('student_id', studentId)
+      if (consentErr || typeof consentCount !== 'number') {
+        throw new Error('Could not check consent records; student was not deleted')
+      }
+      if (consentCount > 0) {
+        return new Response(
+          JSON.stringify({
+            error: 'Student has consent records and cannot be permanently deleted',
+            code: 'STUDENT_HAS_CONSENT_RECORDS',
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 409 }
+        )
+      }
+
       console.log(`Starting HARD DELETE for student: ${studentId}`)
 
       const snapshot = await fetchProfileSnapshot()

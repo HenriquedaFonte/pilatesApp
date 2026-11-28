@@ -287,3 +287,105 @@ export async function saveHealthProfile(studentId, data, previous) {
   if (error) throw error
   return saved
 }
+
+// ---- Lado da professora (PR D, passo 12) ------------------------------------
+// Todas as RPCs abaixo recusam quem não é staff (consent_not_allowed).
+
+export const RETAINED_READ_REASONS = ['insurance', 'legal', 'student_request']
+
+// Última retirada do consentimento de saúde (para "retirado em …") ou null.
+export function lastHealthWithdrawal(acceptances) {
+  const dates = (acceptances || [])
+    .filter(a => acceptanceKind(a) === 'health_data' && a.withdrawn_at)
+    .map(a => a.withdrawn_at)
+    .sort()
+  return dates.length ? dates[dates.length - 1] : null
+}
+
+// Aceite health_data ativo mais antigo (para "ativo desde …") ou null.
+export function activeHealthSince(acceptances) {
+  const dates = (acceptances || [])
+    .filter(a => acceptanceKind(a) === 'health_data' && !a.withdrawn_at)
+    .map(a => a.accepted_at)
+    .filter(Boolean)
+    .sort()
+  return dates.length ? dates[0] : null
+}
+
+// Status do termo das aulas por aluno: [{ student_id, policies_status
+// ('current' | 'outdated' | 'none'), health_consent, health_profile }].
+// Só alunos não excluídos. Sem versão publicada, todos vêm 'current'.
+export async function fetchConsentOverview() {
+  const { data, error } = await supabase.rpc('staff_consent_overview')
+  if (error) throw error
+  return data || []
+}
+
+// Aceites do aluno com IP e navegador (só para o detalhe da professora).
+export async function fetchStaffAcceptances(studentId) {
+  if (!studentId) throw new Error('consent_invalid_student')
+  const { data, error } = await supabase
+    .from('consent_acceptances')
+    .select(
+      `id, student_id, consent_version_id, method, language, typed_name, profile_name, guardian_name, signed_on, accepted_at, ip, user_agent, withdrawn_at, withdrawn_by, recorded_by, consent_versions(${VERSION_COLUMNS})`
+    )
+    .eq('student_id', studentId)
+    .order('accepted_at', { ascending: false })
+    .order('id', { ascending: true })
+  if (error) throw error
+  return (data || []).map(row => ({
+    ...row,
+    kind: row.consent_versions?.kind ?? null,
+    version: row.consent_versions?.version ?? null,
+  }))
+}
+
+// Termo assinado em papel. signedOn 'AAAA-MM-DD'; guardianName opcional.
+// Devolve o id do aceite criado.
+export async function registerPaperConsent({ studentId, versionId, signedOn, signerName, guardianName }) {
+  if (!studentId) throw new Error('consent_invalid_student')
+  const signer = validateTypedName(signerName, { required: true })
+  const guardian = validateTypedName(guardianName, { required: false })
+  if (!signer.valid || !guardian.valid) throw new Error('consent_invalid_name')
+  const { data, error } = await supabase.rpc('register_paper_consent', {
+    p_student_id: studentId,
+    p_version_id: versionId,
+    p_signed_on: signedOn || null,
+    p_signer_name: signer.name,
+    p_guardian_name: guardian.name,
+  })
+  if (error) throw error
+  return data
+}
+
+// A professora registra que o aluno retirou o consentimento de saúde.
+// A ficha NÃO é apagada: fica congelada. Devolve quantos aceites foram marcados.
+export async function withdrawHealthConsent(studentId) {
+  if (!studentId) throw new Error('consent_invalid_student')
+  const { data, error } = await supabase.rpc('withdraw_health_consent', { p_student_id: studentId })
+  if (error) throw error
+  return data ?? 0
+}
+
+// Leitura da ficha congelada, com motivo (cada chamada vai para o audit_log).
+// Devolve a ficha ou null. Não guardar em cache: cada abertura é uma consulta.
+export async function fetchRetainedHealthProfile(studentId, reason) {
+  if (!studentId) throw new Error('consent_invalid_student')
+  if (!RETAINED_READ_REASONS.includes(reason)) throw new Error('consent_invalid_reason')
+  const { data, error } = await supabase.rpc('read_retained_health_profile', {
+    p_student_id: studentId,
+    p_reason: reason,
+  })
+  if (error) throw error
+  return Array.isArray(data) ? (data[0] ?? null) : (data ?? null)
+}
+
+// Apaga a ficha (ativa ou congelada) pela RPC auditada. Nunca usar
+// .from('student_health_profiles').delete(): o DELETE direto é revogado.
+// Devolve quantas linhas apagou (0 não é erro).
+export async function deleteHealthProfile(studentId) {
+  if (!studentId) throw new Error('consent_invalid_student')
+  const { data, error } = await supabase.rpc('delete_health_profile', { p_student_id: studentId })
+  if (error) throw error
+  return data ?? 0
+}
