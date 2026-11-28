@@ -29,6 +29,14 @@ const {
   fetchHealthProfile,
   healthProfileExists,
   saveHealthProfile,
+  lastHealthWithdrawal,
+  activeHealthSince,
+  fetchConsentOverview,
+  fetchStaffAcceptances,
+  registerPaperConsent,
+  withdrawHealthConsent,
+  fetchRetainedHealthProfile,
+  deleteHealthProfile,
 } = await import('@/lib/consents')
 
 beforeEach(() => {
@@ -334,5 +342,86 @@ describe('chamadas ao Supabase', () => {
       'consent_invalid_weeks'
     )
     expect(builder.upsert).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('lado da professora (PR D)', () => {
+  const acc = [
+    { kind: 'health_data', accepted_at: '2026-11-01T10:00:00Z', withdrawn_at: '2026-11-10T10:00:00Z' },
+    { kind: 'health_data', accepted_at: '2026-11-20T10:00:00Z', withdrawn_at: null },
+    { kind: 'class_policies', accepted_at: '2026-10-01T10:00:00Z', withdrawn_at: null },
+  ]
+
+  it('lastHealthWithdrawal e activeHealthSince olham só health_data', () => {
+    expect(lastHealthWithdrawal(acc)).toBe('2026-11-10T10:00:00Z')
+    expect(activeHealthSince(acc)).toBe('2026-11-20T10:00:00Z')
+    expect(lastHealthWithdrawal([])).toBeNull()
+    expect(activeHealthSince([acc[0]])).toBeNull()
+  })
+
+  it('fetchConsentOverview chama a RPC e devolve [] sem dados', async () => {
+    rpc.mockResolvedValueOnce({ data: null, error: null })
+    expect(await fetchConsentOverview()).toEqual([])
+    expect(rpc).toHaveBeenCalledWith('staff_consent_overview')
+  })
+
+  it('fetchStaffAcceptances filtra pelo aluno e lê IP e navegador', async () => {
+    await expect(fetchStaffAcceptances()).rejects.toThrow('consent_invalid_student')
+    results.push({ data: [{ id: 'a1', consent_versions: { kind: 'health_data', version: 1 } }], error: null })
+    const rows = await fetchStaffAcceptances('s1')
+    expect(rows[0]).toMatchObject({ kind: 'health_data', version: 1 })
+    expect(builder.eq).toHaveBeenCalledWith('student_id', 's1')
+    expect(builder.select.mock.calls[0][0]).toContain('ip, user_agent')
+  })
+
+  it('registerPaperConsent valida o nome e chama a RPC', async () => {
+    await expect(
+      registerPaperConsent({ studentId: 's1', versionId: 'v1', signedOn: '2026-11-01', signerName: ' ' })
+    ).rejects.toThrow('consent_invalid_name')
+    expect(rpc).not.toHaveBeenCalled()
+
+    rpc.mockResolvedValueOnce({ data: 'acc1', error: null })
+    const id = await registerPaperConsent({
+      studentId: 's1',
+      versionId: 'v1',
+      signedOn: '2026-11-01',
+      signerName: '  Ana Souza ',
+      guardianName: '',
+    })
+    expect(id).toBe('acc1')
+    expect(rpc).toHaveBeenCalledWith('register_paper_consent', {
+      p_student_id: 's1',
+      p_version_id: 'v1',
+      p_signed_on: '2026-11-01',
+      p_signer_name: 'Ana Souza',
+      p_guardian_name: null,
+    })
+  })
+
+  it('withdrawHealthConsent e deleteHealthProfile usam as RPCs (nunca DELETE direto)', async () => {
+    rpc.mockResolvedValueOnce({ data: 1, error: null })
+    expect(await withdrawHealthConsent('s1')).toBe(1)
+    expect(rpc).toHaveBeenCalledWith('withdraw_health_consent', { p_student_id: 's1' })
+
+    rpc.mockResolvedValueOnce({ data: 0, error: null })
+    expect(await deleteHealthProfile('s1')).toBe(0)
+    expect(rpc).toHaveBeenCalledWith('delete_health_profile', { p_student_id: 's1' })
+    expect(from).not.toHaveBeenCalled()
+
+    const err = { message: 'consent_not_allowed' }
+    rpc.mockResolvedValueOnce({ data: null, error: err })
+    await expect(withdrawHealthConsent('s1')).rejects.toBe(err)
+  })
+
+  it('fetchRetainedHealthProfile exige motivo válido e devolve a ficha ou null', async () => {
+    await expect(fetchRetainedHealthProfile('s1', 'curiosity')).rejects.toThrow('consent_invalid_reason')
+    expect(rpc).not.toHaveBeenCalled()
+
+    rpc.mockResolvedValueOnce({ data: [{ student_id: 's1' }], error: null })
+    expect(await fetchRetainedHealthProfile('s1', 'insurance')).toEqual({ student_id: 's1' })
+    expect(rpc).toHaveBeenCalledWith('read_retained_health_profile', { p_student_id: 's1', p_reason: 'insurance' })
+
+    rpc.mockResolvedValueOnce({ data: [], error: null })
+    expect(await fetchRetainedHealthProfile('s1', 'legal')).toBeNull()
   })
 })

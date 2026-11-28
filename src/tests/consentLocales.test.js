@@ -39,3 +39,11 @@ describe('códigos de erro do banco', () => {
     for (const locale of [pt, en, fr]) for (const c of codes) expect(locale.consent.errors[c], c).toBeTruthy()
   })
 })
+
+describe('exclusão permanente com ficha de saúde (PR D, 12b)', () => {
+  it('texto do erro STUDENT_HAS_HEALTH_PROFILE nas três línguas', () => {
+    for (const locale of [pt, en, fr]) {
+      expect(String(locale.teacher.students.hardDeleteDialog.hasHealthProfile || '').trim()).not.toBe('')
+    }
+  })
+})
