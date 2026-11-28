@@ -16,6 +16,7 @@ import OnlinePaymentDialog from '../components/OnlinePaymentDialog'
 import { fetchOnlineOverview } from '../lib/onlineService'
 import { onlineStatus, isOnlineOnly } from '../lib/onlinePlans'
 import { todayMontreal } from '../lib/receipts'
+import { fetchConsentOverview } from '../lib/consents'
 import { readStudentListParams, buildStudentListParams } from '../lib/studentListParams'
 import { getDayName as getDayNameLocale, formatTime as formatTimeLocale } from '../lib/format'
 import { Button } from '@/components/ui/button'
@@ -103,6 +104,8 @@ const TeacherStudents = () => {
   // const [classes, setClasses] = useState([])
   const [schedules, setSchedules] = useState([])
   const [lastCheckIns, setLastCheckIns] = useState({})
+  // Alunos sem aceite do termo atual (staff_consent_overview); vazio sem versão publicada.
+  const [pendingPolicies, setPendingPolicies] = useState(() => new Set())
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState(() => readStudentListParams(searchParams).search)
   const [selectedStudent, setSelectedStudent] = useState(null)
@@ -348,6 +351,16 @@ const TeacherStudents = () => {
       } catch (onlineError) {
         console.error('Error fetching online data:', onlineError)
         setOnlineData({ memberships: {}, payments: {}, studioIds: new Set() })
+      }
+
+      // Termo das aulas pendente (badge): opcional, erro não bloqueia a lista
+      try {
+        const consentRows = await fetchConsentOverview()
+        setPendingPolicies(
+          new Set(consentRows.filter(r => r.policies_status !== 'current').map(r => r.student_id))
+        )
+      } catch {
+        setPendingPolicies(new Set())
       }
 
       // Fetch last check-ins for each student
@@ -1114,6 +1127,11 @@ const TeacherStudents = () => {
                         </Link>
                       )}
                       {!onlineOnly && statusBadge}
+                      {pendingPolicies.has(student.id) && (
+                        <Badge variant="outline" className="bg-amber-50 text-amber-700 dark:bg-amber-950/20 dark:text-amber-400 border-amber-200/50">
+                          {t('consent.pendingBadge')}
+                        </Badge>
+                      )}
                       <span className="text-[11px] font-semibold bg-muted/60 dark:bg-muted/20 px-2 py-0.5 rounded-full text-foreground border border-border/50">
                         Total: {totalBalance}
                       </span>
