@@ -399,7 +399,8 @@
         "placeholder": "Digite EXCLUIR PERMANENTEMENTE para confirmar",
         "confirm": "Excluir Permanentemente",
         "deleting": "Excluindo...",
-        "hasReceipts": "Este(a) aluno(a) tem recibo de seguro emitido e não pode ser excluído(a) permanentemente. Os dados ficam na lixeira."
+        "hasReceipts": "Este(a) aluno(a) tem recibo de seguro emitido e não pode ser excluído(a) permanentemente. Os dados ficam na lixeira.",
+        "hasHealthProfile": "Este aluno tem ficha de saúde guardada. Apague a ficha (depois do prazo de guarda) antes de excluir permanentemente."
       },
       "dialogCommon": {
         "confirm": "Confirmar"

@@ -697,7 +697,8 @@
         "placeholder": "Type EXCLUIR PERMANENTEMENTE to confirm",
         "confirm": "Delete Permanently",
         "deleting": "Deleting...",
-        "hasReceipts": "This student has issued insurance receipts and cannot be permanently deleted. The data stays in the trash."
+        "hasReceipts": "This student has issued insurance receipts and cannot be permanently deleted. The data stays in the trash.",
+        "hasHealthProfile": "This student has a kept health profile. Delete it (after the retention period) before permanently deleting the student."
       },
       "dialogCommon": {
         "confirm": "Confirm"

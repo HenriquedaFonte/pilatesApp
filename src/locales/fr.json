@@ -922,7 +922,8 @@
         "placeholder": "Tapez EXCLUIR PERMANENTEMENTE pour confirmer",
         "confirm": "Supprimer définitivement",
         "deleting": "Suppression...",
-        "hasReceipts": "Cet(te) élève a des reçus d'assurance émis et ne peut pas être supprimé(e) définitivement. Les données restent dans la corbeille."
+        "hasReceipts": "Cet(te) élève a des reçus d'assurance émis et ne peut pas être supprimé(e) définitivement. Les données restent dans la corbeille.",
+        "hasHealthProfile": "Cet élève a une fiche santé conservée. Supprimez-la (après la durée de conservation) avant la suppression définitive."
       },
       "dialogCommon": {
         "confirm": "Confirmer"
