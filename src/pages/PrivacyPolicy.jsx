@@ -63,6 +63,7 @@ const PrivacyPolicy = () => {
 
             <h2>{t('privacyPolicy.dataSecurity.title')}</h2>
             <p>{t('privacyPolicy.dataSecurity.content')}</p>
+            <p>{t('privacyPolicy.dataSecurity.healthContent')}</p>
 
             <h2>{t('privacyPolicy.userRights.title')}</h2>
             <p>{t('privacyPolicy.userRights.content')}</p>
@@ -74,6 +75,7 @@ const PrivacyPolicy = () => {
 
             <h2>{t('privacyPolicy.dataRetention.title')}</h2>
             <p>{t('privacyPolicy.dataRetention.content')}</p>
+            <p>{t('privacyPolicy.dataRetention.healthContent')}</p>
 
             <h2>{t('privacyPolicy.insuranceReceipts.title')}</h2>
             <p>{t('privacyPolicy.insuranceReceipts.content')}</p>
@@ -83,11 +85,18 @@ const PrivacyPolicy = () => {
               ))}
             </ul>
 
-            <h2>{t('privacyPolicy.childrenPrivacy.title')}</h2>
-            <p>{t('privacyPolicy.childrenPrivacy.content')}</p>
+            <h2>{t('privacyPolicy.healthProfileAndAgreement.title')}</h2>
+            <ul>
+              {t('privacyPolicy.healthProfileAndAgreement.items', { returnObjects: true }).map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
+            </ul>
 
             <h2>{t('privacyPolicy.internationalTransfers.title')}</h2>
             <p>{t('privacyPolicy.internationalTransfers.content')}</p>
+
+            <h2>{t('privacyPolicy.childrenPrivacy.title')}</h2>
+            <p>{t('privacyPolicy.childrenPrivacy.content')}</p>
 
             <h2>{t('privacyPolicy.cookies.title')}</h2>
             <p>{t('privacyPolicy.cookies.content')}</p>

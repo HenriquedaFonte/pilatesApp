@@ -1,4 +1,4 @@
-# Texto aprovado em 28/11/2026 — aguardando publicação (PR B2)
+# Texto aprovado em 28/11/2026 — publicado no PR B2 (Política no site; v1 do termo e do consentimento só entram no banco no lançamento)
 
 **Aprovado por:** Josi (aprovação informada pelo dono na sessão do Claude, não assinada pela própria Josi) **em:** 28/11/2026
 
