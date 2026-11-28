@@ -266,3 +266,5 @@ As três migrations de segurança (`20261112010000`, `20261112020000`, `20261112
 - Teste só vira `[x]` quando o usuário confirmar que fez; senão continua aberto.
 - Tarefas críticas vão para o agente `dev-critico` (ver `.claude/rules/escolha-de-esforco.md`).
 - Todo push termina com o bloco "Próxima sessão" (ver `CLAUDE.md`).
+
+- [ ] **PR D, ressalvas leves do revisor (anotadas, não corrigidas):** (1) aluno na lixeira não vem em `staff_consent_overview`; com consentimento retirado o card não mostra "ficha guardada" nem "Consultar ficha guardada" (só apagar). (2) `src/index.css` ~linha 162: o seletor `[data-slot="dialog-close"]` não pega o X do diálogo; o X sai na impressão da ficha guardada. (3) chaves `consent.staff.status.unknown` e `consent.staff.overviewError` sem uso.
