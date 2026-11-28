@@ -1,8 +1,13 @@
 -- Teste — termo de consentimento digital e ficha de saúde
 -- (migration 20261128000000_create_consents_and_health_profiles.sql; plano
---  docs/planos/2026-11-28-perfil-e-consentimento-digital.md, PR A passo 2)
+--  docs/planos/2026-11-28-perfil-e-consentimento-digital.md, PR A passo 2;
+--  ajustado no PR B1, passo 4b: a professora só grava ficha com consentimento
+--  de saúde ativo do aluno)
 --
--- Rodar no Supabase SQL Editor DEPOIS da migration. Funciona antes e depois
+-- Rodar no Supabase SQL Editor DEPOIS das migrations 20261128000000 e
+-- 20261128010000_consent_withdrawal_and_locks.sql (sem a segunda, a seção 3
+-- falha: a professora gravaria ficha sem consentimento). Os testes da retirada
+-- ficam em docs/testes/consentimento-retirada-teste.sql. Funciona antes e depois
 -- da publicação da versão 1: o script cria versões de TESTE acima da maior
 -- versão existente (e tudo é desfeito no fim).
 --
@@ -95,7 +100,8 @@ BEGIN
     END LOOP;
   END LOOP;
 
-  -- Versões e aceites: a API só lê. Ficha: INSERT/UPDATE/DELETE (filtrados pela RLS).
+  -- Versões e aceites: a API só lê. Ficha: INSERT/UPDATE (filtrados pela RLS);
+  -- DELETE só pela RPC delete_health_profile (migration 20261128010000).
   FOREACH v_tbl IN ARRAY ARRAY['consent_versions', 'consent_acceptances'] LOOP
     FOREACH v_priv IN ARRAY ARRAY['INSERT', 'UPDATE', 'DELETE'] LOOP
       IF has_table_privilege('authenticated', 'public.' || v_tbl, v_priv) THEN
@@ -104,12 +110,14 @@ BEGIN
     END LOOP;
   END LOOP;
   IF NOT has_table_privilege('authenticated', 'public.student_health_profiles', 'INSERT')
-     OR NOT has_table_privilege('authenticated', 'public.student_health_profiles', 'UPDATE')
-     OR NOT has_table_privilege('authenticated', 'public.student_health_profiles', 'DELETE') THEN
-    RAISE EXCEPTION 'FALHOU: authenticated sem INSERT/UPDATE/DELETE em student_health_profiles';
+     OR NOT has_table_privilege('authenticated', 'public.student_health_profiles', 'UPDATE') THEN
+    RAISE EXCEPTION 'FALHOU: authenticated sem INSERT/UPDATE em student_health_profiles';
+  END IF;
+  IF has_table_privilege('authenticated', 'public.student_health_profiles', 'DELETE') THEN
+    RAISE EXCEPTION 'FALHOU: authenticated tem DELETE em student_health_profiles (só pela RPC delete_health_profile)';
   END IF;
 
-  -- Policies: versões 1 (SELECT), aceites 1 (SELECT), ficha 4 (SELECT, INSERT, UPDATE, DELETE).
+  -- Policies: versões 1 (SELECT), aceites 1 (SELECT), ficha 3 (SELECT, INSERT, UPDATE).
   SELECT count(*) INTO n FROM pg_policies WHERE schemaname = 'public' AND tablename = 'consent_versions';
   IF n <> 1 OR EXISTS (SELECT 1 FROM pg_policies WHERE schemaname = 'public' AND tablename = 'consent_versions' AND cmd <> 'SELECT') THEN
     RAISE EXCEPTION 'FALHOU: consent_versions tem % policies (esperado 1, só SELECT)', n;
@@ -120,8 +128,8 @@ BEGIN
   END IF;
   IF (SELECT array_agg(cmd::text ORDER BY cmd) FROM pg_policies
       WHERE schemaname = 'public' AND tablename = 'student_health_profiles')
-     IS DISTINCT FROM ARRAY['DELETE', 'INSERT', 'SELECT', 'UPDATE'] THEN
-    RAISE EXCEPTION 'FALHOU: student_health_profiles não tem exatamente as policies SELECT/INSERT/UPDATE/DELETE';
+     IS DISTINCT FROM ARRAY['INSERT', 'SELECT', 'UPDATE'] THEN
+    RAISE EXCEPTION 'FALHOU: student_health_profiles não tem exatamente as policies SELECT/INSERT/UPDATE';
   END IF;
   IF EXISTS (SELECT 1 FROM pg_policies WHERE schemaname = 'public'
              AND tablename IN ('consent_versions', 'consent_acceptances', 'student_health_profiles')
@@ -374,10 +382,11 @@ BEGIN
   EXCEPTION WHEN others THEN e := SQLSTATE; END;
   IF e IS DISTINCT FROM '42501' THEN RAISE EXCEPTION 'FALHOU: aluno A trocou o student_id da própria ficha'; END IF;
 
-  -- Não apaga a própria ficha (sem policy de DELETE para aluno: 0 linhas).
-  DELETE FROM public.student_health_profiles WHERE student_id = a;
-  GET DIAGNOSTICS n = ROW_COUNT;
-  IF n <> 0 THEN RAISE EXCEPTION 'FALHOU: aluno apagou a própria ficha'; END IF;
+  -- Não apaga a própria ficha (sem DELETE pela API).
+  e := NULL;
+  BEGIN DELETE FROM public.student_health_profiles WHERE student_id = a;
+  EXCEPTION WHEN others THEN e := SQLSTATE; END;
+  IF e IS DISTINCT FROM '42501' THEN RAISE EXCEPTION 'FALHOU: DELETE do aluno na própria ficha (esperado 42501, veio %)', coalesce(e, 'sucesso'); END IF;
 END $$;
 
 -- ════════════════════════════════════════════════════════════════════════════
@@ -404,9 +413,10 @@ BEGIN
   UPDATE public.student_health_profiles SET main_goal = 'alterado por B' WHERE student_id = a;
   GET DIAGNOSTICS n = ROW_COUNT;
   IF n <> 0 THEN RAISE EXCEPTION 'FALHOU: aluno B alterou a ficha do aluno A'; END IF;
-  DELETE FROM public.student_health_profiles WHERE student_id = a;
-  GET DIAGNOSTICS n = ROW_COUNT;
-  IF n <> 0 THEN RAISE EXCEPTION 'FALHOU: aluno B apagou a ficha do aluno A'; END IF;
+  e := NULL;
+  BEGIN DELETE FROM public.student_health_profiles WHERE student_id = a;
+  EXCEPTION WHEN others THEN e := SQLSTATE; END;
+  IF e IS DISTINCT FROM '42501' THEN RAISE EXCEPTION 'FALHOU: DELETE do aluno B na ficha do aluno A (esperado 42501, veio %)', coalesce(e, 'sucesso'); END IF;
 
   -- Versões publicadas: todo logado lê.
   SELECT count(*) INTO n FROM public.consent_versions
@@ -436,6 +446,7 @@ DECLARE
   t uuid := current_setting('josi.professora')::uuid;
   v_old uuid := current_setting('josi.v_old')::uuid;
   v_cur uuid := current_setting('josi.v_cur')::uuid;
+  v_health uuid := current_setting('josi.v_health')::uuid;
   v_today date := (now() AT TIME ZONE 'America/Montreal')::date;
   v_id uuid;
   v_row record;
@@ -553,7 +564,18 @@ BEGIN
   EXCEPTION WHEN others THEN e := SQLSTATE; END;
   IF e IS DISTINCT FROM '42501' THEN RAISE EXCEPTION 'FALHOU: professora fez DELETE direto em consent_acceptances'; END IF;
 
-  -- Professora grava ficha do B (mesmo sem consentimento de saúde do aluno) e edita a do A.
+  -- Sem consentimento de saúde do B, a professora também não grava a ficha dele.
+  e := NULL;
+  BEGIN
+    INSERT INTO public.student_health_profiles (student_id, emergency_contact_name, pregnant, pregnancy_weeks)
+    VALUES (b, 'Contato B', true, 12);
+  EXCEPTION WHEN others THEN e := SQLSTATE; END;
+  IF e IS DISTINCT FROM '42501' THEN
+    RAISE EXCEPTION 'FALHOU: professora gravou ficha do aluno B sem consentimento de saúde (veio %)', coalesce(e, 'sucesso');
+  END IF;
+
+  -- Registra o consentimento de saúde do B em papel e aí grava a ficha; edita a do A.
+  PERFORM public.register_paper_consent(b, v_health, v_today, 'Aluno Teste B');
   INSERT INTO public.student_health_profiles (student_id, emergency_contact_name, pregnant, pregnancy_weeks)
   VALUES (b, 'Contato B', true, 12);
   SELECT * INTO v_row FROM public.student_health_profiles WHERE student_id = b;
@@ -567,10 +589,9 @@ BEGIN
     RAISE EXCEPTION 'FALHOU: edição da professora na ficha do A errada (ou o aluno B alterou a ficha)';
   END IF;
 
-  -- Professora apaga a ficha do A.
-  DELETE FROM public.student_health_profiles WHERE student_id = a;
-  GET DIAGNOSTICS n = ROW_COUNT;
-  IF n <> 1 THEN RAISE EXCEPTION 'FALHOU: professora não apagou a ficha do aluno A'; END IF;
+  -- Professora apaga a ficha do A (pela RPC: único caminho).
+  n := public.delete_health_profile(a);
+  IF n <> 1 THEN RAISE EXCEPTION 'FALHOU: professora não apagou a ficha do aluno A pela delete_health_profile'; END IF;
 END $$;
 
 -- ════════════════════════════════════════════════════════════════════════════
@@ -586,7 +607,7 @@ DECLARE
   b uuid := current_setting('josi.aluno_b')::uuid;
   n int;
 BEGIN
-  -- Pendente: termo atual (o papel era da versão antiga) e saúde.
+  -- Pendente: termo atual (o papel era da versão antiga). Saúde: consentida em papel.
   SELECT count(*) INTO n FROM public.my_pending_consents()
   WHERE kind = 'class_policies' AND version_id = current_setting('josi.v_cur')::uuid;
   IF n <> 1 THEN RAISE EXCEPTION 'FALHOU: aluno B com versão antiga não tem o termo atual pendente'; END IF;
@@ -597,15 +618,15 @@ BEGIN
     AND ip IS NULL AND user_agent IS NULL AND language = 'en' AND method = 'digital';
   IF n <> 1 THEN RAISE EXCEPTION 'FALHOU: aceite sem cabeçalhos gravado errado'; END IF;
 
-  -- Vê os próprios aceites (papel + digital) e a ficha que a professora fez.
+  -- Vê os próprios aceites (2 papéis + digital) e a ficha que a professora fez.
   SELECT count(*) INTO n FROM public.consent_acceptances WHERE student_id = b;
-  IF n <> 2 THEN RAISE EXCEPTION 'FALHOU: aluno B não vê os próprios aceites (% de 2)', n; END IF;
+  IF n <> 3 THEN RAISE EXCEPTION 'FALHOU: aluno B não vê os próprios aceites (% de 3)', n; END IF;
   SELECT count(*) INTO n FROM public.student_health_profiles WHERE student_id = b;
   IF n <> 1 THEN RAISE EXCEPTION 'FALHOU: aluno B não vê a própria ficha'; END IF;
-  -- Sem consentimento de saúde: não edita a ficha (feita pela professora).
+  -- Com o consentimento de saúde em papel: edita a ficha (feita pela professora).
   UPDATE public.student_health_profiles SET main_goal = 'x' WHERE student_id = b;
   GET DIAGNOSTICS n = ROW_COUNT;
-  IF n <> 0 THEN RAISE EXCEPTION 'FALHOU: aluno B sem consentimento de saúde editou a ficha'; END IF;
+  IF n <> 1 THEN RAISE EXCEPTION 'FALHOU: aluno B com consentimento de saúde em papel não editou a própria ficha'; END IF;
 END $$;
 
 -- ════════════════════════════════════════════════════════════════════════════
@@ -621,7 +642,7 @@ DECLARE
   v_row record;
 BEGIN
   SELECT * INTO v_row FROM public.staff_consent_overview() WHERE student_id = current_setting('josi.aluno_b')::uuid;
-  IF v_row.policies_status <> 'current' OR v_row.health_consent OR NOT v_row.health_profile THEN
+  IF v_row.policies_status <> 'current' OR NOT v_row.health_consent OR NOT v_row.health_profile THEN
     RAISE EXCEPTION 'FALHOU: staff_consent_overview do aluno B depois do aceite errado (%)', to_jsonb(v_row);
   END IF;
 END $$;
@@ -686,7 +707,7 @@ DECLARE
 BEGIN
   SELECT count(*) INTO n FROM public.consent_acceptances
   WHERE student_id IN (current_setting('josi.aluno')::uuid, current_setting('josi.aluno_b')::uuid);
-  IF n <> 4 THEN RAISE EXCEPTION 'FALHOU: service_role não lê consent_acceptances (% de 4)', n; END IF;
+  IF n <> 5 THEN RAISE EXCEPTION 'FALHOU: service_role não lê consent_acceptances (% de 5)', n; END IF;
   SELECT count(*) INTO n FROM public.student_health_profiles WHERE student_id = current_setting('josi.aluno_b')::uuid;
   IF n <> 1 THEN RAISE EXCEPTION 'FALHOU: service_role não lê student_health_profiles'; END IF;
   SELECT count(*) INTO n FROM public.consent_versions WHERE id = current_setting('josi.v_cur')::uuid;
