@@ -252,7 +252,7 @@ Regras (revistas em 2026-11-28: a associação/seguradora da Josi exige guardar 
 
 ---
 
-## PR E (opcional, se o dono aprovar a decisão 8) — Backup criptografado · [OPUS] · revisor: sim
+## PR E (opcional, se o dono aprovar a decisão 8) — Backup criptografado · [OPUS] · revisor: sim ✅
 - `.github/workflows/backup.yml`: criptografar o zip com senha em segredo novo do GitHub (`BACKUP_PASSPHRASE`, criado pelo dono) antes do upload; documentar em `docs/` como abrir. Fazer **antes do lançamento**.
 
 ## Lançamento (depois do SQL 4a e dos merges de A, B1, C, D e B2)
