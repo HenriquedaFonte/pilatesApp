@@ -1836,6 +1836,42 @@
       "version_locked": "Esta versão do texto não pode ser alterada.",
       "invalid_reason": "Motivo inválido.",
       "invalid_weeks": "As semanas de gestação devem ser um número inteiro de 1 a 42."
+    },
+    "staff": {
+      "title": "Termo e ficha de saúde",
+      "policiesLabel": "Termo das aulas",
+      "status": {
+        "current": "Aceito",
+        "outdated": "Versão antiga",
+        "none": "Pendente",
+        "unknown": "Sem informação"
+      },
+      "healthLabel": "Consentimento de saúde",
+      "activeSince": "Ativo desde {{date}}",
+      "history": "Histórico de aceites",
+      "typedName": "Nome digitado: {{name}}",
+      "signer": "Assinado por: {{name}}",
+      "guardian": "Responsável: {{name}}",
+      "signedOn": "Assinado em {{date}}",
+      "details": "Detalhes",
+      "hideDetails": "Ocultar detalhes",
+      "ip": "IP: {{ip}}",
+      "userAgent": "Navegador: {{agent}}",
+      "registerPaper": "Registrar em papel",
+      "paperTitle": "Registrar termo assinado em papel",
+      "paperKind": "Tipo",
+      "paperNoVersion": "Ainda não há versão publicada deste tipo.",
+      "paperSignedOn": "Data da assinatura",
+      "paperSigner": "Nome de quem assinou",
+      "paperGuardian": "Responsável (opcional)",
+      "paperSuccess": "Registro em papel salvo.",
+      "save": "Registrar",
+      "cancel": "Cancelar",
+      "confirm": "Confirmar",
+      "close": "Fechar",
+      "withdrawSuccess": "Retirada registrada.",
+      "overviewError": "Não foi possível carregar o status do termo.",
+      "print": "Imprimir"
     }
   },
   "healthProfile": {
@@ -1893,6 +1929,18 @@
       "pregnant": "Gestante (informado em {{date}})",
       "cardiac": "Coração ou pressão",
       "surgeries": "Cirurgias"
-    }
+    },
+    "edit": "Editar",
+    "stopEdit": "Fechar edição",
+    "updatedByStudent": "Atualizada pelo aluno em {{date}}",
+    "updatedByStaff": "Atualizada pela Josi em {{date}}",
+    "notFilled": "Ficha ainda não preenchida.",
+    "retainedNotFound": "Nenhuma ficha guardada encontrada.",
+    "viewRetainedAction": "Consultar",
+    "delete": "Apagar ficha de saúde",
+    "deleteTitle": "Apagar a ficha de saúde?",
+    "deleteTypeHint": "Digite {{phrase}} para confirmar",
+    "deleteSuccess": "Ficha de saúde apagada.",
+    "deleting": "Apagando..."
   }
 }

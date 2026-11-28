@@ -1847,6 +1847,42 @@
       "version_locked": "Cette version du texte ne peut pas être modifiée.",
       "invalid_reason": "Motif invalide.",
       "invalid_weeks": "Les semaines de grossesse doivent être un nombre entier de 1 à 42."
+    },
+    "staff": {
+      "title": "Entente et fiche santé",
+      "policiesLabel": "Entente des cours",
+      "status": {
+        "current": "Acceptée",
+        "outdated": "Ancienne version",
+        "none": "En attente",
+        "unknown": "Aucune information"
+      },
+      "healthLabel": "Consentement santé",
+      "activeSince": "Actif depuis le {{date}}",
+      "history": "Historique des acceptations",
+      "typedName": "Nom écrit : {{name}}",
+      "signer": "Signé par : {{name}}",
+      "guardian": "Répondant : {{name}}",
+      "signedOn": "Signé le {{date}}",
+      "details": "Détails",
+      "hideDetails": "Masquer les détails",
+      "ip": "IP : {{ip}}",
+      "userAgent": "Navigateur : {{agent}}",
+      "registerPaper": "Consigner sur papier",
+      "paperTitle": "Consigner un formulaire signé sur papier",
+      "paperKind": "Type",
+      "paperNoVersion": "Aucune version de ce type n'a encore été publiée.",
+      "paperSignedOn": "Date de signature",
+      "paperSigner": "Nom du signataire",
+      "paperGuardian": "Répondant (facultatif)",
+      "paperSuccess": "Formulaire papier consigné.",
+      "save": "Consigner",
+      "cancel": "Annuler",
+      "confirm": "Confirmer",
+      "close": "Fermer",
+      "withdrawSuccess": "Retrait consigné.",
+      "overviewError": "Impossible de charger le statut de l'entente.",
+      "print": "Imprimer"
     }
   },
   "healthProfile": {
@@ -1904,6 +1940,18 @@
       "pregnant": "Enceinte (déclaré le {{date}})",
       "cardiac": "Cœur ou pression",
       "surgeries": "Chirurgies"
-    }
+    },
+    "edit": "Modifier",
+    "stopEdit": "Terminer la modification",
+    "updatedByStudent": "Mise à jour par l'élève le {{date}}",
+    "updatedByStaff": "Mise à jour par Josi le {{date}}",
+    "notFilled": "Fiche pas encore remplie.",
+    "retainedNotFound": "Aucune fiche conservée trouvée.",
+    "viewRetainedAction": "Consulter",
+    "delete": "Supprimer la fiche santé",
+    "deleteTitle": "Supprimer la fiche santé?",
+    "deleteTypeHint": "Tapez {{phrase}} pour confirmer",
+    "deleteSuccess": "Fiche santé supprimée.",
+    "deleting": "Suppression..."
   }
 }

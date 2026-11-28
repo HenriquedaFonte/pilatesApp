@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -22,6 +22,9 @@ import {
 // Ficha de saúde (tabela student_health_profiles). Todas as perguntas são opcionais.
 // Grava só com consentimento de saúde ativo (a RLS recusa sem ele).
 // readOnly: só mostra (ficha guardada depois da retirada do consentimento).
+// initialProfile: ficha já lida (ex.: RPC da ficha guardada); não busca de novo.
+// onLoaded(row): avisa quem usa (chips de alerta da professora).
+// authorStudentId: mostra "atualizada pelo aluno / pela Josi" (ficha da professora).
 
 const EMPTY = {
   occupation: '',
@@ -48,7 +51,7 @@ const fromRow = row => ({
   pregnancy_weeks: row.pregnancy_weeks ?? '',
 })
 
-const HealthProfileForm = ({ studentId, readOnly = false, onSaved }) => {
+const HealthProfileForm = ({ studentId, readOnly = false, onSaved, initialProfile, onLoaded, authorStudentId }) => {
   const { t } = useTranslation()
   const [data, setData] = useState(EMPTY)
   const [saved, setSaved] = useState(null)
@@ -56,9 +59,17 @@ const HealthProfileForm = ({ studentId, readOnly = false, onSaved }) => {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const onLoadedRef = useRef(onLoaded)
+  onLoadedRef.current = onLoaded
 
   useEffect(() => {
     if (!studentId) return
+    if (initialProfile !== undefined) {
+      setSaved(initialProfile)
+      setData(initialProfile ? fromRow(initialProfile) : EMPTY)
+      setLoading(false)
+      return
+    }
     let cancelled = false
     ;(async () => {
       setLoading(true)
@@ -68,6 +79,7 @@ const HealthProfileForm = ({ studentId, readOnly = false, onSaved }) => {
         if (cancelled) return
         setSaved(row)
         setData(row ? fromRow(row) : EMPTY)
+        onLoadedRef.current?.(row)
       } catch (err) {
         if (!cancelled) setError(consentErrorKey(err))
       } finally {
@@ -77,7 +89,7 @@ const HealthProfileForm = ({ studentId, readOnly = false, onSaved }) => {
     return () => {
       cancelled = true
     }
-  }, [studentId])
+  }, [studentId, initialProfile])
 
   const set = (field, value) => setData(prev => ({ ...prev, [field]: value }))
   const toggleCondition = (code, on) =>
@@ -253,7 +265,14 @@ const HealthProfileForm = ({ studentId, readOnly = false, onSaved }) => {
 
       {saved?.updated_at && (
         <p className="text-xs text-muted-foreground">
-          {t('healthProfile.updatedAt', { date: formatAcceptance(saved.updated_at) })}
+          {authorStudentId
+            ? t(
+                saved.updated_by === authorStudentId
+                  ? 'healthProfile.updatedByStudent'
+                  : 'healthProfile.updatedByStaff',
+                { date: formatAcceptance(saved.updated_at) }
+              )
+            : t('healthProfile.updatedAt', { date: formatAcceptance(saved.updated_at) })}
         </p>
       )}
 
