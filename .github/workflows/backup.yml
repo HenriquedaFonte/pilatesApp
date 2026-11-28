@@ -14,6 +14,16 @@ jobs:
     timeout-minutes: 10
 
     steps:
+      # Sem senha não há backup: nada é exportado nem enviado em claro.
+      - name: Conferir senha do backup
+        env:
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          if [ -z "${BACKUP_PASSPHRASE:-}" ]; then
+            echo "::error::O segredo BACKUP_PASSPHRASE está vazio ou não existe. Crie em Settings → Secrets and variables → Actions (ver docs/BACKUP-CRIPTOGRAFADO.md). Backup cancelado: nada foi exportado."
+            exit 1
+          fi
+
       - name: Checkout do repositório
         uses: actions/checkout@v4
 
@@ -28,15 +38,37 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: node scripts/backup.js
 
-      - name: Compactar backup
+      # Compacta, criptografa (AES-256, senha do segredo) e apaga tudo que está em claro.
+      # A senha entra pelo stdin (printf é comando interno do bash: não aparece na
+      # lista de processos nem no log).
+      - name: Compactar e criptografar backup
+        env:
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
         run: |
+          set -euo pipefail
+          if [ -z "${BACKUP_PASSPHRASE:-}" ]; then
+            echo "::error::O segredo BACKUP_PASSPHRASE está vazio. Backup não enviado."
+            rm -rf backups/
+            exit 1
+          fi
           TIMESTAMP=$(ls backups/ | sort | tail -1)
-          cd backups
-          zip -r "../backup-${TIMESTAMP}.zip" "${TIMESTAMP}/"
-          echo "BACKUP_FILE=backup-${TIMESTAMP}.zip" >> $GITHUB_ENV
-          echo "BACKUP_TIMESTAMP=${TIMESTAMP}" >> $GITHUB_ENV
+          ZIP_FILE="backup-${TIMESTAMP}.zip"
+          (cd backups && zip -rq "../${ZIP_FILE}" "${TIMESTAMP}/")
+          printf '%s' "${BACKUP_PASSPHRASE}" | gpg --batch --yes --quiet \
+            --pinentry-mode loopback --passphrase-fd 0 --no-symkey-cache \
+            --symmetric --cipher-algo AES256 \
+            --s2k-mode 3 --s2k-digest-algo SHA512 --s2k-count 65011712 \
+            --output "${ZIP_FILE}.gpg" "${ZIP_FILE}"
+          rm -f "${ZIP_FILE}"
+          rm -rf backups/
+          if [ ! -s "${ZIP_FILE}.gpg" ]; then
+            echo "::error::A criptografia não gerou o arquivo ${ZIP_FILE}.gpg."
+            exit 1
+          fi
+          echo "BACKUP_FILE=${ZIP_FILE}.gpg" >> "$GITHUB_ENV"
+          echo "BACKUP_TIMESTAMP=${TIMESTAMP}" >> "$GITHUB_ENV"
 
-      - name: Salvar backup como artefato (90 dias)
+      - name: Salvar backup criptografado como artefato (90 dias)
         uses: actions/upload-artifact@v4
         with:
           name: backup-${{ env.BACKUP_TIMESTAMP }}
@@ -46,9 +78,10 @@ jobs:
 
       - name: Resumo do backup
         run: |
-          echo "### ✅ Backup concluído" >> $GITHUB_STEP_SUMMARY
+          echo "### ✅ Backup concluído (criptografado)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Arquivo:** \`${{ env.BACKUP_FILE }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Arquivo:** \`${{ env.BACKUP_FILE }}\` (criptografado com AES-256, senha do segredo BACKUP_PASSPHRASE)" >> $GITHUB_STEP_SUMMARY
           echo "**Retenção:** 90 dias" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Para baixar: Actions → Este workflow → Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "Para abrir: \`gpg -d ${{ env.BACKUP_FILE }} > backup.zip\` (ver docs/BACKUP-CRIPTOGRAFADO.md)" >> $GITHUB_STEP_SUMMARY
