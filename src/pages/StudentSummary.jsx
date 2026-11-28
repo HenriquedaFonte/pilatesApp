@@ -57,6 +57,7 @@ import {
 } from 'lucide-react'
 import TeacherLayout from '../components/TeacherLayout'
 import InsuranceFields from '../components/InsuranceFields'
+import StudentConsentCard from '../components/StudentConsentCard'
 import IssueReceiptDialog from '../components/IssueReceiptDialog'
 import ReceiptsList from '../components/ReceiptsList'
 import OnlinePlanCard from '../components/OnlinePlanCard'
@@ -495,6 +496,11 @@ const StudentSummary = () => {
         {/* Seguro saúde do aluno (editável pela professora) */}
         {profile?.role === 'teacher' && studentId && (
           <InsuranceFields studentId={studentId} className="mb-6" />
+        )}
+
+        {/* Termo e ficha de saúde (plano 2026-11-28-perfil-e-consentimento-digital, PR D) */}
+        {profile?.role === 'teacher' && studentId && (
+          <StudentConsentCard studentId={studentId} className="mb-6" />
         )}
 
         {/* Aulas online: modalidade e pagamentos (plano 2026-11-23-online-modalidades) */}
