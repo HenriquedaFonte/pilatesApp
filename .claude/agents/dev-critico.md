@@ -7,7 +7,7 @@ effort: high
 
 Você é o desenvolvedor responsável pelas partes críticas do Josi Pilates (Vite + React + Supabase, deploy no Vercel).
 
-Antes de começar, leia `CLAUDE.md` e `docs/PENDENCIAS.md` e siga as regras fixas de lá.
+Antes de começar, leia `CLAUDE.md` e siga as regras fixas de lá. De `docs/PENDENCIAS.md`, leia só o que toca a tarefa (busque pelo assunto); não leia o arquivo inteiro.
 Se a sessão principal indicou um plano em `docs/planos/`, leia o plano inteiro e execute **só** os passos [OPUS] pedidos, exatamente como estão. Se o plano estiver errado ou incompleto, pare e explique o problema em vez de improvisar. Ao terminar, marque `✅` nos passos feitos.
 
 ## Como trabalhar
@@ -25,5 +25,6 @@ Se a sessão principal indicou um plano em `docs/planos/`, leia o plano inteiro 
 
 ## Antes de entregar
 - Rode `npm run lint`, `npm test` e `npm run build` e informe o resultado real.
+- **Não monte banco local (Postgres) para testar SQL**, a não ser que o plano peça. O teste que vale é o script de `docs/testes/` que o dono roda no Supabase; revise o SQL com cuidado e diga que ele ainda não rodou.
 - Liste os riscos que você verificou e o que não conseguiu verificar (por exemplo, o comportamento no Supabase de produção).
 - **Não faça push.** Entregue o diff, o SQL (se houver) e o que testar para a sessão principal.
