@@ -25,6 +25,7 @@ import { Loader2, ArrowLeft, User, Phone, Globe, Mail, Lock, Cake } from 'lucide
 import Logo from '../components/Logo'
 import { ThemeToggle } from '../components/ThemeToggle'
 import InsuranceFields from '../components/InsuranceFields'
+import StudentHealthTerms from '../components/StudentHealthTerms'
 import {
   DATE_OF_BIRTH_MIN,
   formatDateOfBirth,
@@ -246,9 +247,10 @@ const StudentProfile = () => {
         )}
 
         <Tabs defaultValue="personal" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="personal">{t('profile.personalInfo')}</TabsTrigger>
-            <TabsTrigger value="security">{t('profile.security')}</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3 h-auto">
+            <TabsTrigger value="personal" className="whitespace-normal text-xs sm:text-sm leading-tight">{t('profile.personalInfo')}</TabsTrigger>
+            <TabsTrigger value="health" className="whitespace-normal text-xs sm:text-sm leading-tight">{t('consent.healthTab')}</TabsTrigger>
+            <TabsTrigger value="security" className="whitespace-normal text-xs sm:text-sm leading-tight">{t('profile.security')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="personal">
@@ -404,6 +406,12 @@ const StudentProfile = () => {
             </AlertDialog>
 
             {user?.id && <InsuranceFields studentId={user.id} className="mt-6" />}
+          </TabsContent>
+
+          <TabsContent value="health">
+            {user?.id && (
+              <StudentHealthTerms studentId={user.id} language={profileData.preferred_language} />
+            )}
           </TabsContent>
 
           <TabsContent value="security">

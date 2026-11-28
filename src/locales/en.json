@@ -1712,5 +1712,113 @@
     "membership": {
       "saved": "Plan status updated."
     }
+  },
+  "consent": {
+    "title": "Class agreement",
+    "checkRisks": "I have read and accept the risks and responsibilities",
+    "checkCancellation": "I have read and accept the cancellation policy",
+    "typedName": "Type your full name",
+    "accept": "I accept",
+    "healthConsent": "I allow the studio to keep my health information to adapt my classes",
+    "later": "Do it later",
+    "pendingBadge": "Agreement pending",
+    "withdraw": "Record withdrawal",
+    "withdrawConfirm": "Record that the student withdrew health consent? The profile will no longer be used for classes, no one can change it, and it is kept read-only for the period required by the insurance.",
+    "withdrawHowTo": "To withdraw this consent, just ask Josi.",
+    "withdrawnOn": "Consent withdrawn on {{date}}",
+    "noHealthConsent": "No health consent",
+    "versionLabel": "Version {{version}}",
+    "frenchPrevails": "If the versions differ, the French version prevails.",
+    "stepLabel": "Step {{current}} of {{total}}",
+    "profileNameHint": "Name on your profile: {{name}}",
+    "authorize": "Authorize",
+    "authorizeAgain": "Authorize again",
+    "continueToPanel": "Go to dashboard",
+    "healthTab": "Health and agreements",
+    "fillHealthProfile": "Fill in the health profile",
+    "acceptedTitle": "Accepted agreements",
+    "acceptedNone": "No agreement accepted yet.",
+    "kind": {
+      "class_policies": "Class agreement",
+      "health_data": "Health consent"
+    },
+    "method": {
+      "digital": "Online",
+      "paper": "On paper"
+    },
+    "viewText": "View text",
+    "hideText": "Hide text",
+    "errors": {
+      "generic": "Could not complete. Please try again.",
+      "not_allowed": "You do not have permission for this action.",
+      "invalid_language": "Invalid language.",
+      "version_not_found": "Text version not found.",
+      "version_outdated": "The text was updated. Reload the page and read the new version.",
+      "invalid_name": "Type your full name (2 to 200 characters).",
+      "invalid_student": "Invalid student.",
+      "invalid_date": "Invalid date.",
+      "already_accepted": "This text was already accepted.",
+      "immutable": "This record cannot be changed.",
+      "version_locked": "This text version cannot be changed.",
+      "invalid_reason": "Invalid reason.",
+      "invalid_weeks": "Weeks of pregnancy must be a whole number from 1 to 42."
+    }
+  },
+  "healthProfile": {
+    "title": "Health profile",
+    "banner": "Complete your health profile",
+    "bannerAction": "Complete",
+    "retainedNote": "Profile kept, read-only, for the period required by the studio's insurance.",
+    "retainedBadge": "Consent withdrawn on {{date}} · profile kept, read-only",
+    "viewRetained": "View kept profile",
+    "reasonPrompt": "Reason for viewing (it is logged)",
+    "reason": {
+      "insurance": "Insurance",
+      "legal": "Legal obligation",
+      "student_request": "Student request"
+    },
+    "deleteRetentionWarning": "Only delete after the retention period required by the insurance.",
+    "loading": "Loading...",
+    "saving": "Saving...",
+    "save": "Save profile",
+    "saveSuccess": "Health profile saved.",
+    "updatedAt": "Updated on {{date}}",
+    "emergencyHint": "We recommend filling in the emergency contact. All questions are optional.",
+    "conditionsTitle": "Do you have, or have you ever had:",
+    "fields": {
+      "occupation": "Occupation",
+      "emergency_contact_name": "Emergency contact (name)",
+      "emergency_contact_phone": "Emergency contact (phone)",
+      "main_goal": "Main complaint or goal",
+      "conditions_details": "Explain if you wish (including heart or blood pressure medication)",
+      "medications": "Current medications",
+      "current_treatment": "Current health treatment",
+      "surgeries": "Surgeries (when and which)",
+      "physical_activities": "Physical activities (duration and frequency)",
+      "sleep_quality": "Sleep",
+      "diet_quality": "Diet",
+      "pregnant": "I am pregnant",
+      "pregnancy_weeks": "Weeks of pregnancy"
+    },
+    "conditions": {
+      "cardiac_hypertension": "Heart disease or hypertension",
+      "respiratory": "Breathing problems (asthma, rhinitis)",
+      "digestive": "Digestive problems",
+      "back_neck_shoulder": "Back, neck or shoulder pain",
+      "hip_knee_foot": "Hip, knee or foot pain",
+      "frequent_headache": "Frequent headaches"
+    },
+    "quality": {
+      "excellent": "Excellent",
+      "good": "Good",
+      "fair": "Fair",
+      "poor": "Poor"
+    },
+    "alerts": {
+      "pregnantWeeks": "Pregnant: {{weeks}} weeks (reported on {{date}})",
+      "pregnant": "Pregnant (reported on {{date}})",
+      "cardiac": "Heart or blood pressure",
+      "surgeries": "Surgeries"
+    }
   }
 }

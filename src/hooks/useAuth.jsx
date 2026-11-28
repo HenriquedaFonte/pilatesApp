@@ -1,6 +1,7 @@
-import { createContext, useContext, useEffect, useState, useRef } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { fetchMyPendingConsents } from '../lib/consents'
 
 const AuthContext = createContext({})
 
@@ -20,6 +21,46 @@ export const AuthProvider = ({ children }) => {
 
   // Lock de concorrência de inicialização de perfil
   const profileFetchLock = useRef(new Map())
+
+  // Termos pendentes do aluno (my_pending_consents). forId = perfil para o
+  // qual a lista foi carregada; enquanto for outro, está carregando. Erro de
+  // rede não bloqueia: vira lista vazia.
+  const [consents, setConsents] = useState({ forId: null, list: [] })
+  const consentsRequest = useRef(0)
+
+  const loadConsents = useCallback(async profileId => {
+    const request = ++consentsRequest.current
+    let list = []
+    try {
+      list = await fetchMyPendingConsents()
+    } catch (error) {
+      if (import.meta.env.DEV) {
+        console.warn('Pending consents check failed:', error?.message)
+      }
+      list = []
+    }
+    if (request === consentsRequest.current) {
+      setConsents({ forId: profileId, list })
+    }
+    return list
+  }, [])
+
+  const profileId = profile?.id ?? null
+  const profileRole = profile?.role ?? null
+
+  useEffect(() => {
+    if (profileId && profileRole === 'student') {
+      loadConsents(profileId)
+    } else {
+      consentsRequest.current++
+      setConsents({ forId: null, list: [] })
+    }
+  }, [profileId, profileRole, loadConsents])
+
+  const refreshConsents = useCallback(
+    () => (profileId && profileRole === 'student' ? loadConsents(profileId) : Promise.resolve([])),
+    [profileId, profileRole, loadConsents]
+  )
 
   useEffect(() => {
     const handleSession = async session => {
@@ -321,6 +362,11 @@ export const AuthProvider = ({ children }) => {
     isTeacher: profile?.role === 'teacher',
     isStudent: profile?.role === 'student',
     isProfileComplete: profile?.full_name != null && profile?.full_name !== '',
+    // Só para aluno; para professora: [] e false.
+    pendingConsents:
+      profileRole === 'student' && consents.forId === profileId ? consents.list : [],
+    consentsLoading: profileRole === 'student' && consents.forId !== profileId,
+    refreshConsents,
     supabase
   }
 

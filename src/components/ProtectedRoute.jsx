@@ -1,15 +1,25 @@
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 
-const ProtectedRoute = ({ children, requireRole = null, requireCompleteProfile = false }) => {
-  const { user, profile, loading, isProfileComplete } = useAuth()
+const Spinner = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+  </div>
+)
+
+// requireConsent: aluno com o termo das aulas (class_policies) pendente vai
+// para o assistente /student/consent. Professora nunca é bloqueada. Erro de
+// rede na checagem não bloqueia (useAuth devolve lista vazia).
+const ProtectedRoute = ({
+  children,
+  requireRole = null,
+  requireCompleteProfile = false,
+  requireConsent = false
+}) => {
+  const { user, profile, loading, isProfileComplete, pendingConsents, consentsLoading } = useAuth()
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-      </div>
-    )
+    return <Spinner />
   }
 
   if (!user) {
@@ -30,8 +40,16 @@ const ProtectedRoute = ({ children, requireRole = null, requireCompleteProfile =
     }
   }
 
+  if (requireConsent && profile?.role === 'student') {
+    if (consentsLoading) {
+      return <Spinner />
+    }
+    if ((pendingConsents || []).some(c => c.kind === 'class_policies')) {
+      return <Navigate to="/student/consent" replace />
+    }
+  }
+
   return children
 }
 
 export default ProtectedRoute
-
