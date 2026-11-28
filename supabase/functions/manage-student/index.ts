@@ -86,52 +86,117 @@ serve(async (req) => {
       return data
     }
 
-    // ── Action: soft-delete (default "delete" from UI) ────────────────────────
+    // ── Helper: bloqueia/desbloqueia o login (Supabase Auth) ─────────────────
+    // 876000h = o mesmo valor da migration 20261128020000 (não usar infinity).
+    // Usuário de auth inexistente: só registra e segue (mesmo critério do
+    // hard-delete).
+    async function setLoginBlocked(blocked: boolean) {
+      const { error } = await supabaseClient.auth.admin.updateUserById(
+        studentId,
+        { ban_duration: blocked ? '876000h' : 'none' }
+      )
+      if (error) {
+        const isNotFound = error.message?.toLowerCase().includes('not found') || error.status === 404
+        if (isNotFound) {
+          console.log(`Auth user not found while ${blocked ? 'blocking' : 'unblocking'} login: ${studentId}`)
+          return
+        }
+        throw new Error(`Failed to ${blocked ? 'block' : 'unblock'} student login: ${error.message}`)
+      }
+    }
+
+    // Só alunos podem ser arquivados/restaurados (sem isso, dava para
+    // bloquear o login de uma professora).
+    function notAStudentResponse() {
+      return new Response(
+        JSON.stringify({ error: 'Only students can be archived or restored', code: 'NOT_A_STUDENT' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      )
+    }
+
+    // ── Action: archive (default "delete" from UI; estado = deleted_at) ──────
     if (action === 'delete') {
-      console.log(`Starting soft delete for student: ${studentId}`)
+      console.log(`Starting archive for student: ${studentId}`)
 
       const snapshot = await fetchProfileSnapshot()
+      if (snapshot?.role !== 'student') return notAStudentResponse()
+      const wasArchived = !!snapshot.deleted_at
 
       // Audit log BEFORE any modification
       await writeAuditLog('student.soft_delete', snapshot)
 
-      // Remove from class schedules (student should not appear in active classes)
+      // 1) Bloqueia o login
+      await setLoginBlocked(true)
+
+      // 2) Arquiva: deleted_at + deleted_by (check_ins, balance_history, recibos,
+      //    termo e ficha preservados). Repetir a ação mantém a data original.
+      const { error: softErr } = await supabaseClient
+        .from('profiles')
+        .update({
+          deleted_at: snapshot.deleted_at ?? new Date().toISOString(),
+          deleted_by: snapshot.deleted_by ?? actorId,
+        })
+        .eq('id', studentId)
+      if (softErr) {
+        // Desfaz o bloqueio, a não ser que o aluno já estivesse arquivado
+        // (aí ele precisa continuar bloqueado).
+        if (!wasArchived) {
+          try {
+            await setLoginBlocked(false)
+          } catch (unbanErr) {
+            console.error(`Failed to undo login block after archive error: ${studentId}`, (unbanErr as Error)?.message)
+          }
+        }
+        throw new Error(`Failed to archive student profile: ${softErr.message}`)
+      }
+
+      // 3) Remove das turmas. Se falhar, o aluno já está arquivado e bloqueado;
+      //    repetir a ação é seguro.
       const { error: linkErr } = await supabaseClient
         .from('student_class_link')
         .delete()
         .eq('student_id', studentId)
       if (linkErr) throw new Error(`Failed to remove student class links: ${linkErr.message}`)
 
-      // Soft delete: set deleted_at + deleted_by (check_ins and balance_history preserved)
-      const { error: softErr } = await supabaseClient
-        .from('profiles')
-        .update({ deleted_at: new Date().toISOString(), deleted_by: actorId })
-        .eq('id', studentId)
-      if (softErr) throw new Error(`Failed to soft-delete student profile: ${softErr.message}`)
-
       return new Response(
-        JSON.stringify({ success: true, message: 'Student moved to trash. History preserved.' }),
+        JSON.stringify({ success: true, message: 'Student archived.' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
       )
     }
 
-    // ── Action: restore (revert soft-delete) ─────────────────────────────────
+    // ── Action: restore (sai do arquivo) ─────────────────────────────────────
     if (action === 'restore') {
-      console.log(`Restoring soft-deleted student: ${studentId}`)
+      console.log(`Restoring archived student: ${studentId}`)
 
       const snapshot = await fetchProfileSnapshot()
+      if (snapshot?.role !== 'student') return notAStudentResponse()
+      const wasArchived = !!snapshot.deleted_at
 
       // Audit log before restore
       await writeAuditLog('student.restore', snapshot)
 
+      // 1) Desbloqueia o login
+      await setLoginBlocked(false)
+
+      // 2) Sai do arquivo
       const { error: restoreErr } = await supabaseClient
         .from('profiles')
         .update({ deleted_at: null, deleted_by: null })
         .eq('id', studentId)
-      if (restoreErr) throw new Error(`Failed to restore student: ${restoreErr.message}`)
+      if (restoreErr) {
+        // Volta a bloquear, se o aluno estava arquivado.
+        if (wasArchived) {
+          try {
+            await setLoginBlocked(true)
+          } catch (banErr) {
+            console.error(`Failed to re-block login after restore error: ${studentId}`, (banErr as Error)?.message)
+          }
+        }
+        throw new Error(`Failed to restore student: ${restoreErr.message}`)
+      }
 
       return new Response(
-        JSON.stringify({ success: true, message: 'Student restored successfully.' }),
+        JSON.stringify({ success: true, message: 'Student restored.' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
       )
     }

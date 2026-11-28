@@ -666,27 +666,36 @@
         "noCredits": "No credits",
         "lowBalance": "Low balance"
       },
-      "trash": {
-        "title": "Trash",
-        "empty": "No students in trash.",
-        "deletedOn": "Deleted on",
-        "daysRemaining": "days remaining",
+      "archive": {
+        "title": "Archive",
+        "empty": "No archived students.",
+        "archive": "Archive",
+        "archivedOn": "Archived on",
+        "retention": "Records kept for at least 5 years.",
+        "view": "View",
         "restore": "Restore",
-        "deleteForever": "Delete Forever",
-        "moveToTrash": "Move to Trash"
+        "deleteForever": "Delete forever",
+        "success": "{{name}} was archived.",
+        "restored": "{{name}} was restored.",
+        "deleted": "{{name}} was permanently deleted.",
+        "archiveError": "Could not archive: {{message}}",
+        "restoreError": "Could not restore: {{message}}",
+        "deleteError": "Could not delete: {{message}}",
+        "notAStudent": "Only students can be archived."
       },
-      "deleteDialog": {
-        "title": "Move Student to Trash?",
-        "description": "Are you sure you want to move {{name}} to the trash?",
-        "warning": "The profile will become inactive, but class history and credits will be preserved.",
-        "reversible": "This action can be undone within 90 days.",
-        "confirm": "Move to Trash",
-        "moving": "Moving..."
+      "archiveDialog": {
+        "title": "Archive this student?",
+        "description": "{{name}} will leave the student list, counts, check-in and emails, and will no longer be able to sign in. History, receipts, consent and health form are kept.",
+        "reversible": "You can restore at any time in Students → Archive.",
+        "creditsWarning": "Still has {{count}} credit(s): they are kept and come back if you restore.",
+        "onlineWarning": "Has an active online plan: it is not ended and comes back as is if you restore.",
+        "confirm": "Archive",
+        "moving": "Archiving..."
       },
       "restoreDialog": {
         "title": "Restore Student?",
         "description": "Do you want to restore {{name}}?",
-        "warning": "The profile will reappear in the active students list. Classes will need to be re-enrolled manually.",
+        "warning": "The student returns to the list and can sign in again. Classes must be re-enrolled manually.",
         "confirm": "Restore"
       },
       "hardDeleteDialog": {
@@ -697,9 +706,9 @@
         "placeholder": "Type EXCLUIR PERMANENTEMENTE to confirm",
         "confirm": "Delete Permanently",
         "deleting": "Deleting...",
-        "hasReceipts": "This student has issued insurance receipts and cannot be permanently deleted. The data stays in the trash.",
+        "hasReceipts": "This student has an issued insurance receipt and cannot be permanently deleted. They stay in the Archive.",
         "hasHealthProfile": "This student has a kept health profile. Delete it (after the retention period) before permanently deleting the student.",
-        "hasConsentRecords": "This student has an accepted consent record, which the studio keeps for at least 5 years (or the period required by Québec law). Permanent deletion is not possible; keep the student archived."
+        "hasConsentRecords": "This student has an accepted consent record, which the studio keeps for at least 5 years (or the period required by Québec law). They cannot be permanently deleted and stay in the Archive."
       },
       "dialogCommon": {
         "confirm": "Confirm"
@@ -725,7 +734,8 @@
         "pending": "The email to {{name}} is still being sent. Check the Email history.",
         "error": "Could not send the email. Nothing was sent; please try again.",
         "openHistory": "View history"
-      }
+      },
+      "archivedTag": "(archived)"
     },
     "checkin": {
       "excuseBtn": "Excuse from Class",
@@ -1316,7 +1326,8 @@
         "pt": "Portuguese",
         "en": "English",
         "fr": "French"
-      }
+      },
+      "archivedBanner": "Student archived on {{date}}. Read only: to edit, restore in Students → Archive."
     }
   },
   "insurance": {
@@ -1574,6 +1585,7 @@
     "submit": "Sign in",
     "submitting": "Signing in...",
     "invalidCredentials": "Incorrect email or password.",
+    "archivedAccount": "Your account is archived. Contact the studio to reactivate it.",
     "noAccount": "Don't have an account?",
     "signup": "Sign up as a student",
     "privacy": "Privacy Policy",

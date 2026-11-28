@@ -88,6 +88,7 @@ const TeacherDashboard = () => {
         .from('profiles')
         .select('is_active, individual_credits, duo_credits, group_credits')
         .eq('role', 'student')
+        .is('deleted_at', null)
 
       if (studentsError) throw studentsError
 

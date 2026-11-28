@@ -891,27 +891,36 @@
         "noCredits": "Sans crédits",
         "lowBalance": "Solde bas"
       },
-      "trash": {
-        "title": "Corbeille",
-        "empty": "Aucun élève dans la corbeille.",
-        "deletedOn": "Supprimé le",
-        "daysRemaining": "jours restants",
+      "archive": {
+        "title": "Archives",
+        "empty": "Aucun élève archivé.",
+        "archive": "Archiver",
+        "archivedOn": "Archivé le",
+        "retention": "Dossiers conservés au moins 5 ans.",
+        "view": "Voir",
         "restore": "Restaurer",
         "deleteForever": "Supprimer définitivement",
-        "moveToTrash": "Mettre à la corbeille"
+        "success": "{{name}} a été archivé(e).",
+        "restored": "{{name}} a été restauré(e).",
+        "deleted": "{{name}} a été supprimé(e) définitivement.",
+        "archiveError": "Erreur lors de l'archivage : {{message}}",
+        "restoreError": "Erreur lors de la restauration : {{message}}",
+        "deleteError": "Erreur lors de la suppression : {{message}}",
+        "notAStudent": "Seuls les élèves peuvent être archivés."
       },
-      "deleteDialog": {
-        "title": "Mettre l'élève à la corbeille ?",
-        "description": "Êtes-vous sûr(e) de vouloir mettre {{name}} à la corbeille ?",
-        "warning": "Le profil deviendra inactif, mais l'historique des cours et les crédits seront conservés.",
-        "reversible": "Cette action peut être annulée dans un délai de 90 jours.",
-        "confirm": "Mettre à la corbeille",
-        "moving": "Déplacement..."
+      "archiveDialog": {
+        "title": "Archiver cet élève ?",
+        "description": "{{name}} quittera la liste des élèves, les décomptes, l'enregistrement et les courriels, et ne pourra plus se connecter. L'historique, les reçus, le consentement et la fiche santé sont conservés.",
+        "reversible": "Vous pouvez restaurer à tout moment dans Élèves → Archives.",
+        "creditsWarning": "Il reste {{count}} crédit(s) : ils sont conservés et reviennent si vous restaurez.",
+        "onlineWarning": "A un forfait en ligne actif : il n'est pas résilié et revient tel quel si vous restaurez.",
+        "confirm": "Archiver",
+        "moving": "Archivage..."
       },
       "restoreDialog": {
         "title": "Restaurer l'élève ?",
         "description": "Souhaitez-vous restaurer {{name}} ?",
-        "warning": "Le profil réapparaîtra dans la liste des élèves actifs. Les cours devront être réinscrits manuellement.",
+        "warning": "L'élève revient dans la liste et peut se reconnecter. Les cours doivent être réinscrits manuellement.",
         "confirm": "Restaurer"
       },
       "hardDeleteDialog": {
@@ -922,9 +931,9 @@
         "placeholder": "Tapez EXCLUIR PERMANENTEMENTE pour confirmer",
         "confirm": "Supprimer définitivement",
         "deleting": "Suppression...",
-        "hasReceipts": "Cet(te) élève a des reçus d'assurance émis et ne peut pas être supprimé(e) définitivement. Les données restent dans la corbeille.",
+        "hasReceipts": "Cet(te) élève a un reçu d'assurance émis et ne peut pas être supprimé(e) définitivement. Il/Elle reste dans les Archives.",
         "hasHealthProfile": "Cet élève a une fiche santé conservée. Supprimez-la (après la durée de conservation) avant la suppression définitive.",
-        "hasConsentRecords": "Cet élève a un consentement accepté enregistré, que le studio conserve pendant au moins 5 ans (ou la durée exigée par la loi du Québec). La suppression définitive n'est pas possible ; gardez l'élève archivé."
+        "hasConsentRecords": "Cet élève a un consentement accepté, que le studio conserve au moins 5 ans (ou le délai prévu par la loi du Québec). Il ne peut pas être supprimé définitivement et reste dans les Archives."
       },
       "dialogCommon": {
         "confirm": "Confirmer"
@@ -1026,7 +1035,8 @@
         "pending": "Le courriel à {{name}} est encore en cours d'envoi. Vérifiez l'historique des courriels.",
         "error": "Impossible d'envoyer le courriel. Rien n'a été envoyé ; réessayez.",
         "openHistory": "Voir l'historique"
-      }
+      },
+      "archivedTag": "(archivé)"
     },
     "reports": {
       "attendance": {
@@ -1400,7 +1410,8 @@
         "pt": "Portugais",
         "en": "Anglais",
         "fr": "Français"
-      }
+      },
+      "archivedBanner": "Élève archivé le {{date}}. Lecture seule : pour modifier, restaurez dans Élèves → Archives."
     }
   },
   "insurance": {
@@ -1658,6 +1669,7 @@
     "submit": "Se connecter",
     "submitting": "Connexion...",
     "invalidCredentials": "Courriel ou mot de passe incorrect.",
+    "archivedAccount": "Votre compte est archivé. Contactez le studio pour le réactiver.",
     "noAccount": "Vous n'avez pas de compte ?",
     "signup": "Inscrivez-vous comme élève",
     "privacy": "Politique de confidentialité",

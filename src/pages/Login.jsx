@@ -57,7 +57,11 @@ const Login = () => {
     const { error } = await signIn(email, password)
     
     if (error) {
-      setError(error.message === 'Invalid login credentials' ? t('login.invalidCredentials') : error.message)
+      if (error.code === 'user_banned' || /banned/i.test(error.message || '')) {
+        setError(t('login.archivedAccount'))
+      } else {
+        setError(error.message === 'Invalid login credentials' ? t('login.invalidCredentials') : error.message)
+      }
       setLoading(false)
       return
     }
