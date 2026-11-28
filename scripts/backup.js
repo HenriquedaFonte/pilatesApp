@@ -56,6 +56,9 @@ const TABLES = [
   'insurance_receipts',
   'receipt_counters',
   'online_memberships',
+  'consent_versions',
+  'consent_acceptances',
+  'student_health_profiles',
   'online_payments',
 ];
 

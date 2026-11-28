@@ -115,7 +115,7 @@ Alternativa descartada: serviço externo de assinatura (DocuSign, Jotform etc.):
 - Cobrir: aluno não lê aceite/ficha de outro; aluno não faz INSERT direto em `consent_acceptances`; não aceita versão antiga; aceite duplo devolve o mesmo id; aluno sem consentimento de saúde não grava ficha; com, grava só a própria e não troca `student_id`; aluno não apaga ficha; professora lê tudo, registra papel, apaga ficha; `anon` não lê nada; `staff_consent_overview` recusa aluno; `profiles` apagado leva aceites e ficha junto.
 - Pronto quando: o script termina sem "FALHOU".
 
-### 3. [SONNET] Backup
+### 3. [SONNET] Backup ✅
 - Arquivo: `scripts/backup.js` — acrescentar `consent_versions`, `consent_acceptances`, `student_health_profiles` em `TABLES`.
 - Pronto quando: `node --check scripts/backup.js` passa. (Criptografia do backup: PR E, se o dono aprovar.)
 
@@ -221,3 +221,5 @@ Alternativa descartada: serviço externo de assinatura (DocuSign, Jotform etc.):
 7. **Prazo de guarda** da ficha e do termo depois que o aluno sai: a Josi confirma com a associação/seguradora (sugestão: enquanto ativo + o prazo exigido).
 8. **Criptografar o backup diário (PR E)** antes de guardar dados de saúde no GitHub? Rec.: sim.
 9. **Conteúdo do texto:** marca "Josi Pilates" (e não Point d'Équilibre), endereço atual, "cancelamento tardio = perda do crédito" como nas Regras, e cláusula de isenção reescrita como reconhecimento de riscos. A Josi confirma e valida com a seguradora.
+
+**Respostas do dono (2026-11-28):** recomendações aceitas em 1, 2, 3, 4, 5, 8 e 9. **6: não há alunos menores de idade**, então a v1 não trata responsável (se aparecer um menor, termo em papel registrado pela Josi). **9: endereço continua 10145 Av Hamel.** **7:** fica com a Josi (associação/seguradora); não bloqueia os PRs A, C e D, só entra na Política de Privacidade (PR B).
